@@ -1,0 +1,11 @@
+<!-- DEFAULT Tomcat 8.0.14 context.xml with Ressource AccountDS -->
+
+<Context>
+	...
+    <Resource name="jdbc/TournamentDS" auth="Container"
+          type="javax.sql.DataSource" driverClassName="org.postgresql.Driver"
+          url="jdbc:postgresql://127.0.0.1:9432/tournamentdb"
+          username="username" password="password" maxActive="20" maxIdle="10" maxWait="-1"
+    />
+    ...
+</Context>

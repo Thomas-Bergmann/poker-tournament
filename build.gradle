@@ -1,0 +1,189 @@
+ext {
+    // Logging
+    slf4jVersion = '1.7.7'
+    logbackVersion = '1.1.2'
+
+    // Testing
+    junitVersion = '4.12'
+    mockitoVersion = '1.9.5'
+    apacheDerbyVersion = '10.11.1.1'
+
+    // Code coverage
+    jacocoVersion = '0.7.1.201405082137'
+
+    // libraries
+    felixFrameworkVersion = '4.4.1'
+    jerseyVersion ='2.13'
+    hibernateVersion='4.3.6.Final'
+    tomcatVersion='8.0.15'
+    mailVersion='1.4.7'
+
+    bundleVendor = 'Thomas Bergmann'
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'eclipse'
+    apply plugin: 'sonar-runner'
+    apply plugin: 'jacoco'
+    apply plugin: 'osgi'
+
+    group = 'de.hatoka.offlinepoker'
+    version = '0.1'
+    status = 'development'
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+    configurations {
+        provided
+    }
+    sourceSets {
+        main { compileClasspath += configurations.provided }
+    }
+
+    dependencies {
+        compile 'commons-lang:commons-lang:2.6'
+        compile "org.slf4j:slf4j-api:$slf4jVersion"
+        compile 'com.google.inject:guice:3.0'
+        compile 'javax.inject:javax.inject:1'
+        compile 'javax.validation:validation-api:1.1.0.Final'
+        compile "org.hibernate:hibernate-entitymanager:$hibernateVersion"
+        compile 'javax.ejb:ejb-api:3.0'
+        compile 'xalan:xalan:2.7.2'
+
+        runtime "org.hibernate:hibernate-entitymanager:$hibernateVersion"
+        runtime 'org.hibernate:hibernate-validator:5.1.2.Final'
+        runtime "ch.qos.logback:logback-classic:$logbackVersion"
+
+        testCompile "junit:junit:$junitVersion"
+        testCompile "org.mockito:mockito-all:$mockitoVersion"
+        testCompile "org.apache.derby:derby:$apacheDerbyVersion"
+        testCompile 'commons-io:commons-io:2.4'
+
+        testRuntime "org.hibernate:hibernate-entitymanager:$hibernateVersion"
+        testRuntime "org.apache.derby:derby:$apacheDerbyVersion"
+        testRuntime "ch.qos.logback:logback-classic:$logbackVersion"
+    }
+
+    sonarRunner {
+        sonarProperties {
+            property "sonar.dynamicAnalysis", "reuseReports"
+            property "sonar.host.url" , sonarURL
+            property "sonar.projectName", "OfflinePoker " + name
+            property "sonar.projectKey", "offlinepoker:${name}"
+            property "sonar.projectVersion", "0.1"
+            property "sonar.java.source", "8"
+            property "sonar.java.coveragePlugin", "jacoco"
+            property "sonar.jacoco.reportPath", "$buildDir/jacoco/jacocoTest.exec"
+        }
+    }
+
+    jacocoTestReport {
+        reports {
+            csv.enabled true
+            xml.enabled true
+            html.destination "${buildDir}/jacoco/html"
+        }
+    }
+
+    test {
+        jacoco {
+            destinationFile = file("$buildDir/jacoco/jacocoTest.exec")
+        }
+     }
+
+    jacoco {
+        toolVersion = jacocoVersion
+        reportsDir = file("$buildDir/jacoco/report")
+    }
+
+    jar {
+        manifest {
+            // the manifest of the default jar is of type OsgiManifest
+            name = project.name
+            instruction 'Bundle-Description', project.name
+            instruction 'Bundle-Vendor', bundleVendor
+        }
+    }
+}
+
+project('de.hatoka.account')
+{
+    apply plugin: "war"
+
+    sourceSets {
+        main {
+          output.resourcesDir = "build/classes/main"
+        }
+    }
+
+    dependencies {
+        compile project(":de.hatoka.common")
+        compile project(":de.hatoka.address")
+        compile project(":de.hatoka.mail")
+        compile "org.glassfish.jersey.core:jersey-common:$jerseyVersion"
+        compile "org.glassfish.jersey.core:jersey-server:$jerseyVersion"
+        compile "org.glassfish.jersey.containers:jersey-container-servlet:$jerseyVersion"
+        provided "org.apache.tomcat:tomcat-catalina:$tomcatVersion"
+        testCompile "org.apache.tomcat:tomcat-catalina:$tomcatVersion"
+    }
+}
+
+project('de.hatoka.address')
+{
+    dependencies {
+        compile project(":de.hatoka.common")
+    }
+}
+
+project('de.hatoka.common')
+{
+    dependencies {
+        compile "org.glassfish.jersey.core:jersey-common:$jerseyVersion"
+        provided "org.apache.tomcat:tomcat-catalina:$tomcatVersion"
+        testCompile "org.apache.tomcat:tomcat-catalina:$tomcatVersion"
+    }
+}
+
+project('de.hatoka.mail')
+{
+    dependencies {
+        compile project(":de.hatoka.common")
+        compile "javax.mail:mail:$mailVersion"
+        provided "org.apache.tomcat:tomcat-catalina:$tomcatVersion"
+        testCompile "org.apache.tomcat:tomcat-catalina:$tomcatVersion"
+    }
+    test {
+        // explicitly include or exclude tests
+        exclude 'de/hatoka/mail/internal/service/**'
+    }
+}
+
+project('de.hatoka.tournament')
+{
+    apply plugin: "war"
+
+    sourceSets {
+        main {
+          output.resourcesDir = "build/classes/main"
+        }
+    }
+
+    dependencies {
+        compile project(":de.hatoka.common")
+        compile project(":de.hatoka.address")
+        compile "org.glassfish.jersey.core:jersey-common:$jerseyVersion"
+        compile "org.glassfish.jersey.core:jersey-server:$jerseyVersion"
+        compile "org.glassfish.jersey.containers:jersey-container-servlet:$jerseyVersion"
+        provided "org.apache.tomcat:tomcat-catalina:$tomcatVersion"
+        testCompile "org.apache.tomcat:tomcat-catalina:$tomcatVersion"
+    }
+}
+
+defaultTasks 'test', 'war'

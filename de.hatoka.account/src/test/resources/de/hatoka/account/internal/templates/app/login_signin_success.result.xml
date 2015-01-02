@@ -1,0 +1,29 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link href="../resources/css/account.less" type="text/css" rel="stylesheet/less" />
+<script type="text/javascript" src="../resources/js/libs/less-1.3.3.min.js">//</script>
+<title>Login Form</title>
+</head>
+<body>
+<ul>
+<li class="login">
+<div class="info">Sign in successfully finished.</div>
+<h2>Please login:</h2>
+<form method="POST" action="login">
+<input name="origin" type="hidden" value="http://testdomain.de/origin" />
+<div class="input">
+<input type="text" value="login@test.test" name="login" class="text" placeholder="Email" />
+</div>
+<div class="input">
+<input type="password" value="" name="password" class="text" placeholder="Password" autocomplete="off" />
+</div>
+<div class="button">
+<input name="login" type="submit" class="button" value="Login" />
+</div>
+</form>
+</li>
+</ul>
+</body>
+</html>

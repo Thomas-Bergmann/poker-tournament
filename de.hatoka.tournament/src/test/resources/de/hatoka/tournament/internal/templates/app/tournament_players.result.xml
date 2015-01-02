@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link type="text/css" rel="stylesheet/less" href="../resources/css/tournament.less" />
+<script type="text/javascript" src="../resources/js/libs/less-1.3.3.min.js">
+            //
+        </script>
+<title>Tournament (Buy-In: 1USD)</title>
+</head>
+<body>
+<div class="menu">
+<a href="list.html">Back to list</a>
+</div>
+<h2>Create new player:</h2>
+<form action="createPlayer" method="POST">
+<div class="input">
+<input type="text" value="" name="name" class="text" placeholder="Players Name" />
+</div>
+<div class="button">
+<input name="create" type="submit" class="button" value="Create" />
+</div>
+</form>
+<h2>Assign player:</h2>
+<form action="assignPlayer" method="POST">
+<div class="input">
+<select name="playerID">
+<option value="1234581">Player 3</option>
+</select>
+</div>
+<div class="button">
+<input name="buyin" type="submit" class="button" value="Buy-In" />
+</div>
+</form>
+<h2>Select competitor:</h2>
+<form action="actionPlayerList" method="POST">
+<table>
+<tr>
+<th>Select</th>
+<th>Name</th>
+<th>In Play</th>
+</tr>
+<tr>
+<td>
+<div class="checkbox">
+<input type="checkbox" value="1234578" name="competitorID" class="checkbox" />
+</div>
+</td>
+<td>Player 1</td>
+<td>active</td>
+<td>1USD</td>
+<td>0USD</td>
+</tr>
+<tr>
+<td>
+<div class="checkbox">
+<input type="checkbox" value="1234579" name="competitorID" class="checkbox" />
+</div>
+</td>
+<td>Player 2</td>
+<td>inactive</td>
+<td>1USD</td>
+<td>-1USD</td>
+</tr>
+</table>
+<div class="info">
+            Average: 1<br />Sum: 2</div>
+<div class="input">
+<input type="text" value="" name="amount" class="text" placeholder="Amount" />
+</div>
+<div class="button">
+<input name="rebuy" type="submit" class="button" value="Re-Buy" />
+</div>
+<div class="button">
+<input name="seatopen" type="submit" class="button" value="Seat-Open" />
+</div>
+</form>
+</body>
+</html>
