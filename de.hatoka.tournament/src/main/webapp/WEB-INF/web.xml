@@ -10,6 +10,11 @@
         <res-type>javax.sql.DataSource</res-type>
         <res-auth>Container</res-auth>
     </resource-ref>
+	<resource-env-ref>
+	  <description>Account Client Configuration</description>
+	  <resource-env-ref-name>hatoka/ClientConfigurationBeanFactory</resource-env-ref-name>
+	  <resource-env-ref-type>de.hatoka.jndi.account.ClientConfigurationBean</resource-env-ref-type>
+	</resource-env-ref>
     <servlet>
         <servlet-name>Tournament Application</servlet-name>
         <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>

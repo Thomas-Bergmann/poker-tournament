@@ -176,6 +176,7 @@ project('de.hatoka.tournament')
 
     dependencies {
         compile project(":de.hatoka.common")
+        compile project(":de.hatoka.jndi")
         compile project(":de.hatoka.address")
         compile "org.glassfish.jersey.core:jersey-common:$jerseyVersion"
         compile "org.glassfish.jersey.core:jersey-server:$jerseyVersion"
