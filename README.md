@@ -73,9 +73,10 @@ Before you submit code, please
     * mail server
 * add tomcat users
     d:\http8090\conf\tomcat-users.xml
-* add application war file from build directory
+* copy application war file from build directory
     d:\http8090\webapps\de.hatoka.account-0.1.war
     d:\http8090\webapps\de.hatoka.tournament-0.1.war
+* copy de.hatoka.jndi-0.1.jar to tomcat/lib directory
 
 <pre>
 $> set JPDA_OPTS=-agentlib:jdwp=transport=dt_socket,address=6667,server=y,suspend=n
