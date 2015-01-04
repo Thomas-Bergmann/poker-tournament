@@ -12,7 +12,6 @@ ext {
     jacocoVersion = '0.7.1.201405082137'
 
     // libraries
-    felixFrameworkVersion = '4.4.1'
     jerseyVersion ='2.13'
     hibernateVersion='4.3.6.Final'
     tomcatVersion='8.0.15'
