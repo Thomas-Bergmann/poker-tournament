@@ -18,10 +18,10 @@ Both cash games and tournaments will be supported.
     * Re-Buy of a competitor - define the re-buy amount (the page contains the average over all competitors)
     * Seat-Open for a competitor - define the current amount of the player, the result for the player is calculated (the lost money is still registered as InPlay)
 
-# Open Featurs and Tasks
+# Open Features and Tasks
 
-* display menu and registry of actions
-* define and implement a look and feel
+* Display menu and registry of actions
+* Define and implement a look and feel
 
 ## Open Tournament Features
 * Manage tables and random placement of players
@@ -29,7 +29,7 @@ Both cash games and tournaments will be supported.
 * Visualize current state of tournament
 
 ## Open Technical Tasks
-* usage of key store
+* Usage of key store
 * Encryption of passwords (one way encryption)
 * Encryption of email addresses
 * Signature of account reference cookie
@@ -56,12 +56,12 @@ Before you submit code, please
 * add the content of dev_env/git_info_exclude.txt to your git exclude file
 * add the pre-commit checker dev_env/git_hooks_pre-commit
 
-General
-
 # Installation
 
-* Standard Installation Tomcat 8 to
-    * d:\http8090
+* Installation of PostgreSQL (http://www.postgresql.org/)
+    * create two databases (accountdb and tournamentdb)
+* Installation of "Tomcat 8" (http://tomcat.apache.org/) to
+    * (example location d:\http8090)
     * you can change the http port conf/httpd.conf
 * use services.bat to register as service (optional)
     * use SERVICE_NAME with http port in name

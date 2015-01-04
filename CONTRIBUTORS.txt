@@ -1,0 +1,7 @@
+The following people has contributed, at varying degree to
+the Offline Poker Tournament codebase;
+
+Thomas Bergmann         offlinepoker@hatoka.de
+
+
+Thank you for joining.
