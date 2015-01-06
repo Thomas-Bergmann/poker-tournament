@@ -1,6 +1,6 @@
 ext {
     // Logging
-    slf4jVersion = '1.7.7'
+    slf4jVersion = '1.7.9'
     logbackVersion = '1.1.2'
 
     // Testing
@@ -12,8 +12,8 @@ ext {
     jacocoVersion = '0.7.1.201405082137'
 
     // libraries
-    jerseyVersion ='2.13'
-    hibernateVersion='4.3.6.Final'
+    jerseyVersion ='2.14'
+    hibernateVersion='4.3.7.Final'
     tomcatVersion='8.0.15'
     mailVersion='1.4.7'
 
