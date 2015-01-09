@@ -20,7 +20,7 @@ import com.google.inject.Module;
 import de.hatoka.common.capi.dao.EntityManagerProvider;
 import de.hatoka.common.capi.dao.TransactionProvider;
 import de.hatoka.mail.capi.config.SmtpConfiguration;
-import de.hatoka.mail.internal.service.SmtpConfigurationImpl;
+import de.hatoka.mail.internal.service.SmtpConfigurationSystemEnvImpl;
 
 public class DerbyEntityManagerRule extends ExternalResource implements EntityManagerProvider
 {
@@ -98,7 +98,7 @@ public class DerbyEntityManagerRule extends ExternalResource implements EntityMa
                         return emp.get().getTransaction();
                     }
                 });
-                binder.bind(SmtpConfiguration.class).to(SmtpConfigurationImpl.class).asEagerSingleton();
+                binder.bind(SmtpConfiguration.class).to(SmtpConfigurationSystemEnvImpl.class).asEagerSingleton();
             }
         };
     }

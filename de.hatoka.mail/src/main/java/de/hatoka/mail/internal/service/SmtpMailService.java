@@ -290,6 +290,7 @@ public class SmtpMailService implements MailService
         {
             Message message = getMessage(session, mailPO);
             message.setSentDate(new Date());
+            message.saveChanges();
             Transport.send(message);
         }
         catch(Exception e)

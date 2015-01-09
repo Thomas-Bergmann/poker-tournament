@@ -8,7 +8,7 @@ import javax.naming.NamingException;
 import de.hatoka.common.capi.exceptions.IllegalConfigurationException;
 import de.hatoka.mail.capi.config.SmtpConfiguration;
 
-public class SmtpConfigurationImpl implements SmtpConfiguration
+public class SmtpConfigurationJndiImpl implements SmtpConfiguration
 {
     @Override
     public Session getSession()
