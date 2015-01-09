@@ -168,7 +168,7 @@ project('de.hatoka.mail')
         // systemProperty 'mail.smtp.password', mailSmtpPassword
         // systemProperty 'mail.smtp.auth', 'true'
         // explicitly include or exclude tests
-        // exclude 'de/hatoka/mail/internal/service/**'
+        exclude 'de/hatoka/mail/internal/service/**'
     }
 }
 
