@@ -162,11 +162,11 @@ project('de.hatoka.mail')
     }
     test {
         // https://javamail.java.net/nonav/docs/api/com/sun/mail/smtp/package-summary.html
-        systemProperty 'mail.smtp.host', mailSmtpHost
-        systemProperty 'mail.smtp.port', mailSmtpPort
-        systemProperty 'mail.smtp.user', mailSmtpUser
-        systemProperty 'mail.smtp.password', mailSmtpPassword
-        systemProperty 'mail.smtp.auth', 'true'
+        // systemProperty 'mail.smtp.host', mailSmtpHost
+        // systemProperty 'mail.smtp.port', mailSmtpPort
+        // systemProperty 'mail.smtp.user', mailSmtpUser
+        // systemProperty 'mail.smtp.password', mailSmtpPassword
+        // systemProperty 'mail.smtp.auth', 'true'
         // explicitly include or exclude tests
         // exclude 'de/hatoka/mail/internal/service/**'
     }
