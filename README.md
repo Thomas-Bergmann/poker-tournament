@@ -56,6 +56,10 @@ Before you submit code, please
 * add the content of dev_env/git_info_exclude.txt to your git exclude file
 * add the pre-commit checker dev_env/git_hooks_pre-commit
 
+The project is registered at:
+* Travis CI ![branch master](https://travis-ci.org/OfflinePoker/Tournament.svg?branch=master)
+* Coverall.IO [![Coverage Status](https://coveralls.io/repos/OfflinePoker/Tournament/badge.png)](https://coveralls.io/r/OfflinePoker/Tournament)
+
 # Installation
 
 * Installation of PostgreSQL (http://www.postgresql.org/)
