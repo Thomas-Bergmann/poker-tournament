@@ -4,8 +4,7 @@
 >
   <xsl:param name="localizer" />
   <!-- BEGIN OUTPUT -->
-  <xsl:output method="html" encoding="UTF-8" xmlns="http://www.w3.org/1999/xhtml" indent="yes"
-    doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" />
+  <xsl:output method="html" encoding="UTF-8" indent="yes" />
   <xsl:template match="/signUpVerifyMailModel">
     <html xmlns="http://www.w3.org/1999/xhtml">
       <head>
@@ -15,7 +14,7 @@
       </head>
       <body>
         <h2>
-          <xsl:value-of select="hatoka:getText($localizer, 'mail.verifyEmail.clickLink', 'Please click the flowing link:')" />
+          <xsl:value-of select="hatoka:getText($localizer, 'mail.verifyEmail.clickLink', 'Please click the following link:')" />
         </h2>
         <a>
           <xsl:attribute name="href"><xsl:value-of select="link" /></xsl:attribute>

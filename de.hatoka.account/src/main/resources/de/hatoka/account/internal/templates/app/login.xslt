@@ -5,8 +5,7 @@
   <xsl:import href="de/hatoka/common/capi/app/xslt/ui.xsl" />
   <xsl:param name="localizer" />
   <!-- BEGIN OUTPUT -->
-  <xsl:output method="html" encoding="UTF-8" xmlns="http://www.w3.org/1999/xhtml" indent="yes"
-    doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" />
+  <xsl:output method="html" encoding="UTF-8" indent="yes" />
   <xsl:template match="/">
     <html xmlns="http://www.w3.org/1999/xhtml">
       <head>

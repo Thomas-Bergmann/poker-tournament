@@ -1,7 +1,5 @@
 package de.hatoka.account.internal.templates.app;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,7 +7,11 @@ import java.io.StringWriter;
 import java.util.Locale;
 
 import org.apache.commons.io.IOUtils;
+import org.custommonkey.xmlunit.XMLAssert;
+import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.xml.sax.SAXException;
 
 import de.hatoka.account.internal.app.models.AccountListModel;
 import de.hatoka.account.internal.app.models.AccountVO;
@@ -35,7 +37,8 @@ public class AccountTemplateTest
 
     private Processor getConverter(Locale locale)
     {
-        return new Processor(RESOURCE_PREFIX, new ResourceLocalizer(new LocalizationBundle(RESOURCE_PREFIX + "account", locale)));
+        return new Processor(RESOURCE_PREFIX, new ResourceLocalizer(new LocalizationBundle(RESOURCE_PREFIX + "account",
+                        locale)));
     }
 
     private String getResource(String string) throws IOException
@@ -50,24 +53,21 @@ public class AccountTemplateTest
         return writer.toString();
     }
 
+    @BeforeClass
+    public static void initClass()
+    {
+        XMLUnit.setIgnoreWhitespace(true);
+    }
+
     @Test
-    public void testListUsers() throws IOException
+    public void testListUsers() throws IOException, SAXException
     {
         AccountListModel model = new AccountListModel();
         model.getAccounts().add(getAccountVO("123456", "test1@test.mail", "Test 1", true));
         model.getAccounts().add(getAccountVO("123457", "test2@test.mail", "Test 2", false));
         StringWriter writer = new StringWriter();
         getConverter(Locale.US).process(model, XSLT_STYLESHEET, writer);
-        assertEquals("accounts not listed correctly", trim(getResource("account_list.result.xml")), trim(writer));
+        XMLAssert.assertXMLEqual("account_list en_Us fails", getResource("account_list.result.xml"), writer.toString());
     }
 
-    private String trim(String text)
-    {
-        return text.replace("\t", "    ").replace("\r\n","\n");
-    }
-
-    private String trim(StringWriter writer)
-    {
-        return trim(writer.toString());
-    }
 }

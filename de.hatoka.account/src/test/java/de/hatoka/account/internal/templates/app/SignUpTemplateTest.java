@@ -1,7 +1,5 @@
 package de.hatoka.account.internal.templates.app;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,7 +7,11 @@ import java.io.StringWriter;
 import java.util.Locale;
 
 import org.apache.commons.io.IOUtils;
+import org.custommonkey.xmlunit.XMLAssert;
+import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.xml.sax.SAXException;
 
 import de.hatoka.account.internal.app.forms.SignUpForm;
 import de.hatoka.account.internal.app.models.LoginPageModel;
@@ -40,7 +42,7 @@ public class SignUpTemplateTest
     }
 
     @Test
-    public void testEmailExists() throws IOException
+    public void testEmailExists() throws IOException, SAXException
     {
         SignUpForm form = new SignUpForm();
         form.setEmail("test@test.test");
@@ -49,22 +51,28 @@ public class SignUpTemplateTest
         LoginPageModel objects = new LoginPageModel();
         objects.setSignUpForm(form);
         getConverter(Locale.US).process(objects, XSLT_STYLESHEET, writer);
-        assertEquals("signup_email_exists", trim(getResource("signup_email_exists.result.xml")), trim(writer));
+        XMLAssert.assertXMLEqual("signup_email_exists", getResource("signup_email_exists.result.xml"), writer.toString());
+    }
+    @BeforeClass
+    public static void initClass()
+    {
+        XMLUnit.setIgnoreWhitespace(true);
     }
 
+
     @Test
-    public void testSignUpShow() throws IOException
+    public void testSignUpShow() throws IOException, SAXException
     {
         SignUpForm form = new SignUpForm();
         StringWriter writer = new StringWriter();
         LoginPageModel objects = new LoginPageModel();
         objects.setSignUpForm(form);
         getConverter(Locale.US).process(objects, XSLT_STYLESHEET, writer);
-        assertEquals("signup_show", trim(getResource("signup_show.result.xml")), trim(writer));
+        XMLAssert.assertXMLEqual("signup_show", getResource("signup_show.result.xml"), writer.toString());
     }
 
     @Test
-    public void testSuccess() throws IOException
+    public void testSuccess() throws IOException, SAXException
     {
         SignUpForm form = new SignUpForm();
         form.setEmail("test@test.test");
@@ -73,11 +81,11 @@ public class SignUpTemplateTest
         LoginPageModel objects = new LoginPageModel();
         objects.setSignUpForm(form);
         getConverter(Locale.US).process(objects, XSLT_STYLESHEET, writer);
-        assertEquals("signup_success", trim(getResource("signup_success.result.xml")), trim(writer));
+        XMLAssert.assertXMLEqual("signup_success", getResource("signup_success.result.xml"), writer.toString());
     }
 
     @Test
-    public void testXSS() throws IOException
+    public void testXSS() throws IOException, SAXException
     {
         SignUpForm form = new SignUpForm();
         form.setEmail("<script type=\"text/javascript\">alert(\"XSS\");</script>");
@@ -86,17 +94,6 @@ public class SignUpTemplateTest
         LoginPageModel objects = new LoginPageModel();
         objects.setSignUpForm(form);
         getConverter(Locale.US).process(objects, XSLT_STYLESHEET, writer);
-        assertEquals("signup_success", trim(getResource("signup_success_xss.result.xml")), trim(writer));
-    }
-
-
-    private String trim(String text)
-    {
-        return text.replace("\t", "    ").replace("\r\n","\n");
-    }
-
-    private String trim(StringWriter writer)
-    {
-        return trim(writer.toString());
+        XMLAssert.assertXMLEqual("signup_success", getResource("signup_success_xss.result.xml"), writer.toString());
     }
 }

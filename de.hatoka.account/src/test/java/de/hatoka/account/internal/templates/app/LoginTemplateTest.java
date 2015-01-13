@@ -1,7 +1,5 @@
 package de.hatoka.account.internal.templates.app;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,7 +7,11 @@ import java.io.StringWriter;
 import java.util.Locale;
 
 import org.apache.commons.io.IOUtils;
+import org.custommonkey.xmlunit.XMLAssert;
+import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.xml.sax.SAXException;
 
 import de.hatoka.account.internal.app.forms.LoginForm;
 import de.hatoka.common.capi.app.xslt.Processor;
@@ -22,9 +24,16 @@ public class LoginTemplateTest
     private static final String ORIGIN = "http://testdomain.de/origin";
     private static final String RESOURCE_PREFIX = "de/hatoka/account/internal/templates/app/";
 
+    @BeforeClass
+    public static void initClass()
+    {
+        XMLUnit.setIgnoreWhitespace(true);
+    }
+
     private Processor getConverter(Locale locale)
     {
-        return new Processor(RESOURCE_PREFIX, new ResourceLocalizer(new LocalizationBundle(RESOURCE_PREFIX + "login", locale)));
+        return new Processor(RESOURCE_PREFIX, new ResourceLocalizer(new LocalizationBundle(RESOURCE_PREFIX + "login",
+                        locale)));
     }
 
     private String getResource(String string) throws IOException
@@ -40,38 +49,38 @@ public class LoginTemplateTest
     }
 
     @Test
-    public void testLoginFailed() throws IOException
+    public void testLoginFailed() throws IOException, SAXException
     {
         LoginForm form = new LoginForm();
         form.setOrigin(ORIGIN);
         form.setLoginFailed(true);
         StringWriter writer = new StringWriter();
         getConverter(Locale.US).process(form, XSLT_STYLESHEET, writer);
-        assertEquals("login_failed", trim(getResource("login_failed.result.xml")), trim(writer));
+        XMLAssert.assertXMLEqual("login_failed", getResource("login_failed.result.xml"), writer.toString());
     }
 
     @Test
-    public void testLoginShow() throws IOException
+    public void testLoginShow() throws IOException, SAXException
     {
         LoginForm form = new LoginForm();
         form.setOrigin(ORIGIN);
         StringWriter writer = new StringWriter();
         getConverter(Locale.US).process(form, XSLT_STYLESHEET, writer);
-        assertEquals("login_show", trim(getResource("login_show.result.xml")), trim(writer));
+        XMLAssert.assertXMLEqual("login_show", getResource("login_show.result.xml"), writer.toString());
     }
 
     @Test
-    public void testLoginShowDE() throws IOException
+    public void testLoginShowDE() throws IOException, SAXException
     {
         LoginForm form = new LoginForm();
         form.setOrigin(ORIGIN);
         StringWriter writer = new StringWriter();
         getConverter(Locale.GERMANY).process(form, XSLT_STYLESHEET, writer);
-        assertEquals("login_show", trim(getResource("login_show_de_DE.result.xml")), trim(writer));
+        XMLAssert.assertXMLEqual("login_show", getResource("login_show_de_DE.result.xml"), writer.toString());
     }
 
     @Test
-    public void testSignInSuccess() throws IOException
+    public void testSignInSuccess() throws IOException, SAXException
     {
         LoginForm form = new LoginForm();
         form.setOrigin(ORIGIN);
@@ -80,16 +89,8 @@ public class LoginTemplateTest
         StringWriter writer = new StringWriter();
         getConverter(Locale.US).process(form, XSLT_STYLESHEET, writer);
         // output of data getConverter(Locale.US).process(form, writer);
-        assertEquals("login_signin_success", trim(getResource("login_signin_success.result.xml")), trim(writer));
+        XMLAssert.assertXMLEqual("login_signin_success", getResource("login_signin_success.result.xml"),
+                        writer.toString());
     }
 
-    private String trim(String text)
-    {
-        return text.replace("\t", "    ").replace("\r\n","\n");
-    }
-
-    private String trim(StringWriter writer)
-    {
-        return trim(writer.toString());
-    }
 }

@@ -64,6 +64,7 @@ subprojects {
         testCompile "org.mockito:mockito-all:$mockitoVersion"
         testCompile "org.apache.derby:derby:$apacheDerbyVersion"
         testCompile 'commons-io:commons-io:2.4'
+        testCompile 'xmlunit:xmlunit:1.6'
 
         testRuntime "org.hibernate:hibernate-entitymanager:$hibernateVersion"
         testRuntime "org.apache.derby:derby:$apacheDerbyVersion"

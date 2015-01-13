@@ -1,7 +1,5 @@
 package de.hatoka.tournament.internal.templates.app;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,6 +11,9 @@ import java.util.Locale;
 import javax.ws.rs.core.UriBuilder;
 
 import org.apache.commons.io.IOUtils;
+import org.custommonkey.xmlunit.XMLAssert;
+import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.hatoka.common.capi.app.model.MoneyVO;
@@ -43,10 +44,16 @@ public class TournamentTemplateTest
         return result;
     }
 
+    @BeforeClass
+    public static void initClass()
+    {
+        XMLUnit.setIgnoreWhitespace(true);
+    }
+
     private Processor getConverter(Locale locale)
     {
-        return new Processor(RESOURCE_PREFIX, new ResourceLocalizer(new LocalizationBundle(RESOURCE_PREFIX + "tournament",
-                        locale), "dd.MM.yyyy hh:mm"));
+        return new Processor(RESOURCE_PREFIX, new ResourceLocalizer(new LocalizationBundle(RESOURCE_PREFIX
+                        + "tournament", locale), "dd.MM.yyyy hh:mm"));
     }
 
     private PlayerVO getPlayerVO(String id, String name)
@@ -56,6 +63,7 @@ public class TournamentTemplateTest
         result.setName(name);
         return result;
     }
+
     private String getResource(String string) throws IOException
     {
         StringWriter writer = new StringWriter();
@@ -85,7 +93,8 @@ public class TournamentTemplateTest
     public void testTournamentPlayers() throws Exception
     {
         TournamentPlayerListModel model = new TournamentPlayerListModel(UriBuilder.fromPath("list.html").build());
-        model.setTournament(getTournamentVO("123456", "Test 1", new SimpleDateFormat(LocalizationConstants.XML_DATEFORMAT).parse("2011-11-25T08:42:55.624+01:00")));
+        model.setTournament(getTournamentVO("123456", "Test 1", new SimpleDateFormat(
+                        LocalizationConstants.XML_DATEFORMAT).parse("2011-11-25T08:42:55.624+01:00")));
         model.getCompetitors().add(getCompetitorVO("1234578", "Player 1", "playerid-1"));
         CompetitorVO competitorVO = getCompetitorVO("1234579", "Player 2", "playerid-2");
         competitorVO.setResult(new MoneyVO(Money.getInstance("-1", "USD")));
@@ -94,28 +103,21 @@ public class TournamentTemplateTest
         model.getUnassignedPlayers().add(getPlayerVO("1234581", "Player 3"));
         StringWriter writer = new StringWriter();
         getConverter(Locale.US).process(model, "tournament_players.xslt", writer);
-        assertEquals("players not listed correctly", trim(getResource("tournament_players.result.xml")), trim(writer));
+        XMLAssert.assertXMLEqual("players not listed correctly", getResource("tournament_players.result.xml"), writer.toString());
     }
 
     @Test
     public void testTournaments() throws Exception
     {
         TournamentListModel model = new TournamentListModel();
-        model.getTournaments().add(getTournamentVO("123456", "Test 1", new SimpleDateFormat(LocalizationConstants.XML_DATEFORMAT).parse("2011-11-25T08:42:55.624+01:00")));
-        model.getTournaments().add(getTournamentVO("123457", "Test 2", new SimpleDateFormat(LocalizationConstants.XML_DATEFORMAT).parse("2012-11-25T09:45:55.624+01:00")));
+        model.getTournaments().add(
+                        getTournamentVO("123456", "Test 1", new SimpleDateFormat(LocalizationConstants.XML_DATEFORMAT)
+                                        .parse("2011-11-25T08:42:55.624+01:00")));
+        model.getTournaments().add(
+                        getTournamentVO("123457", "Test 2", new SimpleDateFormat(LocalizationConstants.XML_DATEFORMAT)
+                                        .parse("2012-11-25T09:45:55.624+01:00")));
         StringWriter writer = new StringWriter();
         getConverter(Locale.US).process(model, "tournament_list.xslt", writer);
-        assertEquals("tournaments not listed correctly", trim(getResource("tournament_list.result.xml")), trim(writer));
+        XMLAssert.assertXMLEqual("tournaments not listed correctly", getResource("tournament_list.result.xml"), writer.toString());
     }
-
-    private String trim(String text)
-    {
-        return text.replace("\t", "    ").replace("\r\n", "\n");
-    }
-
-    private String trim(StringWriter writer)
-    {
-        return trim(writer.toString());
-    }
-
 }
