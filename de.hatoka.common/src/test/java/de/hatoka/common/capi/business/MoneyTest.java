@@ -34,9 +34,16 @@ public class MoneyTest
     @Test
     public void testEquals()
     {
-        assertEquals(new Money(new BigDecimal("700.00"), EUR).hashCode(), new Money(new BigDecimal("700"), EUR).hashCode());
-        assertEquals(new Money(new BigDecimal("700.00"), EUR), new Money(new BigDecimal("700"), EUR));
-        assertFalse(new Money(new BigDecimal("700.00"), EUR).equals(new Money(new BigDecimal("700"), USD)));
+        assertEquals(new Money(BIG_DECIMAL_1_19, EUR).hashCode(), new Money(BIG_DECIMAL_1_19, EUR).hashCode());
+        assertEquals(new Money(BIG_DECIMAL_1_19, EUR), new Money(BIG_DECIMAL_1_19, EUR));
+        assertEquals(new Money(BIG_DECIMAL_1_19, EUR), new Money(new BigDecimal("1.190"), EUR));
+    }
+
+    @Test
+    public void testNonEquals()
+    {
+        assertFalse(new Money(BIG_DECIMAL_1_19, EUR).equals(new Money(BIG_DECIMAL_1_19, USD)));
+        assertFalse(new Money(new BigDecimal("700.01"), EUR).equals(new Money(BIG_DECIMAL_1_19, EUR)));
     }
 
     @Test
