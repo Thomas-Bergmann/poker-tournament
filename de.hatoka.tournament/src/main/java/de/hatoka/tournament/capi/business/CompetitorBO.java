@@ -1,14 +1,24 @@
 package de.hatoka.tournament.capi.business;
 
-import de.hatoka.common.capi.business.BusinessObject;
 import de.hatoka.common.capi.business.Money;
 
 /**
  * A competitor is an player attending at a tournament.
  */
-public interface CompetitorBO extends BusinessObject
+public interface CompetitorBO
 {
-    /**
+   /**
+    *
+    * @return the identifier (signature) of the business object
+    */
+   String getID();
+
+   /**
+    * Removes that business object and return the ID
+    */
+   String remove();
+
+   /**
      * Player activates the competitor, with paying the buy in.
      * @param money
      */

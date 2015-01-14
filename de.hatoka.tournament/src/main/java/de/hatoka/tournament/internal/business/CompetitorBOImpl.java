@@ -84,10 +84,12 @@ public class CompetitorBOImpl implements CompetitorBO
     }
 
     @Override
-    public void remove()
+    public String remove()
     {
+        String result = getID();
         competitorDao.remove(competitorPO);
         competitorPO = null;
+        return result;
     }
 
     @Override

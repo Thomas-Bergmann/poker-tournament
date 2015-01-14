@@ -133,7 +133,7 @@ public class TournamentBOImpl implements TournamentBO
     @Override
     public void remove()
     {
-        getCompetitorBOStream().forEach(competitor -> competitor.remove());
+        getCompetitors().stream().forEach(competitor -> competitor.remove());
         tournamentDao.remove(tournamentPO);
         tournamentPO = null;
     }
