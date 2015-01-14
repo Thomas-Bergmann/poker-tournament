@@ -1,9 +1,11 @@
-package de.hatoka.common.capi.dao;
+package de.hatoka.common.internal.dao;
 
 import java.util.Date;
 import java.util.UUID;
 
 import org.apache.commons.lang.math.RandomUtils;
+
+import de.hatoka.common.capi.dao.UUIDGenerator;
 
 public class UUIDGeneratorImpl implements UUIDGenerator
 {

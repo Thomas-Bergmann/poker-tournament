@@ -8,6 +8,7 @@ import java.util.Locale;
 import javax.inject.Inject;
 
 import org.apache.commons.lang.LocaleUtils;
+import org.slf4j.LoggerFactory;
 
 import de.hatoka.account.capi.business.AccountBORepository;
 import de.hatoka.account.capi.business.AccountBusinessFactory;
@@ -19,6 +20,7 @@ import de.hatoka.account.internal.app.models.SignUpVerifyMailModel;
 import de.hatoka.address.capi.business.AddressBO;
 import de.hatoka.address.capi.business.AddressBORepository;
 import de.hatoka.common.capi.app.xslt.Processor;
+import de.hatoka.common.capi.dao.EncryptionUtils;
 import de.hatoka.common.capi.dao.UUIDGenerator;
 import de.hatoka.common.capi.exceptions.IllegalObjectAccessException;
 import de.hatoka.common.capi.resource.LocalizationBundle;
@@ -44,6 +46,8 @@ public class UserBOImpl implements UserBO
     private UUIDGenerator uuidGenerator;
     @Inject
     private AccountMailConfiguration mailConfiguration;
+    @Inject
+    private EncryptionUtils encryptionUtils;
 
     private UserPO userPO;
 
@@ -209,7 +213,7 @@ public class UserBOImpl implements UserBO
             throw new IllegalStateException("User has email, registration not possible");
         }
         userPO.setEmail(email);
-        userPO.setPassword(password);
+        userPO.setPassword(encryptionUtils.sign(password));
         userPO.setActive(false);
         userPO.setEmailIsVerified(false);
     }
@@ -274,8 +278,17 @@ public class UserBOImpl implements UserBO
     @Override
     public boolean verifyPassword(String password)
     {
+        if(!userPO.isActive())
+        {
+            return false;
+        }
         String stored = userPO.getPassword();
-        // TODO do password encryption
-        return userPO.isActive() && stored.length() == password.length() && stored.equals(password);
+        if (stored == null)
+        {
+            LoggerFactory.getLogger(getClass()).warn("User with id '{}' had no password.", userPO.getId());
+            userPO.setPassword("no-password");
+            return false;
+        }
+        return stored.equals(encryptionUtils.sign(password));
     }
 }
