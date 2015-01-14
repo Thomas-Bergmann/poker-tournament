@@ -5,10 +5,19 @@ import java.util.Locale;
 
 import de.hatoka.address.capi.business.AddressBO;
 import de.hatoka.address.capi.business.AddressBORepository;
-import de.hatoka.common.capi.business.BusinessObject;
 
-public interface UserBO extends BusinessObject
+public interface UserBO
 {
+    /**
+     * @return the identifier (artificial key)
+     */
+    String getID();
+
+    /**
+     * Removes that object
+     */
+    void remove();
+
     /**
      * Activates the account, if the token matches.
      *

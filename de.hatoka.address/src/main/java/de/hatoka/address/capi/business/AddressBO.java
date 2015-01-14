@@ -1,10 +1,17 @@
 package de.hatoka.address.capi.business;
 
-import de.hatoka.common.capi.business.BusinessObject;
-
-
-public interface AddressBO extends BusinessObject
+public interface AddressBO
 {
+    /**
+     * @return the identifier (artificial key)
+     */
+    String getID();
+
+    /**
+     * Removes that object
+     */
+    void remove();
+
     public String getCarryOver();
     public String getCity();
     public String getCountryID();

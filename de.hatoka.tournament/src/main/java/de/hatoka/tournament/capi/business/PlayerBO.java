@@ -1,8 +1,23 @@
 package de.hatoka.tournament.capi.business;
 
-import de.hatoka.common.capi.business.BusinessObject;
-
-public interface PlayerBO extends BusinessObject
+/**
+ * A player can attend at multiple tournaments as competitor
+ */
+public interface PlayerBO
 {
-    String getName();
+    /**
+    *
+    * @return the identifier (artificial key)
+    */
+   String getID();
+
+   /**
+    * Removes that object
+    */
+   void remove();
+
+   /**
+    * @return name of player (semantic key)
+    */
+   String getName();
 }

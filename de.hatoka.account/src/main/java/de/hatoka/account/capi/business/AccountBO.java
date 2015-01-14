@@ -1,13 +1,22 @@
 package de.hatoka.account.capi.business;
 
 import de.hatoka.address.capi.business.AddressBO;
-import de.hatoka.common.capi.business.BusinessObject;
 
 /**
  * An account represents a billable customer of the system.
  */
-public interface AccountBO extends BusinessObject
+public interface AccountBO
 {
+    /**
+     * @return the identifier (artificial key)
+     */
+    String getID();
+
+    /**
+     * Removes that object
+     */
+    void remove();
+
     /**
      * Creates an address for the account
      *

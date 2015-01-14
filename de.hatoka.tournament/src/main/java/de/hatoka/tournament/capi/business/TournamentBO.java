@@ -3,19 +3,30 @@ package de.hatoka.tournament.capi.business;
 import java.util.Collection;
 import java.util.Date;
 
-import de.hatoka.common.capi.business.BusinessObject;
 import de.hatoka.common.capi.business.Money;
 
-public interface TournamentBO extends BusinessObject
+public interface TournamentBO
 {
     /**
+     * @return the identifier (artificial key)
+     */
+    String getID();
+
+    /**
+     * Removes that object
+     */
+    void remove();
+
+    /**
      * A player likes to attend to the tournament, the buy-in is not paid.
+     *
      * @param playerBO
      * @return
      */
     CompetitorBO assign(PlayerBO playerBO);
 
     Collection<CompetitorBO> getActiveCompetitors();
+
     /**
      * @return amount of money for all active players.
      */
