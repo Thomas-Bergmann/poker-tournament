@@ -212,18 +212,19 @@ project('de.hatoka.tournament')
         testCompile "org.apache.tomcat:tomcat-catalina:$tomcatVersion"
     }
 }
-// http://www.jroller.com/aalmiray/entry/gradle_glam_jacoco_coveralls
-task jacocoRootReport(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
+// based on http://www.jroller.com/aalmiray/entry/gradle_glam_jacoco_coveralls
+task jacocoReport(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
     dependsOn = subprojects.test
     sourceDirectories = files(subprojects.sourceSets.main.allSource.srcDirs)
     classDirectories =  files(subprojects.sourceSets.main.output)
     executionData = files(fileTree('.').include('**/*.exec').getFiles())
     reports {
-        html.enabled = true
-        xml.enabled = true
         csv.enabled = false
-        html.destination "${buildDir}/jacoco/html"
+        html.enabled = false
+        // html.destination "${buildDir}/reports/jacoco/html"
+        xml.enabled = true
+        xml.destination "${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
     }
 }
 
-defaultTasks 'test', 'war', 'jacocoRootReport'
+defaultTasks 'test', 'war', 'jacocoReport'
