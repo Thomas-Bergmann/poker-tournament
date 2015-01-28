@@ -1,9 +1,9 @@
 package de.hatoka.account.capi.config;
 
 /**
- * Account Mail Configuration
+ * Account Configuration
  */
-public interface AccountMailConfiguration
+public interface AccountConfiguration
 {
     /**
      * @return mail address, which is used as from address for account verification

@@ -9,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import de.hatoka.common.capi.dao.IdentifiableEntity;
 
@@ -65,16 +67,19 @@ public class MailPO implements Serializable, IdentifiableEntity
     /**
      * date application creates the mail
      */
+    @Temporal(TemporalType.DATE)
     private Date transportInitialized;
 
     /**
      * date application starts sending
      */
+    @Temporal(TemporalType.DATE)
     private Date transportBegin;
 
     /**
      * date application finish sending
      */
+    @Temporal(TemporalType.DATE)
     private Date transportEnd;
 
     /**

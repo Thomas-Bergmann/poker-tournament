@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 import de.hatoka.mail.capi.service.MailAddressType;
@@ -48,6 +50,7 @@ public class MailReceiverPO implements Serializable
     /**
      * last transport date
      */
+    @Temporal(TemporalType.DATE)
     private Date transportDate;
 
     /**

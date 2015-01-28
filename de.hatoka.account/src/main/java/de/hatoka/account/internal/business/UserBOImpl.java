@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import de.hatoka.account.capi.business.AccountBORepository;
 import de.hatoka.account.capi.business.AccountBusinessFactory;
 import de.hatoka.account.capi.business.UserBO;
-import de.hatoka.account.capi.config.AccountMailConfiguration;
+import de.hatoka.account.capi.config.AccountConfiguration;
 import de.hatoka.account.capi.dao.UserDao;
 import de.hatoka.account.capi.entities.UserPO;
 import de.hatoka.account.internal.app.models.SignUpVerifyMailModel;
@@ -45,7 +45,7 @@ public class UserBOImpl implements UserBO
     @Inject
     private UUIDGenerator uuidGenerator;
     @Inject
-    private AccountMailConfiguration mailConfiguration;
+    private AccountConfiguration accountConfiguration;
     @Inject
     private EncryptionUtils encryptionUtils;
 
@@ -93,7 +93,7 @@ public class UserBOImpl implements UserBO
         MailPO result = mailDao.createAndInsert(accountID);
         result.setSubject(getLocalizer().getText("signup.mail.subject", "Email Verification"));
         result.setContentHTML(writer.toString());
-        mailDao.createReceiver(result, MailAddressType.FROM, mailConfiguration.getFromAddressForAccountRegistration());
+        mailDao.createReceiver(result, MailAddressType.FROM, accountConfiguration.getFromAddressForAccountRegistration());
         mailDao.createReceiver(result, MailAddressType.TO, userPO.getEmail());
         return result;
     }

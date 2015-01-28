@@ -25,6 +25,11 @@ public class AccountBORepositoryTest
     @After
     public void cleanUp()
     {
+        // initialization failed
+        if (UNDER_TEST == null)
+        {
+            return;
+        }
         for(AccountBO account  : UNDER_TEST.getAccountBOs())
         {
             account.remove();

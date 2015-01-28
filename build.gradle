@@ -52,7 +52,7 @@ subprojects {
     apply plugin: 'osgi'
 
     group = 'de.hatoka.offlinepoker'
-    version = '0.1'
+    version = '0.1.9'
     status = 'development'
 
     sourceCompatibility = 1.8
@@ -71,21 +71,20 @@ subprojects {
         compile 'com.google.inject:guice:3.0'
         compile 'javax.inject:javax.inject:1'
         compile 'javax.validation:validation-api:1.1.0.Final'
-        compile "org.hibernate:hibernate-entitymanager:$hibernateVersion"
+        compile 'org.eclipse.persistence:eclipselink:2.5.2'
         compile 'javax.ejb:ejb-api:3.0'
         compile 'xalan:xalan:2.7.2'
 
-        runtime "org.hibernate:hibernate-entitymanager:$hibernateVersion"
-        runtime 'org.hibernate:hibernate-validator:5.1.2.Final'
         runtime "ch.qos.logback:logback-classic:$logbackVersion"
-
+        runtime "ch.qos.logback:logback-classic:$logbackVersion"
+		runtime 'org.postgresql:postgresql:9.3-1102-jdbc4'
+		compile 'org.apache.commons:commons-dbcp2:2.0.1'
         testCompile "junit:junit:$junitVersion"
         testCompile "org.mockito:mockito-all:$mockitoVersion"
         testCompile "org.apache.derby:derby:$apacheDerbyVersion"
         testCompile 'commons-io:commons-io:2.4'
         testCompile 'xmlunit:xmlunit:1.6'
 
-        testRuntime "org.hibernate:hibernate-entitymanager:$hibernateVersion"
         testRuntime "org.apache.derby:derby:$apacheDerbyVersion"
         testRuntime "ch.qos.logback:logback-classic:$logbackVersion"
     }
@@ -150,7 +149,14 @@ project('de.hatoka.account')
         compile "org.glassfish.jersey.containers:jersey-container-servlet:$jerseyVersion"
         provided "org.apache.tomcat:tomcat-catalina:$tomcatVersion"
         testCompile "org.apache.tomcat:tomcat-catalina:$tomcatVersion"
-        testRuntime "javax.mail:mail:$mailVersion"
+        runtime "javax.mail:mail:$mailVersion"
+    }
+    test {
+        systemProperty 'SMTP_HOST', mailSmtpHost
+        systemProperty 'SMTP_USER', mailSmtpUser
+        systemProperty 'SMTP_PASSWORD', mailSmtpPassword
+        // explicitly include or exclude tests
+        // exclude 'de/hatoka/mail/internal/service/**'
     }
 }
 
@@ -174,20 +180,17 @@ project('de.hatoka.mail')
 {
     dependencies {
         compile project(":de.hatoka.common")
-        provided "javax.mail:mail:$mailVersion"
+        compile "javax.mail:mail:$mailVersion"
         provided "org.apache.tomcat:tomcat-catalina:$tomcatVersion"
         testCompile "org.apache.tomcat:tomcat-catalina:$tomcatVersion"
-        testRuntime "javax.mail:mail:$mailVersion"
     }
     test {
         // https://javamail.java.net/nonav/docs/api/com/sun/mail/smtp/package-summary.html
-        // systemProperty 'mail.smtp.host', mailSmtpHost
-        // systemProperty 'mail.smtp.port', mailSmtpPort
-        // systemProperty 'mail.smtp.user', mailSmtpUser
-        // systemProperty 'mail.smtp.password', mailSmtpPassword
-        // systemProperty 'mail.smtp.auth', 'true'
+        systemProperty 'SMTP_HOST', mailSmtpHost
+        systemProperty 'SMTP_USER', mailSmtpUser
+        systemProperty 'SMTP_PASSWORD', mailSmtpPassword
         // explicitly include or exclude tests
-        exclude 'de/hatoka/mail/internal/service/**'
+        // exclude 'de/hatoka/mail/internal/service/**'
     }
 }
 

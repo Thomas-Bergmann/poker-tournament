@@ -4,14 +4,14 @@ import com.google.inject.Binder;
 import com.google.inject.Module;
 
 import de.hatoka.mail.capi.config.SmtpConfiguration;
-import de.hatoka.mail.internal.service.SmtpConfigurationJndiImpl;
+import de.hatoka.mail.internal.service.SmtpConfigurationSystemEnvImpl;
 
 public class MailServiceConfigurationModule implements Module
 {
     @Override
     public void configure(Binder binder)
     {
-        binder.bind(SmtpConfiguration.class).to(SmtpConfigurationJndiImpl.class).asEagerSingleton();
+        binder.bind(SmtpConfiguration.class).to(SmtpConfigurationSystemEnvImpl.class).asEagerSingleton();
     }
 
 }
