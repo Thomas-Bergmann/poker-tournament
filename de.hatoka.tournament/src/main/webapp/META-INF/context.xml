@@ -1,0 +1,8 @@
+<Context>
+    <Resource name="jdbc/TournamentDS" auth="Container"
+        type="javax.sql.DataSource" driverClassName="org.postgresql.Driver"
+        url="${JDBC_CONNECTION_STRING}" username="${JDBC_USER}" password="${JDBC_PASSWORD}"
+        maxActive="20" maxIdle="10" maxWait="-1"
+        factory="org.apache.commons.dbcp2.BasicDataSourceFactory"
+    />
+</Context>

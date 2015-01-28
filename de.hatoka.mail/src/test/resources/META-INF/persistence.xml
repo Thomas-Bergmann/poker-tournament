@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence xmlns="http://java.sun.com/xml/ns/persistence"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
-	http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
-	version="2.0">
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_1.xsd"
+	version="2.1">
 	<persistence-unit name="mailTestPU" transaction-type="RESOURCE_LOCAL">
-		<provider>org.hibernate.ejb.HibernatePersistence</provider>
-		<!-- the JNDI data source -->
-		<non-jta-data-source>java:comp/env/jdbc/mailTestDS</non-jta-data-source>
-		<class>de.hatoka.mail.capi.entities.MailPO</class>
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<!-- Enables auto discovery of persistent classes, -->
+		<!-- otherwise they must be listed using <class> -->
+		<exclude-unlisted-classes>false</exclude-unlisted-classes>
+        <class>de.hatoka.mail.capi.entities.MailPO</class>
         <class>de.hatoka.mail.capi.entities.MailAttachmentPO</class>
         <class>de.hatoka.mail.capi.entities.MailReceiverPO</class>
         <class>de.hatoka.mail.capi.entities.MailResultReceiverPO</class>
 		<properties>
-			<property name="hibernate.show_sql" value="true" />
-			<property name="hibernate.format_sql" value="true" />
-			<property name="hibernate.dialect" value="org.hibernate.dialect.DerbyDialect" />
-			<property name="hibernate.hbm2ddl.auto" value="update" />
-			<property name="hibernate.archive.autodetection" value="class"/>
+			<property name="javax.persistence.jdbc.url" value="jdbc:derby:build/testdb;create=true" />
+			<property name="javax.persistence.schema-generation.database.action" value="drop-and-create" />
+			<property name="javax.persistence.schema-generation.create-source" value="metadata" />
+			<property name="javax.persistence.schema-generation.drop-source" value="metadata" />
 		</properties>
 	</persistence-unit>
 </persistence>

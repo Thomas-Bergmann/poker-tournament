@@ -13,6 +13,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 import de.hatoka.common.capi.dao.IdentifiableEntity;
@@ -31,6 +33,7 @@ public class TournamentPO implements Serializable, IdentifiableEntity
     @NotNull
     private String name;
     @NotNull
+    @Temporal(TemporalType.DATE)
     private Date date;
 
     @Embedded

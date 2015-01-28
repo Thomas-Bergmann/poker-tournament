@@ -19,6 +19,7 @@ public class SmtpConfigurationSystemEnvImpl implements SmtpConfiguration
     {
         Properties prop = System.getProperties();
         prop.setProperty("mail.smtp.host", prop.getProperty(SMTP_HOST));
+        prop.setProperty("mail.smtp.auth", "true");
         Authenticator auth = null;
         if (prop.getProperty(SMTP_USER) != null)
         {
