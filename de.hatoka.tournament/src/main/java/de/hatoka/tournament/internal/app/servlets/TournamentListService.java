@@ -15,7 +15,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import de.hatoka.common.capi.app.servlet.AbstractService;
-import de.hatoka.common.capi.dao.EncryptionUtils;
 import de.hatoka.tournament.capi.config.TournamentConfiguration;
 import de.hatoka.tournament.internal.app.actions.TournamentListAction;
 import de.hatoka.tournament.internal.app.models.TournamentListModel;
@@ -28,9 +27,11 @@ public class TournamentListService extends AbstractService
     @Context
     private UriInfo info;
 
+    private final AccountService accountService;
     public TournamentListService()
     {
         super(RESOURCE_PREFIX);
+        accountService = new AccountService(this);
     }
 
     @POST
@@ -48,10 +49,10 @@ public class TournamentListService extends AbstractService
     @Path("/create")
     public Response create(@FormParam("name") String name, @FormParam("buyIn") String buyIn)
     {
-        String accountRef = getAccountRef();
+        String accountRef = accountService.getAccountRef();
         if (accountRef == null)
         {
-            return redirectLogin();
+            return accountService.redirectLogin();
         }
         TournamentListAction action = getAction(accountRef);
         runInTransaction(new Runnable()
@@ -69,10 +70,10 @@ public class TournamentListService extends AbstractService
     @Path("/delete")
     public Response delete(@FormParam("tournamentID") final List<String> identifiers)
     {
-        String accountRef = getAccountRef();
+        String accountRef = accountService.getAccountRef();
         if (accountRef == null)
         {
-            return redirectLogin();
+            return accountService.redirectLogin();
         }
         TournamentListAction action = getAction(accountRef);
         runInTransaction(new Runnable()
@@ -84,24 +85,6 @@ public class TournamentListService extends AbstractService
             }
         });
         return redirectList();
-    }
-
-    private String getAccountRef()
-    {
-        String accountID = getCookieValue(CookieConstants.ACCOUNT_ID_COOKIE_NAME);
-        String accountSign = getCookieValue(CookieConstants.ACCOUNT_SIGN_COOKIE_NAME);
-        return getAccountRef(accountID, accountSign);
-    }
-
-    private String getAccountRef(String accountID, String accountSign)
-    {
-        String secret = getInstance(TournamentConfiguration.class).getSecret();
-        String expected = getInstance(EncryptionUtils.class).sign(secret, accountID);
-        if (expected.equals(accountSign))
-        {
-            return accountID;
-        }
-        return null;
     }
 
     private TournamentListAction getAction(String accountRef)
@@ -120,10 +103,10 @@ public class TournamentListService extends AbstractService
     @Path("/list.html")
     public Response list()
     {
-        String accountRef = getAccountRef();
+        String accountRef = accountService.getAccountRef();
         if (accountRef == null)
         {
-            return redirectLogin();
+            return accountService.redirectLogin();
         }
         final TournamentListModel model = getAction(accountRef).getListModel(
                         getUriBuilder(TournamentPlayerService.class, "players"));
@@ -141,23 +124,17 @@ public class TournamentListService extends AbstractService
                             info.getBaseUriBuilder().uri(getInstance(TournamentConfiguration.class).getLoginURI())
                                             .queryParam("origin", info.getRequestUri()).build()).build();
         }
-        if (getAccountRef(accountID, accountSign) == null)
+        if (accountService.getAccountRef(accountID, accountSign) == null)
         {
-            return redirectLogin();
+            return accountService.redirectLogin();
         }
-        NewCookie accountIDCookie = createCookie(CookieConstants.ACCOUNT_ID_COOKIE_NAME, accountID, "hatoka account cookie");
-        NewCookie accountSignCookie = createCookie(CookieConstants.ACCOUNT_SIGN_COOKIE_NAME, accountSign, "hatoka account cookie");
-        return redirectList(accountIDCookie, accountSignCookie);
+        List<NewCookie> cookies = accountService.getCookies(accountID, accountSign);
+        return redirectList(cookies.toArray(new NewCookie[cookies.size()]));
     }
+
 
     private Response redirectList(NewCookie... cookies)
     {
         return Response.seeOther(getUriBuilder(TournamentListService.class, "list").build()).cookie(cookies).build();
     }
-
-    private Response redirectLogin()
-    {
-        return Response.seeOther(getUriBuilder(TournamentListService.class, "register").build()).build();
-    }
-
 }

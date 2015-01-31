@@ -12,7 +12,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import de.hatoka.common.capi.app.servlet.AbstractService;
-import de.hatoka.tournament.capi.config.TournamentConfiguration;
 import de.hatoka.tournament.internal.app.actions.TournamentAction;
 import de.hatoka.tournament.internal.app.models.TournamentPlayerListModel;
 
@@ -26,9 +25,12 @@ public class TournamentPlayerService extends AbstractService
     @Context
     private UriInfo info;
 
+    private final AccountService accountService;
+
     public TournamentPlayerService()
     {
         super(RESOURCE_PREFIX);
+        accountService = new AccountService(this);
     }
 
     @POST
@@ -55,10 +57,10 @@ public class TournamentPlayerService extends AbstractService
     @Path("/assignPlayer")
     public Response assignPlayer(@FormParam("playerID") String playerID)
     {
-        String accountRef = getAccountRef();
+        String accountRef = accountService.getAccountRef();
         if (accountRef == null)
         {
-            return redirectLogin();
+            return accountService.redirectLogin();
         }
         TournamentAction action = getAction(accountRef);
         runInTransaction(new Runnable()
@@ -76,10 +78,10 @@ public class TournamentPlayerService extends AbstractService
     @Path("/createPlayer")
     public Response createPlayer(@FormParam("name") String name)
     {
-        String accountRef = getAccountRef();
+        String accountRef = accountService.getAccountRef();
         if (accountRef == null)
         {
-            return redirectLogin();
+            return accountService.redirectLogin();
         }
         TournamentAction action = getAction(accountRef);
         runInTransaction(new Runnable()
@@ -93,11 +95,6 @@ public class TournamentPlayerService extends AbstractService
         return redirectPlayers();
     }
 
-    private String getAccountRef()
-    {
-        return getCookieValue("hatoka_account");
-    }
-
     private TournamentAction getAction(String accountRef)
     {
         TournamentAction tournamentAction = new TournamentAction(accountRef);
@@ -109,10 +106,10 @@ public class TournamentPlayerService extends AbstractService
     @Path("/players.html")
     public Response players()
     {
-        String accountRef = getAccountRef();
+        String accountRef = accountService.getAccountRef();
         if (accountRef == null)
         {
-            return redirectLogin();
+            return accountService.redirectLogin();
         }
         final TournamentPlayerListModel model = getAction(accountRef).getPlayerListModel(tournamentID,
                         getUriBuilder(TournamentListService.class, "list").build(),
@@ -124,10 +121,10 @@ public class TournamentPlayerService extends AbstractService
     @Path("/rebuyPlayers")
     public Response rebuyPlayers(@FormParam("competitorID") List<String> identifiers, @FormParam("rebuy") String rebuy)
     {
-        String accountRef = getAccountRef();
+        String accountRef = accountService.getAccountRef();
         if (accountRef == null)
         {
-            return redirectLogin();
+            return accountService.redirectLogin();
         }
         TournamentAction action = getAction(accountRef);
         runInTransaction(new Runnable()
@@ -141,13 +138,6 @@ public class TournamentPlayerService extends AbstractService
         return redirectPlayers();
     }
 
-    private Response redirectLogin()
-    {
-        return Response.seeOther(
-                        info.getBaseUriBuilder().uri(getInstance(TournamentConfiguration.class).getLoginURI())
-                                        .queryParam("origin", info.getRequestUri()).build()).build();
-    }
-
     private Response redirectPlayers()
     {
         return Response.seeOther(getUriBuilder(TournamentPlayerService.class, "players").build(tournamentID)).build();
@@ -157,10 +147,10 @@ public class TournamentPlayerService extends AbstractService
     @Path("/seatOpenPlayers")
     public Response seatOpenPlayers(@FormParam("competitorID") List<String> identifiers, @FormParam("amount") String amount)
     {
-        String accountRef = getAccountRef();
+        String accountRef = accountService.getAccountRef();
         if (accountRef == null)
         {
-            return redirectLogin();
+            return accountService.redirectLogin();
         }
         TournamentAction action = getAction(accountRef);
         runInTransaction(new Runnable()
@@ -179,10 +169,10 @@ public class TournamentPlayerService extends AbstractService
     @Path("/unassignPlayers")
     public Response unassignPlayers(@FormParam("competitorID") List<String> identifiers)
     {
-        String accountRef = getAccountRef();
+        String accountRef = accountService.getAccountRef();
         if (accountRef == null)
         {
-            return redirectLogin();
+            return accountService.redirectLogin();
         }
         TournamentAction action = getAction(accountRef);
         runInTransaction(new Runnable()

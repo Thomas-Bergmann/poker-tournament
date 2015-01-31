@@ -49,13 +49,13 @@ public class AbstractService
         this.resourcePrefix = resourcePrefix;
     }
 
-    protected NewCookie createCookie(String key, String value, String comment)
+    public NewCookie createCookie(String key, String value, String comment)
     {
         return new NewCookie(key, value, "/", null, NewCookie.DEFAULT_VERSION, comment, NewCookie.DEFAULT_MAX_AGE,
                         null, false, true);
     }
 
-    protected String getCookieValue(String key)
+    public String getCookieValue(String key)
     {
         Cookie cookie = headers.getCookies().get(key);
         if (cookie == null)
@@ -76,7 +76,7 @@ public class AbstractService
         return injector;
     }
 
-    protected <T> T getInstance(Class<T> classOfT)
+    public <T> T getInstance(Class<T> classOfT)
     {
         return getInjector().getInstance(classOfT);
     }
@@ -91,7 +91,7 @@ public class AbstractService
         return getInstance(TransactionProvider.class).get();
     }
 
-    protected UriBuilder getUriBuilder(Class<?> resource, String methodName)
+    public UriBuilder getUriBuilder(Class<?> resource, String methodName)
     {
         return info.getBaseUriBuilder().path(resource).path(resource, methodName);
     }
