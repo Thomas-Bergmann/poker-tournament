@@ -1,0 +1,20 @@
+@ECHO OFF
+set SMTP_HOST=mailhost
+set SMTP_USER=mailuser
+set SMTP_PASSWORD=password
+set JDBC_CONNECTION_STRING=jdbc:postgresql://127.0.0.1:9432/accountdb
+set JDBC_USER=account
+set JDBC_PASSWORD=password
+set HATOKA_LOGIN_URI=http://localhost:8090/de.hatoka.account-0.1/account/login/index.html
+set ACCOUNT_FROM_EMAIL=offlinepoker@hatoka.de
+set ACCOUNT_SECRET=secret
+
+set JPDA_OPTS=-agentlib:jdwp=transport=dt_socket,address=6667,server=y,suspend=n
+REM common configuration
+set JAVA_OPTS=%JAVA_OPTS% -DJDBC_CONNECTION_STRING=%JDBC_CONNECTION_STRING% -DJDBC_USER=%JDBC_USER% -DJDBC_PASSWORD=%JDBC_PASSWORD%
+REM Account configuration
+set JAVA_OPTS=%JAVA_OPTS% -DSMTP_HOST=%SMTP_HOST% -DSMTP_USER=%SMTP_USER% -DSMTP_PASSWORD=%SMTP_PASSWORD% -DACCOUNT_FROM_EMAIL=%ACCOUNT_FROM_EMAIL%
+REM Tournament configuration
+set JAVA_OPTS=%JAVA_OPTS% -DACCOUNT_LOGIN=%HATOKA_LOGIN_URI% -DACCOUNT_SECRET=%ACCOUNT_SECRET%
+ECHO GOTO BROWSER http://localhost:8090/de.hatoka.account-0.1/account/login/index.html
+ECHO catalina.bat jpda run

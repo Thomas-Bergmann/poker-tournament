@@ -1,6 +1,6 @@
 Offline Poker Tournament and Cash Game Organizer
 
-![Travis CI](https://travis-ci.org/OfflinePoker/Tournament.svg?branch=master) ![Coverall.IO](https://coveralls.io/repos/OfflinePoker/Tournament/badge.png)](https://coveralls.io/r/OfflinePoker/Tournament)
+![Travis CI](https://travis-ci.org/OfflinePoker/Tournament.svg?branch=master) ![Coverall.IO](https://coveralls.io/repos/OfflinePoker/Tournament/badge.png)
 
 # Introduction
 
@@ -68,17 +68,11 @@ Before you submit code, please
 * use services.bat to register as service (optional)
     * use SERVICE_NAME with http port in name
     * define JRE_HOME at beginning set JRE_HOME=d:\jdk1.7.0_45\jre
-* copy postgresql jdbc driver from (http://jdbc.postgresql.org/download.html) to lib
-    d:\http8090\lib\postgresql-9.3-1102.jdbc4.jar
-* add datasources to context.xml (d:\http8090\conf\context.xml). Each project contains an example context.xml for detailed information
-    * database accounts
-    * mail server
-* add tomcat users
-    d:\http8090\conf\tomcat-users.xml
+* set environment of applications
+    * see example setenv.bat (can be located 'bin' of tomcat)
 * copy application war file from build directory
-    d:\http8090\webapps\de.hatoka.account-0.1.war
-    d:\http8090\webapps\de.hatoka.tournament-0.1.war
-* copy de.hatoka.jndi-0.1.jar to tomcat/lib directory
+    d:\http8090\webapps\de.hatoka.account-x.x.x.war
+    d:\http8090\webapps\de.hatoka.tournament-x.x.x.war
 
 <pre>
 $> set JPDA_OPTS=-agentlib:jdwp=transport=dt_socket,address=6667,server=y,suspend=n
