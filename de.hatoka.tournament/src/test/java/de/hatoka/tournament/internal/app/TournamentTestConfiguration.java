@@ -22,4 +22,10 @@ public class TournamentTestConfiguration implements TournamentConfiguration
         return URI.create("http://localhost:8090/test/account/login/index.html");
     }
 
+    @Override
+    public String getSecret()
+    {
+        return "secret";
+    }
+
 }
