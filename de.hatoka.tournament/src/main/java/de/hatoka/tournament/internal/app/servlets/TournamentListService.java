@@ -3,15 +3,19 @@ package de.hatoka.tournament.internal.app.servlets;
 import java.util.Date;
 import java.util.List;
 
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import de.hatoka.common.capi.app.servlet.AbstractService;
+import de.hatoka.common.capi.dao.EncryptionUtils;
 import de.hatoka.tournament.capi.config.TournamentConfiguration;
 import de.hatoka.tournament.internal.app.actions.TournamentListAction;
 import de.hatoka.tournament.internal.app.models.TournamentListModel;
@@ -84,7 +88,20 @@ public class TournamentListService extends AbstractService
 
     private String getAccountRef()
     {
-        return getCookieValue("hatoka_account");
+        String accountID = getCookieValue(CookieConstants.ACCOUNT_ID_COOKIE_NAME);
+        String accountSign = getCookieValue(CookieConstants.ACCOUNT_SIGN_COOKIE_NAME);
+        return getAccountRef(accountID, accountSign);
+    }
+
+    private String getAccountRef(String accountID, String accountSign)
+    {
+        String secret = getInstance(TournamentConfiguration.class).getSecret();
+        String expected = getInstance(EncryptionUtils.class).sign(secret, accountID);
+        if (expected.equals(accountSign))
+        {
+            return accountID;
+        }
+        return null;
     }
 
     private TournamentListAction getAction(String accountRef)
@@ -108,20 +125,39 @@ public class TournamentListService extends AbstractService
         {
             return redirectLogin();
         }
-        final TournamentListModel model = getAction(accountRef).getListModel(getUriBuilder(TournamentPlayerService.class, "players"));
+        final TournamentListModel model = getAction(accountRef).getListModel(
+                        getUriBuilder(TournamentPlayerService.class, "players"));
         return renderStyleSheet(model, "tournament_list.xslt", "tournament");
     }
 
-    private Response redirectList()
+    @GET
+    @Path("/register.html")
+    public Response register( @DefaultValue("") @QueryParam("accountID")  final String accountID,
+                              @DefaultValue("") @QueryParam("accountSign") final String accountSign)
     {
-        return Response.seeOther(getUriBuilder(TournamentListService.class, "list").build()).build();
+        if (accountID == null || accountID.isEmpty())
+        {
+            return Response.seeOther(
+                            info.getBaseUriBuilder().uri(getInstance(TournamentConfiguration.class).getLoginURI())
+                                            .queryParam("origin", info.getRequestUri()).build()).build();
+        }
+        if (getAccountRef(accountID, accountSign) == null)
+        {
+            return redirectLogin();
+        }
+        NewCookie accountIDCookie = createCookie(CookieConstants.ACCOUNT_ID_COOKIE_NAME, accountID, "hatoka account cookie");
+        NewCookie accountSignCookie = createCookie(CookieConstants.ACCOUNT_SIGN_COOKIE_NAME, accountSign, "hatoka account cookie");
+        return redirectList(accountIDCookie, accountSignCookie);
+    }
+
+    private Response redirectList(NewCookie... cookies)
+    {
+        return Response.seeOther(getUriBuilder(TournamentListService.class, "list").build()).cookie(cookies).build();
     }
 
     private Response redirectLogin()
     {
-        return Response.seeOther(
-                        info.getBaseUriBuilder().uri(getInstance(TournamentConfiguration.class).getLoginURI())
-                                        .queryParam("origin", info.getRequestUri()).build()).build();
+        return Response.seeOther(getUriBuilder(TournamentListService.class, "register").build()).build();
     }
 
 }

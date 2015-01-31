@@ -10,15 +10,18 @@ import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 
 import de.hatoka.account.capi.business.AccountBusinessFactory;
 import de.hatoka.account.capi.business.UserBO;
+import de.hatoka.account.capi.config.AccountConfiguration;
 import de.hatoka.account.internal.app.actions.LoginAction;
 import de.hatoka.account.internal.app.actions.RegisterAccountAction;
 import de.hatoka.account.internal.app.forms.LoginForm;
 import de.hatoka.account.internal.app.forms.SignUpForm;
 import de.hatoka.account.internal.app.models.LoginPageModel;
 import de.hatoka.common.capi.app.servlet.AbstractService;
+import de.hatoka.common.capi.dao.EncryptionUtils;
 
 @Path("/login")
 public class LoginService extends AbstractService
@@ -51,12 +54,20 @@ public class LoginService extends AbstractService
                                 "hatoka account cookie");
                 if (origin != null)
                 {
-                    return Response.seeOther(URI.create(origin)).cookie(userCookie, accountCookie).build();
+                    EncryptionUtils utils = getInstance(EncryptionUtils.class);
+                    URI uri = UriBuilder.fromUri(URI.create(origin)).queryParam("accountID", form.getAccountID())
+                                    .queryParam("accountSign", utils.sign(getSecret(), form.getAccountID())).build();
+                    return Response.seeOther(uri).cookie(userCookie, accountCookie).build();
                 }
                 return render(form, null, userCookie, accountCookie);
             }
         }
         return render(form, null);
+    }
+
+    private String getSecret()
+    {
+        return getInstance(AccountConfiguration.class).getSecret();
     }
 
     @GET
@@ -87,7 +98,8 @@ public class LoginService extends AbstractService
         form.setName(name);
         if (form.validate())
         {
-            RegisterAccountAction action = new RegisterAccountAction(getUriBuilder(LoginService.class, "verifySignUp").build());
+            RegisterAccountAction action = new RegisterAccountAction(getUriBuilder(LoginService.class, "verifySignUp")
+                            .build());
             injectMembers(action);
             runInTransaction(new Runnable()
             {
@@ -114,7 +126,8 @@ public class LoginService extends AbstractService
                 @Override
                 public Boolean call()
                 {
-                    UserBO userBO = getInstance(AccountBusinessFactory.class).getUserBORepository().getUserBOByLogin(email);
+                    UserBO userBO = getInstance(AccountBusinessFactory.class).getUserBORepository().getUserBOByLogin(
+                                    email);
                     return userBO.applySignInToken(token);
                 }
             });

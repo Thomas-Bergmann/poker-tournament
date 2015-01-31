@@ -33,6 +33,14 @@ public class ClientConfigurationBeanFactory implements ObjectFactory
             {
                 bean.setLoginURI(URI.create(value));
             }
+            if (name.equals("secret"))
+            {
+                bean.setSecret(value);
+            }
+            if (name.equals("dateFormat"))
+            {
+                bean.setDateFormat(value);
+            }
         }
 
         // Return the customized instance

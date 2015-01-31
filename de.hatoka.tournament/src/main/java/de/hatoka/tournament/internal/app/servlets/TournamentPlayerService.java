@@ -122,7 +122,7 @@ public class TournamentPlayerService extends AbstractService
 
     @POST
     @Path("/rebuyPlayers")
-    private Response rebuyPlayers(List<String> identifiers, String rebuy)
+    public Response rebuyPlayers(@FormParam("competitorID") List<String> identifiers, @FormParam("rebuy") String rebuy)
     {
         String accountRef = getAccountRef();
         if (accountRef == null)
@@ -155,7 +155,7 @@ public class TournamentPlayerService extends AbstractService
 
     @POST
     @Path("/seatOpenPlayers")
-    private Response seatOpenPlayers(List<String> identifiers, String amount)
+    public Response seatOpenPlayers(@FormParam("competitorID") List<String> identifiers, @FormParam("amount") String amount)
     {
         String accountRef = getAccountRef();
         if (accountRef == null)
@@ -177,7 +177,7 @@ public class TournamentPlayerService extends AbstractService
 
     @POST
     @Path("/unassignPlayers")
-    public Response unassignPlayers(List<String> identifiers)
+    public Response unassignPlayers(@FormParam("competitorID") List<String> identifiers)
     {
         String accountRef = getAccountRef();
         if (accountRef == null)

@@ -32,4 +32,10 @@ public class EncryptionUtilsImpl implements EncryptionUtils
         }
         return null;
     }
+
+    @Override
+    public String sign(String secret, String text)
+    {
+        return sign(secret + text);
+    }
 }

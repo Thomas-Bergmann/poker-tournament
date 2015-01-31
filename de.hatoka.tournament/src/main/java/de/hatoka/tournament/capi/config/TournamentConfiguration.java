@@ -5,5 +5,8 @@ import java.net.URI;
 public interface TournamentConfiguration
 {
     String getDateFormat();
+
     URI getLoginURI();
+
+    String getSecret();
 }

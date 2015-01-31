@@ -6,7 +6,7 @@ import com.google.inject.Module;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
 import de.hatoka.tournament.capi.config.TournamentConfiguration;
 import de.hatoka.tournament.internal.business.TournamentBusinessFactoryImpl;
-import de.hatoka.tournament.internal.config.TournamentConfigurationJNDI;
+import de.hatoka.tournament.internal.config.TournamentConfigurationSystemEnvImpl;
 
 public class TournamentBusinessModule implements Module
 {
@@ -15,6 +15,6 @@ public class TournamentBusinessModule implements Module
     public void configure(Binder binder)
     {
         binder.bind(TournamentBusinessFactory.class).to(TournamentBusinessFactoryImpl.class).asEagerSingleton();
-        binder.bind(TournamentConfiguration.class).to(TournamentConfigurationJNDI.class).asEagerSingleton();
+        binder.bind(TournamentConfiguration.class).to(TournamentConfigurationSystemEnvImpl.class).asEagerSingleton();
     }
 }

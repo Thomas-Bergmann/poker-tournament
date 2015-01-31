@@ -18,22 +18,37 @@ public class TournamentConfigurationJNDI implements TournamentConfiguration
     @Override
     public String getDateFormat()
     {
-        return "dd.mm.yyyy hh:MM";
+        ClientConfigurationBean bean = getConfigurationBean();
+        return bean.getDateFormat() == null ? "dd.mm.yyyy hh:MM" : bean.getDateFormat();
     }
 
     @Override
     public URI getLoginURI()
     {
+        ClientConfigurationBean bean = getConfigurationBean();
+        return bean.getLoginURI();
+    }
+
+    private ClientConfigurationBean getConfigurationBean()
+    {
         try
         {
             Context initCtx = new InitialContext();
             Context envCtx = (Context)initCtx.lookup("java:comp/env");
-            ClientConfigurationBean bean = (ClientConfigurationBean) envCtx.lookup("hatoka/ClientConfigurationBeanFactory");
-            return bean.getLoginURI();
+            ClientConfigurationBean bean = (ClientConfigurationBean)envCtx
+                            .lookup("hatoka/ClientConfigurationBeanFactory");
+            return bean;
         }
         catch(NamingException e)
         {
             throw new IllegalConfigurationException("Can't get client configuration for account application.", e);
         }
+    }
+
+    @Override
+    public String getSecret()
+    {
+        ClientConfigurationBean bean = getConfigurationBean();
+        return bean.getSecret();
     }
 }
