@@ -23,7 +23,11 @@ public class CompetitorBOImpl implements CompetitorBO
     @Override
     public void buyin(Money money)
     {
-        competitorPO.setMoneyInPlay(money.toMoneyPO());
+        if (isActive())
+        {
+            throw new IllegalStateException("Buyin not allowed at active competitors");
+        }
+        competitorPO.setMoneyInPlay(getInPlay().add(money).toMoneyPO());
         competitorPO.setActive(true);
     }
 
@@ -66,6 +70,10 @@ public class CompetitorBOImpl implements CompetitorBO
     @Override
     public void seatOpen(Money restAmount)
     {
+        if (!isActive())
+        {
+            throw new IllegalStateException("seatOpen not allowed at inactive competitors");
+        }
         if (restAmount != null)
         {
             // pay-back rest amount
@@ -79,8 +87,11 @@ public class CompetitorBOImpl implements CompetitorBO
     @Override
     public void rebuy(Money money)
     {
+        if (!isActive())
+        {
+            throw new IllegalStateException("Rebuy not allowed at inactive competitors");
+        }
         competitorPO.setMoneyInPlay(Money.getInstance(competitorPO.getMoneyInPlay()).add(money).toMoneyPO());
-        competitorPO.setActive(true);
     }
 
     @Override

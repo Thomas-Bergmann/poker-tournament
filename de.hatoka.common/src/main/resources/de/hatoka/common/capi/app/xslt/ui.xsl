@@ -52,4 +52,11 @@
     <xsl:param name="date" />
     <xsl:value-of select="hatoka:formatDate($localizer, $date)" />
   </xsl:template>
+  <xsl:template name="formatMoney">
+    <xsl:param name="money" />
+    <xsl:if test="$money = '0USD'">-</xsl:if>
+    <xsl:if test="$money != '0USD'">
+        <xsl:value-of select="$money" />
+    </xsl:if>
+  </xsl:template>
 </xsl:stylesheet>

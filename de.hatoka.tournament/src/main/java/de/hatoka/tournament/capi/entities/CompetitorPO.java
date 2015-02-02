@@ -40,7 +40,7 @@ public class CompetitorPO implements Serializable, IdentifiableEntity
     /**
      * The player is in play
      */
-    private boolean isActive = true;
+    private boolean isActive = false;
 
     /**
      * The player is out and was placed at position

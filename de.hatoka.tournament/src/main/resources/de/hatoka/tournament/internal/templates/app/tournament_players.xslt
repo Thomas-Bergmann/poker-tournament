@@ -81,8 +81,12 @@
                   <xsl:if test="active = 'true'">active</xsl:if>
                   <xsl:if test="active != 'true'">inactive</xsl:if>
                 </td>
-                <td><xsl:value-of select="inPlay" /></td>
-                <td><xsl:value-of select="result" /></td>
+                <td><xsl:call-template name="formatMoney">
+                    <xsl:with-param name="money"><xsl:value-of select="inPlay" /></xsl:with-param>
+                </xsl:call-template></td>
+                <td><xsl:call-template name="formatMoney">
+                    <xsl:with-param name="money"><xsl:value-of select="result" /></xsl:with-param>
+                </xsl:call-template></td>
               </tr>
             </xsl:for-each>
           </table>

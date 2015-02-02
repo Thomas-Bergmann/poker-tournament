@@ -84,7 +84,14 @@ public class TournamentAction
         {
             if (identifiers.contains(competitorBO.getID()))
             {
-                competitorBO.rebuy(rebuy);
+                if (competitorBO.isActive())
+                {
+                    competitorBO.rebuy(rebuy);
+                }
+                else
+                {
+                    competitorBO.buyin(rebuy);
+                }
             }
         }
     }
