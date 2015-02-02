@@ -151,13 +151,6 @@ project('de.hatoka.account')
         testCompile "org.apache.tomcat:tomcat-catalina:$tomcatVersion"
         runtime "javax.mail:mail:$mailVersion"
     }
-    test {
-        // systemProperty 'SMTP_HOST', mailSmtpHost
-        // systemProperty 'SMTP_USER', mailSmtpUser
-        // systemProperty 'SMTP_PASSWORD', mailSmtpPassword
-        // explicitly include or exclude tests
-        // exclude 'de/hatoka/mail/internal/service/**'
-    }
 }
 
 project('de.hatoka.address')
@@ -186,9 +179,9 @@ project('de.hatoka.mail')
     }
     test {
         // https://javamail.java.net/nonav/docs/api/com/sun/mail/smtp/package-summary.html
-        systemProperty 'SMTP_HOST', mailSmtpHost
-        systemProperty 'SMTP_USER', mailSmtpUser
-        systemProperty 'SMTP_PASSWORD', mailSmtpPassword
+        // systemProperty 'SMTP_HOST', mailSmtpHost
+        // systemProperty 'SMTP_USER', mailSmtpUser
+        // systemProperty 'SMTP_PASSWORD', mailSmtpPassword
         // explicitly include or exclude tests
         // exclude 'de/hatoka/mail/internal/service/**'
     }
