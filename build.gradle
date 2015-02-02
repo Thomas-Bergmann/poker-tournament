@@ -183,7 +183,7 @@ project('de.hatoka.mail')
         // systemProperty 'SMTP_USER', mailSmtpUser
         // systemProperty 'SMTP_PASSWORD', mailSmtpPassword
         // explicitly include or exclude tests
-        // exclude 'de/hatoka/mail/internal/service/**'
+        exclude 'de/hatoka/mail/internal/service/**'
     }
 }
 
