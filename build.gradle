@@ -152,9 +152,9 @@ project('de.hatoka.account')
         runtime "javax.mail:mail:$mailVersion"
     }
     test {
-        systemProperty 'SMTP_HOST', mailSmtpHost
-        systemProperty 'SMTP_USER', mailSmtpUser
-        systemProperty 'SMTP_PASSWORD', mailSmtpPassword
+        // systemProperty 'SMTP_HOST', mailSmtpHost
+        // systemProperty 'SMTP_USER', mailSmtpUser
+        // systemProperty 'SMTP_PASSWORD', mailSmtpPassword
         // explicitly include or exclude tests
         // exclude 'de/hatoka/mail/internal/service/**'
     }
