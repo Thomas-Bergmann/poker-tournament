@@ -18,7 +18,7 @@ public class LoginAction
     public void accept(LoginForm form)
     {
         UserBORepository repository = accountBusinessFactory.getUserBORepository();
-        UserBO userBO = repository.getUserBOByLogin(form.getLogin());
+        UserBO userBO = repository.getUserBOByLogin(form.getEmail());
         if (userBO == null)
         {
             form.setLoginFailed(true);

@@ -26,7 +26,8 @@ public class SignUpTemplateTest
 
     private Processor getConverter(Locale locale)
     {
-        return new Processor(RESOURCE_PREFIX, new ResourceLocalizer(new LocalizationBundle(RESOURCE_PREFIX + "login", locale)));
+        return new Processor(RESOURCE_PREFIX, new ResourceLocalizer(new LocalizationBundle(RESOURCE_PREFIX + "login",
+                        locale)));
     }
 
     private String getResource(String string) throws IOException
@@ -51,14 +52,15 @@ public class SignUpTemplateTest
         LoginPageModel objects = new LoginPageModel();
         objects.setSignUpForm(form);
         getConverter(Locale.US).process(objects, XSLT_STYLESHEET, writer);
-        XMLAssert.assertXMLEqual("signup_email_exists", getResource("signup_email_exists.result.xml"), writer.toString());
+        XMLAssert.assertXMLEqual("signup_email_exists", getResource("signup_email_exists.result.xml"),
+                        writer.toString());
     }
+
     @BeforeClass
     public static void initClass()
     {
         XMLUnit.setIgnoreWhitespace(true);
     }
-
 
     @Test
     public void testSignUpShow() throws IOException, SAXException

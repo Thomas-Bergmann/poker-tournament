@@ -1,29 +1,27 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link href="../resources/css/account.less" type="text/css" rel="stylesheet/less" />
-<script type="text/javascript" src="../resources/js/libs/less-1.3.3.min.js">//</script>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="../resources/css/login.css" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js">//</script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js">//</script>
 <title>Login Form</title>
 </head>
 <body>
-<ul>
-<li class="registration">
-<h2>Sign up:</h2>
-<form action="signup" method="POST">
-<div class="input">
-<input type="text" value="" name="name" class="text" placeholder="Your name" />
-</div>
-<div class="input">
-<input type="text" value="" name="email" class="text" placeholder="Email" />
-</div>
-<div class="input">
-<input type="password" value="" name="newPassword" class="text" placeholder="New password" autocomplete="off" />
-</div>
-<div class="button">
-<input name="signUp" type="submit" class="button" value="Sign Up" />
-</div>
+<div class="container">
+<form method="POST" action="signup" class="form-signin">
+<h2>Please sign up:</h2>
+<label class="sr-only" for="inputname">Your name</label>
+<input value="" name="name" type="text" id="inputname" class="form-control first" placeholder="Your name" required="required" autofocus="on" />
+<label class="sr-only" for="inputemail">Email</label>
+<input value="" name="email" type="email" id="inputemail" class="form-control middle" placeholder="Email" required="required" />
+<label class="sr-only" for="inputnewPassword">New password</label>
+<input value="" name="newPassword" type="password" id="inputnewPassword" class="form-control last" placeholder="New password" autocomplete="off" required="required" />
+<button name="signUp" type="submit" class="btn btn-lg btn-primary btn-block">Sign Up</button>
 </form>
-</li>
-</ul>
+</div>
 </body>
 </html>

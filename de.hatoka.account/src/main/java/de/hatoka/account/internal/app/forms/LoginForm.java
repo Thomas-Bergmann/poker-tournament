@@ -11,7 +11,7 @@ public class LoginForm
     private static final FormHelper HELPER = new FormHelper();
 
     @NotNull
-    private String login;
+    private String email;
     @NotNull
     private String password;
 
@@ -37,11 +37,6 @@ public class LoginForm
     public String getAccountID()
     {
         return accountID;
-    }
-
-    public String getLogin()
-    {
-        return login;
     }
 
     public String getOrigin()
@@ -84,11 +79,6 @@ public class LoginForm
         this.fillMandatoryFields = fillMandatoryFields;
     }
 
-    public void setLogin(String login)
-    {
-        this.login = login;
-    }
-
     public void setLoginFailed(boolean isLoginFailed)
     {
         this.isLoginFailed = isLoginFailed;
@@ -116,11 +106,21 @@ public class LoginForm
 
     public boolean validate()
     {
-        if (HELPER.isEmpty(login, password))
+        if (HELPER.isEmpty(getEmail(), password))
         {
             fillMandatoryFields = true;
             return false;
         }
         return true;
+    }
+
+    public String getEmail()
+    {
+        return email;
+    }
+
+    public void setEmail(String email)
+    {
+        this.email = email;
     }
 }

@@ -1,27 +1,26 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link href="../resources/css/account.less" type="text/css" rel="stylesheet/less" />
-<script type="text/javascript" src="../resources/js/libs/less-1.3.3.min.js">//</script>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="../resources/css/login.css" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js">//</script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js">//</script>
 <title>Login Formular</title>
 </head>
 <body>
-<ul>
-<li class="login">
+<div class="container">
+<form method="POST" action="login" class="form-signin">
 <h2>Bitte loggen Sie sich ein:</h2>
-<form method="POST" action="login">
-<input name="origin" type="hidden" value="http://testdomain.de/origin" />
-<div class="input">
-<input type="text" value="" name="login" class="text" placeholder="E-Mail" />
-</div>
-<div class="input">
-<input type="password" value="" name="password" class="text" placeholder="Passwort" autocomplete="off" />
-</div>
-<div class="button">
-<input name="login" type="submit" class="button" value="Login" />
-</div>
+<input name="origin" type="hidden" value="http://testdomain.de/origin"/>
+<label class="sr-only" for="inputemail">E-Mail</label>
+<input value="" name="email" type="email" id="inputemail" class="form-control first" placeholder="E-Mail" required="required" autofocus="on" />
+<label class="sr-only" for="inputpassword">Passwort</label>
+<input value="" name="password" type="password" id="inputpassword" class="form-control last" placeholder="Passwort" autocomplete="off" required="required" />
+<button name="login" type="submit" class="btn btn-lg btn-primary btn-block">Login</button>
 </form>
-</li>
-</ul>
+</div>
 </body>
 </html>

@@ -35,11 +35,11 @@ public class LoginService extends AbstractService
 
     @POST
     @Path("/login")
-    public Response login(@FormParam("login") String login, @FormParam("password") String password,
+    public Response login(@FormParam("email") String email, @FormParam("password") String password,
                     @FormParam("origin") String origin)
     {
         LoginForm form = new LoginForm();
-        form.setLogin(login);
+        form.setEmail(email);
         form.setPassword(password);
         if (form.validate())
         {
@@ -139,7 +139,7 @@ public class LoginService extends AbstractService
         if (applySignInToken)
         {
             LoginForm form = new LoginForm();
-            form.setLogin(email);
+            form.setEmail(email);
             form.setNowActive(true);
             return render(form, null);
         }

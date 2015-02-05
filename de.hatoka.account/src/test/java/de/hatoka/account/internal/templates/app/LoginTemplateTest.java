@@ -84,7 +84,7 @@ public class LoginTemplateTest
     {
         LoginForm form = new LoginForm();
         form.setOrigin(ORIGIN);
-        form.setLogin("login@test.test");
+        form.setEmail("login@test.test");
         form.setNowActive(true);
         StringWriter writer = new StringWriter();
         getConverter(Locale.US).process(form, XSLT_STYLESHEET, writer);

@@ -38,21 +38,14 @@
 <td>no</td>
 </tr>
 </table>
-<div class="button">
-<input name="select" type="submit" class="button" value="Select" />
-</div>
-<div class="button">
-<input name="delete" type="submit" class="button" value="Delete" />
-</div>
+<button name="select" type="submit" class="btn btn-lg btn-primary btn-block">Select</button>
+<button name="delete" type="submit" class="btn btn-lg btn-primary btn-block">Delete</button>
 </form>
 <h2>Create new account:</h2>
 <form action="create" method="POST">
-<div class="input">
-<input type="text" value="" name="name" class="text" placeholder="Account Name" />
-</div>
-<div class="button">
-<input name="create" type="submit" class="button" value="Create" />
-</div>
+<label class="sr-only" for="inputname">Account Name</label>
+<input value="" name="name" type="text" id="inputname" class="form-control" placeholder="Account Name"/>
+<button name="create" type="submit" class="btn btn-lg btn-primary btn-block">Create</button>
 </form>
 </body>
 </html>
