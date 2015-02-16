@@ -36,11 +36,11 @@ public class AccountService extends AbstractService
     public Response action(@FormParam("accountID") List<String> accountIDs, @FormParam("delete") String deleteButton,
                     @FormParam("select") String selectButton)
     {
-        if (selectButton != null && !selectButton.isEmpty() && !accountIDs.isEmpty())
+        if (isButtonPressed(selectButton) && !accountIDs.isEmpty())
         {
             return select(accountIDs.get(0));
         }
-        if (deleteButton != null && !deleteButton.isEmpty())
+        if (isButtonPressed(deleteButton))
         {
             return delete(accountIDs);
         }

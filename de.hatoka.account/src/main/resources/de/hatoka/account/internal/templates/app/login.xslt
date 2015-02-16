@@ -8,21 +8,10 @@
   <xsl:output method="html" encoding="UTF-8" indent="yes" />
   <xsl:template match="/">
     <html xmlns="http://www.w3.org/1999/xhtml">
-      <head>
-        <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-        <!-- Latest compiled and minified CSS -->
-        <link rel="stylesheet" href="../resources/css/login.css" />
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css" />
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js">//</script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js">//</script>
-        <title>
-          <xsl:value-of select="hatoka:getText($localizer, 'login.head.title', 'Login')" />
-        </title>
-      </head>
+      <xsl:call-template name="head">
+          <xsl:with-param name="title"><xsl:value-of select="hatoka:getText($localizer, 'login.head.title', 'Login')" /></xsl:with-param>
+          <xsl:with-param name="cssHRef">../resources/css/login.css</xsl:with-param>
+      </xsl:call-template>
       <body>
         <div class="container">
           <xsl:apply-templates />
@@ -64,6 +53,7 @@
       </xsl:call-template>
       <xsl:call-template name="button">
         <xsl:with-param name="name">login</xsl:with-param>
+	    <xsl:with-param name="cssClass">btn btn-lg btn-primary btn-block</xsl:with-param>
       </xsl:call-template>
     </form>
   </xsl:template>
@@ -115,6 +105,7 @@
             </xsl:call-template>
             <xsl:call-template name="button">
               <xsl:with-param name="name">signUp</xsl:with-param>
+	          <xsl:with-param name="cssClass">btn btn-lg btn-primary btn-block</xsl:with-param>
             </xsl:call-template>
           </form>
         </xsl:otherwise>

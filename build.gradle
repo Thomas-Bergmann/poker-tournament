@@ -52,7 +52,7 @@ subprojects {
     apply plugin: 'osgi'
 
     group = 'de.hatoka.offlinepoker'
-    version = '0.1.14'
+    version = '0.1.15'
     status = 'development'
 
     sourceCompatibility = 1.8

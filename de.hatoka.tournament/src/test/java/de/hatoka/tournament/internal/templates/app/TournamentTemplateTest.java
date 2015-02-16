@@ -14,7 +14,6 @@ import org.apache.commons.io.IOUtils;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import de.hatoka.common.capi.app.model.MoneyVO;
@@ -104,11 +103,30 @@ public class TournamentTemplateTest
         model.getUnassignedPlayers().add(getPlayerVO("1234581", "Player 3"));
         StringWriter writer = new StringWriter();
         getConverter(Locale.US).process(model, "tournament_players.xslt", writer);
+
+        // Assert.assertEquals("players not listed correctly", getResource("tournament_players.result.xml"), writer.toString());
         XMLAssert.assertXMLEqual("players not listed correctly", getResource("tournament_players.result.xml"), writer.toString());
     }
 
     @Test
-    @Ignore
+    public void testTournamentNoUnassignedPlayers() throws Exception
+    {
+        TournamentPlayerListModel model = new TournamentPlayerListModel(UriBuilder.fromPath("list.html").build());
+        model.setTournament(getTournamentVO("123456", "Test 1", new SimpleDateFormat(
+                        LocalizationConstants.XML_DATEFORMAT).parse("2011-11-25T08:42:55.624+01:00")));
+        model.getCompetitors().add(getCompetitorVO("1234578", "Player 1", "playerid-1"));
+        CompetitorVO competitorVO = getCompetitorVO("1234579", "Player 2", "playerid-2");
+        competitorVO.setResult(new MoneyVO(Money.getInstance("-1", "USD")));
+        competitorVO.setActive(false);
+        model.getCompetitors().add(competitorVO);
+        StringWriter writer = new StringWriter();
+        getConverter(Locale.US).process(model, "tournament_players.xslt", writer);
+
+        // Assert.assertEquals("players not listed correctly", getResource("tournament_no_unassigned.result.xml"), writer.toString());
+        XMLAssert.assertXMLEqual("players unassigned incorrectly", getResource("tournament_no_unassigned.result.xml"), writer.toString());
+    }
+
+    @Test
     /**
      * TODO ignore - doesn't work at Travis CI
      * @throws Exception
@@ -124,6 +142,7 @@ public class TournamentTemplateTest
                                         .parse("2012-11-25T09:45:55.624+01:00")));
         StringWriter writer = new StringWriter();
         getConverter(Locale.US).process(model, "tournament_list.xslt", writer);
+        // Assert.assertEquals("tournaments not listed correctly", getResource("tournament_list.result.xml"), writer.toString());
         XMLAssert.assertXMLEqual("tournaments not listed correctly", getResource("tournament_list.result.xml"), writer.toString());
     }
 }

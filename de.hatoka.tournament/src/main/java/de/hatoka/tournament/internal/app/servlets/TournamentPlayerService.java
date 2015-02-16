@@ -22,10 +22,11 @@ public class TournamentPlayerService extends AbstractService
 
     @PathParam("id")
     private String tournamentID;
+
     @Context
     private UriInfo info;
 
-    private final AccountService accountService;
+    private AccountService accountService;
 
     public TournamentPlayerService()
     {
@@ -33,20 +34,32 @@ public class TournamentPlayerService extends AbstractService
         accountService = new AccountService(this);
     }
 
+    public TournamentPlayerService(AccountService accountService)
+    {
+        super(RESOURCE_PREFIX);
+        this.accountService = accountService;
+    }
+
+    public void setAccountService(AccountService accountService)
+    {
+        this.accountService = accountService;
+    }
+
     @POST
     @Path("/actionPlayerList")
     public Response actionPlayerList(@FormParam("competitorID") List<String> identifiers,
-                    @FormParam("delete") String deleteButton, @FormParam("seatopen") String seatOpenButton, @FormParam("rebuy") String rebuyButton, @FormParam("amount") String amount)
+                    @FormParam("delete") String deleteButton, @FormParam("seatopen") String seatOpenButton,
+                    @FormParam("rebuy") String rebuyButton, @FormParam("amount") String amount)
     {
-        if (deleteButton != null && !deleteButton.isEmpty())
+        if (isButtonPressed(deleteButton))
         {
             return unassignPlayers(identifiers);
         }
-        if (rebuyButton != null && !rebuyButton.isEmpty())
+        if (isButtonPressed(rebuyButton))
         {
             return rebuyPlayers(identifiers, amount);
         }
-        if (seatOpenButton != null && !seatOpenButton.isEmpty())
+        if (isButtonPressed(seatOpenButton))
         {
             return seatOpenPlayers(identifiers, amount);
         }
@@ -95,7 +108,7 @@ public class TournamentPlayerService extends AbstractService
         return redirectPlayers();
     }
 
-    private TournamentAction getAction(String accountRef)
+    protected TournamentAction getAction(String accountRef)
     {
         TournamentAction tournamentAction = new TournamentAction(accountRef);
         getInjector().injectMembers(tournamentAction);
@@ -145,7 +158,8 @@ public class TournamentPlayerService extends AbstractService
 
     @POST
     @Path("/seatOpenPlayers")
-    public Response seatOpenPlayers(@FormParam("competitorID") List<String> identifiers, @FormParam("amount") String amount)
+    public Response seatOpenPlayers(@FormParam("competitorID") List<String> identifiers,
+                    @FormParam("amount") String amount)
     {
         String accountRef = accountService.getAccountRef();
         if (accountRef == null)
@@ -163,7 +177,6 @@ public class TournamentPlayerService extends AbstractService
         });
         return redirectPlayers();
     }
-
 
     @POST
     @Path("/unassignPlayers")

@@ -8,19 +8,9 @@
   <xsl:output method="html" encoding="UTF-8" indent="yes" />
   <xsl:template match="/">
     <html xmlns="http://www.w3.org/1999/xhtml">
-      <head>
-        <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-        <link rel="stylesheet/less" type="text/css">
-            <xsl:attribute name="href"><xsl:value-of select="hatoka:getResourceURI($uriInfo, 'css/tournament.less')" /></xsl:attribute>
-        </link>
-        <script type="text/javascript">
-            <xsl:attribute name="src"><xsl:value-of select="hatoka:getResourceURI($uriInfo, 'js/libs/less-1.3.3.min.js')" /></xsl:attribute>
-            //
-        </script>
-        <title>
-          <xsl:value-of select="hatoka:getText($localizer, 'title.tournament', 'Tournament', tournamentPlayerListModel/tournament/buyIn)" />
-        </title>
-      </head>
+      <xsl:call-template name="head">
+          <xsl:with-param name="title"><xsl:value-of select="hatoka:getText($localizer, 'title.tournament', 'Tournament', tournamentPlayerListModel/tournament/buyIn)" /></xsl:with-param>
+      </xsl:call-template>
       <body>
         <div class="menu">
           <a>
@@ -28,6 +18,7 @@
             <xsl:value-of select="hatoka:getText($localizer, 'link.backToList', 'Back to list')" />
           </a>
         </div>
+        <div class="col-md-3">
         <h2>
           <xsl:value-of select="hatoka:getText($localizer, 'info.create.player', 'Create new player:')" />
         </h2>
@@ -40,33 +31,41 @@
             <xsl:with-param name="name">create</xsl:with-param>
           </xsl:call-template>
         </form>
-        <h2>
-          <xsl:value-of select="hatoka:getText($localizer, 'info.unassigned.player', 'Assign xyz')" />
-        </h2>
-        <form method="POST" action="assignPlayer">
-          <div class="input">
-            <select name="playerID">
-              <xsl:for-each select="tournamentPlayerListModel/unassignedPlayers" xmlns="http://www.w3.org/1999/xhtml">
-                <option>
-                  <xsl:attribute name="value"><xsl:value-of select="id" /></xsl:attribute>
-                  <xsl:value-of select="name" />
-                </option>
-              </xsl:for-each>
-            </select>
+        </div>
+        <xsl:if test="tournamentPlayerListModel/unassignedPlayers" >
+	      <div class="col-md-3">
+	        <h2>
+	          <xsl:value-of select="hatoka:getText($localizer, 'info.unassigned.player', 'Assign xyz')" />
+	        </h2>
+	        <form method="POST" action="assignPlayer">
+	          <div class="input">
+	            <select name="playerID">
+	              <xsl:for-each select="tournamentPlayerListModel/unassignedPlayers" xmlns="http://www.w3.org/1999/xhtml">
+	                <option>
+	                  <xsl:attribute name="value"><xsl:value-of select="id" /></xsl:attribute>
+	                  <xsl:value-of select="name" />
+	                </option>
+	              </xsl:for-each>
+	            </select>
+	          </div>
+	          <xsl:call-template name="button">
+	            <xsl:with-param name="name">buyin</xsl:with-param>
+	          </xsl:call-template>
+	        </form>
           </div>
-          <xsl:call-template name="button">
-            <xsl:with-param name="name">buyin</xsl:with-param>
-          </xsl:call-template>
-        </form>
+        </xsl:if>
+        <div class="col-md-6">
         <h2>
           <xsl:value-of select="hatoka:getText($localizer, 'info.assigned.player', 'Select xyz')" />
         </h2>
         <form method="POST" action="actionPlayerList">
-          <table>
+          <table class="table table-striped">
             <tr>
               <th>Select</th>
               <th>Name</th>
+              <th>Active</th>
               <th>In Play</th>
+              <th>Result</th>
             </tr>
             <xsl:for-each select="tournamentPlayerListModel/competitors" xmlns="http://www.w3.org/1999/xhtml">
               <tr>
@@ -90,10 +89,10 @@
               </tr>
             </xsl:for-each>
           </table>
-          <div class="info">
+          <p class="bg-info">
             Average: <xsl:value-of select="tournamentPlayerListModel/tournament/average/amount" />
             <br />Sum: <xsl:value-of select="tournamentPlayerListModel/tournament/sumInPlay/amount" />
-          </div>
+          </p>
           <xsl:call-template name="input">
             <xsl:with-param name="name">amount</xsl:with-param>
             <xsl:with-param name="placeholderKey">placeholder.amount</xsl:with-param>
@@ -103,8 +102,10 @@
           </xsl:call-template>
           <xsl:call-template name="button">
             <xsl:with-param name="name">seatopen</xsl:with-param>
+            <xsl:with-param name="cssClass">btn</xsl:with-param>
           </xsl:call-template>
         </form>
+        </div>
       </body>
     </html>
   </xsl:template>

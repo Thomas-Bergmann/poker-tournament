@@ -7,16 +7,12 @@
   <xsl:output method="html" encoding="UTF-8" indent="yes" />
   <xsl:template match="/">
     <html xmlns="http://www.w3.org/1999/xhtml">
-      <head>
-        <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-        <link rel="stylesheet/less" type="text/css" href="../resources/css/account.less" />
-        <script src="../resources/js/libs/less-1.3.3.min.js" type="text/javascript">//</script>
-        <title>
-          <xsl:value-of select="hatoka:getText($localizer, 'account.title.list', 'List of accounts')" />
-        </title>
-      </head>
+      <xsl:call-template name="head">
+          <xsl:with-param name="title"><xsl:value-of select="hatoka:getText($localizer, 'account.title.list', 'List of accounts')" /></xsl:with-param>
+      </xsl:call-template>
       <body>
         <xsl:apply-templates />
+        <div class="col-md-3">
         <h2>
           <xsl:value-of select="hatoka:getText($localizer, 'account.info.createAccount', 'Create new account:')" />
         </h2>
@@ -28,10 +24,15 @@
             <xsl:with-param name="name">create</xsl:with-param>
           </xsl:call-template>
         </form>
+        </div>
       </body>
     </html>
   </xsl:template>
   <xsl:template match="accountListModel" xmlns="http://www.w3.org/1999/xhtml">
+	<div class="col-md-3">
+    <h2>
+      <xsl:value-of select="hatoka:getText($localizer, 'account.info.listAccount', 'Account List:')" />
+    </h2>
     <form method="POST" action="action">
       <table>
         <tr>
@@ -48,8 +49,10 @@
       </xsl:call-template>
       <xsl:call-template name="button">
         <xsl:with-param name="name">delete</xsl:with-param>
+        <xsl:with-param name="cssClass">btn</xsl:with-param>
       </xsl:call-template>
     </form>
+    </div>
   </xsl:template>
   <xsl:template match="accounts" xmlns="http://www.w3.org/1999/xhtml">
     <tr>

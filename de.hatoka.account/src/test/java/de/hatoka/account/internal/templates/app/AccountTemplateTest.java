@@ -67,6 +67,8 @@ public class AccountTemplateTest
         model.getAccounts().add(getAccountVO("123457", "test2@test.mail", "Test 2", false));
         StringWriter writer = new StringWriter();
         getConverter(Locale.US).process(model, XSLT_STYLESHEET, writer);
+
+        // Assert.assertEquals("account_list en_Us fails", getResource("account_list.result.xml"), writer.toString());
         XMLAssert.assertXMLEqual("account_list en_Us fails", getResource("account_list.result.xml"), writer.toString());
     }
 

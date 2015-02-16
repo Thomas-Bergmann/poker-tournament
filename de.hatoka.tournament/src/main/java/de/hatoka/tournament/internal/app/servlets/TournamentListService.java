@@ -38,7 +38,7 @@ public class TournamentListService extends AbstractService
     @Path("/action")
     public Response action(@FormParam("tournamentID") List<String> identifiers, @FormParam("delete") String deleteButton)
     {
-        if (deleteButton != null && !deleteButton.isEmpty())
+        if (isButtonPressed(deleteButton))
         {
             return delete(identifiers);
         }

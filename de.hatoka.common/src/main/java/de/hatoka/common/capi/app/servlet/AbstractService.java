@@ -211,7 +211,6 @@ public class AbstractService
         return result;
    }
 
-
     /**
      * Runs the given parameter inside of a transaction
      * @param runnable
@@ -232,5 +231,14 @@ public class AbstractService
                 transaction.rollback();
             }
         }
+    }
+
+    /**
+     * @param button value
+     * @return true if button value was transmitted
+     */
+    protected boolean isButtonPressed(String button)
+    {
+        return button != null;
     }
 }

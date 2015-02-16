@@ -21,17 +21,6 @@
 <button name="create" type="submit" class="btn btn-primary">Create</button>
 </form>
 </div>
-<div class="col-md-3">
-<h2>Assign player:</h2>
-<form action="assignPlayer" method="POST">
-<div class="input">
-<select name="playerID">
-<option value="1234581">Player 3</option>
-</select>
-</div>
-<button name="buyin" type="submit" class="btn btn-primary">Buy-In</button>
-</form>
-</div>
 <div class="col-md-6">
 <h2>Select competitor:</h2>
 <form action="actionPlayerList" method="POST">
