@@ -37,7 +37,7 @@ public class CompetitorBOTest
     {
         MockitoAnnotations.initMocks(this);
         CompetitorPO competitorPO = new CompetitorPO();
-        UNDER_TEST = new CompetitorBOImpl(competitorPO, competitorDao, factory);
+        UNDER_TEST = new CompetitorBOImpl(competitorPO, factory);
 
     }
 

@@ -47,6 +47,15 @@ public class Money
 
     private final BigDecimal amount;
 
+    private static boolean isZero(Money amount)
+    {
+        if (amount == null)
+        {
+            return true;
+        }
+        return BigDecimal.ZERO.equals(amount.getAmount().stripTrailingZeros());
+    }
+
     public Money(BigDecimal amount, Currency currency)
     {
         if (amount == null)
@@ -61,6 +70,11 @@ public class Money
         this.amount = amount;
     }
 
+    public boolean isZero()
+    {
+        return isZero(this);
+    }
+
     /**
      * Adds two Money values of the same currency code
      *
@@ -70,11 +84,11 @@ public class Money
      */
     public Money add(Money augend)
     {
-        if (BigDecimal.ZERO.equals(getAmount()))
+        if (isZero(this))
         {
             return augend;
         }
-        if (augend == null || BigDecimal.ZERO.equals(augend.getAmount().stripTrailingZeros()))
+        if (isZero(augend))
         {
             return this;
         }
@@ -87,7 +101,7 @@ public class Money
 
     public Money divide(BigDecimal divisor)
     {
-        if (BigDecimal.ZERO.equals(getAmount().stripTrailingZeros()))
+        if (isZero(this))
         {
             return this;
         }
@@ -163,6 +177,14 @@ public class Money
 
     public Money subtract(Money subtrahend)
     {
+        if (isZero(this))
+        {
+            return subtrahend.negate();
+        }
+        if (isZero(subtrahend))
+        {
+            return this;
+        }
         if (currency != subtrahend.getCurrency())
         {
             throw new IllegalArgumentException("Only money of the same currency can be subtracted.");

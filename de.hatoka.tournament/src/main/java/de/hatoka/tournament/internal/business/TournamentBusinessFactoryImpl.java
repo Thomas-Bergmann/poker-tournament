@@ -29,7 +29,7 @@ public class TournamentBusinessFactoryImpl implements TournamentBusinessFactory
     @Override
     public CompetitorBO getCompetitorBO(CompetitorPO competitorPO)
     {
-        return new CompetitorBOImpl(competitorPO, competitorDao, this);
+        return new CompetitorBOImpl(competitorPO, this);
     }
 
     @Override

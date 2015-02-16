@@ -25,6 +25,13 @@ public interface TournamentBO
      */
     CompetitorBO assign(PlayerBO playerBO);
 
+    /**
+     * Reverse action of assign. The competitor must be inactive (use {@link CompetitorBO#seatOpen(Money)} and requires a zero result.
+     *
+     * @param competitorBO
+     */
+    void unassign(CompetitorBO competitorBO);
+
     Collection<CompetitorBO> getActiveCompetitors();
 
     /**
@@ -47,9 +54,5 @@ public interface TournamentBO
 
     boolean isCompetitor(PlayerBO player);
 
-    void seatOpen(CompetitorBO competitorBO);
-
     void setBuyIn(Money instance);
-
-    void unassign(CompetitorBO competitorBO);
 }

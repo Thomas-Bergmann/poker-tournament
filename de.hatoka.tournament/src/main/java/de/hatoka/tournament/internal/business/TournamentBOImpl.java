@@ -85,7 +85,7 @@ public class TournamentBOImpl implements TournamentBO
     @Override
     public List<CompetitorBO> getCompetitors()
     {
-        return getCompetitorBOStream().collect(Collectors.toList());
+        return getCompetitorBOStream().sorted(CompetitorBOComparators.POSITION).collect(Collectors.toList());
     }
 
     private Stream<CompetitorBO> getCompetitorBOStream()
@@ -133,17 +133,9 @@ public class TournamentBOImpl implements TournamentBO
     @Override
     public void remove()
     {
-        getCompetitors().stream().forEach(competitor -> competitor.remove());
+        getCompetitors().stream().forEach(competitor -> remove(competitor));
         tournamentDao.remove(tournamentPO);
         tournamentPO = null;
-    }
-
-    @Override
-    public void seatOpen(CompetitorBO competitorBO)
-    {
-        long position = getActiveCompetitorBOStream().count();
-        competitorBO.seatOpen(null);
-        competitorBO.setPosition((int)position);
     }
 
     @Override
@@ -155,7 +147,45 @@ public class TournamentBOImpl implements TournamentBO
     @Override
     public void unassign(CompetitorBO competitorBO)
     {
+        if (competitorBO.isActive() || !competitorBO.getResult().isZero())
+        {
+            throw new IllegalStateException("Can't remove competitor, is/was in play with result.");
+        }
+        remove(competitorBO);
+    }
+
+    private void remove(CompetitorBO competitorBO)
+    {
         competitorDao.remove(competitorBO.getID());
+    }
+
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((tournamentPO == null) ? 0 : tournamentPO.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        TournamentBOImpl other = (TournamentBOImpl)obj;
+        if (tournamentPO == null)
+        {
+            if (other.tournamentPO != null)
+                return false;
+        }
+        else if (!tournamentPO.equals(other.tournamentPO))
+            return false;
+        return true;
     }
 
 }

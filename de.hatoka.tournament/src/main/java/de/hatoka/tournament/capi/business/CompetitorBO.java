@@ -14,11 +14,6 @@ public interface CompetitorBO
    String getID();
 
    /**
-    * Removes that business object and return the ID
-    */
-   String remove();
-
-   /**
      * Player activates the competitor, with paying the buy in.
      * @param money
      */

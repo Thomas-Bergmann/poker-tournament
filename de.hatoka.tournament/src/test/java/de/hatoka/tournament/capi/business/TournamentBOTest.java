@@ -1,85 +1,44 @@
 package de.hatoka.tournament.capi.business;
 
-import java.util.HashSet;
-import java.util.Set;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Date;
+
+import javax.inject.Inject;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
-import de.hatoka.tournament.capi.dao.CompetitorDao;
-import de.hatoka.tournament.capi.dao.PlayerDao;
-import de.hatoka.tournament.capi.dao.TournamentDao;
-import de.hatoka.tournament.capi.entities.CompetitorPO;
-import de.hatoka.tournament.capi.entities.PlayerPO;
-import de.hatoka.tournament.capi.entities.TournamentPO;
-import de.hatoka.tournament.internal.business.TournamentBOImpl;
+import de.hatoka.tournament.internal.dao.DerbyEntityManagerRule;
 
 public class TournamentBOTest
 {
-    private static TournamentBO UNDER_TEST;
+    private static final String ACCOUNT_REF = TournamentBOTest.class.getSimpleName();
 
-    @Mock
+    @Rule
+    public DerbyEntityManagerRule rule = new DerbyEntityManagerRule();
+
+    @Inject
     private TournamentBusinessFactory factory;
-    @Mock
-    private PlayerBO playerBO;
-    @Mock
-    private TournamentPO tournamentPO;
-    @Mock
-    private TournamentDao tournamentDao;
-    @Mock
-    private CompetitorDao competitorDao;
-    @Mock
-    private PlayerDao playerDao;
-    @Mock
-    private PlayerPO playerPO;
-    @Mock
-    private CompetitorPO competitor1;
-    @Mock
-    private CompetitorPO competitor2;
-    @Mock
-    private CompetitorBO competitorBO1;
-    @Mock
-    private CompetitorBO competitorBO2;
+
+    private TournamentBO UNDER_TEST;
 
     @Before
     public void createTestObject()
     {
-        MockitoAnnotations.initMocks(this);
-        UNDER_TEST = new TournamentBOImpl(tournamentPO, tournamentDao, competitorDao, playerDao, factory);
-
+        TestBusinessInjectorProvider.get(rule.getModule()).injectMembers(this);
+        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(ACCOUNT_REF);
+        UNDER_TEST = tournamentBORepository.create("test", new Date());
     }
 
     @Test
-    public void testDeletion()
+    public void testAssignUnassign()
     {
-        Set<CompetitorPO> listOfCompetitorPOs = new HashSet<CompetitorPO>();
-        listOfCompetitorPOs.add(competitor1);
-        listOfCompetitorPOs.add(competitor2);
-        Mockito.when(tournamentPO.getCompetitors()).thenReturn(listOfCompetitorPOs);
-        Mockito.when(factory.getCompetitorBO(competitor1)).thenReturn(competitorBO1);
-        Mockito.when(factory.getCompetitorBO(competitor2)).thenReturn(competitorBO2);
-        whenRemoveBORemovePOFromSet(competitorBO1, competitor1, listOfCompetitorPOs);
-        whenRemoveBORemovePOFromSet(competitorBO2, competitor2, listOfCompetitorPOs);
-        UNDER_TEST.remove();
+        CompetitorBO competitorBO = UNDER_TEST.assign(factory.getPlayerBORepository(ACCOUNT_REF).create("testPlayer1"));
+        assertTrue(UNDER_TEST.getCompetitors().contains(competitorBO));
+        UNDER_TEST.unassign(competitorBO);
+        assertFalse(UNDER_TEST.getCompetitors().contains(competitorBO));
     }
-
-    private void whenRemoveBORemovePOFromSet(CompetitorBO competitorBO, CompetitorPO competitorPO,
-                    Set<CompetitorPO> listOfCompetitorPOs)
-    {
-        Mockito.when(competitorBO.remove()).then(new Answer<String>()
-        {
-            @Override
-            public String answer(InvocationOnMock invocation) throws Throwable
-            {
-                listOfCompetitorPOs.remove(competitorPO);
-                return "1";
-            }
-        });
-    }
-
 }

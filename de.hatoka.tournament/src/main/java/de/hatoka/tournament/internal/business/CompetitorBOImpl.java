@@ -4,20 +4,46 @@ import de.hatoka.common.capi.business.Money;
 import de.hatoka.tournament.capi.business.CompetitorBO;
 import de.hatoka.tournament.capi.business.PlayerBO;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
-import de.hatoka.tournament.capi.dao.CompetitorDao;
 import de.hatoka.tournament.capi.entities.CompetitorPO;
 
 public class CompetitorBOImpl implements CompetitorBO
 {
     private CompetitorPO competitorPO;
-    private final CompetitorDao competitorDao;
     private final TournamentBusinessFactory factory;
 
-    public CompetitorBOImpl(CompetitorPO competitorPO, CompetitorDao competitorDao, TournamentBusinessFactory factory)
+    public CompetitorBOImpl(CompetitorPO competitorPO, TournamentBusinessFactory factory)
     {
         this.competitorPO = competitorPO;
-        this.competitorDao = competitorDao;
         this.factory = factory;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((competitorPO == null) ? 0 : competitorPO.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        CompetitorBOImpl other = (CompetitorBOImpl)obj;
+        if (competitorPO == null)
+        {
+            if (other.competitorPO != null)
+                return false;
+        }
+        else if (!competitorPO.equals(other.competitorPO))
+            return false;
+        return true;
     }
 
     @Override
@@ -92,15 +118,6 @@ public class CompetitorBOImpl implements CompetitorBO
             throw new IllegalStateException("Rebuy not allowed at inactive competitors");
         }
         competitorPO.setMoneyInPlay(Money.getInstance(competitorPO.getMoneyInPlay()).add(money).toMoneyPO());
-    }
-
-    @Override
-    public String remove()
-    {
-        String result = getID();
-        competitorDao.remove(competitorPO);
-        competitorPO = null;
-        return result;
     }
 
     @Override
