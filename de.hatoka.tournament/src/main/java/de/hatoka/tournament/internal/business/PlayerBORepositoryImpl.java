@@ -32,10 +32,10 @@ public class PlayerBORepositoryImpl implements PlayerBORepository
     @Override
     public PlayerBO findByName(String name)
     {
-        PlayerPO playerPO = playerDao.findByName(name);
-        if (!accountRef.equals(playerPO.getAccountRef()))
+        PlayerPO playerPO = playerDao.findByName(accountRef, name);
+        if (playerPO == null)
         {
-            throw new IllegalArgumentException("tournament not assigned to account");
+            return null;
         }
         return getBO(playerPO);
     }
@@ -49,6 +49,10 @@ public class PlayerBORepositoryImpl implements PlayerBORepository
     public PlayerBO getByID(String id)
     {
         PlayerPO playerPO = playerDao.getById(id);
+        if (playerPO == null)
+        {
+            return null;
+        }
         if (!accountRef.equals(playerPO.getAccountRef()))
         {
             throw new IllegalArgumentException("tournament not assigned to account");

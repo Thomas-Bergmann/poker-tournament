@@ -5,14 +5,19 @@ import java.math.BigDecimal;
 
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
 
 @Embeddable
+@XmlRootElement
 public class MoneyPO implements Serializable
 {
     private static final long serialVersionUID = 1L;
     @NotNull
+    @XmlAttribute(name="code")
     private String currencyCode;
     @NotNull
+    @XmlAttribute
     private String amount;
 
     public MoneyPO()

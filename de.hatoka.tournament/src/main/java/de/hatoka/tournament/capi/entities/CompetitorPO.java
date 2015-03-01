@@ -11,6 +11,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlTransient;
+
+import org.eclipse.persistence.oxm.annotations.XmlInverseReference;
 
 import de.hatoka.common.capi.dao.IdentifiableEntity;
 import de.hatoka.common.capi.entities.MoneyPO;
@@ -21,10 +27,13 @@ public class CompetitorPO implements Serializable, IdentifiableEntity
     private static final long serialVersionUID = 1L;
 
     @Id
+    @XmlAttribute
+    @XmlID
     private String id;
 
     @NotNull
     @Column(updatable = false)
+    @XmlTransient
     private String accountRef;
 
     @NotNull
@@ -35,26 +44,31 @@ public class CompetitorPO implements Serializable, IdentifiableEntity
     @NotNull
     @ManyToOne
     @JoinColumn(name = "tournament", updatable = false)
+    @XmlInverseReference(mappedBy="tournament")
     private TournamentPO tournament;
 
     /**
      * The player is in play
      */
+    @XmlAttribute(name="active")
     private boolean isActive = false;
 
     /**
      * The player is out and was placed at position
      */
+    @XmlAttribute
     private Integer positition;
 
     @Embedded
     @AttributeOverrides({ @AttributeOverride(name = "currencyCode", column = @Column(name = "inplayCur")),
                     @AttributeOverride(name = "amount", column = @Column(name = "inplayAmount")) })
+    @XmlElement(name="inplay")
     private MoneyPO moneyInPlay;
 
     @Embedded
     @AttributeOverrides({ @AttributeOverride(name = "currencyCode", column = @Column(name = "resultCur")),
                     @AttributeOverride(name = "amount", column = @Column(name = "resultAmount")) })
+    @XmlElement(name="result")
     private MoneyPO moneyResult;
 
     public CompetitorPO()
@@ -82,37 +96,50 @@ public class CompetitorPO implements Serializable, IdentifiableEntity
         return true;
     }
 
+    @XmlTransient
     public String getAccountRef()
     {
         return accountRef;
     }
 
     @Override
+    @XmlTransient
     public String getId()
     {
         return id;
     }
 
+    @XmlTransient
     public MoneyPO getMoneyInPlay()
     {
         return moneyInPlay;
     }
 
+    @XmlTransient
     public MoneyPO getMoneyResult()
     {
         return moneyResult;
     }
 
+    @XmlAttribute(name="playerRef")
+    public String getPlayerRef()
+    {
+        return player.getId();
+    }
+
+    @XmlTransient
     public PlayerPO getPlayerPO()
     {
         return player;
     }
 
+    @XmlTransient
     public Integer getPositition()
     {
         return positition;
     }
 
+    @XmlTransient
     public TournamentPO getTournamentPO()
     {
         return tournament;
@@ -127,6 +154,7 @@ public class CompetitorPO implements Serializable, IdentifiableEntity
         return result;
     }
 
+    @XmlTransient
     public boolean isActive()
     {
         return isActive;

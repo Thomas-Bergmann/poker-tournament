@@ -27,9 +27,9 @@ public class TournamentBusinessFactoryImpl implements TournamentBusinessFactory
     private CompetitorDao competitorDao;
 
     @Override
-    public CompetitorBO getCompetitorBO(CompetitorPO competitorPO)
+    public CompetitorBO getCompetitorBO(CompetitorPO competitorPO, TournamentBO tournamentBO)
     {
-        return new CompetitorBOImpl(competitorPO, this);
+        return new CompetitorBOImpl(competitorPO, tournamentBO, this);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class TournamentBusinessFactoryImpl implements TournamentBusinessFactory
     @Override
     public TournamentBORepository getTournamentBORepository(String accountRef)
     {
-        return new TournamentBORepositoryImpl(accountRef, tournamentDao, this);
+        return new TournamentBORepositoryImpl(accountRef, tournamentDao, playerDao, competitorDao, this);
     }
 
 }

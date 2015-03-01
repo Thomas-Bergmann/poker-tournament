@@ -24,7 +24,7 @@ ext {
     // libraries
     jerseyVersion ='2.14'
     hibernateVersion='4.3.7.Final'
-    tomcatVersion='8.0.15'
+    tomcatVersion='8.0.20'
     mailVersion='1.4.7'
 
     bundleVendor = 'Thomas Bergmann'

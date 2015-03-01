@@ -35,9 +35,9 @@ public class PlayerDaoJpa extends GenericJPADao<PlayerPO> implements PlayerDao
     }
 
     @Override
-    public PlayerPO findByName(String name)
+    public PlayerPO findByName(String accountRef, String name)
     {
-        return createNamedQuery("PlayerPO.findByName").setParameter("name", name).getSingleResult();
+        return createNamedQuery("PlayerPO.findByName").setParameter("accountRef", accountRef).setParameter("name", name).getSingleResult();
     }
 
     @Override

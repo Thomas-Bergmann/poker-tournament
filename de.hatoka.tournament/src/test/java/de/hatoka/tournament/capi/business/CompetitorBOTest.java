@@ -31,16 +31,15 @@ public class CompetitorBOTest
     private TournamentBusinessFactory factory;
     @Mock
     private CompetitorDao competitorDao;
-
+    @Mock
+    private TournamentBO tournamentBO;
     @Before
     public void createTestObject()
     {
         MockitoAnnotations.initMocks(this);
         CompetitorPO competitorPO = new CompetitorPO();
-        UNDER_TEST = new CompetitorBOImpl(competitorPO, factory);
-
+        UNDER_TEST = new CompetitorBOImpl(competitorPO, tournamentBO, factory);
     }
-
 
     /**
      *                inplay

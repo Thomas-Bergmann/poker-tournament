@@ -16,6 +16,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlTransient;
 
 import de.hatoka.common.capi.dao.IdentifiableEntity;
 import de.hatoka.common.capi.entities.MoneyPO;
@@ -27,6 +30,8 @@ public class TournamentPO implements Serializable, IdentifiableEntity
     private static final long serialVersionUID = 1L;
 
     @Id
+    @XmlAttribute
+    @XmlID
     private String id;
     @NotNull
     private String accountRef;
@@ -34,6 +39,7 @@ public class TournamentPO implements Serializable, IdentifiableEntity
     private String name;
     @NotNull
     @Temporal(TemporalType.DATE)
+    @XmlAttribute
     private Date date;
 
     @Embedded
@@ -68,6 +74,7 @@ public class TournamentPO implements Serializable, IdentifiableEntity
         return true;
     }
 
+    @XmlTransient
     public String getAccountRef()
     {
         return accountRef;
@@ -83,17 +90,20 @@ public class TournamentPO implements Serializable, IdentifiableEntity
         return competitors;
     }
 
+    @XmlTransient
     public Date getDate()
     {
         return date;
     }
 
+    @XmlTransient
     @Override
     public String getId()
     {
         return id;
     }
 
+    @XmlTransient
     public String getName()
     {
         return name;

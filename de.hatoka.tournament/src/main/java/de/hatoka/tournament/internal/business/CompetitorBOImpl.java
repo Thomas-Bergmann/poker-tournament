@@ -3,6 +3,7 @@ package de.hatoka.tournament.internal.business;
 import de.hatoka.common.capi.business.Money;
 import de.hatoka.tournament.capi.business.CompetitorBO;
 import de.hatoka.tournament.capi.business.PlayerBO;
+import de.hatoka.tournament.capi.business.TournamentBO;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
 import de.hatoka.tournament.capi.entities.CompetitorPO;
 
@@ -10,10 +11,12 @@ public class CompetitorBOImpl implements CompetitorBO
 {
     private CompetitorPO competitorPO;
     private final TournamentBusinessFactory factory;
+    private final TournamentBO tournamentBO;
 
-    public CompetitorBOImpl(CompetitorPO competitorPO, TournamentBusinessFactory factory)
+    public CompetitorBOImpl(CompetitorPO competitorPO, TournamentBO tournamentBO, TournamentBusinessFactory factory)
     {
         this.competitorPO = competitorPO;
+        this.tournamentBO = tournamentBO;
         this.factory = factory;
     }
 
@@ -55,6 +58,12 @@ public class CompetitorBOImpl implements CompetitorBO
         }
         competitorPO.setMoneyInPlay(getInPlay().add(money).toMoneyPO());
         competitorPO.setActive(true);
+        sortCompetitors();
+    }
+
+    private void sortCompetitors()
+    {
+        tournamentBO.sortCompetitors();
     }
 
     @Override
@@ -108,6 +117,7 @@ public class CompetitorBOImpl implements CompetitorBO
         competitorPO.setActive(false);
         Money moneyResult = Money.getInstance(competitorPO.getMoneyInPlay()).negate();
         competitorPO.setMoneyResult(moneyResult.toMoneyPO());
+        sortCompetitors();
     }
 
     @Override
@@ -118,6 +128,7 @@ public class CompetitorBOImpl implements CompetitorBO
             throw new IllegalStateException("Rebuy not allowed at inactive competitors");
         }
         competitorPO.setMoneyInPlay(Money.getInstance(competitorPO.getMoneyInPlay()).add(money).toMoneyPO());
+        sortCompetitors();
     }
 
     @Override

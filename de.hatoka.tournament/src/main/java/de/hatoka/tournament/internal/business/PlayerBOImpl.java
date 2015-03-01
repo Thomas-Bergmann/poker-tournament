@@ -16,6 +16,35 @@ public class PlayerBOImpl implements PlayerBO
     }
 
     @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((playerPO == null) ? 0 : playerPO.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        PlayerBOImpl other = (PlayerBOImpl)obj;
+        if (playerPO == null)
+        {
+            if (other.playerPO != null)
+                return false;
+        }
+        else if (!playerPO.equals(other.playerPO))
+            return false;
+        return true;
+    }
+
+    @Override
     public String getID()
     {
         return playerPO.getId();

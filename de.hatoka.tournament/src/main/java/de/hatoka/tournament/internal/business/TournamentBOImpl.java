@@ -73,7 +73,7 @@ public class TournamentBOImpl implements TournamentBO
 
     private CompetitorBO getBO(CompetitorPO competitorPO)
     {
-        return factory.getCompetitorBO(competitorPO);
+        return factory.getCompetitorBO(competitorPO, this);
     }
 
     @Override
@@ -186,6 +186,17 @@ public class TournamentBOImpl implements TournamentBO
         else if (!tournamentPO.equals(other.tournamentPO))
             return false;
         return true;
+    }
+
+    @Override
+    public void sortCompetitors()
+    {
+        int position = 1;
+        for (CompetitorBO competitorBO : getCompetitorBOStream().sorted(CompetitorBOComparators.DEFAULT).collect(
+                        Collectors.toList()))
+        {
+            competitorBO.setPosition(position++);
+        }
     }
 
 }

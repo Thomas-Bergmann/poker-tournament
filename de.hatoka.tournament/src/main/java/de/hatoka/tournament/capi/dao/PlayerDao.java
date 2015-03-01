@@ -15,7 +15,7 @@ public interface PlayerDao extends Dao<PlayerPO>
      */
     public PlayerPO createAndInsert(String accountRef, String name);
 
-    public PlayerPO findByName(String name);
+    public PlayerPO findByName(String accountRef, String name);
 
     public Collection<PlayerPO> getByAccountRef(String accountRef);
 }

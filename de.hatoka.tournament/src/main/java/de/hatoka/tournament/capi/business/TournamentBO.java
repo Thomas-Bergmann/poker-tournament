@@ -55,4 +55,9 @@ public interface TournamentBO
     boolean isCompetitor(PlayerBO player);
 
     void setBuyIn(Money instance);
+
+    /**
+     * Sort competitors recalculates the position of competitors.
+     */
+    void sortCompetitors();
 }

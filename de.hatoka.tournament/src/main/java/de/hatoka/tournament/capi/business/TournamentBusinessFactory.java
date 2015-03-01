@@ -6,7 +6,7 @@ import de.hatoka.tournament.capi.entities.TournamentPO;
 
 public interface TournamentBusinessFactory
 {
-    CompetitorBO getCompetitorBO(CompetitorPO competitorPO);
+    CompetitorBO getCompetitorBO(CompetitorPO competitorPO, TournamentBO tournamentBO);
 
     PlayerBO getPlayerBO(PlayerPO playerPO);
 
