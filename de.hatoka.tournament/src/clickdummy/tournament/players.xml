@@ -1,0 +1,106 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet"/>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css" rel="stylesheet"/>
+<link href="../frame.css" rel="stylesheet" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js">//</script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js">//</script>
+<title>List of tournaments</title>
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+	<div class="container-fluid">
+		<!-- Brand and toggle get grouped for better mobile display -->
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed"
+				data-toggle="collapse" data-target="#bs-example-navbar-collapse-9">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="../home.xml">Poker Planer</a>
+		</div>
+
+		<!-- Collect the nav links, forms, and other content for toggling -->
+		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-9">
+			<ul class="nav navbar-nav">
+				<li>
+					<a href="../tournaments.xml">Tournaments</a>
+				</li>
+				<li class="active">
+					<a href="players.xml">Event 1</a>
+				</li>
+			</ul>
+		</div><!-- /.navbar-collapse -->
+	</div>
+</nav>
+<div class="row">
+	<div class="col-sm-3 col-md-2 sidebar">
+		<ul class="nav-sidebar">
+			<li class="active">
+				<a href="players.xml">Players <span class="badge">13</span></a>
+				<a class="glyphicon glyphicon-plus" href="player_add.xml"></a>
+			</li>
+			<li>
+				<a href="blind_levels.xml">Blind Levels <span class="badge">5</span></a>
+			</li>
+			<li>
+				<a href="ranks.xml">Ranks <span class="badge">3</span></a>
+			</li>
+		</ul>
+	</div>
+	<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+		<h2>List of players</h2>
+		<form action="actionPlayerList" method="POST">
+		<table class="table table-striped">
+		<tr>
+		<th>Select</th>
+		<th>Name</th>
+		<th>Active</th>
+		<th>Re-Buy</th>
+		<th>Position</th>
+		</tr>
+		<tr>
+		<td>
+		<label>
+		<input type="checkbox" value="1234578" name="competitorID" class="checkbox"/>
+		</label>
+		</td>
+		<td>Player 1</td>
+		<td>active</td>
+		<td>no</td>
+		<td>-</td>
+		</tr>
+		<tr>
+		<td>
+		<label>
+		<input type="checkbox" value="1234579" name="competitorID" class="checkbox"/>
+		</label>
+		</td>
+		<td>Player 2</td>
+		<td>active</td>
+		<td>yes</td>
+		<td>-</td>
+		</tr>
+		<tr>
+		<td>
+		<label>
+		<input type="checkbox" value="1234579" name="competitorID" class="checkbox"/>
+		</label>
+		</td>
+		<td>Player 3</td>
+		<td>inactive</td>
+		<td>yes</td>
+		<td>3</td>
+		</tr>
+		</table>
+		<button name="seatopen" type="submit" class="btn">Seat-Open</button>
+		</form>
+	</div>
+</div>
+</body>
+</html>
