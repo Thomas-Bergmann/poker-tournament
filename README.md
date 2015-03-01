@@ -52,8 +52,7 @@ gradle eclipse
 gradle test
 gradle war
 </pre>
-
-Before you submit code, please
+asdasdasmit code, please
 * apply the formatter for eclipse dev_env/code_formatter.xml
 * add the content of dev_env/git_info_exclude.txt to your git exclude file
 * add the pre-commit checker dev_env/git_hooks_pre-commit
