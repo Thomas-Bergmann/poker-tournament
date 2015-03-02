@@ -48,9 +48,13 @@ public class TournamentPlayerService extends AbstractService
     @POST
     @Path("/actionPlayerList")
     public Response actionPlayerList(@FormParam("competitorID") List<String> identifiers,
-                    @FormParam("delete") String deleteButton, @FormParam("seatopen") String seatOpenButton,
+                    @FormParam("delete") String deleteButton, @FormParam("seatopen") String seatOpenButton, @FormParam("sort") String sortButton,
                     @FormParam("rebuy") String rebuyButton, @FormParam("amount") String amount)
     {
+        if (isButtonPressed(sortButton))
+        {
+            return sortPlayers();
+        }
         if (isButtonPressed(deleteButton))
         {
             return unassignPlayers(identifiers);
@@ -63,6 +67,27 @@ public class TournamentPlayerService extends AbstractService
         {
             return seatOpenPlayers(identifiers, amount);
         }
+        return redirectPlayers();
+    }
+
+    @POST
+    @Path("/sortPlayers")
+    public Response sortPlayers()
+    {
+        String accountRef = accountService.getAccountRef();
+        if (accountRef == null)
+        {
+            return accountService.redirectLogin();
+        }
+        TournamentAction action = getAction(accountRef);
+        runInTransaction(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                action.sortPlayers(tournamentID);
+            }
+        });
         return redirectPlayers();
     }
 

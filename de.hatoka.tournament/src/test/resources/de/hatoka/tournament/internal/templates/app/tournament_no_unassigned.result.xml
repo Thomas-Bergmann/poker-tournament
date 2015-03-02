@@ -61,6 +61,7 @@
 <input value="" name="amount" type="text" id="inputamount" class="form-control" placeholder="Amount"/>
 <button name="rebuy" type="submit" class="btn btn-primary">Re-Buy</button>
 <button name="seatopen" type="submit" class="btn">Seat-Open</button>
+<button name="sort" type="submit" class="btn">Sort</button>
 </form>
 </div>
 </body>

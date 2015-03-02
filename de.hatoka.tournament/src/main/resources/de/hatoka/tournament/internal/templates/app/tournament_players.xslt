@@ -104,6 +104,10 @@
             <xsl:with-param name="name">seatopen</xsl:with-param>
             <xsl:with-param name="cssClass">btn</xsl:with-param>
           </xsl:call-template>
+          <xsl:call-template name="button">
+            <xsl:with-param name="name">sort</xsl:with-param>
+            <xsl:with-param name="cssClass">btn</xsl:with-param>
+          </xsl:call-template>
         </form>
         </div>
       </body>

@@ -124,4 +124,11 @@ public class TournamentAction
         }
     }
 
+    public void sortPlayers(String tournamentID)
+    {
+        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountRef);
+        TournamentBO tournamentBO = tournamentBORepository.getByID(tournamentID);
+        tournamentBO.sortCompetitors();
+    }
+
 }

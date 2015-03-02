@@ -19,7 +19,11 @@ public final class CompetitorBOComparators
             int result = ACTIVE.compare(o1, o2);
             if (result == 0)
             {
-                result = INPLAY.reversed().compare(o1, o2);
+                result = RESULT.reversed().compare(o1, o2);
+            }
+            if (result == 0)
+            {
+                result = INPLAY.compare(o1, o2);
             }
             return result;
         }
@@ -48,6 +52,19 @@ public final class CompetitorBOComparators
                 return Comparators.NULL.compare(o1, o2);
             }
             return Comparators.MONEY.compare(o1.getInPlay(), o2.getInPlay());
+        }
+    };
+
+    public static final Comparator<CompetitorBO> RESULT = new Comparator<CompetitorBO>()
+    {
+        @Override
+        public int compare(CompetitorBO o1, CompetitorBO o2)
+        {
+            if (o1 == null || o2 == null)
+            {
+                return Comparators.NULL.compare(o1, o2);
+            }
+            return Comparators.MONEY.compare(o1.getResult(), o2.getResult());
         }
     };
 
