@@ -43,13 +43,26 @@
 </nav>
 <div class="row">
 	<div class="col-sm-3 col-md-2 sidebar">
-		<ul class="nav nav-sidebar">
-			<li><a href="cash_games.xml">Cash Games</a></li>
-			<li class="active"><a href="cash_game_add.xml">Add Cash Game</a></li>
+		<ul class="nav-sidebar">
+			<li>
+				<a href="home.xml">Overview</a>
+			</li>
+			<li>
+				<a href="tournaments.xml">Tournaments <span class="badge">2</span></a>
+				<a class="glyphicon glyphicon-plus" href="tournament_add.xml"></a>
+			</li>
+			<li class="active">
+				<a href="cash_games.xml">Cash Games <span class="badge">3</span></a>
+				<a class="glyphicon glyphicon-plus" href="cash_game_add.xml"></a>
+			</li>
+			<li>
+				<a href="players.xml">Players <span class="badge">12</span></a>
+				<a class="glyphicon glyphicon-plus" href="player_add.xml"></a>
+			</li>
 		</ul>
 	</div>
 	<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-		<h2>Create new cash game:</h2>
+		<h1 class="page-header">Create new cash game</h1>
 		<form action="cash_game/player_add.xml" method="GET">
 		<label class="sr-only" for="inputname">Name</label>
 		<input value="" name="name" type="text" id="inputname" class="form-control" placeholder="Cash Game Name"/>

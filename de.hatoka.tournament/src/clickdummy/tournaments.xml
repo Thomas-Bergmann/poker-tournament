@@ -43,18 +43,26 @@
 </nav>
 <div class="row">
 	<div class="col-sm-3 col-md-2 sidebar">
-		<ul class="nav nav-sidebar">
+		<ul class="nav-sidebar">
+			<li>
+				<a href="home.xml">Overview</a>
+			</li>
 			<li class="active">
 				<a href="tournaments.xml">Tournaments <span class="badge">2</span></a>
+				<a class="glyphicon glyphicon-plus" href="tournament_add.xml"></a>
 			</li>
 			<li>
-				<a href="tournament_add.xml">Add Tournament</a>
+				<a href="cash_games.xml">Cash Games <span class="badge">3</span></a>
+				<a class="glyphicon glyphicon-plus" href="cash_game_add.xml"></a>
+			</li>
+			<li>
+				<a href="players.xml">Players <span class="badge">12</span></a>
+				<a class="glyphicon glyphicon-plus" href="player_add.xml"></a>
 			</li>
 		</ul>
 	</div>
 	<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
 		<h1 class="page-header">List of tournaments</h1>
-<div class="col-md-8">
 <form action="action" method="POST">
 <table class="table table-striped">
 <tr>
@@ -87,7 +95,6 @@
 </table>
 <button name="delete" type="submit" class="btn btn-primary">Delete</button>
 </form>
-</div>
 	</div>
 </div>
 

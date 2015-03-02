@@ -43,51 +43,61 @@
 </nav>
 <div class="row">
 	<div class="col-sm-3 col-md-2 sidebar">
-		<ul class="nav nav-sidebar">
-			<li class="active">
-				<a href="cash_games.xml">Cash Games</a>
+		<ul class="nav-sidebar">
+			<li>
+				<a href="home.xml">Overview</a>
 			</li>
 			<li>
-				<a href="cash_game_add.xml">Add Cash Game</a>
+				<a href="tournaments.xml">Tournaments <span class="badge">2</span></a>
+				<a class="glyphicon glyphicon-plus" href="tournament_add.xml"></a>
+			</li>
+			<li class="active">
+				<a href="cash_games.xml">Cash Games <span class="badge">3</span></a>
+				<a class="glyphicon glyphicon-plus" href="cash_game_add.xml"></a>
+			</li>
+			<li>
+				<a href="players.xml">Players <span class="badge">12</span></a>
+				<a class="glyphicon glyphicon-plus" href="player_add.xml"></a>
 			</li>
 		</ul>
 	</div>
 	<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
 		<h1 class="page-header">List of cash games</h1>
-<div class="col-md-8">
-<form action="action" method="POST">
-<table class="table table-striped">
-<tr>
-<th>Select</th>
-<th>Name</th>
-<th>Date</th>
-</tr>
-<tr>
-<td>
-<label>
-<input type="checkbox" value="123457" name="tournamentID" class="checkbox"/>
-</label>
-</td>
-<td>
-<a href="cash_game/players.xml">Event 2</a>
-</td>
-<td>25.11.2012 09:45</td>
-</tr>
-<tr>
-<td>
-<label>
-<input type="checkbox" value="123456" name="tournamentID" class="checkbox"/>
-</label>
-</td>
-<td>
-<a href="cash_game/players.xml">Event 1</a>
-</td>
-<td>25.11.2011 08:42</td>
-</tr>
-</table>
-<button name="delete" type="submit" class="btn btn-primary">Delete</button>
-</form>
-</div>
+		<form action="action" method="POST">
+		<table class="table table-striped">
+		<tr>
+		<th>Select</th>
+		<th>Name</th>
+		<th>Date</th>
+		<th>Buy-In</th>
+		</tr>
+		<tr>
+		<td>
+		<label>
+		<input type="checkbox" value="123457" name="tournamentID" class="checkbox"/>
+		</label>
+		</td>
+		<td>
+		<a href="cash_game/players.xml">Event 2</a>
+		</td>
+		<td>25.11.2012 09:45</td>
+		<td>5 EUR</td>
+		</tr>
+		<tr>
+		<td>
+		<label>
+		<input type="checkbox" value="123456" name="tournamentID" class="checkbox"/>
+		</label>
+		</td>
+		<td>
+		<a href="cash_game/players.xml">Event 1</a>
+		</td>
+		<td>25.11.2011 08:42</td>
+		<td>20 EUR</td>
+		</tr>
+		</table>
+		<button name="delete" type="submit" class="btn btn-primary">Delete</button>
+		</form>
 	</div>
 </div>
 

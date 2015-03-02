@@ -42,13 +42,16 @@
 	<div class="col-sm-3 col-md-2 sidebar">
 		<ul class="nav-sidebar">
 			<li class="active">
-				<a href="players.xml">Players</a>
+				<a href="players.xml">Players <span class="badge">3</span></a>
 				<a class="glyphicon glyphicon-plus" href="player_add.xml"></a>
+			</li>
+			<li>
+				<a href="history.xml">Re-Buy History <span class="badge">4</span></a>
 			</li>
 		</ul>
 	</div>
 	<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-		<h2>List of players</h2>
+		<h1 class="page-header">List of players</h1>
 		<form action="actionPlayerList" method="POST">
 		<table class="table table-striped">
 		<tr>
