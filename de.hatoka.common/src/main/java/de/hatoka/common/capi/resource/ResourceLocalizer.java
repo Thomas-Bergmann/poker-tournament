@@ -3,7 +3,6 @@ package de.hatoka.common.capi.resource;
 import java.text.MessageFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import de.hatoka.common.capi.app.xslt.Localizer;
 
@@ -26,17 +25,19 @@ public class ResourceLocalizer implements Localizer
     @Override
     public String formatDate(String dateString)
     {
-        // 2014-11-25T09:45:55.624+01:00
-        Date date;
+        if (dateString == null || dateString.isEmpty())
+        {
+            return "";
+        }
+        // convert xml format 2014-11-25T09:45:55.624+01:00 to target
         try
         {
-            date = new SimpleDateFormat(LocalizationConstants.XML_DATEFORMAT).parse(dateString);
+            return new SimpleDateFormat(dateFormat).format(new SimpleDateFormat(LocalizationConstants.XML_DATEFORMAT).parse(dateString));
         }
         catch(ParseException e)
         {
-            return dateString;
+            throw new IllegalArgumentException("Illegal source date string: '" + dateString + "'", e);
         }
-        return new SimpleDateFormat(dateFormat).format(date);
     }
 
     @Override
