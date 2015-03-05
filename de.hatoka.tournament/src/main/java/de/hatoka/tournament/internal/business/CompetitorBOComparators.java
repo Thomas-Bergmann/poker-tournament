@@ -23,7 +23,7 @@ public final class CompetitorBOComparators
             }
             if (result == 0)
             {
-                result = INPLAY.compare(o1, o2);
+                result = INPLAY.reversed().compare(o1, o2);
             }
             return result;
         }

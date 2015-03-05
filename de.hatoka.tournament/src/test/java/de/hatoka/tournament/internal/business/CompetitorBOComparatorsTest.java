@@ -38,6 +38,8 @@ public class CompetitorBOComparatorsTest
         Mockito.when(competitorBO_A.getInPlay()).thenReturn(Money.getInstance("-15 EUR"));
         Mockito.when(competitorBO_B.getInPlay()).thenReturn(Money.getInstance("-5 EUR"));
         Mockito.when(competitorBO_C.getInPlay()).thenReturn(Money.getInstance("-5 EUR"));
+        Mockito.when(competitorBO_C.getResult()).thenReturn(Money.getInstance("5 EUR"));
+
         List<CompetitorBO> competitorBOs = Arrays.asList(competitorBO_A, competitorBO_B, competitorBO_C);
         competitorBOs.sort(CompetitorBOComparators.DEFAULT);
         assertEquals("first is inactive", competitorBO_C, competitorBOs.get(0));
