@@ -25,6 +25,11 @@ public class Lib
         return info.getBaseUriBuilder().path(ResourceService.class, "getResource").buildFromEncoded("resources/" + resourceName).toString();
     }
 
+    public static String getText(Localizer localizer, String key)
+    {
+        return localizer.getText(key, "{" + key + "}");
+    }
+
     public static String getText(Localizer localizer, String key, String defaultText)
     {
         return localizer.getText(key, defaultText);

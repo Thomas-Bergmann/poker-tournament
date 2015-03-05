@@ -66,7 +66,8 @@ subprojects {
     }
 
     dependencies {
-        compile 'commons-lang:commons-lang:2.6'
+        compile 'commons-lang:commons-lang:2.+'
+        compile 'commons-io:commons-io:2.+'
         compile "org.slf4j:slf4j-api:$slf4jVersion"
         compile 'com.google.inject:guice:3.0'
         compile 'javax.inject:javax.inject:1'
@@ -82,7 +83,6 @@ subprojects {
         testCompile "junit:junit:$junitVersion"
         testCompile "org.mockito:mockito-all:$mockitoVersion"
         testCompile "org.apache.derby:derby:$apacheDerbyVersion"
-        testCompile 'commons-io:commons-io:2.4'
         testCompile 'xmlunit:xmlunit:1.6'
 
         testRuntime "org.apache.derby:derby:$apacheDerbyVersion"

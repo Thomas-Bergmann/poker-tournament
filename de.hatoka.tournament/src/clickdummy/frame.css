@@ -89,6 +89,10 @@ body {
   text-decoration: none;
 }
 
+.nav-sidebar > li > a > span.badge {
+  margin-left: 5px;
+}
+
 /*
  * Main content
  */
