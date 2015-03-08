@@ -5,7 +5,7 @@
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet"/>
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css" rel="stylesheet"/>
-<link href="frame.css" rel="stylesheet" />
+<link href="../../main/webapp/WEB-INF/resources/css/frame.css" rel="stylesheet" />
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js">//</script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js">//</script>
 <title>List of tournaments</title>
@@ -22,20 +22,17 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="#">Poker Planer</a>
+			<a class="navbar-brand" href="../home.html">Poker Planer</a>
 		</div>
 
 		<!-- Collect the nav links, forms, and other content for toggling -->
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-9">
 			<ul class="nav navbar-nav">
+				<li>
+					<a href="../players.html">Players</a>
+				</li>
 				<li class="active">
-					<a href="tournaments.xml">Tournaments</a>
-				</li>
-				<li>
-					<a href="cash_games.xml">Cash Games</a>
-				</li>
-				<li>
-					<a href="players.xml">Player</a>
+					<a href="history.html">Max Mustermann</a>
 				</li>
 			</ul>
 		</div><!-- /.navbar-collapse -->
@@ -44,27 +41,35 @@
 <div class="row">
 	<div class="col-sm-3 col-md-2 sidebar">
 		<ul class="nav-sidebar">
+			<li>
+				<a href="../players.html">Players <span class="badge">3</span></a>
+			</li>
 			<li class="active">
-				<a href="home.xml">Overview</a>
-			</li>
-			<li>
-				<a href="tournaments.xml">Tournaments <span class="badge">2</span></a>
-				<a class="glyphicon glyphicon-plus" href="tournament_add.xml"></a>
-			</li>
-			<li>
-				<a href="cash_games.xml">Cash Games <span class="badge">3</span></a>
-				<a class="glyphicon glyphicon-plus" href="cash_game_add.xml"></a>
-			</li>
-			<li>
-				<a href="players.xml">Players <span class="badge">12</span></a>
-				<a class="glyphicon glyphicon-plus" href="player_add.xml"></a>
+				<a href="history.html">History <span class="badge">4</span></a>
 			</li>
 		</ul>
 	</div>
 	<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-		<h1 class="page-header">Overview Page</h1>
+		<h1 class="page-header">History</h1>
+		<table class="table table-striped">
+		<tr>
+		<th>Date</th>
+		<th>Result</th>
+		</tr>
+		<tr>
+		<td>25.11.2012 22:45</td>
+		<td>2USD</td>
+		</tr>
+		<tr>
+		<td>26.11.2012 00:45</td>
+		<td>6USD</td>
+		</tr>
+		<tr>
+		<td>26.11.2012 1:01</td>
+		<td>2USD</td>
+		</tr>
+		</table>
 	</div>
 </div>
-
 </body>
 </html>
