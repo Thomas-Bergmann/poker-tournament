@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<loginForm>
-    <fillMandatoryFields>false</fillMandatoryFields>
-    <login>ThisIsTheLogin</login>
-    <loginFailed>true</loginFailed>
-    <nowActive>false</nowActive>
-</loginForm>

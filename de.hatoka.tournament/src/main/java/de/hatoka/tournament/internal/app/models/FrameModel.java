@@ -24,6 +24,9 @@ public class FrameModel
     @XmlAttribute
     private String title = null;
 
+    @XmlAttribute
+    private String titleKey = null;
+
     @XmlElement
     private String content = null;
 
@@ -34,16 +37,16 @@ public class FrameModel
     {
     }
 
-    public MenuItemVO addMainMenu(String title, URI uri, boolean isActive)
+    public MenuItemVO addMainMenu(String titleKey, URI uri, boolean isActive)
     {
-        MenuItemVO menuItemVO = new MenuItemVO(title, uri, isActive);
+        MenuItemVO menuItemVO = new MenuItemVO(titleKey, uri, isActive);
         getMainMenuItems().add(menuItemVO);
         return menuItemVO;
     }
 
-    public MenuItemVO addSiteMenu(String title, URI uriList, Integer count, URI uriAdd, boolean isActive)
+    public MenuItemVO addSiteMenu(String titleKey, URI uriList, Integer count, URI uriAdd, boolean isActive)
     {
-        MenuItemVO menuItemVO = new MenuItemVO(title, uriList, isActive, count, uriAdd);
+        MenuItemVO menuItemVO = new MenuItemVO(titleKey, uriList, isActive, count, uriAdd);
         getSideNavItems().add(menuItemVO);
         return menuItemVO;
     }
@@ -101,5 +104,16 @@ public class FrameModel
     public void setUriHome(URI uriHome)
     {
         this.uriHome = uriHome;
+    }
+
+    @XmlTransient
+    public String getTitleKey()
+    {
+        return titleKey;
+    }
+
+    public void setTitleKey(String titleKey)
+    {
+        this.titleKey = titleKey;
     }
 }

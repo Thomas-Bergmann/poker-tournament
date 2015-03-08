@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -47,9 +48,18 @@ public class TournamentBORepositoryImpl implements TournamentBORepository
     }
 
     @Override
-    public TournamentBO create(String name, Date date)
+    public TournamentBO createTournament(String name, Date date)
     {
-        TournamentPO tournamentPO = tournamentDao.createAndInsert(accountRef, name, date);
+        TournamentPO tournamentPO = tournamentDao.createAndInsert(accountRef, name, date, false);
+        return getBO(tournamentPO);
+    }
+
+    @Override
+    public TournamentBO createCashGame(Date date)
+    {
+        String name = new SimpleDateFormat("yyyy/mm/dd hh:MM").format(date);
+        TournamentPO tournamentPO = tournamentDao.createAndInsert(accountRef, name, date, true);
+
         return getBO(tournamentPO);
     }
 
@@ -72,7 +82,14 @@ public class TournamentBORepositoryImpl implements TournamentBORepository
     @Override
     public List<TournamentBO> getTournamenBOs()
     {
-        return tournamentDao.getByAccountRef(accountRef).stream().map(tournamentPO -> getBO(tournamentPO))
+        return tournamentDao.getByAccountRef(accountRef).stream().filter(tournamentPO -> !tournamentPO.isCashGame()).map(tournamentPO -> getBO(tournamentPO))
+                        .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<TournamentBO> getCashGameBOs()
+    {
+        return tournamentDao.getByAccountRef(accountRef).stream().filter(tournamentPO -> tournamentPO.isCashGame()).map(tournamentPO -> getBO(tournamentPO))
                         .collect(Collectors.toList());
     }
 

@@ -13,6 +13,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import de.hatoka.common.capi.app.servlet.AbstractService;
@@ -20,8 +21,8 @@ import de.hatoka.tournament.capi.config.TournamentConfiguration;
 import de.hatoka.tournament.internal.app.actions.TournamentListAction;
 import de.hatoka.tournament.internal.app.models.TournamentListModel;
 
-@Path("/tournaments")
-public class TournamentListService extends AbstractService
+@Path("/cashgames")
+public class CashGameListService extends AbstractService
 {
     private static final String RESOURCE_PREFIX = "de/hatoka/tournament/internal/templates/app/";
 
@@ -29,7 +30,8 @@ public class TournamentListService extends AbstractService
     private UriInfo info;
 
     private final AccountService accountService;
-    public TournamentListService()
+
+    public CashGameListService()
     {
         super(RESOURCE_PREFIX);
         accountService = new AccountService(this);
@@ -109,17 +111,21 @@ public class TournamentListService extends AbstractService
         {
             return accountService.redirectLogin();
         }
-        final TournamentListModel model = getAction(accountRef).getTournamentListModel(
-                        getUriBuilder(TournamentCompetitorService.class, "players"));
+        final TournamentListModel model = getAction(accountRef).getCashGameListModel(getUriBuilderPlayers());
         try
         {
             String content = renderStyleSheet(model, "tournament_list.xslt", getXsltProcessorParameter("tournament"));
-            return Response.status(200).entity(renderFrame(content, "title.list.tournament")).build();
+            return Response.status(200).entity(renderFrame(content, "title.list.cashgame")).build();
         }
         catch(IOException e)
         {
             return render(500, e);
         }
+    }
+
+    private UriBuilder getUriBuilderPlayers()
+    {
+        return getUriBuilder(CashGameCompetitorService.class, "players");
     }
 
     /**
@@ -136,12 +142,11 @@ public class TournamentListService extends AbstractService
         {
             return accountService.redirectLogin();
         }
-        final TournamentListModel model = getAction(accountRef).getTournamentListModel(
-                        getUriBuilder(TournamentCompetitorService.class, "players"));
+        final TournamentListModel model = getAction(accountRef).getCashGameListModel(getUriBuilderPlayers());
         try
         {
             String content = renderStyleSheet(model, "tournament_add.xslt", getXsltProcessorParameter("tournament"));
-            return Response.status(200).entity(renderFrame(content, "title.create.tournament")).build();
+            return Response.status(200).entity(renderFrame(content, "title.create.cashgame")).build();
         }
         catch(IOException e)
         {
@@ -151,8 +156,8 @@ public class TournamentListService extends AbstractService
 
     @GET
     @Path("/register.html")
-    public Response register( @DefaultValue("") @QueryParam("accountID")  final String accountID,
-                              @DefaultValue("") @QueryParam("accountSign") final String accountSign)
+    public Response register(@DefaultValue("") @QueryParam("accountID") final String accountID,
+                    @DefaultValue("") @QueryParam("accountSign") final String accountSign)
     {
         if (accountID == null || accountID.isEmpty())
         {
@@ -168,15 +173,14 @@ public class TournamentListService extends AbstractService
         return redirectList(cookies.toArray(new NewCookie[cookies.size()]));
     }
 
-
     private Response redirectList(NewCookie... cookies)
     {
-        return Response.seeOther(getUriBuilder(TournamentListService.class, "list").build()).cookie(cookies).build();
+        return Response.seeOther(getUriBuilder(CashGameListService.class, "list").build()).cookie(cookies).build();
     }
 
     private String renderFrame(String content, String titleKey) throws IOException
     {
         TournamentListAction action = getAction(accountService.getAccountRef());
-        return renderStyleSheet(action.getMainFrameModel(content, titleKey, getInfo(), false), "tournament_frame.xslt", getXsltProcessorParameter("tournament"));
+        return renderStyleSheet(action.getMainFrameModel(content, titleKey, getInfo(), true), "tournament_frame.xslt", getXsltProcessorParameter("tournament"));
     }
 }

@@ -7,13 +7,26 @@
 	<xsl:output method="html" encoding="UTF-8" indent="yes" />
 	<!-- MAIN TEMPLATE -->
 	<xsl:template match="/">
-		<html xmlns="http://www.w3.org/1999/xhtml">
-			<xsl:call-template name="head">
-				<xsl:with-param name="title">
-					<xsl:value-of select="frameModel/@title" />
-				</xsl:with-param>
-				<xsl:with-param name="cssHRef">../frame.css</xsl:with-param>
-			</xsl:call-template>
+      <html xmlns="http://www.w3.org/1999/xhtml">
+		<xsl:call-template name="head">
+			<xsl:with-param name="title">
+				<xsl:choose>
+					<xsl:when test="frameModel/@title">
+						<xsl:value-of select="frameModel/@title" />
+					</xsl:when>
+					<xsl:when test="frameModel/@titleKey">
+					<xsl:value-of
+						select="hatoka:getText($localizer, frameModel/@titleKey, 'no title')" />
+					</xsl:when>
+					<xsl:otherwise>
+						no title
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:with-param>
+			<xsl:with-param name="cssHRef">
+				../resources/css/frame.css
+			</xsl:with-param>
+		</xsl:call-template>
 			<body>
 				<nav class="navbar navbar-inverse navbar-fixed-top">
 					<div class="container-fluid">
@@ -47,8 +60,18 @@
 						</ul>
 					</div>
 					<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-						<xsl:value-of select="frameModel/content"
-							disable-output-escaping="yes" />
+					<xsl:choose>
+					  <xsl:when test="frameModel/@title">
+						<h1 class="page-header"><xsl:value-of select="frameModel/@title" /></h1>
+					  </xsl:when>
+					  <xsl:when test="frameModel/@titleKey">
+						<h1 class="page-header"><xsl:value-of select="hatoka:getText($localizer, frameModel/@titleKey, 'no title')" /></h1>
+					  </xsl:when>
+					  <xsl:otherwise>
+						<h1 class="page-header">no title</h1>
+					  </xsl:otherwise>
+					</xsl:choose>
+						<xsl:value-of select="frameModel/content" disable-output-escaping="yes" />
 					</div>
 				</div>
 			</body>
@@ -77,7 +100,7 @@
 				</xsl:if>
 			</a>
 			<xsl:if test="@uriAdd">
-				<a class="glyphicon glyphicon-plus" href="{@uriAdd}"></a>
+				<a class="glyphicon glyphicon-plus" href="{@uriAdd}">&#160;</a>
 			</xsl:if>
 		</li>
 	</xsl:template>

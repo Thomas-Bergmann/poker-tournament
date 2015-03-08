@@ -84,7 +84,7 @@ public class LoginService extends AbstractService
         LoginPageModel forms = new LoginPageModel();
         forms.setLoginForm(loginForm == null ? new LoginForm() : loginForm);
         forms.setSignUpForm(signupForm == null ? new SignUpForm() : signupForm);
-        return renderStyleSheet(forms, "login", cookies);
+        return renderResponseWithStylesheet(forms, "login.xslt", "login", cookies);
     }
 
     @POST

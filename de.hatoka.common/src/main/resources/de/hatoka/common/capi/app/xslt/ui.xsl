@@ -1,5 +1,6 @@
 <xsl:stylesheet version="1.0" xmlns="http://www.w3.org/1999/xhtml" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-  xmlns:hatoka="xalan://de.hatoka.common.capi.app.xslt.Lib" exclude-result-prefixes="hatoka"
+  xmlns:hatoka="xalan://de.hatoka.common.capi.app.xslt.Lib"
+  exclude-result-prefixes="hatoka"
 >
   <xsl:template name="input">
     <xsl:param name="name" />
@@ -87,11 +88,11 @@
     <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-      <xsl:if test="$cssHRef != ''">
-        <link rel="stylesheet" href="{$cssHRef}" />
-      </xsl:if>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css" />
+    <xsl:if test="$cssHRef != ''">
+      <link rel="stylesheet" href="{$cssHRef}" />
+    </xsl:if>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js">//</script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js">//</script>
     <title><xsl:value-of select="$title" /></title>

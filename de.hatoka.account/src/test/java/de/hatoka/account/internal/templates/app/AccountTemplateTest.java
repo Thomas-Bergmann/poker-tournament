@@ -1,12 +1,8 @@
 package de.hatoka.account.internal.templates.app;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
 import java.util.Locale;
 
-import org.apache.commons.io.IOUtils;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.BeforeClass;
@@ -15,14 +11,15 @@ import org.xml.sax.SAXException;
 
 import de.hatoka.account.internal.app.models.AccountListModel;
 import de.hatoka.account.internal.app.models.AccountVO;
-import de.hatoka.common.capi.app.xslt.Processor;
-import de.hatoka.common.capi.resource.LocalizationBundle;
-import de.hatoka.common.capi.resource.ResourceLocalizer;
+import de.hatoka.common.capi.app.xslt.XSLTRenderer;
+import de.hatoka.common.capi.resource.ResourceLoader;
 
 public class AccountTemplateTest
 {
-    private static final String XSLT_STYLESHEET = "account.xslt";
     private static final String RESOURCE_PREFIX = "de/hatoka/account/internal/templates/app/";
+    private static final String XSLT_STYLESHEET = RESOURCE_PREFIX  + "account.xslt";
+    private static final XSLTRenderer RENDERER = new XSLTRenderer();
+    private static final ResourceLoader RESOURCE_LOADER = new ResourceLoader();
 
     private AccountVO getAccountVO(String id, String email, String name, boolean isActive)
     {
@@ -33,24 +30,6 @@ public class AccountTemplateTest
         result.setName(name);
         result.setSelected(isActive);
         return result;
-    }
-
-    private Processor getConverter(Locale locale)
-    {
-        return new Processor(RESOURCE_PREFIX, new ResourceLocalizer(new LocalizationBundle(RESOURCE_PREFIX + "account",
-                        locale)));
-    }
-
-    private String getResource(String string) throws IOException
-    {
-        StringWriter writer = new StringWriter();
-        InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream(RESOURCE_PREFIX + string);
-        if (resourceAsStream == null)
-        {
-            throw new FileNotFoundException("Can't find resource: " + RESOURCE_PREFIX + string);
-        }
-        IOUtils.copy(resourceAsStream, writer, "UTF-8");
-        return writer.toString();
     }
 
     @BeforeClass
@@ -65,11 +44,10 @@ public class AccountTemplateTest
         AccountListModel model = new AccountListModel();
         model.getAccounts().add(getAccountVO("123456", "test1@test.mail", "Test 1", true));
         model.getAccounts().add(getAccountVO("123457", "test2@test.mail", "Test 2", false));
-        StringWriter writer = new StringWriter();
-        getConverter(Locale.US).process(model, XSLT_STYLESHEET, writer);
+        String content = RENDERER.render(model, XSLT_STYLESHEET, RENDERER.getParameter(RESOURCE_PREFIX + "account", Locale.US));
 
-        // Assert.assertEquals("account_list en_Us fails", getResource("account_list.result.xml"), writer.toString());
-        XMLAssert.assertXMLEqual("account_list en_Us fails", getResource("account_list.result.xml"), writer.toString());
+        // Assert.assertEquals("account_list en_Us fails", getResource("account_list.result.xml"), content);
+        XMLAssert.assertXMLEqual("account_list en_Us fails", RESOURCE_LOADER.getResourceAsString(RESOURCE_PREFIX + "account_list.result.xml"), content);
     }
 
 }

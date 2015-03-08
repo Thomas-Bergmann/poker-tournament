@@ -15,8 +15,8 @@ import de.hatoka.common.capi.app.servlet.AbstractService;
 import de.hatoka.tournament.internal.app.actions.TournamentAction;
 import de.hatoka.tournament.internal.app.models.TournamentPlayerListModel;
 
-@Path("/tournament/{id}")
-public class TournamentPlayerService extends AbstractService
+@Path("/cashgame/{id}")
+public class CashGameCompetitorService extends AbstractService
 {
     private static final String RESOURCE_PREFIX = "de/hatoka/tournament/internal/templates/app/";
 
@@ -28,13 +28,13 @@ public class TournamentPlayerService extends AbstractService
 
     private AccountService accountService;
 
-    public TournamentPlayerService()
+    public CashGameCompetitorService()
     {
         super(RESOURCE_PREFIX);
         accountService = new AccountService(this);
     }
 
-    public TournamentPlayerService(AccountService accountService)
+    public CashGameCompetitorService(AccountService accountService)
     {
         super(RESOURCE_PREFIX);
         this.accountService = accountService;
@@ -151,8 +151,8 @@ public class TournamentPlayerService extends AbstractService
         }
         final TournamentPlayerListModel model = getAction(accountRef).getPlayerListModel(tournamentID,
                         getUriBuilder(TournamentListService.class, "list").build(),
-                        getUriBuilder(TournamentPlayerService.class, "players"));
-        return renderStyleSheet(model, "tournament_players.xslt", "tournament");
+                        getUriBuilder(CashGameCompetitorService.class, "players"));
+        return renderResponseWithStylesheet(model, "tournament_players.xslt", "tournament");
     }
 
     @POST
@@ -178,7 +178,7 @@ public class TournamentPlayerService extends AbstractService
 
     private Response redirectPlayers()
     {
-        return Response.seeOther(getUriBuilder(TournamentPlayerService.class, "players").build(tournamentID)).build();
+        return Response.seeOther(getUriBuilder(CashGameCompetitorService.class, "players").build(tournamentID)).build();
     }
 
     @POST

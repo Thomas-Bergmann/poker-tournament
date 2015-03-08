@@ -10,6 +10,8 @@ import de.hatoka.common.capi.app.servlet.ResourceService;
  */
 public class Lib
 {
+    public static final String XSLT_LOCALIZER = "localizer";
+
     public static String formatDate(Localizer localizer, String dateString)
     {
         return localizer.formatDate(dateString);

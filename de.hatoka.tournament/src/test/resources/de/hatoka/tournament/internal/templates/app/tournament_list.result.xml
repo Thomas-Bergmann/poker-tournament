@@ -1,17 +1,4 @@
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
-<meta content="width=device-width, initial-scale=1" name="viewport"/>
-<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet"/>
-<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css" rel="stylesheet"/>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js">//</script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js">//</script>
-<title>List of tournaments</title>
-</head>
-<body>
-<div class="col-md-8">
-<form action="action" method="POST">
+<form xmlns="http://www.w3.org/1999/xhtml" action="action" method="POST">
 <table class="table table-striped">
 <tr>
 <th>Select</th>
@@ -43,16 +30,3 @@
 </table>
 <button name="delete" type="submit" class="btn btn-primary">Delete</button>
 </form>
-</div>
-<div class="col-md-4">
-<h2>Create new tournament:</h2>
-<form action="create" method="POST">
-<label class="sr-only" for="inputname">Tournament Name</label>
-<input value="" name="name" type="text" id="inputname" class="form-control" placeholder="Tournament Name"/>
-<label class="sr-only" for="inputbuyIn">Buy-In</label>
-<input value="" name="buyIn" type="text" id="inputbuyIn" class="form-control" placeholder="Buy-In"/>
-<button name="create" type="submit" class="btn btn-primary">Create</button>
-</form>
-</div>
-</body>
-</html>

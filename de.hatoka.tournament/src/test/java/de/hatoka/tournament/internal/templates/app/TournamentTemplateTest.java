@@ -1,27 +1,26 @@
 package de.hatoka.tournament.internal.templates.app;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.ws.rs.core.UriBuilder;
 
-import org.apache.commons.io.IOUtils;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import de.hatoka.common.capi.app.model.MoneyVO;
-import de.hatoka.common.capi.app.xslt.Processor;
+import de.hatoka.common.capi.app.xslt.Lib;
+import de.hatoka.common.capi.app.xslt.XSLTRenderer;
 import de.hatoka.common.capi.business.Money;
 import de.hatoka.common.capi.resource.LocalizationBundle;
 import de.hatoka.common.capi.resource.LocalizationConstants;
+import de.hatoka.common.capi.resource.ResourceLoader;
 import de.hatoka.common.capi.resource.ResourceLocalizer;
 import de.hatoka.tournament.internal.app.models.CompetitorVO;
 import de.hatoka.tournament.internal.app.models.PlayerVO;
@@ -32,6 +31,19 @@ import de.hatoka.tournament.internal.app.models.TournamentVO;
 public class TournamentTemplateTest
 {
     private static final String RESOURCE_PREFIX = "de/hatoka/tournament/internal/templates/app/";
+    private static final XSLTRenderer RENDERER = new XSLTRenderer();
+    private static final ResourceLoader RESOURCE_LOADER = new ResourceLoader();
+
+    @BeforeClass
+    public static void initClass()
+    {
+        XMLUnit.setIgnoreWhitespace(true);
+    }
+
+    private String getResource(String resource) throws IOException
+    {
+        return RESOURCE_LOADER.getResourceAsString(RESOURCE_PREFIX + resource);
+    }
 
     private CompetitorVO getCompetitorVO(String id, String name, String playerID)
     {
@@ -45,16 +57,12 @@ public class TournamentTemplateTest
         return result;
     }
 
-    @BeforeClass
-    public static void initClass()
+    private Map<String, Object> getParameter()
     {
-        XMLUnit.setIgnoreWhitespace(true);
-    }
-
-    private Processor getConverter(Locale locale)
-    {
-        return new Processor(RESOURCE_PREFIX, new ResourceLocalizer(new LocalizationBundle(RESOURCE_PREFIX
-                        + "tournament", locale), "dd.MM.yyyy hh:mm"));
+        Map<String, Object> result = new HashMap<>();
+        result.put(Lib.XSLT_LOCALIZER, new ResourceLocalizer(
+                        new LocalizationBundle(RESOURCE_PREFIX + "tournament", Locale.US), "dd.MM.yyyy hh:mm"));
+        return result;
     }
 
     private PlayerVO getPlayerVO(String id, String name)
@@ -63,18 +71,6 @@ public class TournamentTemplateTest
         result.setId(id);
         result.setName(name);
         return result;
-    }
-
-    private String getResource(String string) throws IOException
-    {
-        StringWriter writer = new StringWriter();
-        InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream(RESOURCE_PREFIX + string);
-        if (resourceAsStream == null)
-        {
-            throw new FileNotFoundException("Can't find resource: " + RESOURCE_PREFIX + string);
-        }
-        IOUtils.copy(resourceAsStream, writer, "UTF-8");
-        return writer.toString();
     }
 
     private TournamentVO getTournamentVO(String id, String name, Date date)
@@ -102,11 +98,10 @@ public class TournamentTemplateTest
         competitorVO.setActive(false);
         model.getCompetitors().add(competitorVO);
         model.getUnassignedPlayers().add(getPlayerVO("1234581", "Player 3"));
-        StringWriter writer = new StringWriter();
-        getConverter(Locale.US).process(model, "tournament_players.xslt", writer);
+        String content = RENDERER.render(model, RESOURCE_PREFIX + "tournament_players.xslt", getParameter());
 
-        // Assert.assertEquals("players not listed correctly", getResource("tournament_players.result.xml"), writer.toString());
-        XMLAssert.assertXMLEqual("players not listed correctly", getResource("tournament_players.result.xml"), writer.toString());
+        // Assert.assertEquals("players not listed correctly", getResource("tournament_players.result.xml"), content);
+        XMLAssert.assertXMLEqual("players not listed correctly", getResource("tournament_players.result.xml"), content);
     }
 
     @Test
@@ -120,15 +115,13 @@ public class TournamentTemplateTest
         competitorVO.setResult(new MoneyVO(Money.getInstance("-1", "USD")));
         competitorVO.setActive(false);
         model.getCompetitors().add(competitorVO);
-        StringWriter writer = new StringWriter();
-        getConverter(Locale.US).process(model, "tournament_players.xslt", writer);
+        String content = RENDERER.render(model, RESOURCE_PREFIX + "tournament_player_add.xslt", getParameter());
 
-        // Assert.assertEquals("players not listed correctly", getResource("tournament_no_unassigned.result.xml"), writer.toString());
-        XMLAssert.assertXMLEqual("players unassigned incorrectly", getResource("tournament_no_unassigned.result.xml"), writer.toString());
+        // Assert.assertEquals("players not listed correctly", getResource("tournament_no_unassigned.result.xml"), content);
+        XMLAssert.assertXMLEqual("players unassigned incorrectly", getResource("tournament_no_unassigned.result.xml"), content);
     }
 
     @Test
-    @Ignore
     /**
      * FIXME #8 ignore - doesn't work at Travis CI
      * @throws Exception
@@ -140,11 +133,10 @@ public class TournamentTemplateTest
                         getTournamentVO("123456", "Test 1", new SimpleDateFormat(LocalizationConstants.XML_DATEFORMAT)
                                         .parse("2011-11-25T08:42:55.624+01:00")));
         model.getTournaments().add(
-                        getTournamentVO("123457", "Test 2", new SimpleDateFormat(LocalizationConstants.XML_DATEFORMAT)
-                                        .parse("2012-11-25T09:45:55.624+01:00")));
-        StringWriter writer = new StringWriter();
-        getConverter(Locale.US).process(model, "tournament_list.xslt", writer);
-        // Assert.assertEquals("tournaments not listed correctly", getResource("tournament_list.result.xml"), writer.toString());
-        XMLAssert.assertXMLEqual("tournaments not listed correctly", getResource("tournament_list.result.xml"), writer.toString());
+                        getTournamentVO("123457", "Test 2", new SimpleDateFormat(LocalizationConstants.XML_DATEFORMAT_SECONDS)
+                                        .parse("2012-11-25T09:45:55+01:00")));
+        String content = RENDERER.render(model, RESOURCE_PREFIX + "tournament_list.xslt", getParameter());
+        // Assert.assertEquals("tournaments not listed correctly", getResource("tournament_list.result.xml"), content);
+        XMLAssert.assertXMLEqual("tournaments not listed correctly", getResource("tournament_list.result.xml"), content);
     }
 }

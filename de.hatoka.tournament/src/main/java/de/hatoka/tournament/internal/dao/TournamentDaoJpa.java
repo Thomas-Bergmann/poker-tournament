@@ -25,13 +25,14 @@ public class TournamentDaoJpa extends GenericJPADao<TournamentPO> implements Tou
     }
 
     @Override
-    public TournamentPO createAndInsert(String accountRef, String name, Date date)
+    public TournamentPO createAndInsert(String accountRef, String name, Date date, boolean isCashGame)
     {
         TournamentPO result = create();
         result.setId(uuidGenerator.generate());
         result.setAccountRef(accountRef);
         result.setName(name);
         result.setDate(date);
+        result.setCashGame(isCashGame);
         insert(result);
         return result;
     }

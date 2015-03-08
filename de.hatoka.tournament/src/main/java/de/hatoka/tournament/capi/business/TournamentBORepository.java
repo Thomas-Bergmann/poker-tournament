@@ -7,11 +7,15 @@ import java.util.List;
 
 public interface TournamentBORepository
 {
-    TournamentBO create(String name, Date date);
+    TournamentBO createTournament(String name, Date date);
+
+    TournamentBO createCashGame(Date date);
 
     TournamentBO getByID(String id);
 
     List<TournamentBO> getTournamenBOs();
 
     File exportFile() throws IOException;
+
+    List<TournamentBO> getCashGameBOs();
 }

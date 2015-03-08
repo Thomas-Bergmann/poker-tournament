@@ -115,7 +115,7 @@ public class AccountService extends AbstractService
         }
         final String currentAccountID = getCookieValue(CookieConstants.ACCOUNT_COOKIE_NAME);
         final AccountListModel accounts = new AccountAction(currentUserBO).getListModel(currentAccountID);
-        return renderStyleSheet(accounts, "account");
+        return renderResponseWithStylesheet(accounts, "account.xslt", "account");
     }
 
     private Response redirectList(NewCookie... cookies)

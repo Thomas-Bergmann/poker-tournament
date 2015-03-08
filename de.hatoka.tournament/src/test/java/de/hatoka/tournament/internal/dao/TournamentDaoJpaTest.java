@@ -54,7 +54,7 @@ public class TournamentDaoJpaTest
     {
         EntityTransaction transaction = transactionProvider.get();
         transaction.begin();
-        TournamentPO tournamentPO = tournamentDao.createAndInsert(TEST_ACCOUNT_REF, "Tournament1", new Date());
+        TournamentPO tournamentPO = tournamentDao.createAndInsert(TEST_ACCOUNT_REF, "Tournament1", new Date(), false);
         PlayerPO playerPO = playerDao.createAndInsert(TEST_ACCOUNT_REF, "Player1");
         CompetitorPO competitorPO = competitorDao.createAndInsert(tournamentPO, playerPO);
         transaction.commit();

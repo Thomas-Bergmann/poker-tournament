@@ -3,7 +3,9 @@ package de.hatoka.account.internal.business;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -19,7 +21,7 @@ import de.hatoka.account.capi.entities.UserPO;
 import de.hatoka.account.internal.app.models.SignUpVerifyMailModel;
 import de.hatoka.address.capi.business.AddressBO;
 import de.hatoka.address.capi.business.AddressBORepository;
-import de.hatoka.common.capi.app.xslt.Processor;
+import de.hatoka.common.capi.app.xslt.XSLTRenderer;
 import de.hatoka.common.capi.dao.EncryptionUtils;
 import de.hatoka.common.capi.dao.UUIDGenerator;
 import de.hatoka.common.capi.exceptions.IllegalObjectAccessException;
@@ -32,6 +34,7 @@ import de.hatoka.mail.capi.service.MailService;
 
 public class UserBOImpl implements UserBO
 {
+    private static final XSLTRenderer RENDERER = new XSLTRenderer();
     private static final String RESOURCE_PREFIX = "de/hatoka/account/internal/templates/mail/";
 
     @Inject
@@ -76,14 +79,13 @@ public class UserBOImpl implements UserBO
     private MailPO createSignUpVerifyMail(URI uri, String accountID)
     {
         // create content
-        Processor processor = getProcessor();
         StringWriter writer = new StringWriter();
         SignUpVerifyMailModel signUpVerifyEmailModel = new SignUpVerifyMailModel();
         String link = uri.toString() + "?token=" + userPO.getSignInToken() + "&email=" + userPO.getEmail();
         signUpVerifyEmailModel.setLink(link);
         try
         {
-            processor.process(signUpVerifyEmailModel, "signUpVerifyEmail.html.xslt", writer);
+            RENDERER.render(writer, signUpVerifyEmailModel, "signUpVerifyEmail.html.xslt", getXsltProcessorParameter());
         }
         catch(IOException e)
         {
@@ -95,6 +97,13 @@ public class UserBOImpl implements UserBO
         result.setContentHTML(writer.toString());
         mailDao.createReceiver(result, MailAddressType.FROM, accountConfiguration.getFromAddressForAccountRegistration());
         mailDao.createReceiver(result, MailAddressType.TO, userPO.getEmail());
+        return result;
+    }
+
+    private Map<String, Object> getXsltProcessorParameter()
+    {
+        Map<String, Object> result = new HashMap<String, Object>();
+        result.put("localizer", getLocalizer());
         return result;
     }
 
@@ -183,11 +192,6 @@ public class UserBOImpl implements UserBO
             return null;
         }
         return getAddressBORepository().getByID(addressRef);
-    }
-
-    private Processor getProcessor()
-    {
-        return new Processor(RESOURCE_PREFIX, getLocalizer());
     }
 
     @Override

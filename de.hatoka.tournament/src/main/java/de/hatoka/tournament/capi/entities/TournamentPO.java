@@ -36,6 +36,8 @@ public class TournamentPO implements Serializable, IdentifiableEntity
     @NotNull
     private String accountRef;
     @NotNull
+    private boolean isCashGame;
+    @NotNull
     private String name;
     @NotNull
     @Temporal(TemporalType.DATE)
@@ -147,5 +149,15 @@ public class TournamentPO implements Serializable, IdentifiableEntity
     public void setName(String name)
     {
         this.name = name;
+    }
+
+    public boolean isCashGame()
+    {
+        return isCashGame;
+    }
+
+    public void setCashGame(boolean isCashGame)
+    {
+        this.isCashGame = isCashGame;
     }
 }

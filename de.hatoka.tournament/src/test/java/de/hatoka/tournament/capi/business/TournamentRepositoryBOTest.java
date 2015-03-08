@@ -110,7 +110,7 @@ public class TournamentRepositoryBOTest
         EntityTransaction entityTransaction = transactionProvider.get();
         entityTransaction.begin();
         PlayerPO player1 = playerDao.createAndInsert(accountRef, "player1");
-        TournamentPO tournamentPO = tournamentDao.createAndInsert(accountRef, "tournament", CURRENT_DATE);
+        TournamentPO tournamentPO = tournamentDao.createAndInsert(accountRef, "tournament", CURRENT_DATE, false);
         tournamentPO.setBuyIn(Money.getInstance("5 EUR").toMoneyPO());
         CompetitorPO competitor1 = competitorDao.createAndInsert(tournamentPO, player1);
         competitor1.setMoneyInPlay(Money.getInstance("5 EUR").toMoneyPO());

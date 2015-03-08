@@ -29,9 +29,16 @@ public class ResourceLocalizer implements Localizer
         {
             return "";
         }
-        // convert xml format 2014-11-25T09:45:55.624+01:00 to target
+        // convert xml date format to target
+        // 2014-11-25T09:45:55.624+01:00
+        // 2015-03-01T00:00:00+01:00
+        // 12345678901234567890123456789
         try
         {
+            if (dateString.length() == 25)
+            {
+                return new SimpleDateFormat(dateFormat).format(new SimpleDateFormat(LocalizationConstants.XML_DATEFORMAT_SECONDS).parse(dateString));
+            }
             return new SimpleDateFormat(dateFormat).format(new SimpleDateFormat(LocalizationConstants.XML_DATEFORMAT).parse(dateString));
         }
         catch(ParseException e)

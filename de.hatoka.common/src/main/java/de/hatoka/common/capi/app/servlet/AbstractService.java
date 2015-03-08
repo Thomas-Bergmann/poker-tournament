@@ -2,7 +2,9 @@ package de.hatoka.common.capi.app.servlet;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import javax.persistence.EntityTransaction;
@@ -20,7 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Injector;
 
-import de.hatoka.common.capi.app.xslt.Processor;
+import de.hatoka.common.capi.app.xslt.XSLTRenderer;
 import de.hatoka.common.capi.dao.TransactionProvider;
 import de.hatoka.common.capi.dao.UUIDGenerator;
 import de.hatoka.common.capi.resource.LocalizationBundle;
@@ -29,9 +31,9 @@ import de.hatoka.common.internal.app.models.ErrorModel;
 
 public class AbstractService
 {
-    private static final String ERROR_RESOURCE_PREFIX = "de/hatoka/common/capi/app/xslt/";
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractService.class);
     private static final Locale DEFAULT_LOCALE = Locale.US;
+    private static final XSLTRenderer RENDERER = new XSLTRenderer();
 
     private final String resourcePrefix;
 
@@ -93,24 +95,12 @@ public class AbstractService
 
     public UriBuilder getUriBuilder(Class<?> resource, String methodName)
     {
-        return info.getBaseUriBuilder().path(resource).path(resource, methodName);
+        return getInfo().getBaseUriBuilder().path(resource).path(resource, methodName);
     }
 
     protected String getUUID()
     {
         return getInstance(UUIDGenerator.class).generate();
-    }
-
-    protected Processor getXsltErrorProcessor()
-    {
-        return new Processor(ERROR_RESOURCE_PREFIX, new ResourceLocalizer(new LocalizationBundle(ERROR_RESOURCE_PREFIX
-                        + "error", getLocale())));
-    }
-
-    protected Processor getXsltProcessor(String resourceName)
-    {
-        return new Processor(resourcePrefix, new ResourceLocalizer(new LocalizationBundle(
-                        resourcePrefix + resourceName, getLocale())));
     }
 
     protected void injectMembers(Object action)
@@ -125,70 +115,56 @@ public class AbstractService
         StringWriter writer = new StringWriter();
         try
         {
-            getXsltErrorProcessor().process(new ErrorModel(errorID, exception), "error.xslt", writer, info);
+            RENDERER.render(writer, new ErrorModel(errorID, exception), "de/hatoka/common/capi/app/xslt/error.xslt",
+                            getXsltProcessorParameter(null));
         }
         catch(IOException e)
         {
             LOGGER.error("Can't create error page", e);
         }
-        return Response.status(200).entity(writer.toString()).build();
+        return Response.status(status).entity(writer.toString()).build();
     }
 
     /**
-     * Render stylesheet (with resourceName for localization is equal to
-     * stylesheet).
      *
-     * @param object
+     * @param jaxbModel
+     * @param stylesheet xslt file without resourcePrefix
      * @param resourceName
-     * @return response
-     */
-    protected Response renderStyleSheet(Object object, String resourceName)
-    {
-        return renderStyleSheet(object, resourceName + ".xslt", resourceName);
-    }
-
-    /**
-     * Render stylesheet (with resourceName for localization is equal to
-     * stylesheet).
-     *
-     * @param object
-     * @param stylesheet and resourcename
-     * @param cookies
+     *            for localization without resourcePrefix
      * @return
      */
-    protected Response renderStyleSheet(Object object, String stylesheet, NewCookie... cookies)
+    protected Response renderResponseWithStylesheet(Object jaxbModel, String stylesheet, String resourceName, NewCookie... cookies)
     {
-        StringWriter writer = new StringWriter();
         try
         {
-            getXsltProcessor(stylesheet).process(object, stylesheet + ".xslt", writer, info);
+            return Response.status(200).cookie(cookies).entity(renderStyleSheet(jaxbModel, stylesheet, getXsltProcessorParameter(resourceName))).build();
         }
         catch(IOException e)
         {
             return render(500, e);
         }
-        return Response.status(200).cookie(cookies).entity(writer.toString()).build();
     }
 
-    /**
-     *
-     * @param object
-     * @param stylesheet xslt file
-     * @param resourceName  for localization
-     * @return
-     */
-    protected Response renderStyleSheet(Object object, String stylesheet, String resourceName)
+    protected String renderStyleSheet(Object jaxbModel, String stylesheet, Map<String, Object> xsltProcessorParameter) throws IOException
     {
-        StringWriter writer = new StringWriter();
-        try
+        return RENDERER.render(jaxbModel, resourcePrefix + stylesheet, xsltProcessorParameter);
+    }
+
+
+    /**
+     * @param localizationResource without resourcePrefix
+     * @return parameter for xslt processor
+     */
+    protected Map<String, Object> getXsltProcessorParameter(String localizationResource)
+    {
+        Map<String, Object> result = new HashMap<String, Object>();
+        result.put("uriInfo", getInfo());
+        if (localizationResource != null)
         {
-            getXsltProcessor(resourceName).process(object, stylesheet, writer, info);
+            result.put("localizer", new ResourceLocalizer(new LocalizationBundle(resourcePrefix
+                            + localizationResource, getLocale())));
         }
-        catch(IOException e)
-        {
-            return render(500, e);
-        }
-        return Response.status(200).entity(writer.toString()).build();
+        return result;
     }
 
     protected <T> T runInTransaction(Callable<T> callable) throws Exception
@@ -209,10 +185,11 @@ public class AbstractService
             }
         }
         return result;
-   }
+    }
 
     /**
      * Runs the given parameter inside of a transaction
+     *
      * @param runnable
      */
     protected void runInTransaction(Runnable runnable)
@@ -234,11 +211,17 @@ public class AbstractService
     }
 
     /**
-     * @param button value
+     * @param button
+     *            value
      * @return true if button value was transmitted
      */
     protected boolean isButtonPressed(String button)
     {
         return button != null;
+    }
+
+    public UriInfo getInfo()
+    {
+        return info;
     }
 }

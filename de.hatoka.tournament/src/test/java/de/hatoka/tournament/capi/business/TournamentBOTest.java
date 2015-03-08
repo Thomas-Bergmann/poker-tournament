@@ -35,7 +35,7 @@ public class TournamentBOTest
     {
         TestBusinessInjectorProvider.get(rule.getModule()).injectMembers(this);
         TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(ACCOUNT_REF);
-        underTest = tournamentBORepository.create("test", NOW);
+        underTest = tournamentBORepository.createTournament("test", NOW);
         player1 = factory.getPlayerBORepository(ACCOUNT_REF).create("testPlayer1");
         player2 = factory.getPlayerBORepository(ACCOUNT_REF).create("testPlayer2");
     }
