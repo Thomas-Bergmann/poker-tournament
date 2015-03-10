@@ -14,6 +14,7 @@ xmlns:hatoka="xalan://de.hatoka.common.capi.app.xslt.Lib"
            <th>Select</th>
            <th>Name</th>
            <th>Date</th>
+           <th>Buy-In</th>
          </tr>
          <xsl:apply-templates />
        </table>
@@ -40,6 +41,13 @@ xmlns:hatoka="xalan://de.hatoka.common.capi.app.xslt.Lib"
         <xsl:call-template name="formatDate">
           <xsl:with-param name="date">
             <xsl:value-of select="date" />
+          </xsl:with-param>
+        </xsl:call-template>
+      </td>
+      <td>
+        <xsl:call-template name="formatMoney">
+          <xsl:with-param name="money">
+            <xsl:value-of select="buyIn" />
           </xsl:with-param>
         </xsl:call-template>
       </td>

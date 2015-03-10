@@ -1,5 +1,6 @@
 package de.hatoka.tournament.internal.app.servlets;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.ws.rs.FormParam;
@@ -12,7 +13,10 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import de.hatoka.common.capi.app.servlet.AbstractService;
+import de.hatoka.tournament.capi.business.TournamentBORepository;
+import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
 import de.hatoka.tournament.internal.app.actions.TournamentAction;
+import de.hatoka.tournament.internal.app.menu.MenuFactory;
 import de.hatoka.tournament.internal.app.models.TournamentPlayerListModel;
 
 @Path("/tournament/{id}")
@@ -27,6 +31,7 @@ public class TournamentCompetitorService extends AbstractService
     private UriInfo info;
 
     private AccountService accountService;
+    private final MenuFactory menuFactory = new MenuFactory();
 
     public TournamentCompetitorService()
     {
@@ -152,7 +157,15 @@ public class TournamentCompetitorService extends AbstractService
         final TournamentPlayerListModel model = getAction(accountRef).getPlayerListModel(tournamentID,
                         getUriBuilder(TournamentListService.class, "list").build(),
                         getUriBuilder(TournamentCompetitorService.class, "players"));
-        return renderResponseWithStylesheet(model, "tournament_players.xslt", "tournament");
+        try
+        {
+            String content = renderStyleSheet(model, "tournament_players.xslt", getXsltProcessorParameter("tournament"));
+            return Response.status(200).entity(renderFrame(content, "title.list.players")).build();
+        }
+        catch(IOException e)
+        {
+            return render(500, e);
+        }
     }
 
     @POST
@@ -222,5 +235,12 @@ public class TournamentCompetitorService extends AbstractService
             }
         });
         return redirectPlayers();
+    }
+
+    private String renderFrame(String content, String titleKey) throws IOException
+    {
+        TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
+        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountService.getAccountRef());
+        return renderStyleSheet(menuFactory.getTournamentFrameModel(content, titleKey, getInfo(), tournamentBORepository, tournamentID), "tournament_frame.xslt", getXsltProcessorParameter("tournament"));
     }
 }

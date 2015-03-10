@@ -14,11 +14,8 @@ import de.hatoka.common.capi.business.Money;
 import de.hatoka.tournament.capi.business.TournamentBO;
 import de.hatoka.tournament.capi.business.TournamentBORepository;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
-import de.hatoka.tournament.internal.app.models.FrameModel;
 import de.hatoka.tournament.internal.app.models.TournamentListModel;
 import de.hatoka.tournament.internal.app.models.TournamentVO;
-import de.hatoka.tournament.internal.app.servlets.CashGameListService;
-import de.hatoka.tournament.internal.app.servlets.TournamentListService;
 
 public class TournamentListAction
 {
@@ -32,7 +29,7 @@ public class TournamentListAction
         this.accountRef = accountRef;
     }
 
-    public TournamentBO createCashGame(String name, Date date, String buyIn)
+    public TournamentBO createCashGame(Date date, String buyIn)
     {
         TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountRef);
         TournamentBO result = tournamentBORepository.createCashGame(date);
@@ -63,7 +60,7 @@ public class TournamentListAction
     }
     public TournamentListModel getCashGameListModel(UriBuilder uriBuilder)
     {
-        return getListModel(uriBuilder, false);
+        return getListModel(uriBuilder, true);
     }
 
     private TournamentListModel getListModel(UriBuilder uriBuilder, boolean isCashGame)
@@ -90,34 +87,6 @@ public class TournamentListAction
         tournamentBOs.sort(sorter);
         tournamentBOs.forEach(mapper);
         return model;
-    }
-
-    public FrameModel getMainFrameModel(String content, String titleKey, UriInfo info, boolean isCashGame)
-    {
-        FrameModel model = new FrameModel();
-        model.setTitleKey(titleKey);
-        model.setContent(content);
-        model.setUriHome(getUri(info, CashGameListService.class, "list"));
-        model.addMainMenu("menu.list.tournaments", getUri(info, TournamentListService.class, "list"), !isCashGame);
-        model.addMainMenu("menu.list.cashgames", getUri(info, CashGameListService.class, "list"), isCashGame);
-
-        model.addSiteMenu("menu.list.tournaments", getUri(info, TournamentListService.class, "list"), getTournamentsSize(),
-                        getUri(info, TournamentListService.class, "add"), !isCashGame);
-        model.addSiteMenu("menu.list.cashgames", getUri(info, CashGameListService.class, "list"), getCashGamesSize(),
-                        getUri(info, CashGameListService.class, "add"), isCashGame);
-        return model;
-    }
-
-    private Integer getTournamentsSize()
-    {
-        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountRef);
-        return tournamentBORepository.getTournamenBOs().size();
-    }
-
-    private Integer getCashGamesSize()
-    {
-        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountRef);
-        return tournamentBORepository.getCashGameBOs().size();
     }
 
     public URI getUri(UriInfo info, Class<?> resource, String methodName)

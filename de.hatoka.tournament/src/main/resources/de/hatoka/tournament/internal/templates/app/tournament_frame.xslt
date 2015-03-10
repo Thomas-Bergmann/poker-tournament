@@ -3,6 +3,7 @@
 	exclude-result-prefixes="hatoka">
 	<xsl:import href="de/hatoka/common/capi/app/xslt/ui.xsl" />
 	<xsl:param name="localizer" />
+	<xsl:param name="uriInfo" />
 	<!-- BEGIN OUTPUT -->
 	<xsl:output method="html" encoding="UTF-8" indent="yes" />
 	<!-- MAIN TEMPLATE -->
@@ -24,7 +25,7 @@
 				</xsl:choose>
 			</xsl:with-param>
 			<xsl:with-param name="cssHRef">
-				../resources/css/frame.css
+				<xsl:value-of select="hatoka:getResourceURI($uriInfo, 'css/frame.css')" />
 			</xsl:with-param>
 		</xsl:call-template>
 			<body>

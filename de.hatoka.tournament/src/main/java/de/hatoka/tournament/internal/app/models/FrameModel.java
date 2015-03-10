@@ -44,7 +44,7 @@ public class FrameModel
         return menuItemVO;
     }
 
-    public MenuItemVO addSiteMenu(String titleKey, URI uriList, Integer count, URI uriAdd, boolean isActive)
+    public MenuItemVO addSideMenu(String titleKey, URI uriList, Integer count, URI uriAdd, boolean isActive)
     {
         MenuItemVO menuItemVO = new MenuItemVO(titleKey, uriList, isActive, count, uriAdd);
         getSideNavItems().add(menuItemVO);

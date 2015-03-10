@@ -16,8 +16,11 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import de.hatoka.common.capi.app.servlet.AbstractService;
+import de.hatoka.tournament.capi.business.TournamentBORepository;
+import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
 import de.hatoka.tournament.capi.config.TournamentConfiguration;
 import de.hatoka.tournament.internal.app.actions.TournamentListAction;
+import de.hatoka.tournament.internal.app.menu.MenuFactory;
 import de.hatoka.tournament.internal.app.models.TournamentListModel;
 
 @Path("/tournaments")
@@ -29,6 +32,8 @@ public class TournamentListService extends AbstractService
     private UriInfo info;
 
     private final AccountService accountService;
+    private final MenuFactory menuFactory = new MenuFactory();
+
     public TournamentListService()
     {
         super(RESOURCE_PREFIX);
@@ -176,7 +181,8 @@ public class TournamentListService extends AbstractService
 
     private String renderFrame(String content, String titleKey) throws IOException
     {
-        TournamentListAction action = getAction(accountService.getAccountRef());
-        return renderStyleSheet(action.getMainFrameModel(content, titleKey, getInfo(), false), "tournament_frame.xslt", getXsltProcessorParameter("tournament"));
+        TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
+        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountService.getAccountRef());
+        return renderStyleSheet(menuFactory.getMainFrameModel(content, titleKey, getInfo(), tournamentBORepository, false), "tournament_frame.xslt", getXsltProcessorParameter("tournament"));
     }
 }
