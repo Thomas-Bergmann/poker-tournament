@@ -18,6 +18,7 @@ public class TournamentVO
     private URI uri;
     private MoneyVO average;
     private MoneyVO sumInPlay;
+    private Integer competitorsSize;
 
     public TournamentVO()
     {
@@ -31,6 +32,7 @@ public class TournamentVO
         buyIn = tournamentBO.getBuyIn() == null ? null : new MoneyVO(tournamentBO.getBuyIn());
         average = tournamentBO.getAverageInplay() == null ? null : new MoneyVO(tournamentBO.getAverageInplay());
         sumInPlay = tournamentBO.getSumInplay() == null ? null : new MoneyVO(tournamentBO.getSumInplay());
+        competitorsSize = tournamentBO.getCompetitors().size();
         this.uri = uri;
     }
 
@@ -102,5 +104,15 @@ public class TournamentVO
     public void setUri(URI uri)
     {
         this.uri = uri;
+    }
+
+    public Integer getCompetitorsSize()
+    {
+        return competitorsSize;
+    }
+
+    public void setCompetitorsSize(Integer competitorsSize)
+    {
+        this.competitorsSize = competitorsSize;
     }
 }

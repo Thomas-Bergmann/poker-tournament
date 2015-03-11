@@ -16,14 +16,17 @@ public final class CompetitorBOComparators
         @Override
         public int compare(CompetitorBO o1, CompetitorBO o2)
         {
+            // inactive first
             int result = ACTIVE.compare(o1, o2);
             if (result == 0)
             {
+                // first with most amount in result
                 result = RESULT.reversed().compare(o1, o2);
             }
             if (result == 0)
             {
-                result = INPLAY.reversed().compare(o1, o2);
+                // first with less amount in play
+                result = INPLAY.compare(o1, o2);
             }
             return result;
         }

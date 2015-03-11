@@ -101,7 +101,7 @@ public class TournamentAction
         TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountRef);
         TournamentBO tournamentBO = tournamentBORepository.getByID(tournamentID);
         Collection<CompetitorBO> activeCompetitors = tournamentBO.getActiveCompetitors();
-        Money restAmount = activeCompetitors.size() == 1 ? tournamentBO.getSumInplay() : Money.getInstance(restAmountString, tournamentBO.getSumInplay().getCurrency());
+        Money restAmount = activeCompetitors.size() == identifiers.size() ? tournamentBO.getSumInplay().divide(identifiers.size()) : Money.getInstance(restAmountString, tournamentBO.getSumInplay().getCurrency());
         for (CompetitorBO competitorBO : activeCompetitors)
         {
             if (identifiers.contains(competitorBO.getID()))

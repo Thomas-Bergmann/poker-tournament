@@ -110,7 +110,7 @@ body {
     border-right: 1px solid #eee;
   }
   input , button {
-    margin: 5px 50px 5px 0px;
+    margin: 5px 0px;
   }
   .main {
     padding-right: 40px;
