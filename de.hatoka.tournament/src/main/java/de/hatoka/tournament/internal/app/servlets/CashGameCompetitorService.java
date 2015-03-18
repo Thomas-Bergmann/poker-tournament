@@ -17,6 +17,7 @@ import de.hatoka.tournament.capi.business.TournamentBORepository;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
 import de.hatoka.tournament.internal.app.actions.TournamentAction;
 import de.hatoka.tournament.internal.app.menu.MenuFactory;
+import de.hatoka.tournament.internal.app.models.HistoryModel;
 import de.hatoka.tournament.internal.app.models.TournamentPlayerListModel;
 
 @Path("/cashgame/{id}")
@@ -161,6 +162,27 @@ public class CashGameCompetitorService extends AbstractService
         {
             String content = renderStyleSheet(model, "cashgame_players.xslt", getXsltProcessorParameter("tournament"));
             return Response.status(200).entity(renderFrame(content, "title.list.players")).build();
+        }
+        catch(IOException e)
+        {
+            return render(500, e);
+        }
+    }
+
+    @GET
+    @Path("/history.html")
+    public Response history()
+    {
+        String accountRef = accountService.getAccountRef();
+        if (accountRef == null)
+        {
+            return accountService.redirectLogin();
+        }
+        final HistoryModel model = getAction(accountRef).getHistoryModel(tournamentID);
+        try
+        {
+            String content = renderStyleSheet(model, "cashgame_history.xslt", getXsltProcessorParameter("tournament"));
+            return Response.status(200).entity(renderFrame(content, "title.list.history")).build();
         }
         catch(IOException e)
         {

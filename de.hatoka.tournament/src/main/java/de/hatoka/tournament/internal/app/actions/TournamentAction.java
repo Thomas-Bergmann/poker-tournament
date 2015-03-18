@@ -15,6 +15,8 @@ import de.hatoka.tournament.capi.business.TournamentBO;
 import de.hatoka.tournament.capi.business.TournamentBORepository;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
 import de.hatoka.tournament.internal.app.models.CompetitorVO;
+import de.hatoka.tournament.internal.app.models.HistoryEntryVO;
+import de.hatoka.tournament.internal.app.models.HistoryModel;
 import de.hatoka.tournament.internal.app.models.PlayerVO;
 import de.hatoka.tournament.internal.app.models.TournamentPlayerListModel;
 import de.hatoka.tournament.internal.app.models.TournamentVO;
@@ -129,4 +131,12 @@ public class TournamentAction
         TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountRef);
         return tournamentBORepository.getByID(tournamentID);
     }
+
+    public HistoryModel getHistoryModel(String tournamentID)
+    {
+        HistoryModel result = new HistoryModel();
+        result.getEntries().add(new HistoryEntryVO());
+        return result;
+    }
+
 }

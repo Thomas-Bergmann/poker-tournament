@@ -1,8 +1,10 @@
 package de.hatoka.tournament.capi.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.AttributeOverride;
@@ -51,6 +53,9 @@ public class TournamentPO implements Serializable, IdentifiableEntity
 
     @OneToMany(mappedBy = "tournament")
     private Set<CompetitorPO> competitors = new HashSet<>();
+
+    @OneToMany(mappedBy = "tournament")
+    private List<HistoryPO> historyEntries = new ArrayList<>();
 
     public TournamentPO()
     {
@@ -159,5 +164,15 @@ public class TournamentPO implements Serializable, IdentifiableEntity
     public void setCashGame(boolean isCashGame)
     {
         this.isCashGame = isCashGame;
+    }
+
+    public List<HistoryPO> getHistoryEntries()
+    {
+        return historyEntries;
+    }
+
+    public void setHistoryEntries(List<HistoryPO> historyEntries)
+    {
+        this.historyEntries = historyEntries;
     }
 }
