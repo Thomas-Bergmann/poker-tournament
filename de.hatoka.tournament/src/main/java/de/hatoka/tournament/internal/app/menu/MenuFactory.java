@@ -76,7 +76,7 @@ public class MenuFactory
         gameMenu.setTitle(tournamentBO.getName());
         model.addSideMenu("menu.list.tournaments", getUri(info, TournamentListService.class, "list"), getTournamentsSize(tournamentBORepository),
                         getUri(info, TournamentListService.class, "add"), false);
-        model.addSideMenu("menu.tournament.players", getUri(info, TournamentCompetitorService.class, "players", tournamentBO.getID()), tournamentBO.getCompetitors().size(), getUri(info, TournamentCompetitorService.class, "players", tournamentBO.getID()), true);
+        model.addSideMenu("menu.tournament.players", getUri(info, TournamentCompetitorService.class, "players", tournamentBO.getID()), tournamentBO.getCompetitors().size(), getUri(info, TournamentCompetitorService.class, "addPlayer", tournamentBO.getID()), true);
         return model;
     }
 

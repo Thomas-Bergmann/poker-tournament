@@ -155,7 +155,7 @@ public class CashGameCompetitorService extends AbstractService
             return accountService.redirectLogin();
         }
         final TournamentPlayerListModel model = getAction(accountRef).getPlayerListModel(tournamentID,
-                        getUriBuilder(TournamentListService.class, "list").build(),
+                        getUriBuilder(CashGameListService.class, "list").build(),
                         getUriBuilder(CashGameCompetitorService.class, "players"));
         try
         {
@@ -178,7 +178,7 @@ public class CashGameCompetitorService extends AbstractService
             return accountService.redirectLogin();
         }
         final TournamentPlayerListModel model = getAction(accountRef).getPlayerListModel(tournamentID,
-                        getUriBuilder(TournamentListService.class, "list").build(),
+                        getUriBuilder(CashGameListService.class, "list").build(),
                         getUriBuilder(CashGameCompetitorService.class, "players"));
         try
         {

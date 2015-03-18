@@ -17,6 +17,11 @@ public class Lib
         return localizer.formatDate(dateString);
     }
 
+    public static String formatDateTime(Localizer localizer, String dateString)
+    {
+        return localizer.formatDateTime(dateString);
+    }
+
     public static String getResourceURI(String info, String resourceName)
     {
         return "../resources/" + resourceName;

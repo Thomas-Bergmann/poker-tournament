@@ -1,6 +1,5 @@
 package de.hatoka.tournament.internal.app.models;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +8,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class TournamentPlayerListModel
 {
-    private URI listUri;
     private TournamentVO tournament;
     private List<CompetitorVO> competitors = new ArrayList<>();
     private List<PlayerVO> unassignedPlayers = new ArrayList<>();
@@ -19,19 +17,9 @@ public class TournamentPlayerListModel
 
     }
 
-    public TournamentPlayerListModel(URI listTournamentURI)
-    {
-        listUri = listTournamentURI;
-    }
-
     public List<CompetitorVO> getCompetitors()
     {
         return competitors;
-    }
-
-    public URI getListUri()
-    {
-        return listUri;
     }
 
     public TournamentVO getTournament()
@@ -47,11 +35,6 @@ public class TournamentPlayerListModel
     public void setCompetitors(List<CompetitorVO> competitors)
     {
         this.competitors = competitors;
-    }
-
-    public void setListUri(URI listUri)
-    {
-        this.listUri = listUri;
     }
 
     public void setTournament(TournamentVO tournament)

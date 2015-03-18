@@ -35,7 +35,7 @@ public class TournamentFrameTemplateTest
     {
         Map<String, Object> result = new HashMap<>();
         result.put(Lib.XSLT_LOCALIZER, new ResourceLocalizer(
-                        new LocalizationBundle(RESOURCE_PREFIX + "tournament", Locale.US), "dd.MM.yyyy hh:mm"));
+                        new LocalizationBundle(RESOURCE_PREFIX + "tournament", Locale.US)));
         return result;
     }
 

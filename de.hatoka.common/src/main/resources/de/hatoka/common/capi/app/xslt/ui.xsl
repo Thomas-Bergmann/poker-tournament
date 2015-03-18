@@ -73,6 +73,10 @@
     <xsl:param name="date" />
     <xsl:value-of select="hatoka:formatDate($localizer, $date)" />
   </xsl:template>
+  <xsl:template name="formatDateTime">
+    <xsl:param name="date" />
+    <xsl:value-of select="hatoka:formatDateTime($localizer, $date)" />
+  </xsl:template>
   <xsl:template name="formatMoney">
     <xsl:param name="money" />
     <xsl:if test="$money = '0USD'">-</xsl:if>
@@ -80,6 +84,7 @@
       <xsl:value-of select="$money" />
     </xsl:if>
   </xsl:template>
+
 
   <xsl:template name="head">
     <xsl:param name="title">Title</xsl:param>

@@ -11,6 +11,7 @@ import javax.ws.rs.core.UriBuilder;
 
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -67,7 +68,7 @@ public class TournamentTemplateTest
     {
         Map<String, Object> result = new HashMap<>();
         result.put(Lib.XSLT_LOCALIZER, new ResourceLocalizer(
-                        new LocalizationBundle(RESOURCE_PREFIX + "tournament", Locale.US), "dd.MM.yyyy hh:mm"));
+                        new LocalizationBundle(RESOURCE_PREFIX + "tournament", Locale.US)));
         return result;
     }
 
@@ -96,7 +97,7 @@ public class TournamentTemplateTest
     @Test
     public void testTournamentPlayers() throws Exception
     {
-        TournamentPlayerListModel model = new TournamentPlayerListModel(UriBuilder.fromPath("list.html").build());
+        TournamentPlayerListModel model = new TournamentPlayerListModel();
         model.setTournament(getTournamentVO("123456", "Test 1", new SimpleDateFormat(
                         LocalizationConstants.XML_DATEFORMAT).parse("2011-11-25T08:42:55.624+01:00")));
         model.getCompetitors().add(getCompetitorVO("1234578", "Player 1", "playerid-1"));
@@ -114,7 +115,7 @@ public class TournamentTemplateTest
     @Test
     public void testTournamentNoUnassignedPlayers() throws Exception
     {
-        TournamentPlayerListModel model = new TournamentPlayerListModel(UriBuilder.fromPath("list.html").build());
+        TournamentPlayerListModel model = new TournamentPlayerListModel();
         model.setTournament(getTournamentVO("123456", "Test 1", new SimpleDateFormat(
                         LocalizationConstants.XML_DATEFORMAT).parse("2011-11-25T08:42:55.624+01:00")));
         model.getCompetitors().add(getCompetitorVO("1234578", "Player 1", "playerid-1"));
@@ -144,7 +145,7 @@ public class TournamentTemplateTest
                         getTournamentVO("123457", "Test 2", new SimpleDateFormat(LocalizationConstants.XML_DATEFORMAT_SECONDS)
                                         .parse("2012-11-25T09:45:55+01:00")));
         String content = RENDERER.render(model, RESOURCE_PREFIX + "tournament_list.xslt", getParameter());
-        // Assert.assertEquals("tournaments not listed correctly", getResource("tournament_list.result.xml"), content);
+        Assert.assertEquals("tournaments not listed correctly", getResource("tournament_list.result.xml"), content);
         XMLAssert.assertXMLEqual("tournaments not listed correctly", getResource("tournament_list.result.xml"), content);
     }
 }

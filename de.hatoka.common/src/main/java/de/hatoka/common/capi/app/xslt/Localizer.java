@@ -13,6 +13,13 @@ public interface Localizer
     String formatDate(String dateString);
 
     /**
+     * Format the date to date and time
+     * @param date
+     * @return
+     */
+    String formatDateTime(String dateString);
+
+    /**
      * Localize text
      *
      * @param key

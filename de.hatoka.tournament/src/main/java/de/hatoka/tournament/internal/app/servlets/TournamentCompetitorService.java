@@ -114,7 +114,7 @@ public class TournamentCompetitorService extends AbstractService
                 action.assignPlayer(tournamentID, playerID);
             }
         });
-        return redirectPlayers();
+        return redirectAddPlayer();
     }
 
     @POST
@@ -135,7 +135,7 @@ public class TournamentCompetitorService extends AbstractService
                 action.createPlayer(tournamentID, name);
             }
         });
-        return redirectPlayers();
+        return redirectAddPlayer();
     }
 
     protected TournamentAction getAction(String accountRef)
@@ -168,6 +168,30 @@ public class TournamentCompetitorService extends AbstractService
         }
     }
 
+    @GET
+    @Path("/addPlayer.html")
+    public Response addPlayer()
+    {
+        String accountRef = accountService.getAccountRef();
+        if (accountRef == null)
+        {
+            return accountService.redirectLogin();
+        }
+        final TournamentPlayerListModel model = getAction(accountRef).getPlayerListModel(tournamentID,
+                        getUriBuilder(TournamentListService.class, "list").build(),
+                        getUriBuilder(TournamentCompetitorService.class, "players"));
+        try
+        {
+            String content = renderStyleSheet(model, "tournament_player_add.xslt", getXsltProcessorParameter("tournament"));
+            return Response.status(200).entity(renderFrame(content, "title.list.players")).build();
+        }
+        catch(IOException e)
+        {
+            return render(500, e);
+        }
+    }
+
+
     @POST
     @Path("/rebuyPlayers")
     public Response rebuyPlayers(@FormParam("competitorID") List<String> identifiers, @FormParam("rebuy") String rebuy)
@@ -192,6 +216,11 @@ public class TournamentCompetitorService extends AbstractService
     private Response redirectPlayers()
     {
         return Response.seeOther(getUriBuilder(TournamentCompetitorService.class, "players").build(tournamentID)).build();
+    }
+
+    private Response redirectAddPlayer()
+    {
+        return Response.seeOther(getUriBuilder(TournamentCompetitorService.class, "addPlayer").build(tournamentID)).build();
     }
 
     @POST

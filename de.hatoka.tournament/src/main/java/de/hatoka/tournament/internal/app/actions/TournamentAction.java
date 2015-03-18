@@ -33,8 +33,7 @@ public class TournamentAction
 
     public void assignPlayer(String tournamentID, String playerID)
     {
-        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountRef);
-        TournamentBO tournamentBO = tournamentBORepository.getByID(tournamentID);
+        TournamentBO tournamentBO = getTournamentBO(tournamentID);
         PlayerBORepository playerBORepository = factory.getPlayerBORepository(accountRef);
         PlayerBO playerBO = playerBORepository.getByID(playerID);
         if (playerBO != null)
@@ -46,8 +45,7 @@ public class TournamentAction
 
     public void createPlayer(String tournamentID, String name)
     {
-        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountRef);
-        TournamentBO tournamentBO = tournamentBORepository.getByID(tournamentID);
+        TournamentBO tournamentBO = getTournamentBO(tournamentID);
         PlayerBORepository playerBORepository = factory.getPlayerBORepository(accountRef);
         PlayerBO playerBO = playerBORepository.create(name);
         CompetitorBO competitorBO = tournamentBO.assign(playerBO);
@@ -56,9 +54,8 @@ public class TournamentAction
 
     public TournamentPlayerListModel getPlayerListModel(String tournamentID, URI listTournamentURI, UriBuilder uriBuilder)
     {
-        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountRef);
-        TournamentBO tournamentBO = tournamentBORepository.getByID(tournamentID);
-        TournamentPlayerListModel result = new TournamentPlayerListModel(listTournamentURI);
+        TournamentBO tournamentBO = getTournamentBO(tournamentID);
+        TournamentPlayerListModel result = new TournamentPlayerListModel();
         result.setTournament(new TournamentVO(tournamentBO, uriBuilder.build(tournamentBO.getID())));
         for (CompetitorBO competitor : tournamentBO.getCompetitors())
         {
@@ -77,8 +74,7 @@ public class TournamentAction
 
     public void rebuyPlayers(String tournamentID, List<String> identifiers, String rebuyString)
     {
-        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountRef);
-        TournamentBO tournamentBO = tournamentBORepository.getByID(tournamentID);
+        TournamentBO tournamentBO = getTournamentBO(tournamentID);
         Money rebuy = Money.getInstance(rebuyString, tournamentBO.getSumInplay().getCurrency());
         for (CompetitorBO competitorBO : tournamentBO.getCompetitors())
         {
@@ -98,8 +94,7 @@ public class TournamentAction
 
     public void seatOpenPlayers(String tournamentID, List<String> identifiers, String restAmountString)
     {
-        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountRef);
-        TournamentBO tournamentBO = tournamentBORepository.getByID(tournamentID);
+        TournamentBO tournamentBO = getTournamentBO(tournamentID);
         Collection<CompetitorBO> activeCompetitors = tournamentBO.getActiveCompetitors();
         Money restAmount = activeCompetitors.size() == identifiers.size() ? tournamentBO.getSumInplay().divide(identifiers.size()) : Money.getInstance(restAmountString, tournamentBO.getSumInplay().getCurrency());
         for (CompetitorBO competitorBO : activeCompetitors)
@@ -113,8 +108,7 @@ public class TournamentAction
 
     public void unassignPlayers(String tournamentID, List<String> identifiers)
     {
-        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountRef);
-        TournamentBO tournamentBO = tournamentBORepository.getByID(tournamentID);
+        TournamentBO tournamentBO = getTournamentBO(tournamentID);
         for (CompetitorBO competitorBO : tournamentBO.getCompetitors())
         {
             if (identifiers.contains(competitorBO.getID()))
@@ -126,9 +120,13 @@ public class TournamentAction
 
     public void sortPlayers(String tournamentID)
     {
-        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountRef);
-        TournamentBO tournamentBO = tournamentBORepository.getByID(tournamentID);
+        TournamentBO tournamentBO = getTournamentBO(tournamentID);
         tournamentBO.sortCompetitors();
     }
 
+    private TournamentBO getTournamentBO(String tournamentID)
+    {
+        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountRef);
+        return tournamentBORepository.getByID(tournamentID);
+    }
 }
