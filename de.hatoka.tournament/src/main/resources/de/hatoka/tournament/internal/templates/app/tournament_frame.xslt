@@ -85,6 +85,9 @@
 				<xsl:attribute name="class">active</xsl:attribute>
 			</xsl:if>
 			<a href="{@uri}">
+				<xsl:if test="@hasAddUri = 'false'">
+					<xsl:attribute name="class">no-glyphicon</xsl:attribute>
+				</xsl:if>
 				<xsl:choose>
 				  <xsl:when test="@title">
 				   <xsl:value-of select="@title" />
@@ -100,7 +103,7 @@
 					 <span class="badge"><xsl:value-of select="@count" /></span>
 				</xsl:if>
 			</a>
-			<xsl:if test="@uriAdd">
+			<xsl:if test="@hasAddUri = 'true'">
 				<a class="glyphicon glyphicon-plus" href="{@uriAdd}">&#160;</a>
 			</xsl:if>
 		</li>

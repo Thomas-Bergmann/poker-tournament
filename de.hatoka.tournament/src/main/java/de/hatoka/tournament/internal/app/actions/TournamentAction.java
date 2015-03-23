@@ -9,6 +9,7 @@ import javax.ws.rs.core.UriBuilder;
 
 import de.hatoka.common.capi.business.Money;
 import de.hatoka.tournament.capi.business.CompetitorBO;
+import de.hatoka.tournament.capi.business.HistoryEntryBO;
 import de.hatoka.tournament.capi.business.PlayerBO;
 import de.hatoka.tournament.capi.business.PlayerBORepository;
 import de.hatoka.tournament.capi.business.TournamentBO;
@@ -135,7 +136,11 @@ public class TournamentAction
     public HistoryModel getHistoryModel(String tournamentID)
     {
         HistoryModel result = new HistoryModel();
-        result.getEntries().add(new HistoryEntryVO());
+        List<HistoryEntryVO> entries = result.getEntries();
+        for(HistoryEntryBO historyBO : getTournamentBO(tournamentID).getHistoryEntries())
+        {
+            entries.add(new HistoryEntryVO(historyBO));
+        }
         return result;
     }
 

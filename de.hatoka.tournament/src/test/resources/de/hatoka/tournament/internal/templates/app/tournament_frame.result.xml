@@ -40,10 +40,10 @@
 		<ul class="nav-sidebar">
 			<li class="active">
 				<a href="players.xml">Players<span class="badge">3</span></a>
-				<a class="glyphicon glyphicon-plus" href="player_add.xml"> </a>
+				<a href="player_add.xml" class="glyphicon glyphicon-plus"> </a>
 			</li>
 			<li>
-				<a href="history.xml">Re-Buy History<span class="badge">4</span></a>
+				<a href="history.xml" class="no-glyphicoan">Re-Buy History<span class="badge">4</span></a>
 			</li>
 		</ul>
 	</div>

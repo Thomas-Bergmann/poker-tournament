@@ -6,6 +6,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 
 import de.hatoka.common.capi.app.model.MoneyVO;
 import de.hatoka.common.capi.business.Money;
+import de.hatoka.tournament.capi.business.HistoryEntryBO;
 import de.hatoka.tournament.capi.entities.HistoryEntryType;
 import de.hatoka.tournament.capi.entities.HistoryPO;
 
@@ -26,6 +27,14 @@ public class HistoryEntryVO
         this.entryType = HistoryEntryType.valueOf(historyPO.getActionKey());
         this.date = historyPO.getDate();
         this.amount = new MoneyVO(Money.getInstance(historyPO.getAmount()));
+    }
+
+    public HistoryEntryVO(HistoryEntryBO historyBO)
+    {
+        this.playerName = historyBO.getPlayerBO().getName();
+        this.entryType = historyBO.getType();
+        this.date = historyBO.getDate();
+        this.amount = new MoneyVO(historyBO.getAmount());
     }
 
     @XmlAttribute

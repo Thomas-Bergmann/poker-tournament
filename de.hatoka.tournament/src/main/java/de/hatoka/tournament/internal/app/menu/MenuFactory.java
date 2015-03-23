@@ -47,7 +47,7 @@ public class MenuFactory
     }
 
     public FrameModel getCashGameFrameModel(String content, String titleKey, UriInfo info,
-                    TournamentBORepository tournamentBORepository, String tournamentID)
+                    TournamentBORepository tournamentBORepository, String tournamentID, String currentAction)
     {
         FrameModel model = new FrameModel();
         model.setTitleKey(titleKey);
@@ -59,7 +59,8 @@ public class MenuFactory
         gameMenu.setTitle(tournamentBO.getName());
         model.addSideMenu("menu.list.cashgames", getUri(info, CashGameListService.class, "list"), getCashGamesSize(tournamentBORepository),
                         getUri(info, CashGameListService.class, "add"), false);
-        model.addSideMenu("menu.cashgame.players", getUri(info, CashGameCompetitorService.class, "players", tournamentBO.getID()), tournamentBO.getCompetitors().size(), getUri(info, CashGameCompetitorService.class, "addPlayer", tournamentBO.getID()), true);
+        model.addSideMenu("menu.cashgame.players", getUri(info, CashGameCompetitorService.class, "players", tournamentBO.getID()), tournamentBO.getCompetitors().size(), getUri(info, CashGameCompetitorService.class, "addPlayer", tournamentBO.getID()), "players".equals(currentAction));
+        model.addSideMenu("menu.cashgame.history", getUri(info, CashGameCompetitorService.class, "history", tournamentBO.getID()), tournamentBO.getHistoryEntries().size(), null, "history".equals(currentAction));
         return model;
     }
 

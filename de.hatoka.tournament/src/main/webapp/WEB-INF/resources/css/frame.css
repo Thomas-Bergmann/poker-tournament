@@ -47,6 +47,10 @@ body {
   padding: 10px 10px;
 }
 
+.nav-sidebar > li > a.no-glyphicon {
+  display:block;
+}
+
 .nav-sidebar > li:hover,
 .nav-sidebar > li:focus {
   background-color: #eeeeee;

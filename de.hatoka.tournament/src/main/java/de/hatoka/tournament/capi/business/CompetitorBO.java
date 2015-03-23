@@ -17,7 +17,7 @@ public interface CompetitorBO
      * Player activates the competitor, with paying the buy in.
      * @param money
      */
-    void buyin(Money money);
+    void buyin(Money amount);
 
     /**
      * @return the amount of money spend by player (buy-in and re-buy)

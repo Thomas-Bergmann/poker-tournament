@@ -1,5 +1,6 @@
 package de.hatoka.tournament.internal.business;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.stream.Stream;
 
 import de.hatoka.common.capi.business.Money;
 import de.hatoka.tournament.capi.business.CompetitorBO;
+import de.hatoka.tournament.capi.business.HistoryEntryBO;
 import de.hatoka.tournament.capi.business.PlayerBO;
 import de.hatoka.tournament.capi.business.TournamentBO;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
@@ -15,6 +17,7 @@ import de.hatoka.tournament.capi.dao.CompetitorDao;
 import de.hatoka.tournament.capi.dao.PlayerDao;
 import de.hatoka.tournament.capi.dao.TournamentDao;
 import de.hatoka.tournament.capi.entities.CompetitorPO;
+import de.hatoka.tournament.capi.entities.HistoryPO;
 import de.hatoka.tournament.capi.entities.PlayerPO;
 import de.hatoka.tournament.capi.entities.TournamentPO;
 
@@ -199,4 +202,14 @@ public class TournamentBOImpl implements TournamentBO
         }
     }
 
+    @Override
+    public List<HistoryEntryBO> getHistoryEntries()
+    {
+        List<HistoryEntryBO> result = new ArrayList<>();
+        for(HistoryPO historyPO : tournamentPO.getHistoryEntries())
+        {
+            result.add(factory.getHistoryBO(historyPO));
+        }
+        return result;
+    }
 }

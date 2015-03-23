@@ -17,6 +17,7 @@ import de.hatoka.tournament.capi.business.TournamentBORepository;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
 import de.hatoka.tournament.internal.app.actions.TournamentAction;
 import de.hatoka.tournament.internal.app.menu.MenuFactory;
+import de.hatoka.tournament.internal.app.models.FrameModel;
 import de.hatoka.tournament.internal.app.models.HistoryModel;
 import de.hatoka.tournament.internal.app.models.TournamentPlayerListModel;
 
@@ -54,8 +55,9 @@ public class CashGameCompetitorService extends AbstractService
     @POST
     @Path("/actionPlayerList")
     public Response actionPlayerList(@FormParam("competitorID") List<String> identifiers,
-                    @FormParam("delete") String deleteButton, @FormParam("seatopen") String seatOpenButton, @FormParam("sort") String sortButton,
-                    @FormParam("rebuy") String rebuyButton, @FormParam("amount") String amount)
+                    @FormParam("delete") String deleteButton, @FormParam("seatopen") String seatOpenButton,
+                    @FormParam("sort") String sortButton, @FormParam("rebuy") String rebuyButton,
+                    @FormParam("amount") String amount)
     {
         if (isButtonPressed(sortButton))
         {
@@ -161,7 +163,7 @@ public class CashGameCompetitorService extends AbstractService
         try
         {
             String content = renderStyleSheet(model, "cashgame_players.xslt", getXsltProcessorParameter("tournament"));
-            return Response.status(200).entity(renderFrame(content, "title.list.players")).build();
+            return Response.status(200).entity(renderFrame(content, "players")).build();
         }
         catch(IOException e)
         {
@@ -182,7 +184,7 @@ public class CashGameCompetitorService extends AbstractService
         try
         {
             String content = renderStyleSheet(model, "cashgame_history.xslt", getXsltProcessorParameter("tournament"));
-            return Response.status(200).entity(renderFrame(content, "title.list.history")).build();
+            return Response.status(200).entity(renderFrame(content, "history")).build();
         }
         catch(IOException e)
         {
@@ -204,8 +206,9 @@ public class CashGameCompetitorService extends AbstractService
                         getUriBuilder(CashGameCompetitorService.class, "players"));
         try
         {
-            String content = renderStyleSheet(model, "tournament_player_add.xslt", getXsltProcessorParameter("tournament"));
-            return Response.status(200).entity(renderFrame(content, "title.list.players")).build();
+            String content = renderStyleSheet(model, "tournament_player_add.xslt",
+                            getXsltProcessorParameter("tournament"));
+            return Response.status(200).entity(renderFrame(content, "players")).build();
         }
         catch(IOException e)
         {
@@ -236,7 +239,8 @@ public class CashGameCompetitorService extends AbstractService
 
     private Response redirectAddPlayer()
     {
-        return Response.seeOther(getUriBuilder(CashGameCompetitorService.class, "addPlayer").build(tournamentID)).build();
+        return Response.seeOther(getUriBuilder(CashGameCompetitorService.class, "addPlayer").build(tournamentID))
+                        .build();
     }
 
     private Response redirectPlayers()
@@ -287,10 +291,13 @@ public class CashGameCompetitorService extends AbstractService
         return redirectPlayers();
     }
 
-    private String renderFrame(String content, String titleKey) throws IOException
+    private String renderFrame(String content, String actionName) throws IOException
     {
         TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
-        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountService.getAccountRef());
-        return renderStyleSheet(menuFactory.getCashGameFrameModel(content, titleKey, getInfo(), tournamentBORepository, tournamentID), "tournament_frame.xslt", getXsltProcessorParameter("tournament"));
+        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountService
+                        .getAccountRef());
+        FrameModel frameModel = menuFactory.getCashGameFrameModel(content, "title.list." + actionName, getInfo(),
+                        tournamentBORepository, tournamentID, actionName);
+        return renderStyleSheet(frameModel, "tournament_frame.xslt", getXsltProcessorParameter("tournament"));
     }
 }

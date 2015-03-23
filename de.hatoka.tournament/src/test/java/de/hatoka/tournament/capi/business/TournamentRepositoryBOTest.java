@@ -38,6 +38,7 @@ public class TournamentRepositoryBOTest
     private static final String ACCOUNT_REF = "accountRef_OK";
     private static final String ACCOUNT_REF_OTHER = "accountRef_WRONG";
     private static final Date CURRENT_DATE = new Date();
+
     @Rule
     public DerbyEntityManagerRule rule = new DerbyEntityManagerRule();
     @Inject

@@ -1,22 +1,34 @@
 package de.hatoka.tournament.internal.business;
 
+import java.util.Date;
+
+import com.google.inject.Provider;
+
 import de.hatoka.common.capi.business.Money;
 import de.hatoka.tournament.capi.business.CompetitorBO;
 import de.hatoka.tournament.capi.business.PlayerBO;
 import de.hatoka.tournament.capi.business.TournamentBO;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
+import de.hatoka.tournament.capi.dao.HistoryDao;
 import de.hatoka.tournament.capi.entities.CompetitorPO;
+import de.hatoka.tournament.capi.entities.HistoryEntryType;
+import de.hatoka.tournament.capi.entities.HistoryPO;
 
 public class CompetitorBOImpl implements CompetitorBO
 {
     private CompetitorPO competitorPO;
     private final TournamentBusinessFactory factory;
     private final TournamentBO tournamentBO;
+    private final HistoryDao historyDao;
+    private final Provider<Date> dateProvider;
 
-    public CompetitorBOImpl(CompetitorPO competitorPO, TournamentBO tournamentBO, TournamentBusinessFactory factory)
+    public CompetitorBOImpl(CompetitorPO competitorPO, TournamentBO tournamentBO, HistoryDao historyDao,Provider<Date> dateProvider,
+                    TournamentBusinessFactory factory)
     {
         this.competitorPO = competitorPO;
         this.tournamentBO = tournamentBO;
+        this.historyDao = historyDao;
+        this.dateProvider = dateProvider;
         this.factory = factory;
     }
 
@@ -50,15 +62,16 @@ public class CompetitorBOImpl implements CompetitorBO
     }
 
     @Override
-    public void buyin(Money money)
+    public void buyin(Money amount)
     {
         if (isActive())
         {
             throw new IllegalStateException("Buyin not allowed at active competitors");
         }
-        competitorPO.setMoneyInPlay(getInPlay().add(money).toMoneyPO());
+        competitorPO.setMoneyInPlay(getInPlay().add(amount).toMoneyPO());
         competitorPO.setActive(true);
         sortCompetitors();
+        createEntry(HistoryEntryType.BuyIn, amount);
     }
 
     private void sortCompetitors()
@@ -112,23 +125,25 @@ public class CompetitorBOImpl implements CompetitorBO
         if (restAmount != null)
         {
             // pay-back rest amount
-            rebuy(restAmount.negate());
+            competitorPO.setMoneyInPlay(Money.getInstance(competitorPO.getMoneyInPlay()).add(restAmount.negate()).toMoneyPO());
         }
         competitorPO.setActive(false);
         Money moneyResult = Money.getInstance(competitorPO.getMoneyInPlay()).negate();
         competitorPO.setMoneyResult(moneyResult.toMoneyPO());
         sortCompetitors();
+        createEntry(HistoryEntryType.CashOut, restAmount);
     }
 
     @Override
-    public void rebuy(Money money)
+    public void rebuy(Money amount)
     {
         if (!isActive())
         {
             throw new IllegalStateException("Rebuy not allowed at inactive competitors");
         }
-        competitorPO.setMoneyInPlay(Money.getInstance(competitorPO.getMoneyInPlay()).add(money).toMoneyPO());
+        competitorPO.setMoneyInPlay(Money.getInstance(competitorPO.getMoneyInPlay()).add(amount).toMoneyPO());
         sortCompetitors();
+        createEntry(HistoryEntryType.ReBuy, amount);
     }
 
     @Override
@@ -137,4 +152,10 @@ public class CompetitorBOImpl implements CompetitorBO
         competitorPO.setPositition(position);
     }
 
+    private void createEntry(HistoryEntryType type, Money amount)
+    {
+        HistoryPO entry = historyDao.createAndInsert(competitorPO.getTournamentPO(), competitorPO.getPlayerPO(), dateProvider.get());
+        entry.setActionKey(type.name());
+        entry.setAmount(amount.toMoneyPO());
+    }
 }

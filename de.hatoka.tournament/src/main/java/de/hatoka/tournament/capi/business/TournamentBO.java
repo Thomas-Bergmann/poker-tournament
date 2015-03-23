@@ -2,6 +2,7 @@ package de.hatoka.tournament.capi.business;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import de.hatoka.common.capi.business.Money;
 
@@ -60,4 +61,10 @@ public interface TournamentBO
      * Sort competitors recalculates the position of competitors.
      */
     void sortCompetitors();
+
+    /**
+     *
+     * @return ordered list of history entries
+     */
+    List<HistoryEntryBO> getHistoryEntries();
 }

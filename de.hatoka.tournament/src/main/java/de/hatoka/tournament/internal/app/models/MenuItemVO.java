@@ -19,12 +19,16 @@ public class MenuItemVO
     private Integer count;
     @XmlAttribute
     private URI uriAdd;
+    @XmlAttribute
+    private boolean hasAddUri = false;
 
     public MenuItemVO(String titleKey, URI uri, boolean isActive)
     {
         this.titleKey = titleKey;
         this.uri = uri;
         this.isActive = isActive;
+        this.uriAdd = null;
+        this.hasAddUri = false;
     }
 
     public MenuItemVO(String titleKey, URI uriList, boolean isActive, int count, URI uriAdd)
@@ -32,6 +36,7 @@ public class MenuItemVO
         this(titleKey, uriList, isActive);
         this.count = count;
         this.uriAdd = uriAdd;
+        this.hasAddUri = uriAdd != null;
     }
 
     @XmlTransient
@@ -54,6 +59,7 @@ public class MenuItemVO
     public void setUriAdd(URI uriAdd)
     {
         this.uriAdd = uriAdd;
+        this.hasAddUri = uriAdd != null;
     }
 
     public MenuItemVO()

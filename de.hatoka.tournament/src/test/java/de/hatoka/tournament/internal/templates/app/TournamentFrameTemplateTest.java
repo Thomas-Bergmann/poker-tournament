@@ -60,6 +60,7 @@ public class TournamentFrameTemplateTest
         model.addSideMenu("menu.cashgame.history", URI.create("history.xml"), 4, null, false);
 
         String content = RENDERER.render(model, RESOURCE_PREFIX + "tournament_frame.xslt", getParameter());
+        // String content = new XMLRenderer().render(model);
 
         // Assert.assertEquals("players not listed correctly", RESOURCE_LOADER.getResourceAsString(RESOURCE_PREFIX + "tournament_frame.result.xml"), content);
         XMLAssert.assertXMLEqual("players not listed correctly", RESOURCE_LOADER.getResourceAsString(RESOURCE_PREFIX + "tournament_frame.result.xml"), content);

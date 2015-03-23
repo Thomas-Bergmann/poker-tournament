@@ -66,7 +66,7 @@ public class HistoryPO implements Serializable, IdentifiableEntity
 
     @Embedded
     @AttributeOverrides({ @AttributeOverride(name = "currencyCode", column = @Column(name = "amountCur")),
-                    @AttributeOverride(name = "amount", column = @Column(name = "amount")) })
+        @AttributeOverride(name = "amount", column = @Column(name = "amount")) })
     @XmlElement(name="amount")
     private MoneyPO amount;
 
@@ -164,7 +164,15 @@ public class HistoryPO implements Serializable, IdentifiableEntity
 
     public void setTournamentPO(TournamentPO tournamentPO)
     {
+        if (tournament != null)
+        {
+            tournament.getHistoryEntries().remove(this);
+        }
         tournament = tournamentPO;
+        if (tournament != null)
+        {
+            tournament.getHistoryEntries().add(this);
+        }
     }
 
     @XmlTransient

@@ -30,8 +30,6 @@ public class HistoryDaoJpa extends GenericJPADao<HistoryPO> implements HistoryDa
         result.setTournamentPO(tournamentPO);
         result.setAccountRef(tournamentPO.getAccountRef());
         result.setDate(date);
-        // add relations
-        tournamentPO.getHistoryEntries().add(result);
         insert(result);
         return result;
     }
