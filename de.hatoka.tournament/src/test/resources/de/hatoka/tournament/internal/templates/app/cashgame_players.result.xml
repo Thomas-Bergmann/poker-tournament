@@ -1,0 +1,42 @@
+<form xmlns="http://www.w3.org/1999/xhtml" action="actionPlayerList" method="POST">
+<p class="bg-warning">Please use a correct money value format.</p>
+<p class="bg-warning">Please select a player.</p>
+<table class="table table-striped">
+<tr>
+<th>Select</th>
+<th>Name</th>
+<th>Active</th>
+<th>In Play</th>
+<th>Result</th>
+</tr>
+<tr>
+<td>
+<label>
+<input type="checkbox" value="1234578" name="competitorID" class="checkbox"/>
+</label>
+</td>
+<td>Player 1</td>
+<td>active</td>
+<td>1USD</td>
+<td>-</td>
+</tr>
+<tr>
+<td>
+<label>
+<input type="checkbox" value="1234579" name="competitorID" class="checkbox"/>
+</label>
+</td>
+<td>Player 2</td>
+<td>inactive</td>
+<td>1USD</td>
+<td>-1USD</td>
+</tr>
+</table>
+<p class="bg-info">Average: 1<br/>Sum: 2</p>
+<label class="sr-only" for="inputamount">Amount</label>
+<input value="" name="amount" type="text" id="inputamount" class="form-control" placeholder="Amount"/>
+<button name="rebuy" type="submit" class="btn btn-primary">Re-Buy</button>
+<button name="seatopen" type="submit" class="btn">Seat-Open</button>
+<button name="sort" type="submit" class="btn">Sort</button>
+<button name="delete" type="submit" class="btn">Delete</button>
+</form>

@@ -11,6 +11,7 @@ public class TournamentPlayerListModel
     private TournamentVO tournament;
     private List<CompetitorVO> competitors = new ArrayList<>();
     private List<PlayerVO> unassignedPlayers = new ArrayList<>();
+    private List<String> errors = new ArrayList<>();
 
     public TournamentPlayerListModel()
     {
@@ -45,6 +46,16 @@ public class TournamentPlayerListModel
     public void setUnassignedPlayers(List<PlayerVO> unassignedPlayers)
     {
         this.unassignedPlayers = unassignedPlayers;
+    }
+
+    public List<String> getErrors()
+    {
+        return errors;
+    }
+
+    public void setErrors(List<String> errors)
+    {
+        this.errors = errors;
     }
 
 }

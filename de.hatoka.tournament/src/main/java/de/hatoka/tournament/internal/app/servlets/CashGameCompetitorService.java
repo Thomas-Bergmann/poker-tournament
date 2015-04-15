@@ -1,13 +1,16 @@
 package de.hatoka.tournament.internal.app.servlets;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
@@ -150,7 +153,7 @@ public class CashGameCompetitorService extends AbstractService
 
     @GET
     @Path("/players.html")
-    public Response players()
+    public Response players(@QueryParam("errors") List<String> errors)
     {
         String accountRef = accountService.getAccountRef();
         if (accountRef == null)
@@ -160,6 +163,7 @@ public class CashGameCompetitorService extends AbstractService
         final TournamentPlayerListModel model = getAction(accountRef).getPlayerListModel(tournamentID,
                         getUriBuilder(CashGameListService.class, "list").build(),
                         getUriBuilder(CashGameCompetitorService.class, "players"));
+        model.getErrors().addAll(errors);
         try
         {
             String content = renderStyleSheet(model, "cashgame_players.xslt", getXsltProcessorParameter("tournament"));
@@ -226,15 +230,23 @@ public class CashGameCompetitorService extends AbstractService
             return accountService.redirectLogin();
         }
         TournamentAction action = getAction(accountRef);
-        runInTransaction(new Runnable()
+        List<String> errors = Collections.emptyList();
+        try
         {
-            @Override
-            public void run()
-            {
-                action.rebuyPlayers(tournamentID, identifiers, rebuy);
-            }
-        });
-        return redirectPlayers();
+            errors = runInTransaction(new Callable<List<String>>()
+                            {
+                @Override
+                public List<String> call()
+                {
+                    return action.rebuyPlayers(tournamentID, identifiers, rebuy);
+                }
+                            });
+        }
+        catch(Exception e)
+        {
+            return render(500, e);
+        }
+        return redirectPlayers(errors);
     }
 
     private Response redirectAddPlayer()
@@ -245,7 +257,14 @@ public class CashGameCompetitorService extends AbstractService
 
     private Response redirectPlayers()
     {
-        return Response.seeOther(getUriBuilder(CashGameCompetitorService.class, "players").build(tournamentID)).build();
+        return redirectPlayers(Collections.emptyList());
+    }
+
+    private Response redirectPlayers(List<String> errors)
+    {
+        return Response.seeOther(
+                        getUriBuilder(CashGameCompetitorService.class, "players")
+                        .queryParam("errors", errors.toArray()).build(tournamentID)).build();
     }
 
     @POST

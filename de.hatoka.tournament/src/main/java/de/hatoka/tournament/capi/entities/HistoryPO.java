@@ -60,7 +60,7 @@ public class HistoryPO implements Serializable, IdentifiableEntity
      * The player is out and was placed at position
      */
     @NotNull
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @XmlAttribute
     private Date date;
 

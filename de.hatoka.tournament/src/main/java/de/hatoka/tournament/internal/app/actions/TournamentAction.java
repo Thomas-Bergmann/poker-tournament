@@ -1,6 +1,8 @@
 package de.hatoka.tournament.internal.app.actions;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -55,7 +57,8 @@ public class TournamentAction
         competitorBO.buyin(tournamentBO.getBuyIn());
     }
 
-    public TournamentPlayerListModel getPlayerListModel(String tournamentID, URI listTournamentURI, UriBuilder uriBuilder)
+    public TournamentPlayerListModel getPlayerListModel(String tournamentID, URI listTournamentURI,
+                    UriBuilder uriBuilder)
     {
         TournamentBO tournamentBO = getTournamentBO(tournamentID);
         TournamentPlayerListModel result = new TournamentPlayerListModel();
@@ -75,10 +78,18 @@ public class TournamentAction
         return result;
     }
 
-    public void rebuyPlayers(String tournamentID, List<String> identifiers, String rebuyString)
+    public List<String> rebuyPlayers(String tournamentID, List<String> identifiers, String rebuyString)
     {
         TournamentBO tournamentBO = getTournamentBO(tournamentID);
-        Money rebuy = Money.getInstance(rebuyString, tournamentBO.getSumInplay().getCurrency());
+        Money rebuy = null;
+        try
+        {
+            rebuy = Money.getInstance(rebuyString, tournamentBO.getSumInplay().getCurrency());
+        } catch (NumberFormatException e)
+        {
+            return new ArrayList<String>(Arrays.asList("error.number.format"));
+        }
+
         for (CompetitorBO competitorBO : tournamentBO.getCompetitors())
         {
             if (identifiers.contains(competitorBO.getID()))
@@ -93,20 +104,23 @@ public class TournamentAction
                 }
             }
         }
+        return java.util.Collections.emptyList();
     }
 
     public void seatOpenPlayers(String tournamentID, List<String> identifiers, String restAmountString)
     {
         TournamentBO tournamentBO = getTournamentBO(tournamentID);
         Collection<CompetitorBO> activeCompetitors = tournamentBO.getActiveCompetitors();
-        Money restAmount = activeCompetitors.size() == identifiers.size() ? tournamentBO.getSumInplay().divide(identifiers.size()) : Money.getInstance(restAmountString, tournamentBO.getSumInplay().getCurrency());
-        for (CompetitorBO competitorBO : activeCompetitors)
-        {
-            if (identifiers.contains(competitorBO.getID()))
-            {
-                competitorBO.seatOpen(restAmount);
-            }
-        }
+        Money restAmount = activeCompetitors.size() == identifiers.size() ? tournamentBO.getSumInplay().divide(
+                        identifiers.size()) : Money.getInstance(restAmountString, tournamentBO.getSumInplay()
+                                        .getCurrency());
+                        for (CompetitorBO competitorBO : activeCompetitors)
+                        {
+                            if (identifiers.contains(competitorBO.getID()))
+                            {
+                                competitorBO.seatOpen(restAmount);
+                            }
+                        }
     }
 
     public void unassignPlayers(String tournamentID, List<String> identifiers)
@@ -137,7 +151,7 @@ public class TournamentAction
     {
         HistoryModel result = new HistoryModel();
         List<HistoryEntryVO> entries = result.getEntries();
-        for(HistoryEntryBO historyBO : getTournamentBO(tournamentID).getHistoryEntries())
+        for (HistoryEntryBO historyBO : getTournamentBO(tournamentID).getHistoryEntries())
         {
             entries.add(new HistoryEntryVO(historyBO));
         }

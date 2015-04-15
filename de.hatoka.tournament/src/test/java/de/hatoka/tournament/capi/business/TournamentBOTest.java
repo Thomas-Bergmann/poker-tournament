@@ -25,7 +25,7 @@ public class TournamentBOTest
 
     @Inject
     private TournamentBusinessFactory factory;
-
+    private TournamentBORepository tournamentBORepository;
     private TournamentBO underTest;
     private PlayerBO player1;
     private PlayerBO player2;
@@ -34,7 +34,7 @@ public class TournamentBOTest
     public void createTestObject()
     {
         TestBusinessInjectorProvider.get(rule.getModule()).injectMembers(this);
-        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(ACCOUNT_REF);
+        tournamentBORepository = factory.getTournamentBORepository(ACCOUNT_REF);
         underTest = tournamentBORepository.createTournament("test", NOW);
         player1 = factory.getPlayerBORepository(ACCOUNT_REF).create("testPlayer1");
         player2 = factory.getPlayerBORepository(ACCOUNT_REF).create("testPlayer2");
@@ -58,6 +58,7 @@ public class TournamentBOTest
         competitorBO_1.buyin(underTest.getBuyIn());
         competitorBO_2.buyin(Money.getInstance("15 EUR"));
         assertEquals(Money.getInstance("20 EUR"), underTest.getSumInplay());
+        assertEquals(Money.getInstance("10 EUR"), underTest.getAverageInplay());
     }
 
     @Test
@@ -77,5 +78,6 @@ public class TournamentBOTest
     public void testSimpleAttributes()
     {
         assertEquals(NOW, underTest.getDate());
+        assertFalse("tournament.equals", underTest.equals(tournamentBORepository.createTournament("later", NOW)));
     }
 }

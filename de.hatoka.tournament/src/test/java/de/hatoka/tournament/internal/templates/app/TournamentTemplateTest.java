@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.ws.rs.core.UriBuilder;
-
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Assert;
@@ -52,18 +50,6 @@ public class TournamentTemplateTest
         return "<body>\n" + content + "\n</body>";
     }
 
-    private CompetitorVO getCompetitorVO(String id, String name, String playerID)
-    {
-        CompetitorVO result = new CompetitorVO();
-        result.setId(id);
-        result.setPlayerName(name);
-        result.setPlayerId(playerID);
-        result.setInPlay(new MoneyVO(Money.ONE_USD));
-        result.setResult(new MoneyVO(Money.NOTHING));
-        result.setActive(true);
-        return result;
-    }
-
     private Map<String, Object> getParameter()
     {
         Map<String, Object> result = new HashMap<>();
@@ -72,26 +58,17 @@ public class TournamentTemplateTest
         return result;
     }
 
-    private PlayerVO getPlayerVO(String id, String name)
-    {
-        PlayerVO result = new PlayerVO();
-        result.setId(id);
-        result.setName(name);
-        return result;
-    }
-
     private TournamentVO getTournamentVO(String id, String name, Date date)
     {
-        TournamentVO result = new TournamentVO();
-        result.setId(id);
-        result.setName(name);
-        result.setDate(date);
-        result.setBuyIn(new MoneyVO(Money.ONE_USD));
-        result.setUri(UriBuilder.fromPath("tournament/{id}/players.html").build(id));
-        result.setAverage(new MoneyVO(Money.ONE_USD));
-        result.setSumInPlay(new MoneyVO(Money.getInstance("2", "USD")));
-        result.setCompetitorsSize(10);
-        return result;
+        return TournamentViewObjectHelper.getTournamentVO(id, name, date);
+    }
+    private CompetitorVO getCompetitorVO(String id, String name, String playerID)
+    {
+        return TournamentViewObjectHelper.getCompetitorVO(id, name, playerID);
+    }
+    private PlayerVO getPlayerVO(String id, String name)
+    {
+        return TournamentViewObjectHelper.getPlayerVO(id, name);
     }
 
     @Test
@@ -140,10 +117,10 @@ public class TournamentTemplateTest
         TournamentListModel model = new TournamentListModel();
         model.getTournaments().add(
                         getTournamentVO("123456", "Test 1", new SimpleDateFormat(LocalizationConstants.XML_DATEFORMAT)
-                                        .parse("2011-11-25T08:42:55.624+01:00")));
+                        .parse("2011-11-25T08:42:55.624+01:00")));
         model.getTournaments().add(
                         getTournamentVO("123457", "Test 2", new SimpleDateFormat(LocalizationConstants.XML_DATEFORMAT_SECONDS)
-                                        .parse("2012-11-25T09:45:55+01:00")));
+                        .parse("2012-11-25T09:45:55+01:00")));
         String content = RENDERER.render(model, RESOURCE_PREFIX + "tournament_list.xslt", getParameter());
         Assert.assertEquals("tournaments not listed correctly", getResource("tournament_list.result.xml"), content);
         XMLAssert.assertXMLEqual("tournaments not listed correctly", getResource("tournament_list.result.xml"), content);
