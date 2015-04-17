@@ -4,9 +4,74 @@ Offline Poker Tournament and Cash Game Organizer
 
 # Introduction
 
-This project is intended be a service for all poker friends, which wants to play poker offline.
-The software will help you to organize and run poker events.
-Both cash games and tournaments will be supported.
+This project is intended to be a service for all poker friends, who want to play poker offline.
+The software helps to organize and run private poker events.
+Both cash games and tournaments will be supported as well as performance tracking for players, poker events and established groups of players.
+
+# Business requirements
+
+## Individual accounts
+
+* users of the platform (players, event organizers) have to have an account. The account must be created and can be deleted incl. all data (group assignments, statistics)
+* basic account information are nickname, email address and password
+* users can be part of multiple groups of players (based on request to group admin)
+* each user can create poker events and groups of players
+* individual statistics are collected per account. Initial statistics could be:
+    * win/loss
+    * average
+    * period of time
+    * #events
+
+## Groups of players
+
+A group of players is an established and regular playing group of offline poker players (in german: eine Pokerrunde)
+
+* each user can create groups of players
+* the user who creates a group of players is automatically the administrator of this group
+* basic group information are offline location and group name
+* the administrator can add and remove group members
+* the administrator can delete/archive the group of players
+* each group of players has its own statistics
+    * see individual statistics
+    * per poker event type
+
+## Poker Events
+
+Poker events are offline cash games or offline tournaments. The software supports the organization and execution of the event.
+
+* basic poker event information are event name, date, location, buy-in and event type (cash/tournament)
+* poker events are either open for all platform users or restricted to specific groups of players
+* the creator of the event is autmatically the event administrator
+* the administrator assigns users to the event
+* each event has its own statistics
+* cash game support:
+     * buy-in tracking
+     * re-buy tracking
+* tournament support:
+     * seat allocation
+     * blind level definition
+     * timing for blind levels
+     * remove players
+     * buy-in tracking
+     * re-buy tracking
+
+## Community
+
+* match making: announce poker events to the community
+* looking for group of players member: a group of players wants more members and announces its request to the community
+* looking for a group of players: a user is looking for a group of players he can join and announces his request to the community
+* a forum is provided to start individual discussion threads
+
+# Technical requirements
+
+## Mobile support
+
+Because everything is usually managed during the offline game itself mobile support is essential.
+
+## 24/7
+
+The server should be available 7 days a week and 24 hours a day.
+
 
 # Feature Overview
 
