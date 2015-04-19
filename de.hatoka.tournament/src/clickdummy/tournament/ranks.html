@@ -54,17 +54,17 @@
 		</ul>
 	</div>
 	<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-		<h1 class="page-header">Blind Levels</h1>
-		<form action="actionBlindsList" method="POST">
+		<h1 class="page-header">Win Ranks</h1>
+		<p class="bg-info">Currently collected 200 EUR.</p>
+		<form action="actionRankList" method="POST">
 		<table class="table table-striped">
 		<tr>
 		<th>Select</th>
-		<th>Small Blind</th>
-		<th>Big Blind</th>
-		<th>Ante</th>
-		<th>Duration (min)</th>
-		<th>est. Start</th>
-		<th>est. End</th>
+		<th>First Position</th>
+		<th>Last Position</th>
+		<th>Percentage</th>
+		<th>Amount per player</th>
+		<th>Amount sum</th>
 		</tr>
 		<tr>
 		<td>
@@ -72,12 +72,11 @@
 		<input type="checkbox" value="1234578" name="competitorID" class="checkbox"/>
 		</label>
 		</td>
-		<td>50</td>
+		<td><input value="1" /></td>
+		<td>1</td>
+		<td><input placeholder="" /></td>
+		<td><input value="100" /></td>
 		<td>100</td>
-		<td>0</td>
-		<td>0:30</td>
-		<td>18:00</td>
-		<td>18:30</td>
 		</tr>
 		<tr>
 		<td>
@@ -85,12 +84,23 @@
 		<input type="checkbox" value="1234579" name="competitorID" class="checkbox"/>
 		</label>
 		</td>
+		<td><input value="2" /></td>
+		<td>2</td>
+		<td><input value="50%" /></td>
+		<td><input placeholder="60" /></td>
+		<td>60</td>
+		</tr>
+		<tr>
+		<label>
+		<td>
+		<input type="checkbox" value="1234579" name="competitorID" class="checkbox"/>
+		</label>
+		</td>
+		<td><input value="3" /></td>
+		<td>5</td>
+		<td><input placeholder="25%" /></td>
+		<td><input placeholder="20" /></td>
 		<td>100</td>
-		<td>200</td>
-		<td>0</td>
-		<td>0:30</td>
-		<td>18:30</td>
-		<td>19:00</td>
 		</tr>
 		<tr>
 		<td>
@@ -98,37 +108,16 @@
 		<input type="checkbox" value="1234579" name="competitorID" class="checkbox"/>
 		</label>
 		</td>
-		<td colspan="3">Pause</td>
-		<td>0:15</td>
-		<td>19:00</td>
-		<td>19:15</td>
-		</tr>
-		<tr>
-		<td>
-		<label>
-		<input type="checkbox" value="1234579" name="competitorID" class="checkbox"/>
-		</label>
-		</td>
-		<td>250</td>
-		<td>500</td>
-		<td>0</td>
-		<td>0:30</td>
-		<td>19:15</td>
-		<td>19:45</td>
-		</tr>
-		<tr>
-		<td>&nbsp;</td>
-		<td><input placeholder="500" /></td>
-		<td><input placeholder="1000" /></td>
-		<td><input placeholder="0" /></td>
-		<td><input placeholder="0:30" /></td>
-		<td>19:45</td>
-		<td>&nbsp;</td>
+		<td><input value="6" /></td>
+		<td><input value="10" /></td>
+		<td><input placeholder="25%" /></td>
+		<td><input placeholder="4" /></td>
+		<td>100</td>
 		</tr>
 		</table>
 		<button name="remove" type="submit" class="btn btn-default">Save</button>
+		<button name="remove" type="submit" class="btn">Add Line</button>
 		<button name="remove" type="submit" class="btn">Delete</button>
-		<button name="remove" type="submit" class="btn">Create Pause</button>
 		</form>
 	</div>
 </div>
