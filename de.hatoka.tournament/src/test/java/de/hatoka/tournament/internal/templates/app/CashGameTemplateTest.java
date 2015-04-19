@@ -16,6 +16,7 @@ import org.junit.Test;
 import de.hatoka.common.capi.app.model.MoneyVO;
 import de.hatoka.common.capi.app.xslt.Lib;
 import de.hatoka.common.capi.app.xslt.XSLTRenderer;
+import de.hatoka.common.capi.business.CountryHelper;
 import de.hatoka.common.capi.business.Money;
 import de.hatoka.common.capi.resource.LocalizationBundle;
 import de.hatoka.common.capi.resource.LocalizationConstants;
@@ -50,7 +51,7 @@ public class CashGameTemplateTest
     {
         Map<String, Object> result = new HashMap<>();
         result.put(Lib.XSLT_LOCALIZER, new ResourceLocalizer(
-                        new LocalizationBundle(RESOURCE_PREFIX + "tournament", Locale.US)));
+                        new LocalizationBundle(RESOURCE_PREFIX + "tournament", Locale.US, CountryHelper.UTC)));
         return result;
     }
 
@@ -84,7 +85,7 @@ public class CashGameTemplateTest
         model.getEntries().add(getHistoryEntry("Player 1", HistoryEntryType.BuyIn, new SimpleDateFormat(
                         LocalizationConstants.XML_DATEFORMAT).parse("2012-11-26T00:45:55.624+01:00")));
         model.getEntries().add(getHistoryEntry("Player 2",HistoryEntryType.ReBuy, new SimpleDateFormat(
-                        LocalizationConstants.XML_DATEFORMAT).parse("2012-11-26T01:45:55.624+01:00")));
+                        LocalizationConstants.XML_DATEFORMAT).parse("2012-11-26T01:45:55.624+00:00")));
         model.getEntries().add(getHistoryEntry("Player 3", HistoryEntryType.CashOut, new SimpleDateFormat(
                         LocalizationConstants.XML_DATEFORMAT).parse("2012-11-26T02:45:55.624+01:00")));
         String content = RENDERER.render(model, RESOURCE_PREFIX + "cashgame_history.xslt", getParameter());

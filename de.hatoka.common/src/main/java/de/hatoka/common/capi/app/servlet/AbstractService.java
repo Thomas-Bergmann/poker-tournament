@@ -5,6 +5,7 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.concurrent.Callable;
 
 import javax.persistence.EntityTransaction;
@@ -23,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Injector;
 
 import de.hatoka.common.capi.app.xslt.XSLTRenderer;
+import de.hatoka.common.capi.business.CountryHelper;
 import de.hatoka.common.capi.dao.TransactionProvider;
 import de.hatoka.common.capi.dao.UUIDGenerator;
 import de.hatoka.common.capi.resource.LocalizationBundle;
@@ -32,8 +34,8 @@ import de.hatoka.common.internal.app.models.ErrorModel;
 public class AbstractService
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractService.class);
-    private static final Locale DEFAULT_LOCALE = Locale.US;
     private static final XSLTRenderer RENDERER = new XSLTRenderer();
+    private static final CountryHelper COUNTRY_HELPER = new CountryHelper();
 
     private final String resourcePrefix;
 
@@ -85,7 +87,14 @@ public class AbstractService
 
     protected Locale getLocale()
     {
-        return DEFAULT_LOCALE;
+        Locale result = COUNTRY_HELPER.getLocale(getCookieValue("locale"));
+        return result == null ? Locale.US: result;
+    }
+
+    protected TimeZone getTimeZone()
+    {
+        TimeZone result = COUNTRY_HELPER.getTimeZone(getCookieValue("tz"));
+        return result == null ? CountryHelper.UTC : result;
     }
 
     private EntityTransaction getTransaction()
@@ -162,7 +171,7 @@ public class AbstractService
         if (localizationResource != null)
         {
             result.put("localizer", new ResourceLocalizer(new LocalizationBundle(resourcePrefix
-                            + localizationResource, getLocale())));
+                            + localizationResource, getLocale(), getTimeZone())));
         }
         return result;
     }

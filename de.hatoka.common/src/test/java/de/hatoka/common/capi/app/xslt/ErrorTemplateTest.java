@@ -8,6 +8,7 @@ import java.util.Locale;
 
 import org.junit.Test;
 
+import de.hatoka.common.capi.business.CountryHelper;
 import de.hatoka.common.internal.app.models.ErrorModel;
 
 public class ErrorTemplateTest
@@ -24,7 +25,7 @@ public class ErrorTemplateTest
         catch(RuntimeException e)
         {
             StringWriter writer = new StringWriter();
-            RENDERER.render(writer, new ErrorModel("1234", e), RESOURCE_PREFIX + "error.xslt", RENDERER.getParameter(RESOURCE_PREFIX + "error", Locale.US));
+            RENDERER.render(writer, new ErrorModel("1234", e), RESOURCE_PREFIX + "error.xslt", RENDERER.getParameter(RESOURCE_PREFIX + "error", Locale.US, CountryHelper.UTC));
             assertTrue("headline", trim(writer).contains("<h2>Error: 1234</h2>"));
             assertTrue("message", trim(writer).contains("<div class=\"message\">Test Exception</div>"));
         }

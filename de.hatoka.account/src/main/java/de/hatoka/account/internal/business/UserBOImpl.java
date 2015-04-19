@@ -6,10 +6,10 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 import javax.inject.Inject;
 
-import org.apache.commons.lang.LocaleUtils;
 import org.slf4j.LoggerFactory;
 
 import de.hatoka.account.capi.business.AccountBORepository;
@@ -22,6 +22,7 @@ import de.hatoka.account.internal.app.models.SignUpVerifyMailModel;
 import de.hatoka.address.capi.business.AddressBO;
 import de.hatoka.address.capi.business.AddressBORepository;
 import de.hatoka.common.capi.app.xslt.XSLTRenderer;
+import de.hatoka.common.capi.business.CountryHelper;
 import de.hatoka.common.capi.dao.EncryptionUtils;
 import de.hatoka.common.capi.dao.UUIDGenerator;
 import de.hatoka.common.capi.exceptions.IllegalObjectAccessException;
@@ -36,6 +37,7 @@ public class UserBOImpl implements UserBO
 {
     private static final XSLTRenderer RENDERER = new XSLTRenderer();
     private static final String RESOURCE_PREFIX = "de/hatoka/account/internal/templates/mail/";
+    private static final CountryHelper COUNTRY_HELPER = new CountryHelper();
 
     @Inject
     private AccountBusinessFactory businessFactory;
@@ -169,12 +171,22 @@ public class UserBOImpl implements UserBO
         {
             return Locale.US;
         }
-        return LocaleUtils.toLocale(locale);
+        return COUNTRY_HELPER.getLocale(locale);
+    }
+
+    private TimeZone getTimeZone()
+    {
+        String timeZone = userPO.getTimeZone();
+        if (timeZone == null)
+        {
+            return CountryHelper.UTC;
+        }
+        return COUNTRY_HELPER.getTimeZone(timeZone);
     }
 
     private ResourceLocalizer getLocalizer()
     {
-        return new ResourceLocalizer(new LocalizationBundle(RESOURCE_PREFIX + "signup", getLocale()));
+        return new ResourceLocalizer(new LocalizationBundle(RESOURCE_PREFIX + "signup", getLocale(), getTimeZone()));
     }
 
     @Override

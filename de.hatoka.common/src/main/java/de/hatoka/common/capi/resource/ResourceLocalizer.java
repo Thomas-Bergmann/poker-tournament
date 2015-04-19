@@ -36,7 +36,10 @@ public class ResourceLocalizer implements Localizer
             return "";
         }
         Date date = parseDate(dateString);
-        return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, bundle.getLocal()).format(date);
+
+        DateFormat dateTimeFormatter = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, bundle.getLocal());
+        dateTimeFormatter.setTimeZone(bundle.getTimeZone());
+        return dateTimeFormatter.format(date);
     }
 
     private Date parseDate(String dateString)

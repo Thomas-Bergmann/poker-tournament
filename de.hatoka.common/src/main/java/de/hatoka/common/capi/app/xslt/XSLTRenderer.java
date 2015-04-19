@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TimeZone;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -19,6 +20,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import de.hatoka.common.capi.business.CountryHelper;
 import de.hatoka.common.capi.resource.LocalizationBundle;
 import de.hatoka.common.capi.resource.ResourceLocalizer;
 
@@ -31,14 +33,19 @@ public class XSLTRenderer
         transformerFactory.setURIResolver(new ClassPathURIResolver());
     }
 
+    @Deprecated
     public Map<String, Object> getParameter(String localizationResource, Locale locale)
+    {
+        return getParameter(localizationResource, locale, CountryHelper.UTC);
+    }
+
+    public Map<String, Object> getParameter(String localizationResource, Locale locale, TimeZone timeZone)
     {
         Map<String, Object> result = new HashMap<>();
         result.put(Lib.XSLT_LOCALIZER, new ResourceLocalizer(new LocalizationBundle(localizationResource,
-                        locale)));
+                        locale, timeZone)));
         return result;
     }
-
 
     private StreamSource getStreamSource(String resource) throws FileNotFoundException
     {

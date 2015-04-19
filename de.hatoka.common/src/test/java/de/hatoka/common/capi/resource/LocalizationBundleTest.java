@@ -9,9 +9,11 @@ import java.util.ResourceBundle;
 
 import org.junit.Test;
 
+import de.hatoka.common.capi.business.CountryHelper;
+
 public class LocalizationBundleTest
 {
-    private static final LocalizationBundle UNDER_TEST_EN_US = new LocalizationBundle("de/hatoka/common/capi/resource/localization", Locale.US);
+    private static final LocalizationBundle UNDER_TEST_EN_US = new LocalizationBundle("de/hatoka/common/capi/resource/localization", Locale.US, CountryHelper.UTC);
 
     @Test(expected=MissingResourceException.class)
     public void testCrazyPackage()

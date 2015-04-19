@@ -11,6 +11,7 @@ import org.xml.sax.SAXException;
 
 import de.hatoka.account.internal.app.forms.LoginForm;
 import de.hatoka.common.capi.app.xslt.XSLTRenderer;
+import de.hatoka.common.capi.business.CountryHelper;
 import de.hatoka.common.capi.resource.ResourceLoader;
 
 public class LoginTemplateTest
@@ -27,7 +28,7 @@ public class LoginTemplateTest
 
     private String renderContent(Object objects, Locale locale) throws IOException
     {
-        return RENDERER.render(objects, RESOURCE_PREFIX + "login.xslt", RENDERER.getParameter(RESOURCE_PREFIX + "login", locale));
+        return RENDERER.render(objects, RESOURCE_PREFIX + "login.xslt", RENDERER.getParameter(RESOURCE_PREFIX + "login", locale, CountryHelper.UTC));
     }
 
     private String renderContent(Object objects) throws IOException

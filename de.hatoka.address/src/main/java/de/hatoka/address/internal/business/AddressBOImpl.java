@@ -183,7 +183,7 @@ public class AddressBOImpl implements AddressBO
     @Override
     public void setCountryID(String countryID)
     {
-        if (!COUNTRY_HELPER.exists(countryID))
+        if (!COUNTRY_HELPER.existsCountry(countryID))
         {
             throw new CountryNotExistException(countryID);
         }

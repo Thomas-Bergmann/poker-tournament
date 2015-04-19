@@ -12,6 +12,7 @@ import org.xml.sax.SAXException;
 import de.hatoka.account.internal.app.forms.SignUpForm;
 import de.hatoka.account.internal.app.models.LoginPageModel;
 import de.hatoka.common.capi.app.xslt.XSLTRenderer;
+import de.hatoka.common.capi.business.CountryHelper;
 import de.hatoka.common.capi.resource.ResourceLoader;
 
 public class SignUpTemplateTest
@@ -29,7 +30,7 @@ public class SignUpTemplateTest
 
     private String renderContent(LoginPageModel objects) throws IOException
     {
-        return RENDERER.render(objects, XSLT_STYLESHEET, RENDERER.getParameter(XSLT_LOC, Locale.US));
+        return RENDERER.render(objects, XSLT_STYLESHEET, RENDERER.getParameter(XSLT_LOC, Locale.US, CountryHelper.UTC));
     }
 
     @Test

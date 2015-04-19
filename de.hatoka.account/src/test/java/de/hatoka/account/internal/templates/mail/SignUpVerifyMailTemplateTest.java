@@ -11,6 +11,7 @@ import org.xml.sax.SAXException;
 
 import de.hatoka.account.internal.app.models.SignUpVerifyMailModel;
 import de.hatoka.common.capi.app.xslt.XSLTRenderer;
+import de.hatoka.common.capi.business.CountryHelper;
 import de.hatoka.common.capi.resource.ResourceLoader;
 
 public class SignUpVerifyMailTemplateTest
@@ -26,7 +27,7 @@ public class SignUpVerifyMailTemplateTest
 
     private String renderContent(Object objects) throws IOException
     {
-        return RENDERER.render(objects, RESOURCE_PREFIX + "signUpVerifyEmail.html.xslt", RENDERER.getParameter(RESOURCE_PREFIX + "signup", Locale.US));
+        return RENDERER.render(objects, RESOURCE_PREFIX + "signUpVerifyEmail.html.xslt", RENDERER.getParameter(RESOURCE_PREFIX + "signup", Locale.US, CountryHelper.UTC));
     }
 
     @BeforeClass

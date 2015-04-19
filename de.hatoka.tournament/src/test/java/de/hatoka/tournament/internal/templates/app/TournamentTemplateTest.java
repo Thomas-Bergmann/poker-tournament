@@ -11,12 +11,12 @@ import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import de.hatoka.common.capi.app.model.MoneyVO;
 import de.hatoka.common.capi.app.xslt.Lib;
 import de.hatoka.common.capi.app.xslt.XSLTRenderer;
+import de.hatoka.common.capi.business.CountryHelper;
 import de.hatoka.common.capi.business.Money;
 import de.hatoka.common.capi.resource.LocalizationBundle;
 import de.hatoka.common.capi.resource.LocalizationConstants;
@@ -54,7 +54,7 @@ public class TournamentTemplateTest
     {
         Map<String, Object> result = new HashMap<>();
         result.put(Lib.XSLT_LOCALIZER, new ResourceLocalizer(
-                        new LocalizationBundle(RESOURCE_PREFIX + "tournament", Locale.US)));
+                        new LocalizationBundle(RESOURCE_PREFIX + "tournament", Locale.US, CountryHelper.UTC)));
         return result;
     }
 
@@ -107,20 +107,15 @@ public class TournamentTemplateTest
     }
 
     @Test
-    @Ignore
-    /**
-     * FIXME #8 ignore - doesn't work at Travis CI
-     * @throws Exception
-     */
     public void testTournaments() throws Exception
     {
         TournamentListModel model = new TournamentListModel();
         model.getTournaments().add(
                         getTournamentVO("123456", "Test 1", new SimpleDateFormat(LocalizationConstants.XML_DATEFORMAT)
-                        .parse("2011-11-25T08:42:55.624+01:00")));
+                        .parse("2011-11-25T07:42:55.624+01:00")));
         model.getTournaments().add(
                         getTournamentVO("123457", "Test 2", new SimpleDateFormat(LocalizationConstants.XML_DATEFORMAT_SECONDS)
-                        .parse("2012-11-25T09:45:55+01:00")));
+                        .parse("2012-11-25T08:45:55+01:00")));
         String content = RENDERER.render(model, RESOURCE_PREFIX + "tournament_list.xslt", getParameter());
         Assert.assertEquals("tournaments not listed correctly", getResource("tournament_list.result.xml"), content);
         XMLAssert.assertXMLEqual("tournaments not listed correctly", getResource("tournament_list.result.xml"), content);

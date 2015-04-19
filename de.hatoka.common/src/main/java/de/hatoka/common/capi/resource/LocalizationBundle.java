@@ -6,9 +6,12 @@ import java.util.MissingResourceException;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.TimeZone;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.hatoka.common.capi.business.CountryHelper;
 
 public class LocalizationBundle
 {
@@ -18,17 +21,30 @@ public class LocalizationBundle
     private final Locale locale;
     private final String resourceBundleName;
     private final Set<String> unkownKeys = new HashSet<>();
+    private final TimeZone timezone;
 
+    @Deprecated
     public LocalizationBundle(String resourceBundleName, Locale locale)
+    {
+        this(resourceBundleName, locale, CountryHelper.UTC);
+    }
+
+    public LocalizationBundle(String resourceBundleName, Locale locale, TimeZone timeZone)
     {
         resourceBundle = PropertyResourceBundle.getBundle(resourceBundleName, locale);
         this.resourceBundleName = resourceBundleName;
         this.locale = locale;
+        this.timezone = timeZone;
     }
 
     public Locale getLocal()
     {
         return locale;
+    }
+
+    public TimeZone getTimeZone()
+    {
+        return timezone;
     }
 
     public String getText(String key)

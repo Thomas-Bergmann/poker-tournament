@@ -13,6 +13,7 @@ import org.junit.Test;
 
 import de.hatoka.common.capi.app.xslt.Lib;
 import de.hatoka.common.capi.app.xslt.XSLTRenderer;
+import de.hatoka.common.capi.business.CountryHelper;
 import de.hatoka.common.capi.resource.LocalizationBundle;
 import de.hatoka.common.capi.resource.ResourceLoader;
 import de.hatoka.common.capi.resource.ResourceLocalizer;
@@ -35,7 +36,7 @@ public class TournamentFrameTemplateTest
     {
         Map<String, Object> result = new HashMap<>();
         result.put(Lib.XSLT_LOCALIZER, new ResourceLocalizer(
-                        new LocalizationBundle(RESOURCE_PREFIX + "tournament", Locale.US)));
+                        new LocalizationBundle(RESOURCE_PREFIX + "tournament", Locale.US, CountryHelper.UTC)));
         return result;
     }
 

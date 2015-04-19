@@ -4,6 +4,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import de.hatoka.common.capi.business.CountryHelper;
+
 /**
  * LocalizedEnumResource provides easy access to name and description of an enum
  */
@@ -24,7 +26,7 @@ public class LocalizedEnumResource
         LocalizationBundle result = bundles.get(locale);
         if (result == null)
         {
-            result = new LocalizationBundle(location, locale);
+            result = new LocalizationBundle(location, locale, CountryHelper.UTC);
             bundles.put(locale, result);
         }
         return result;

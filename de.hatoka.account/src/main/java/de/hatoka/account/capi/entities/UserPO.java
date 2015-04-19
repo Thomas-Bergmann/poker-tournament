@@ -65,6 +65,7 @@ public class UserPO implements Serializable, IdentifiableEntity
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> addressRefs = new HashSet<>();
     private String locale;
+    private String timeZone;
 
     public UserPO()
     {
@@ -290,6 +291,16 @@ public class UserPO implements Serializable, IdentifiableEntity
     public void setSignInToken(String signInToken)
     {
         this.signInToken = signInToken;
+    }
+
+    public String getTimeZone()
+    {
+        return timeZone;
+    }
+
+    public void setTimeZone(String timeZone)
+    {
+        this.timeZone = timeZone;
     }
 
 }

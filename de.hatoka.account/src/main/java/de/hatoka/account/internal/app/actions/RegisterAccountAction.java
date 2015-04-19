@@ -27,7 +27,7 @@ public class RegisterAccountAction
         UserBO user = accountBusinessFactory.getUserBORepository().createUserBO(form.getEmail());
         user.register(form.getEmail(), form.getPassword());
         user.setNickName(form.getName());
-        user.setLocale(COUNTRY_HELPER.get(form.getLocale()));
+        user.setLocale(COUNTRY_HELPER.getLocale(form.getLocale()));
         user.sendEmailVerificationMail(action);
     }
 }

@@ -7,12 +7,14 @@ import java.util.Locale;
 
 import org.junit.Test;
 
+import de.hatoka.common.capi.business.CountryHelper;
+
 public class ResourceLocalizerTest
 {
     private static final String RESOURCE_PREFIX = "de/hatoka/common/capi/resource/";
 
     private static ResourceLocalizer UNDER_TEST = new ResourceLocalizer(new LocalizationBundle(RESOURCE_PREFIX
-                    + "resourceLocalizer", Locale.US));
+                    + "resourceLocalizer", Locale.US, CountryHelper.UTC));
 
     @Test
     public void testInjectText()
