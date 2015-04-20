@@ -51,7 +51,7 @@ public class ResourceLocalizer implements Localizer
         // 12345678901234567890123456789
         try
         {
-            if (dateString.length() == 25 || dateString.length() == 18)
+            if (dateString.length() == 25 || dateString.length() == 20)
             {
                 return new SimpleDateFormat(LocalizationConstants.XML_DATEFORMAT_SECONDS).parse(dateString);
             }
