@@ -45,12 +45,13 @@ public class ResourceLocalizer implements Localizer
     private Date parseDate(String dateString)
     {
         // convert xml date format to target
-        // 2014-11-25T09:45:55.624+01:00
+        // 2014-11-25T09:45:55.624+01:00 (second try)
+        // 2012-11-25T07:45:55Z
         // 2015-03-01T00:00:00+01:00
         // 12345678901234567890123456789
         try
         {
-            if (dateString.length() == 25)
+            if (dateString.length() == 25 || dateString.length() == 18)
             {
                 return new SimpleDateFormat(LocalizationConstants.XML_DATEFORMAT_SECONDS).parse(dateString);
             }
