@@ -4,7 +4,7 @@ import java.net.URI;
 
 import javax.ws.rs.core.UriInfo;
 
-import de.hatoka.tournament.capi.business.TournamentBO;
+import de.hatoka.tournament.capi.business.CashGameBO;
 import de.hatoka.tournament.capi.business.TournamentBORepository;
 import de.hatoka.tournament.internal.app.models.FrameModel;
 import de.hatoka.tournament.internal.app.models.MenuItemVO;
@@ -54,13 +54,13 @@ public class MenuFactory
         model.setContent(content);
         model.setUriHome(getUri(info, CashGameListService.class, "list"));
         model.addMainMenu("menu.list.cashgames", getUri(info, CashGameListService.class, "list"), false);
-        TournamentBO tournamentBO = tournamentBORepository.getByID(tournamentID);
-        MenuItemVO gameMenu = model.addMainMenu("menu.list.cashgames", getUri(info, CashGameCompetitorService.class, "players", tournamentBO.getID()), true);
-        gameMenu.setTitle(tournamentBO.getName());
+        CashGameBO cashGameBO = tournamentBORepository.getByID(tournamentID);
+        MenuItemVO gameMenu = model.addMainMenu("menu.list.cashgames", getUri(info, CashGameCompetitorService.class, "players", cashGameBO.getID()), true);
+        gameMenu.setTitle(cashGameBO.getName());
         model.addSideMenu("menu.list.cashgames", getUri(info, CashGameListService.class, "list"), getCashGamesSize(tournamentBORepository),
                         getUri(info, CashGameListService.class, "add"), false);
-        model.addSideMenu("menu.cashgame.players", getUri(info, CashGameCompetitorService.class, "players", tournamentBO.getID()), tournamentBO.getCompetitors().size(), getUri(info, CashGameCompetitorService.class, "addPlayer", tournamentBO.getID()), "players".equals(currentAction));
-        model.addSideMenu("menu.cashgame.history", getUri(info, CashGameCompetitorService.class, "history", tournamentBO.getID()), tournamentBO.getHistoryEntries().size(), null, "history".equals(currentAction));
+        model.addSideMenu("menu.cashgame.players", getUri(info, CashGameCompetitorService.class, "players", cashGameBO.getID()), cashGameBO.getCompetitors().size(), getUri(info, CashGameCompetitorService.class, "addPlayer", cashGameBO.getID()), "players".equals(currentAction));
+        model.addSideMenu("menu.cashgame.history", getUri(info, CashGameCompetitorService.class, "history", cashGameBO.getID()), cashGameBO.getHistoryEntries().size(), null, "history".equals(currentAction));
         return model;
     }
 
@@ -72,12 +72,12 @@ public class MenuFactory
         model.setContent(content);
         model.setUriHome(getUri(info, TournamentListService.class, "list"));
         model.addMainMenu("menu.list.tournaments", getUri(info, TournamentListService.class, "list"), false);
-        TournamentBO tournamentBO = tournamentBORepository.getByID(tournamentID);
-        MenuItemVO gameMenu = model.addMainMenu("menu.list.cashgames", getUri(info, TournamentCompetitorService.class, "players", tournamentBO.getID()), true);
-        gameMenu.setTitle(tournamentBO.getName());
+        CashGameBO cashGameBO = tournamentBORepository.getByID(tournamentID);
+        MenuItemVO gameMenu = model.addMainMenu("menu.list.cashgames", getUri(info, TournamentCompetitorService.class, "players", cashGameBO.getID()), true);
+        gameMenu.setTitle(cashGameBO.getName());
         model.addSideMenu("menu.list.tournaments", getUri(info, TournamentListService.class, "list"), getTournamentsSize(tournamentBORepository),
                         getUri(info, TournamentListService.class, "add"), false);
-        model.addSideMenu("menu.tournament.players", getUri(info, TournamentCompetitorService.class, "players", tournamentBO.getID()), tournamentBO.getCompetitors().size(), getUri(info, TournamentCompetitorService.class, "addPlayer", tournamentBO.getID()), true);
+        model.addSideMenu("menu.tournament.players", getUri(info, TournamentCompetitorService.class, "players", cashGameBO.getID()), cashGameBO.getCompetitors().size(), getUri(info, TournamentCompetitorService.class, "addPlayer", cashGameBO.getID()), true);
         return model;
     }
 

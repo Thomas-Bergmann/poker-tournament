@@ -11,16 +11,16 @@
     <xsl:param name="placeholderKey">
       <xsl:value-of select="concat('placeholder.', $name)" />
     </xsl:param>
+    <xsl:param name="placeholder">
+      <xsl:value-of select="hatoka:getText($localizer, $placeholderKey, $placeholderKey)" />
+    </xsl:param>
     <label class="sr-only">
       <xsl:attribute name="for">
         <xsl:value-of select="concat('input', $name)" />
       </xsl:attribute>
       <xsl:value-of select="hatoka:getText($localizer, $placeholderKey, $placeholderKey)" />
     </label>
-    <input class="form-control" id="input{$name}" type="{$type}" name="{$name}" value="{$value}">
-      <xsl:attribute name="placeholder">
-          <xsl:value-of select="hatoka:getText($localizer, $placeholderKey, $placeholderKey)" />
-      </xsl:attribute>
+    <input class="form-control" id="input{$name}" type="{$type}" name="{$name}" value="{$value}" placeholder="{$placeholder}">
       <xsl:if test="$type = 'password'">
         <xsl:attribute name="autocomplete">off</xsl:attribute>
         <xsl:attribute name="type">password</xsl:attribute>
@@ -61,9 +61,9 @@
     <xsl:param name="name" />
     <xsl:param name="value" />
     <xsl:param name="cssClass">btn btn-primary</xsl:param>
-    <xsl:variable name="buttonKey">
+    <xsl:param name="buttonKey">
       <xsl:value-of select="concat('button.', $name)" />
-    </xsl:variable>
+    </xsl:param>
     <button class="{$cssClass}" type="submit" name="{$name}">
       <xsl:value-of select="hatoka:getText($localizer, $buttonKey, $buttonKey)" />
     </button>
@@ -77,11 +77,26 @@
     <xsl:param name="date" />
     <xsl:value-of select="hatoka:formatDateTime($localizer, $date)" />
   </xsl:template>
+  <xsl:template name="formatDuration">
+    <xsl:param name="minutes" />
+    <xsl:value-of select="hatoka:formatDuration($localizer, $minutes)" />
+  </xsl:template>
+  <xsl:template name="formatTime">
+    <xsl:param name="date" />
+    <xsl:value-of select="hatoka:formatTime($localizer, $date)" />
+  </xsl:template>
   <xsl:template name="formatMoney">
     <xsl:param name="money" />
     <xsl:if test="$money = '0USD'">-</xsl:if>
     <xsl:if test="$money != '0USD'">
       <xsl:value-of select="$money" />
+    </xsl:if>
+  </xsl:template>
+  <xsl:template name="formatInteger">
+    <xsl:param name="amount" />
+    <xsl:if test="$amount = '0'">-</xsl:if>
+    <xsl:if test="$amount != '0'">
+      <xsl:value-of select="$amount" />
     </xsl:if>
   </xsl:template>
 

@@ -22,10 +22,15 @@ import com.google.inject.Injector;
 import de.hatoka.common.capi.business.Money;
 import de.hatoka.common.capi.dao.TransactionProvider;
 import de.hatoka.common.capi.modules.CommonDaoModule;
+import de.hatoka.tournament.capi.dao.BlindLevelDao;
 import de.hatoka.tournament.capi.dao.CompetitorDao;
+import de.hatoka.tournament.capi.dao.HistoryDao;
 import de.hatoka.tournament.capi.dao.PlayerDao;
 import de.hatoka.tournament.capi.dao.TournamentDao;
+import de.hatoka.tournament.capi.entities.BlindLevelPO;
 import de.hatoka.tournament.capi.entities.CompetitorPO;
+import de.hatoka.tournament.capi.entities.HistoryEntryType;
+import de.hatoka.tournament.capi.entities.HistoryPO;
 import de.hatoka.tournament.capi.entities.PlayerPO;
 import de.hatoka.tournament.capi.entities.TournamentModel;
 import de.hatoka.tournament.capi.entities.TournamentPO;
@@ -47,6 +52,10 @@ public class TournamentRepositoryBOTest
     private PlayerDao playerDao;
     @Inject
     private CompetitorDao competitorDao;
+    @Inject
+    private HistoryDao historyDao;
+    @Inject
+    private BlindLevelDao blindLevelDao;
 
     @Inject
     private TransactionProvider transactionProvider;
@@ -103,6 +112,14 @@ public class TournamentRepositoryBOTest
             {
                 Assert.assertTrue(competitorXML.getId(), tournamentPO.getCompetitors().contains(competitorXML));
             }
+            for(HistoryPO historyXML : tournamentXML.getHistoryEntries())
+            {
+                Assert.assertTrue(historyXML.getId(), tournamentPO.getHistoryEntries().contains(historyXML));
+            }
+            for(BlindLevelPO blindLevelXML : tournamentXML.getBlindLevels())
+            {
+                Assert.assertTrue(blindLevelXML.getId(), tournamentPO.getBlindLevels().contains(blindLevelXML));
+            }
         }
     }
 
@@ -116,6 +133,11 @@ public class TournamentRepositoryBOTest
         CompetitorPO competitor1 = competitorDao.createAndInsert(tournamentPO, player1);
         competitor1.setMoneyInPlay(Money.getInstance("5 EUR").toMoneyPO());
         competitor1.setMoneyResult(Money.getInstance("-5 EUR").toMoneyPO());
+
+        HistoryPO historyEntry = historyDao.createAndInsert(tournamentPO, player1, CURRENT_DATE);
+        historyEntry.setActionKey(HistoryEntryType.BuyIn.name());
+
+        blindLevelDao.createAndInsert(tournamentPO, 30);
         entityTransaction.commit();
     }
 

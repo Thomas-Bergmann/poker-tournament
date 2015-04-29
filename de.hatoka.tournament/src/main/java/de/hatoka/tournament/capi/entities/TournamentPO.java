@@ -48,7 +48,7 @@ public class TournamentPO implements Serializable, IdentifiableEntity
 
     @Embedded
     @AttributeOverrides({ @AttributeOverride(name = "currencyCode", column = @Column(name = "buyInCur")),
-                    @AttributeOverride(name = "amount", column = @Column(name = "buyInAmount")) })
+        @AttributeOverride(name = "amount", column = @Column(name = "buyInAmount")) })
     private MoneyPO buyIn;
 
     @OneToMany(mappedBy = "tournament")
@@ -56,6 +56,9 @@ public class TournamentPO implements Serializable, IdentifiableEntity
 
     @OneToMany(mappedBy = "tournament")
     private List<HistoryPO> historyEntries = new ArrayList<>();
+
+    @OneToMany(mappedBy = "tournament")
+    private List<BlindLevelPO> blindLevels = new ArrayList<>();
 
     public TournamentPO()
     {
@@ -174,5 +177,15 @@ public class TournamentPO implements Serializable, IdentifiableEntity
     public void setHistoryEntries(List<HistoryPO> historyEntries)
     {
         this.historyEntries = historyEntries;
+    }
+
+    public List<BlindLevelPO> getBlindLevels()
+    {
+        return blindLevels;
+    }
+
+    public void setBlindLevels(List<BlindLevelPO> blindLevels)
+    {
+        this.blindLevels = blindLevels;
     }
 }

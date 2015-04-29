@@ -3,10 +3,12 @@ package de.hatoka.tournament.internal.modules;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 
+import de.hatoka.tournament.capi.dao.BlindLevelDao;
 import de.hatoka.tournament.capi.dao.CompetitorDao;
 import de.hatoka.tournament.capi.dao.HistoryDao;
 import de.hatoka.tournament.capi.dao.PlayerDao;
 import de.hatoka.tournament.capi.dao.TournamentDao;
+import de.hatoka.tournament.internal.dao.BlindLevelDaoJpa;
 import de.hatoka.tournament.internal.dao.CompetitorDaoJpa;
 import de.hatoka.tournament.internal.dao.HistoryDaoJpa;
 import de.hatoka.tournament.internal.dao.PlayerDaoJpa;
@@ -21,5 +23,6 @@ public class TournamentDaoJpaModule implements Module
         binder.bind(PlayerDao.class).to(PlayerDaoJpa.class).asEagerSingleton();
         binder.bind(CompetitorDao.class).to(CompetitorDaoJpa.class).asEagerSingleton();
         binder.bind(HistoryDao.class).to(HistoryDaoJpa.class).asEagerSingleton();
+        binder.bind(BlindLevelDao.class).to(BlindLevelDaoJpa.class).asEagerSingleton();
     }
 }

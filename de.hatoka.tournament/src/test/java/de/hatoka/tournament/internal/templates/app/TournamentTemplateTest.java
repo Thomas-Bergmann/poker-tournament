@@ -1,9 +1,11 @@
 package de.hatoka.tournament.internal.templates.app;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -12,6 +14,7 @@ import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.LoggerFactory;
 
 import de.hatoka.common.capi.app.model.MoneyVO;
 import de.hatoka.common.capi.app.xslt.Lib;
@@ -22,8 +25,10 @@ import de.hatoka.common.capi.resource.LocalizationBundle;
 import de.hatoka.common.capi.resource.LocalizationConstants;
 import de.hatoka.common.capi.resource.ResourceLoader;
 import de.hatoka.common.capi.resource.ResourceLocalizer;
+import de.hatoka.tournament.internal.app.models.BlindLevelVO;
 import de.hatoka.tournament.internal.app.models.CompetitorVO;
 import de.hatoka.tournament.internal.app.models.PlayerVO;
+import de.hatoka.tournament.internal.app.models.TournamentBlindLevelModel;
 import de.hatoka.tournament.internal.app.models.TournamentListModel;
 import de.hatoka.tournament.internal.app.models.TournamentPlayerListModel;
 import de.hatoka.tournament.internal.app.models.TournamentVO;
@@ -53,8 +58,8 @@ public class TournamentTemplateTest
     private Map<String, Object> getParameter()
     {
         Map<String, Object> result = new HashMap<>();
-        result.put(Lib.XSLT_LOCALIZER, new ResourceLocalizer(
-                        new LocalizationBundle(RESOURCE_PREFIX + "tournament", Locale.US, CountryHelper.UTC)));
+        result.put(Lib.XSLT_LOCALIZER, new ResourceLocalizer(new LocalizationBundle(RESOURCE_PREFIX + "tournament",
+                        Locale.GERMANY, CountryHelper.TZ_BERLIN)));
         return result;
     }
 
@@ -62,10 +67,12 @@ public class TournamentTemplateTest
     {
         return TournamentViewObjectHelper.getTournamentVO(id, name, date);
     }
+
     private CompetitorVO getCompetitorVO(String id, String name, String playerID)
     {
         return TournamentViewObjectHelper.getCompetitorVO(id, name, playerID);
     }
+
     private PlayerVO getPlayerVO(String id, String name)
     {
         return TournamentViewObjectHelper.getPlayerVO(id, name);
@@ -75,8 +82,7 @@ public class TournamentTemplateTest
     public void testTournamentPlayers() throws Exception
     {
         TournamentPlayerListModel model = new TournamentPlayerListModel();
-        model.setTournament(getTournamentVO("123456", "Test 1", new SimpleDateFormat(
-                        LocalizationConstants.XML_DATEFORMAT).parse("2011-11-25T08:42:55.624+01:00")));
+        model.setTournament(getTournamentVO("123456", "Test 1", parseDate("2011-11-25T08:42")));
         model.getCompetitors().add(getCompetitorVO("1234578", "Player 1", "playerid-1"));
         CompetitorVO competitorVO = getCompetitorVO("1234579", "Player 2", "playerid-2");
         competitorVO.setResult(new MoneyVO(Money.getInstance("-1", "USD")));
@@ -85,7 +91,8 @@ public class TournamentTemplateTest
         model.getUnassignedPlayers().add(getPlayerVO("1234581", "Player 3"));
         String content = RENDERER.render(model, RESOURCE_PREFIX + "tournament_players.xslt", getParameter());
 
-        // Assert.assertEquals("players not listed correctly", getResource("tournament_players.result.xml"), content);
+        // Assert.assertEquals("players not listed correctly",
+        // getResource("tournament_players.result.xml"), content);
         XMLAssert.assertXMLEqual("players not listed correctly", getResource("tournament_players.result.xml"), content);
     }
 
@@ -93,8 +100,7 @@ public class TournamentTemplateTest
     public void testTournamentNoUnassignedPlayers() throws Exception
     {
         TournamentPlayerListModel model = new TournamentPlayerListModel();
-        model.setTournament(getTournamentVO("123456", "Test 1", new SimpleDateFormat(
-                        LocalizationConstants.XML_DATEFORMAT).parse("2011-11-25T08:42:55.624+01:00")));
+        model.setTournament(getTournamentVO("123456", "Test 1", parseDate("2011-11-25T08:42")));
         model.getCompetitors().add(getCompetitorVO("1234578", "Player 1", "playerid-1"));
         CompetitorVO competitorVO = getCompetitorVO("1234579", "Player 2", "playerid-2");
         competitorVO.setResult(new MoneyVO(Money.getInstance("-1", "USD")));
@@ -102,22 +108,48 @@ public class TournamentTemplateTest
         model.getCompetitors().add(competitorVO);
         String content = RENDERER.render(model, RESOURCE_PREFIX + "tournament_player_add.xslt", getParameter());
 
-        // Assert.assertEquals("players not listed correctly", getResource("tournament_no_unassigned.result.xml"), content);
-        XMLAssert.assertXMLEqual("players unassigned incorrectly", wrapXMLRoot(getResource("tournament_no_unassigned.result.xml")), wrapXMLRoot(content));
+        // Assert.assertEquals("players not listed correctly",
+        // getResource("tournament_no_unassigned.result.xml"), content);
+        XMLAssert.assertXMLEqual("players unassigned incorrectly",
+                        wrapXMLRoot(getResource("tournament_no_unassigned.result.xml")), wrapXMLRoot(content));
     }
 
     @Test
     public void testTournaments() throws Exception
     {
         TournamentListModel model = new TournamentListModel();
-        model.getTournaments().add(
-                        getTournamentVO("123456", "Test 1", new SimpleDateFormat(LocalizationConstants.XML_DATEFORMAT)
-                        .parse("2011-11-25T07:42:55.624+01:00")));
-        model.getTournaments().add(
-                        getTournamentVO("123457", "Test 2", new SimpleDateFormat(LocalizationConstants.XML_DATEFORMAT_SECONDS)
-                        .parse("2012-11-25T08:45:55+01:00")));
+        model.getTournaments().add(getTournamentVO("123456", "Test 1", parseDate("2011-11-25T08:45")));
+        model.getTournaments().add(getTournamentVO("123457", "Test 2", parseDate("2012-11-25T08:45")));
         String content = RENDERER.render(model, RESOURCE_PREFIX + "tournament_list.xslt", getParameter());
-        Assert.assertEquals("tournaments not listed correctly", getResource("tournament_list.result.xml"), content);
+        LoggerFactory.getLogger(getClass()).debug("testTournaments\n" + content);
+        Assert.assertEquals("tournaments not listed correctly",getResource("tournament_list.result.xml"), content);
         XMLAssert.assertXMLEqual("tournaments not listed correctly", getResource("tournament_list.result.xml"), content);
     }
+
+    @Test
+    public void testTournamentBlindLevels() throws Exception
+    {
+        TournamentBlindLevelModel model = new TournamentBlindLevelModel();
+        model.setTournament(getTournamentVO("123456", "Test 1", parseDate("2011-11-25T18:00")));
+        List<BlindLevelVO> blindLevels = model.getBlindLevels();
+        blindLevels.add(TournamentViewObjectHelper.getBlindLevelVO("1", 50, 100, 0, 30));
+        blindLevels.add(TournamentViewObjectHelper.getBlindLevelVO("2", 100, 200, 0, 30));
+        blindLevels.add(TournamentViewObjectHelper.getPauseVO("3", 15));
+        blindLevels.add(TournamentViewObjectHelper.getBlindLevelVO("4", 250, 500, 0, 30));
+        model.getPrefilled().add(TournamentViewObjectHelper.getBlindLevelVO(500, 1000, 0, 30));
+        model.fillTime(model.getTournament().getDate());
+        String content = RENDERER.render(model, RESOURCE_PREFIX + "tournament_blinds.xslt", getParameter());
+        // String content = new XMLRenderer().render(model);
+
+        Assert.assertEquals("players not listed correctly", getResource("tournament_blinds.result.xml"), content);
+        XMLAssert.assertXMLEqual("players not listed correctly", getResource("tournament_blinds.result.xml"), content);
+    }
+
+    private Date parseDate(String dateString) throws ParseException
+    {
+        SimpleDateFormat result = new SimpleDateFormat(LocalizationConstants.XML_DATEFORMAT_MINUTES);
+        result.setTimeZone(CountryHelper.TZ_BERLIN);
+        return result.parse(dateString);
+    }
+
 }

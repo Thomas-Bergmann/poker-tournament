@@ -3,46 +3,39 @@ package de.hatoka.tournament.internal.business;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import de.hatoka.common.capi.business.Money;
-import de.hatoka.tournament.capi.business.BlindLevelBO;
 import de.hatoka.tournament.capi.business.CompetitorBO;
 import de.hatoka.tournament.capi.business.HistoryEntryBO;
 import de.hatoka.tournament.capi.business.PlayerBO;
-import de.hatoka.tournament.capi.business.TournamentBO;
+import de.hatoka.tournament.capi.business.CashGameBO;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
-import de.hatoka.tournament.capi.business.TournamentRoundBO;
-import de.hatoka.tournament.capi.dao.BlindLevelDao;
 import de.hatoka.tournament.capi.dao.CompetitorDao;
 import de.hatoka.tournament.capi.dao.PlayerDao;
 import de.hatoka.tournament.capi.dao.TournamentDao;
-import de.hatoka.tournament.capi.entities.BlindLevelPO;
 import de.hatoka.tournament.capi.entities.CompetitorPO;
 import de.hatoka.tournament.capi.entities.HistoryPO;
 import de.hatoka.tournament.capi.entities.PlayerPO;
 import de.hatoka.tournament.capi.entities.TournamentPO;
 
-public class TournamentBOImpl implements TournamentBO
+public class CashGameBOImpl implements CashGameBO
 {
     private TournamentPO tournamentPO;
     private final TournamentDao tournamentDao;
     private final CompetitorDao competitorDao;
     private final PlayerDao playerDao;
-    private final BlindLevelDao blindLevelDao;
     private final TournamentBusinessFactory factory;
 
-    public TournamentBOImpl(TournamentPO tournamentPO, TournamentDao tournamentDao, CompetitorDao competitorDao,
-                    PlayerDao playerDao, BlindLevelDao blindLevelDao, TournamentBusinessFactory factory)
+    public CashGameBOImpl(TournamentPO tournamentPO, TournamentDao tournamentDao, CompetitorDao competitorDao,
+                    PlayerDao playerDao, TournamentBusinessFactory factory)
     {
         this.tournamentPO = tournamentPO;
         this.tournamentDao = tournamentDao;
         this.competitorDao = competitorDao;
         this.playerDao = playerDao;
-        this.blindLevelDao = blindLevelDao;
         this.factory = factory;
     }
 
@@ -69,6 +62,18 @@ public class TournamentBOImpl implements TournamentBO
         return getCompetitorBOStream().filter(competitor -> competitor.isActive());
     }
 
+    @Override
+    public Money getAverageInplay()
+    {
+        Money sum = getSumInplay();
+        if (Money.NOTHING.equals(sum))
+        {
+            return sum;
+        }
+        long activeCompetitors = getActiveCompetitorBOStream().count();
+        return sum.divide(activeCompetitors);
+    }
+
     private CompetitorBO getBO(CompetitorPO competitorPO)
     {
         return factory.getCompetitorBO(competitorPO, this);
@@ -92,7 +97,7 @@ public class TournamentBOImpl implements TournamentBO
     }
 
     @Override
-    public Date getStartTime()
+    public Date getDate()
     {
         return tournamentPO.getDate();
     }
@@ -175,7 +180,7 @@ public class TournamentBOImpl implements TournamentBO
             return false;
         if (getClass() != obj.getClass())
             return false;
-        TournamentBOImpl other = (TournamentBOImpl)obj;
+        CashGameBOImpl other = (CashGameBOImpl)obj;
         if (tournamentPO == null)
         {
             if (other.tournamentPO != null)
@@ -206,70 +211,5 @@ public class TournamentBOImpl implements TournamentBO
             result.add(factory.getHistoryBO(historyPO));
         }
         return result;
-    }
-
-    @Override
-    public void setStartTime(Date date)
-    {
-        tournamentPO.setDate(date);
-    }
-
-    @Override
-    public BlindLevelBO createBlindLevel(int duration, int smallBlind, int bigBlind, int ante)
-    {
-        BlindLevelPO blindLevelPO = blindLevelDao.createAndInsert(tournamentPO, duration);
-        blindLevelPO.setPause(false);
-        blindLevelPO.setSmallBlind(smallBlind);
-        blindLevelPO.setBigBlind(bigBlind);
-        blindLevelPO.setAnte(ante);
-        return factory.getBlindLevelBO(blindLevelPO);
-    }
-
-    @Override
-    public TournamentRoundBO createPause(int duration)
-    {
-        BlindLevelPO blindLevelPO = blindLevelDao.createAndInsert(tournamentPO, duration);
-        blindLevelPO.setPause(true);
-        return factory.getPauseBO(blindLevelPO);
-    }
-
-    @Override
-    public void setName(String name)
-    {
-        tournamentPO.setName(name);
-    }
-
-    @Override
-    public List<TournamentRoundBO> getTournamentRoundBOs()
-    {
-        List<BlindLevelPO> blindLevels = tournamentPO.getBlindLevels();
-        List<TournamentRoundBO> result = new ArrayList<TournamentRoundBO>(blindLevels.size());
-        for(BlindLevelPO blindLevelPO : blindLevels)
-        {
-            if (blindLevelPO.isPause())
-            {
-                result.add(factory.getPauseBO(blindLevelPO));
-            }
-            else
-            {
-                result.add(factory.getBlindLevelBO(blindLevelPO));
-            }
-        }
-        return result;
-    }
-
-    @Override
-    public void remove(TournamentRoundBO round)
-    {
-        Iterator<BlindLevelPO> blindLevels = tournamentPO.getBlindLevels().iterator();
-        while(blindLevels.hasNext())
-        {
-            BlindLevelPO blindLevelPO = blindLevels.next();
-            if (blindLevelPO.getId().equals(round.getID()))
-            {
-                blindLevelDao.remove(blindLevelPO);
-                break;
-            }
-        }
     }
 }

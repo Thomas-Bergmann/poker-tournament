@@ -6,6 +6,7 @@ import javax.ws.rs.core.UriBuilder;
 
 import de.hatoka.common.capi.app.model.MoneyVO;
 import de.hatoka.common.capi.business.Money;
+import de.hatoka.tournament.internal.app.models.BlindLevelVO;
 import de.hatoka.tournament.internal.app.models.CompetitorVO;
 import de.hatoka.tournament.internal.app.models.PlayerVO;
 import de.hatoka.tournament.internal.app.models.TournamentVO;
@@ -50,4 +51,30 @@ public final class TournamentViewObjectHelper
         return result;
     }
 
+    /* package */static BlindLevelVO getBlindLevelVO(String id, int small, int big, int ante, int duration)
+    {
+        BlindLevelVO result = getBlindLevelVO(small, big, ante, duration);
+        result.setId(id);
+        return result;
+    }
+
+    /* package */static BlindLevelVO getBlindLevelVO(int small, int big, int ante, int duration)
+    {
+        BlindLevelVO result = new BlindLevelVO();
+        result.setPause(false);
+        result.setSmallBlind(small);
+        result.setBigBlind(big);
+        result.setAnte(ante);
+        result.setDuration(duration);
+        return result;
+    }
+
+    /* package */static BlindLevelVO getPauseVO(String id, int duration)
+    {
+        BlindLevelVO result = new BlindLevelVO();
+        result.setId(id);
+        result.setPause(true);
+        result.setDuration(duration);
+        return result;
+    }
 }

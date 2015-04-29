@@ -1,12 +1,9 @@
 package de.hatoka.tournament.capi.business;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import de.hatoka.common.capi.business.Money;
-
-public interface TournamentBO
+public interface TournamentBO extends GameBO
 {
     /**
      * @return the identifier (artificial key)
@@ -19,52 +16,52 @@ public interface TournamentBO
     void remove();
 
     /**
-     * A player likes to attend to the tournament, the buy-in is not paid.
-     *
-     * @param playerBO
-     * @return
+     * @return the start date and time of the tournament
      */
-    CompetitorBO assign(PlayerBO playerBO);
+    Date getStartTime();
 
     /**
-     * Reverse action of assign. The competitor must be inactive (use {@link CompetitorBO#seatOpen(Money)} and requires a zero result.
-     *
-     * @param competitorBO
+     * set start date and time of the tournament
      */
-    void unassign(CompetitorBO competitorBO);
-
-    Collection<CompetitorBO> getActiveCompetitors();
+    void setStartTime(Date date);
 
     /**
-     * @return amount of money for all active players.
+     * @return name of tournament
      */
-    Money getAverageInplay();
-
-    Money getBuyIn();
-
-    Collection<CompetitorBO> getCompetitors();
-
-    Date getDate();
-
     String getName();
 
     /**
-     * @return amount of money for all active players.
+     * Set name of tournament
      */
-    Money getSumInplay();
-
-    boolean isCompetitor(PlayerBO player);
-
-    void setBuyIn(Money instance);
+    void setName(String name);
 
     /**
-     * Sort competitors recalculates the position of competitors.
-     */
-    void sortCompetitors();
-
-    /**
+     * Creates a new blind level for the tournament
      *
-     * @return ordered list of history entries
+     * @param duration
+     * @param smallBlind
+     * @param bigBlind
+     * @param ante
+     * @return
      */
-    List<HistoryEntryBO> getHistoryEntries();
+    BlindLevelBO createBlindLevel(int duration, int smallBlind, int bigBlind, int ante);
+
+    /**
+     * Creates a new blind level for the tournament
+     *
+     * @param duration
+     * @return
+     */
+    TournamentRoundBO createPause(int duration);
+
+    /**
+     * @return rounds of tournament
+     */
+    List<TournamentRoundBO> getTournamentRoundBOs();
+
+    /**
+     * Removes a previously created pause or blind level
+     * @param round
+     */
+    void remove(TournamentRoundBO round);
 }

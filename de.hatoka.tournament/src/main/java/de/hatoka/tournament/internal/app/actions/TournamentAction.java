@@ -14,7 +14,7 @@ import de.hatoka.tournament.capi.business.CompetitorBO;
 import de.hatoka.tournament.capi.business.HistoryEntryBO;
 import de.hatoka.tournament.capi.business.PlayerBO;
 import de.hatoka.tournament.capi.business.PlayerBORepository;
-import de.hatoka.tournament.capi.business.TournamentBO;
+import de.hatoka.tournament.capi.business.CashGameBO;
 import de.hatoka.tournament.capi.business.TournamentBORepository;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
 import de.hatoka.tournament.internal.app.models.CompetitorVO;
@@ -38,39 +38,39 @@ public class TournamentAction
 
     public void assignPlayer(String tournamentID, String playerID)
     {
-        TournamentBO tournamentBO = getTournamentBO(tournamentID);
+        CashGameBO cashGameBO = getTournamentBO(tournamentID);
         PlayerBORepository playerBORepository = factory.getPlayerBORepository(accountRef);
         PlayerBO playerBO = playerBORepository.getByID(playerID);
         if (playerBO != null)
         {
-            CompetitorBO competitorBO = tournamentBO.assign(playerBO);
-            competitorBO.buyin(tournamentBO.getBuyIn());
+            CompetitorBO competitorBO = cashGameBO.assign(playerBO);
+            competitorBO.buyin(cashGameBO.getBuyIn());
         }
     }
 
     public void createPlayer(String tournamentID, String name)
     {
-        TournamentBO tournamentBO = getTournamentBO(tournamentID);
+        CashGameBO cashGameBO = getTournamentBO(tournamentID);
         PlayerBORepository playerBORepository = factory.getPlayerBORepository(accountRef);
         PlayerBO playerBO = playerBORepository.create(name);
-        CompetitorBO competitorBO = tournamentBO.assign(playerBO);
-        competitorBO.buyin(tournamentBO.getBuyIn());
+        CompetitorBO competitorBO = cashGameBO.assign(playerBO);
+        competitorBO.buyin(cashGameBO.getBuyIn());
     }
 
     public TournamentPlayerListModel getPlayerListModel(String tournamentID, URI listTournamentURI,
                     UriBuilder uriBuilder)
     {
-        TournamentBO tournamentBO = getTournamentBO(tournamentID);
+        CashGameBO cashGameBO = getTournamentBO(tournamentID);
         TournamentPlayerListModel result = new TournamentPlayerListModel();
-        result.setTournament(new TournamentVO(tournamentBO, uriBuilder.build(tournamentBO.getID())));
-        for (CompetitorBO competitor : tournamentBO.getCompetitors())
+        result.setTournament(new TournamentVO(cashGameBO, uriBuilder.build(cashGameBO.getID())));
+        for (CompetitorBO competitor : cashGameBO.getCompetitors())
         {
             result.getCompetitors().add(new CompetitorVO(competitor));
         }
         PlayerBORepository playerBORepository = factory.getPlayerBORepository(accountRef);
         for (PlayerBO player : playerBORepository.getPlayerBOs())
         {
-            if (!tournamentBO.isCompetitor(player))
+            if (!cashGameBO.isCompetitor(player))
             {
                 result.getUnassignedPlayers().add(new PlayerVO(player));
             }
@@ -80,17 +80,17 @@ public class TournamentAction
 
     public List<String> rebuyPlayers(String tournamentID, List<String> identifiers, String rebuyString)
     {
-        TournamentBO tournamentBO = getTournamentBO(tournamentID);
+        CashGameBO cashGameBO = getTournamentBO(tournamentID);
         Money rebuy = null;
         try
         {
-            rebuy = Money.getInstance(rebuyString, tournamentBO.getSumInplay().getCurrency());
+            rebuy = Money.getInstance(rebuyString, cashGameBO.getSumInplay().getCurrency());
         } catch (NumberFormatException e)
         {
             return new ArrayList<String>(Arrays.asList("error.number.format"));
         }
 
-        for (CompetitorBO competitorBO : tournamentBO.getCompetitors())
+        for (CompetitorBO competitorBO : cashGameBO.getCompetitors())
         {
             if (identifiers.contains(competitorBO.getID()))
             {
@@ -109,10 +109,10 @@ public class TournamentAction
 
     public void seatOpenPlayers(String tournamentID, List<String> identifiers, String restAmountString)
     {
-        TournamentBO tournamentBO = getTournamentBO(tournamentID);
-        Collection<CompetitorBO> activeCompetitors = tournamentBO.getActiveCompetitors();
-        Money restAmount = activeCompetitors.size() == identifiers.size() ? tournamentBO.getSumInplay().divide(
-                        identifiers.size()) : Money.getInstance(restAmountString, tournamentBO.getSumInplay()
+        CashGameBO cashGameBO = getTournamentBO(tournamentID);
+        Collection<CompetitorBO> activeCompetitors = cashGameBO.getActiveCompetitors();
+        Money restAmount = activeCompetitors.size() == identifiers.size() ? cashGameBO.getSumInplay().divide(
+                        identifiers.size()) : Money.getInstance(restAmountString, cashGameBO.getSumInplay()
                                         .getCurrency());
                         for (CompetitorBO competitorBO : activeCompetitors)
                         {
@@ -125,23 +125,23 @@ public class TournamentAction
 
     public void unassignPlayers(String tournamentID, List<String> identifiers)
     {
-        TournamentBO tournamentBO = getTournamentBO(tournamentID);
-        for (CompetitorBO competitorBO : tournamentBO.getCompetitors())
+        CashGameBO cashGameBO = getTournamentBO(tournamentID);
+        for (CompetitorBO competitorBO : cashGameBO.getCompetitors())
         {
             if (identifiers.contains(competitorBO.getID()))
             {
-                tournamentBO.unassign(competitorBO);
+                cashGameBO.unassign(competitorBO);
             }
         }
     }
 
     public void sortPlayers(String tournamentID)
     {
-        TournamentBO tournamentBO = getTournamentBO(tournamentID);
-        tournamentBO.sortCompetitors();
+        CashGameBO cashGameBO = getTournamentBO(tournamentID);
+        cashGameBO.sortCompetitors();
     }
 
-    private TournamentBO getTournamentBO(String tournamentID)
+    private CashGameBO getTournamentBO(String tournamentID)
     {
         TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountRef);
         return tournamentBORepository.getByID(tournamentID);

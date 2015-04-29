@@ -14,6 +14,7 @@ import java.util.TimeZone;
 public class CountryHelper
 {
     public static final TimeZone UTC = TimeZone.getTimeZone("UTC");
+    public static final TimeZone TZ_BERLIN= TimeZone.getTimeZone("Europe/Berlin");
 
     private final static Set<String> COUNTRIES = new HashSet<>();
     private final static Map<String, Locale> LOCALES = new HashMap<>();
@@ -64,14 +65,15 @@ public class CountryHelper
     /**
      * @param timeZoneID
      *            An identifier of a time zone ({@link TimeZone#getID()})
-     * @return The time zone with given identifier. returns null if the time
-     *         zone is invalid.
+     * @return The time zone with given identifier.
+     * @throws IllegalArgumentException
+     *             if the time zone is invalid.
      */
     public TimeZone getTimeZone(String timeZoneID)
     {
         if (!isValidTimeZoneID(timeZoneID))
         {
-            return null;
+            throw new IllegalArgumentException("TimeZone not available: " + timeZoneID);
         }
         return TimeZone.getTimeZone(timeZoneID);
     }

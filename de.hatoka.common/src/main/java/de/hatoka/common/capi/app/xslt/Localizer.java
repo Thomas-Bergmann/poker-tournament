@@ -28,4 +28,18 @@ public interface Localizer
      * @return localized text (null if defaultText is null and key could not be resolved)
      */
     String getText(String key, String defaultText, Object... objects);
+
+    /**
+     * Format the duration in to a time (eg. 90 to 01:30)
+     * @param duration in minutes
+     * @return time
+     */
+    String formatDuration(String duration);
+
+    /**
+     * Format (Extracts) the time of a date time object
+     * @param date time
+     * @return time
+     */
+    String formatTime(String dateString);
 }

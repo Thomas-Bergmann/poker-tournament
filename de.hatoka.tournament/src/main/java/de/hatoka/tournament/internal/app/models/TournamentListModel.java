@@ -14,13 +14,13 @@ public class TournamentListModel
     public List<TournamentVO> getTournaments()
     {
         tournaments.sort(new Comparator<TournamentVO>()
-        {
+                        {
             @Override
             public int compare(TournamentVO o1, TournamentVO o2)
             {
                 return o2.getDate().compareTo(o1.getDate());
             }
-        });
+                        });
         return tournaments;
     }
 

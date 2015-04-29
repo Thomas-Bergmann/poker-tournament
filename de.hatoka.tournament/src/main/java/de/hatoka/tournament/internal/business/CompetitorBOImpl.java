@@ -6,8 +6,8 @@ import com.google.inject.Provider;
 
 import de.hatoka.common.capi.business.Money;
 import de.hatoka.tournament.capi.business.CompetitorBO;
+import de.hatoka.tournament.capi.business.GameBO;
 import de.hatoka.tournament.capi.business.PlayerBO;
-import de.hatoka.tournament.capi.business.TournamentBO;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
 import de.hatoka.tournament.capi.dao.HistoryDao;
 import de.hatoka.tournament.capi.entities.CompetitorPO;
@@ -18,15 +18,15 @@ public class CompetitorBOImpl implements CompetitorBO
 {
     private CompetitorPO competitorPO;
     private final TournamentBusinessFactory factory;
-    private final TournamentBO tournamentBO;
+    private final GameBO gameBO;
     private final HistoryDao historyDao;
     private final Provider<Date> dateProvider;
 
-    public CompetitorBOImpl(CompetitorPO competitorPO, TournamentBO tournamentBO, HistoryDao historyDao,Provider<Date> dateProvider,
+    public CompetitorBOImpl(CompetitorPO competitorPO, GameBO gameBO, HistoryDao historyDao,Provider<Date> dateProvider,
                     TournamentBusinessFactory factory)
     {
         this.competitorPO = competitorPO;
-        this.tournamentBO = tournamentBO;
+        this.gameBO = gameBO;
         this.historyDao = historyDao;
         this.dateProvider = dateProvider;
         this.factory = factory;
@@ -76,7 +76,7 @@ public class CompetitorBOImpl implements CompetitorBO
 
     private void sortCompetitors()
     {
-        tournamentBO.sortCompetitors();
+        gameBO.sortCompetitors();
     }
 
     @Override

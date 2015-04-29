@@ -83,11 +83,11 @@ public class CashGameTemplateTest
     {
         HistoryModel model = new HistoryModel();
         model.getEntries().add(getHistoryEntry("Player 1", HistoryEntryType.BuyIn, new SimpleDateFormat(
-                        LocalizationConstants.XML_DATEFORMAT).parse("2012-11-26T00:45:55.624+01:00")));
+                        LocalizationConstants.XML_DATEFORMAT_MILLIS).parse("2012-11-26T00:45:55.624+01:00")));
         model.getEntries().add(getHistoryEntry("Player 2",HistoryEntryType.ReBuy, new SimpleDateFormat(
-                        LocalizationConstants.XML_DATEFORMAT).parse("2012-11-26T01:45:55.624+00:00")));
+                        LocalizationConstants.XML_DATEFORMAT_MILLIS).parse("2012-11-26T01:45:55.624+00:00")));
         model.getEntries().add(getHistoryEntry("Player 3", HistoryEntryType.CashOut, new SimpleDateFormat(
-                        LocalizationConstants.XML_DATEFORMAT).parse("2012-11-26T02:45:55.624+01:00")));
+                        LocalizationConstants.XML_DATEFORMAT_MILLIS).parse("2012-11-26T02:45:55.624+01:00")));
         String content = RENDERER.render(model, RESOURCE_PREFIX + "cashgame_history.xslt", getParameter());
         // Assert.assertEquals("history not listed correctly", getResource("cashgame_history.result.xml"), content);
         XMLAssert.assertXMLEqual("history not listed correctly", getResource("cashgame_history.result.xml"), content);
@@ -98,7 +98,7 @@ public class CashGameTemplateTest
     {
         TournamentPlayerListModel model = new TournamentPlayerListModel();
         model.setTournament(getTournamentVO("123456", "Test 1", new SimpleDateFormat(
-                        LocalizationConstants.XML_DATEFORMAT).parse("2011-11-25T08:42:55.624+01:00")));
+                        LocalizationConstants.XML_DATEFORMAT_MILLIS).parse("2011-11-25T08:42:55.624+01:00")));
         model.getCompetitors().add(getCompetitorVO("1234578", "Player 1", "playerid-1"));
         CompetitorVO competitorVO = getCompetitorVO("1234579", "Player 2", "playerid-2");
         competitorVO.setResult(new MoneyVO(Money.getInstance("-1", "USD")));

@@ -1,7 +1,6 @@
 package de.hatoka.tournament.internal.app.actions;
 
 import java.net.URI;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Consumer;
@@ -11,11 +10,13 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import de.hatoka.common.capi.business.Money;
+import de.hatoka.tournament.capi.business.CashGameBO;
 import de.hatoka.tournament.capi.business.TournamentBO;
 import de.hatoka.tournament.capi.business.TournamentBORepository;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
 import de.hatoka.tournament.internal.app.models.TournamentListModel;
 import de.hatoka.tournament.internal.app.models.TournamentVO;
+import de.hatoka.tournament.internal.business.GameBOComparators;
 
 public class TournamentListAction
 {
@@ -29,10 +30,10 @@ public class TournamentListAction
         this.accountRef = accountRef;
     }
 
-    public TournamentBO createCashGame(Date date, String buyIn)
+    public CashGameBO createCashGame(Date date, String buyIn)
     {
         TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountRef);
-        TournamentBO result = tournamentBORepository.createCashGame(date);
+        CashGameBO result = tournamentBORepository.createCashGame(date);
         result.setBuyIn(Money.getInstance(buyIn));
         return result;
     }
@@ -58,16 +59,47 @@ public class TournamentListAction
     {
         return getListModel(uriBuilder, false);
     }
+
     public TournamentListModel getCashGameListModel(UriBuilder uriBuilder)
     {
         return getListModel(uriBuilder, true);
     }
 
-    private TournamentListModel getListModel(UriBuilder uriBuilder, boolean isCashGame)
+    private TournamentListModel getListModel(UriBuilder uriBuilder, boolean filterGashGames)
     {
         TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountRef);
         final TournamentListModel model = new TournamentListModel();
-        List<TournamentBO> tournamentBOs = isCashGame ? tournamentBORepository.getCashGameBOs() : tournamentBORepository.getTournamenBOs();
+        if(filterGashGames)
+        {
+            addCashGames(uriBuilder, tournamentBORepository, model);
+        }
+        else
+        {
+            addTournaments(uriBuilder, tournamentBORepository, model);
+        }
+        return model;
+    }
+
+    private void addCashGames(UriBuilder uriBuilder, TournamentBORepository tournamentBORepository,
+                    final TournamentListModel model)
+    {
+        List<CashGameBO> cashGameBOs = tournamentBORepository.getCashGameBOs();
+        Consumer<CashGameBO> mapper = new Consumer<CashGameBO>()
+        {
+            @Override
+            public void accept(CashGameBO bo)
+            {
+                model.getTournaments().add(new TournamentVO(bo, uriBuilder.build(bo.getID())));
+            }
+        };
+        cashGameBOs.sort(GameBOComparators.DEFAULT_CASHGAME);
+        cashGameBOs.forEach(mapper);
+    }
+
+    private void addTournaments(UriBuilder uriBuilder, TournamentBORepository tournamentBORepository,
+                    final TournamentListModel model)
+    {
+        List<TournamentBO> cashGameBOs = tournamentBORepository.getTournamenBOs();
         Consumer<TournamentBO> mapper = new Consumer<TournamentBO>()
         {
             @Override
@@ -76,17 +108,8 @@ public class TournamentListAction
                 model.getTournaments().add(new TournamentVO(bo, uriBuilder.build(bo.getID())));
             }
         };
-        Comparator<TournamentBO> sorter = new Comparator<TournamentBO>()
-        {
-            @Override
-            public int compare(TournamentBO a, TournamentBO b)
-            {
-                return a.getDate().compareTo(b.getDate());
-            }
-        };
-        tournamentBOs.sort(sorter);
-        tournamentBOs.forEach(mapper);
-        return model;
+        cashGameBOs.sort(GameBOComparators.DEFAULT_TOURNAMENT);
+        cashGameBOs.forEach(mapper);
     }
 
     public URI getUri(UriInfo info, Class<?> resource, String methodName)

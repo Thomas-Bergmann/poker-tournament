@@ -6,6 +6,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.slf4j.LoggerFactory;
+
 import de.hatoka.common.capi.app.xslt.Localizer;
 
 public class ResourceLocalizer implements Localizer
@@ -42,6 +44,20 @@ public class ResourceLocalizer implements Localizer
         return dateTimeFormatter.format(date);
     }
 
+    @Override
+    public String formatTime(String dateString)
+    {
+        if (dateString == null || dateString.isEmpty())
+        {
+            return "";
+        }
+        Date date = parseDate(dateString);
+
+        DateFormat dateTimeFormatter = DateFormat.getTimeInstance(DateFormat.SHORT, bundle.getLocal());
+        dateTimeFormatter.setTimeZone(bundle.getTimeZone());
+        return dateTimeFormatter.format(date);
+    }
+
     private Date parseDate(String dateString)
     {
         // convert xml date format to target
@@ -55,10 +71,11 @@ public class ResourceLocalizer implements Localizer
             {
                 return new SimpleDateFormat(LocalizationConstants.XML_DATEFORMAT_SECONDS).parse(dateString);
             }
-            return new SimpleDateFormat(LocalizationConstants.XML_DATEFORMAT).parse(dateString);
+            return new SimpleDateFormat(LocalizationConstants.XML_DATEFORMAT_MILLIS).parse(dateString);
         }
         catch(ParseException e)
         {
+            LoggerFactory.getLogger(getClass()).error("Can't convert to date '{}'.", dateString);
             throw new IllegalArgumentException("Illegal source date string: '" + dateString + "'", e);
         }
     }
@@ -73,6 +90,26 @@ public class ResourceLocalizer implements Localizer
         }
         MessageFormat messageFormat = new MessageFormat(pattern, bundle.getLocal());
         return messageFormat.format(arguments, new StringBuffer(), null).toString();
+    }
+
+    @Override
+    public String formatDuration(String duration)
+    {
+        if (duration == null || duration.isEmpty())
+        {
+            return "";
+        }
+        try
+        {
+            int minutes = Integer.valueOf(duration);
+            int hours = minutes / 60;
+            return hours+ ":" + (minutes - hours * 60);
+        }
+        catch(NumberFormatException e)
+        {
+            LoggerFactory.getLogger(getClass()).error("Can't convert to date '"+duration+"'.", e);
+            throw new IllegalArgumentException(e);
+        }
     }
 
 }

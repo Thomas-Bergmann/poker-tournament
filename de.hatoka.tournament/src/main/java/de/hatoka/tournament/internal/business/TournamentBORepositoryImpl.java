@@ -17,6 +17,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import de.hatoka.tournament.capi.business.CashGameBO;
 import de.hatoka.tournament.capi.business.TournamentBO;
 import de.hatoka.tournament.capi.business.TournamentBORepository;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
@@ -51,45 +52,50 @@ public class TournamentBORepositoryImpl implements TournamentBORepository
     public TournamentBO createTournament(String name, Date date)
     {
         TournamentPO tournamentPO = tournamentDao.createAndInsert(accountRef, name, date, false);
-        return getBO(tournamentPO);
+        return getTournamentBO(tournamentPO);
     }
 
-    @Override
-    public TournamentBO createCashGame(Date date)
-    {
-        String name = new SimpleDateFormat("yyyy/mm/dd hh:MM").format(date);
-        TournamentPO tournamentPO = tournamentDao.createAndInsert(accountRef, name, date, true);
-
-        return getBO(tournamentPO);
-    }
-
-    private TournamentBO getBO(TournamentPO tournamentPO)
+    private TournamentBO getTournamentBO(TournamentPO tournamentPO)
     {
         return factory.getTournamentBO(tournamentPO);
     }
 
     @Override
-    public TournamentBO getByID(String id)
+    public CashGameBO createCashGame(Date date)
+    {
+        String name = new SimpleDateFormat("yyyy/mm/dd hh:MM").format(date);
+        TournamentPO tournamentPO = tournamentDao.createAndInsert(accountRef, name, date, true);
+
+        return getCashGameBO(tournamentPO);
+    }
+
+    private CashGameBO getCashGameBO(TournamentPO tournamentPO)
+    {
+        return factory.getCashGameBO(tournamentPO);
+    }
+
+    @Override
+    public CashGameBO getByID(String id)
     {
         TournamentPO tournamentPO = tournamentDao.getById(id);
         if (!accountRef.equals(tournamentPO.getAccountRef()))
         {
             throw new IllegalArgumentException("tournament not assigned to account");
         }
-        return getBO(tournamentPO);
+        return getCashGameBO(tournamentPO);
     }
 
     @Override
     public List<TournamentBO> getTournamenBOs()
     {
-        return tournamentDao.getByAccountRef(accountRef).stream().filter(tournamentPO -> !tournamentPO.isCashGame()).map(tournamentPO -> getBO(tournamentPO))
+        return tournamentDao.getByAccountRef(accountRef).stream().filter(tournamentPO -> !tournamentPO.isCashGame()).map(tournamentPO -> getTournamentBO(tournamentPO))
                         .collect(Collectors.toList());
     }
 
     @Override
-    public List<TournamentBO> getCashGameBOs()
+    public List<CashGameBO> getCashGameBOs()
     {
-        return tournamentDao.getByAccountRef(accountRef).stream().filter(tournamentPO -> tournamentPO.isCashGame()).map(tournamentPO -> getBO(tournamentPO))
+        return tournamentDao.getByAccountRef(accountRef).stream().filter(tournamentPO -> tournamentPO.isCashGame()).map(tournamentPO -> getCashGameBO(tournamentPO))
                         .collect(Collectors.toList());
     }
 

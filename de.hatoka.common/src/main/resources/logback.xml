@@ -4,7 +4,7 @@
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
     <encoder>
-      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n%ex%n</pattern>
     </encoder>
   </appender>
   <appender name="ERROR_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -13,7 +13,7 @@
       <fileNamePattern>logs/error.%d{yyyy-MM-dd}.log.zip</fileNamePattern>
     </rollingPolicy>
     <encoder>
-      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n%ex%n</pattern>
     </encoder>
   </appender>
   <appender name="SQL_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">

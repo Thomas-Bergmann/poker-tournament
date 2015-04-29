@@ -22,6 +22,16 @@ public class Lib
         return localizer.formatDateTime(dateString);
     }
 
+    public static String formatTime(Localizer localizer, String dateString)
+    {
+        return localizer.formatTime(dateString);
+    }
+
+    public static String formatDuration(Localizer localizer, String duration)
+    {
+        return localizer.formatDuration(duration);
+    }
+
     public static String getResourceURI(String info, String resourceName)
     {
         return "../resources/" + resourceName;

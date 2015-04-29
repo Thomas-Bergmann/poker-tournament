@@ -9,13 +9,13 @@ public interface TournamentBORepository
 {
     TournamentBO createTournament(String name, Date date);
 
-    TournamentBO createCashGame(Date date);
+    CashGameBO createCashGame(Date date);
 
-    TournamentBO getByID(String id);
+    CashGameBO getByID(String id);
 
     List<TournamentBO> getTournamenBOs();
 
     File exportFile() throws IOException;
 
-    List<TournamentBO> getCashGameBOs();
+    List<CashGameBO> getCashGameBOs();
 }

@@ -6,6 +6,7 @@ import java.util.Date;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import de.hatoka.common.capi.app.model.MoneyVO;
+import de.hatoka.tournament.capi.business.CashGameBO;
 import de.hatoka.tournament.capi.business.TournamentBO;
 
 @XmlRootElement
@@ -28,11 +29,22 @@ public class TournamentVO
     {
         id = tournamentBO.getID();
         name = tournamentBO.getName();
-        date = tournamentBO.getDate();
+        date = tournamentBO.getStartTime();
         buyIn = tournamentBO.getBuyIn() == null ? null : new MoneyVO(tournamentBO.getBuyIn());
-        average = tournamentBO.getAverageInplay() == null ? null : new MoneyVO(tournamentBO.getAverageInplay());
         sumInPlay = tournamentBO.getSumInplay() == null ? null : new MoneyVO(tournamentBO.getSumInplay());
         competitorsSize = tournamentBO.getCompetitors().size();
+        this.uri = uri;
+    }
+
+    public TournamentVO(CashGameBO cashGameBO, URI uri)
+    {
+        id = cashGameBO.getID();
+        name = cashGameBO.getName();
+        date = cashGameBO.getDate();
+        buyIn = cashGameBO.getBuyIn() == null ? null : new MoneyVO(cashGameBO.getBuyIn());
+        average = cashGameBO.getAverageInplay() == null ? null : new MoneyVO(cashGameBO.getAverageInplay());
+        sumInPlay = cashGameBO.getSumInplay() == null ? null : new MoneyVO(cashGameBO.getSumInplay());
+        competitorsSize = cashGameBO.getCompetitors().size();
         this.uri = uri;
     }
 

@@ -1,0 +1,87 @@
+<form xmlns="http://www.w3.org/1999/xhtml" action="actionBlindList" method="POST">
+<table class="table table-striped">
+<tr>
+<th>Select</th>
+<th>Small Blind</th>
+<th>Big Blind</th>
+<th>Ante</th>
+<th>Duration (min)</th>
+<th>est. Start</th>
+<th>est. End</th>
+</tr>
+<tr>
+<td>
+<label>
+<input type="checkbox" value="1" name="levelID" class="checkbox"/>
+</label>
+</td>
+<td>50</td>
+<td>100</td>
+<td>-</td>
+<td>0:30</td>
+<td>18:00</td>
+<td>18:30</td>
+</tr>
+<tr>
+<td>
+<label>
+<input type="checkbox" value="2" name="levelID" class="checkbox"/>
+</label>
+</td>
+<td>100</td>
+<td>200</td>
+<td>-</td>
+<td>0:30</td>
+<td>18:30</td>
+<td>19:00</td>
+</tr>
+<tr>
+<td>
+<label>
+<input type="checkbox" value="3" name="levelID" class="checkbox"/>
+</label>
+</td>
+<td colspan="3">Pause</td>
+<td>0:15</td>
+<td>19:00</td>
+<td>19:15</td>
+</tr>
+<tr>
+<td>
+<label>
+<input type="checkbox" value="4" name="levelID" class="checkbox"/>
+</label>
+</td>
+<td>250</td>
+<td>500</td>
+<td>-</td>
+<td>0:30</td>
+<td>19:15</td>
+<td>19:45</td>
+</tr>
+<tr>
+<td/>
+<td>
+<label class="sr-only" for="inputsmallBlind">Small Blind</label>
+<input placeholder="500" value="" name="smallBlind" type="text" id="inputsmallBlind" class="form-control"/>
+</td>
+<td>
+<label class="sr-only" for="inputbigBlind">Big Blind</label>
+<input placeholder="1000" value="" name="bigBlind" type="text" id="inputbigBlind" class="form-control"/>
+</td>
+<td>
+<label class="sr-only" for="inputante">Ante</label>
+<input placeholder="0" value="" name="ante" type="text" id="inputante" class="form-control"/>
+</td>
+<td>
+<label class="sr-only" for="inputduration">Duration</label>
+<input placeholder="0:30" value="" name="duration" type="text" id="inputduration" class="form-control"/>
+</td>
+<td>19:45</td>
+<td>20:15</td>
+</tr>
+</table>
+<button name="save" type="submit" class="btn btn-primary">Save</button>
+<button name="delete" type="submit" class="btn">Delete</button>
+<button name="pause" type="submit" class="btn">Create Pause</button>
+</form>

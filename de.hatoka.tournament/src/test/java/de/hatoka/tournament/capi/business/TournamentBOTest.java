@@ -2,9 +2,12 @@ package de.hatoka.tournament.capi.business;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -58,7 +61,6 @@ public class TournamentBOTest
         competitorBO_1.buyin(underTest.getBuyIn());
         competitorBO_2.buyin(Money.getInstance("15 EUR"));
         assertEquals(Money.getInstance("20 EUR"), underTest.getSumInplay());
-        assertEquals(Money.getInstance("10 EUR"), underTest.getAverageInplay());
     }
 
     @Test
@@ -77,7 +79,29 @@ public class TournamentBOTest
     @Test
     public void testSimpleAttributes()
     {
-        assertEquals(NOW, underTest.getDate());
+        assertEquals(NOW, underTest.getStartTime());
         assertFalse("tournament.equals", underTest.equals(tournamentBORepository.createTournament("later", NOW)));
+    }
+
+    @Test
+    public void testBlindLevels()
+    {
+        underTest.createBlindLevel(30, 100, 200, 0);
+        underTest.createBlindLevel(30, 200, 400, 0);
+        underTest.createPause(15);
+        underTest.createBlindLevel(30, 500, 1000, 0);
+        underTest.createBlindLevel(30, 500, 1000, 100);
+        List<TournamentRoundBO> rounds = underTest.getTournamentRoundBOs();
+        assertEquals("five rounds added", 5, rounds.size());
+        assertNull("third round is pause", rounds.get(2).getBlindLevelBO());
+        assertEquals("second round is level with small blind", Integer.valueOf(200), rounds.get(1).getBlindLevelBO().getSmallBlind());
+        // remove pause
+        underTest.remove(rounds.get(2));
+        List<TournamentRoundBO> roundsAfterDelete = underTest.getTournamentRoundBOs();
+        assertEquals("four rounds left", 4, roundsAfterDelete.size());
+        for(TournamentRoundBO roundBO : roundsAfterDelete)
+        {
+            assertNotNull("only levels left", roundBO.getBlindLevelBO());
+        }
     }
 }
