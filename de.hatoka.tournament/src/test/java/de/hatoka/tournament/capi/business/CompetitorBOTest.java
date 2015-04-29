@@ -42,7 +42,7 @@ public class CompetitorBOTest
     private static final Date CURRENT_DATE = new Date();
 
     private CompetitorBO UNDER_TEST;
-    private TournamentBO tournamentBO;
+    private CashGameBO cashGameBO;
 
     @Rule
     public DerbyEntityManagerRule rule = new DerbyEntityManagerRule();
@@ -63,11 +63,11 @@ public class CompetitorBOTest
         Injector injector = Guice.createInjector(new CommonDaoModule(), new TournamentDaoJpaModule(), new TournamentBusinessModule(), rule.getModule());
         injector.injectMembers(this);
         PlayerPO playerPO = playerDao.createAndInsert(ACCOUNT_REF, "player1");
-        TournamentPO tournamentPO = tournamentDao.createAndInsert(ACCOUNT_REF, "tournament", CURRENT_DATE, false);
+        TournamentPO tournamentPO = tournamentDao.createAndInsert(ACCOUNT_REF, "tournament", CURRENT_DATE, true);
         tournamentPO.setBuyIn(Money.getInstance("5 EUR").toMoneyPO());
         CompetitorPO competitorPO = competitorDao.createAndInsert(tournamentPO, playerPO);
-        tournamentBO = factory.getTournamentBO(competitorPO.getTournamentPO());
-        UNDER_TEST = factory.getCompetitorBO(competitorPO, tournamentBO);
+        cashGameBO = factory.getCashGameBO(competitorPO.getTournamentPO());
+        UNDER_TEST = factory.getCompetitorBO(competitorPO, cashGameBO);
     }
 
     /**
@@ -94,7 +94,7 @@ public class CompetitorBOTest
         assertEquals("result empty", Money.NOTHING, UNDER_TEST.getResult());
         assertTrue("is active", UNDER_TEST.isActive());
 
-        UNDER_TEST.seatOpen(USD_4);
+        cashGameBO.seatOpen(UNDER_TEST, USD_4);
         assertEquals("buy in booked", USD_6, UNDER_TEST.getInPlay());
         assertEquals("result empty", USD_6_MINUS, UNDER_TEST.getResult());
         assertFalse("is active", UNDER_TEST.isActive());
@@ -104,12 +104,12 @@ public class CompetitorBOTest
         assertEquals("result empty", USD_6_MINUS, UNDER_TEST.getResult());
         assertTrue("is active", UNDER_TEST.isActive());
 
-        UNDER_TEST.seatOpen(USD_4);
+        cashGameBO.seatOpen(UNDER_TEST, USD_4);
         assertEquals("buy in booked", USD_7, UNDER_TEST.getInPlay());
         assertEquals("result empty", USD_7_MINUS, UNDER_TEST.getResult());
         assertFalse("is active", UNDER_TEST.isActive());
 
-        assertEquals("count history entries", 5, tournamentBO.getHistoryEntries().size());
-        assertEquals("buy-ins", 2, tournamentBO.getHistoryEntries().stream().filter(entry -> entry.getType().equals(HistoryEntryType.BuyIn)).count());
+        assertEquals("count history entries", 5, cashGameBO.getHistoryEntries().size());
+        assertEquals("buy-ins", 2, cashGameBO.getHistoryEntries().stream().filter(entry -> entry.getType().equals(HistoryEntryType.BuyIn)).count());
     }
 }

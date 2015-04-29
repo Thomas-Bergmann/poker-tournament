@@ -47,13 +47,6 @@ public interface CompetitorBO
     boolean isActive();
 
     /**
-     * Player leaves the table and pays the given amount back. The tournament position is not modified.
-     *
-     * @param restAmount
-     */
-    void seatOpen(Money restAmount);
-
-    /**
      * Player re-buys an amount, the amount will be added to the money in play.
      * @param reBuy
      */

@@ -1,5 +1,6 @@
 package de.hatoka.tournament.internal.business;
 
+import de.hatoka.common.capi.business.Money;
 import de.hatoka.tournament.capi.business.BlindLevelBO;
 import de.hatoka.tournament.capi.entities.BlindLevelPO;
 
@@ -79,6 +80,13 @@ public class BlindLevelBOImpl implements BlindLevelBO
             return null;
         }
         return this;
+    }
+
+    @Override
+    public Money getReBuy()
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

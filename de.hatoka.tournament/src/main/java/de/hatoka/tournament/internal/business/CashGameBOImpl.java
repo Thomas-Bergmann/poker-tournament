@@ -8,15 +8,16 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import de.hatoka.common.capi.business.Money;
+import de.hatoka.tournament.capi.business.CashGameBO;
 import de.hatoka.tournament.capi.business.CompetitorBO;
 import de.hatoka.tournament.capi.business.HistoryEntryBO;
 import de.hatoka.tournament.capi.business.PlayerBO;
-import de.hatoka.tournament.capi.business.CashGameBO;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
 import de.hatoka.tournament.capi.dao.CompetitorDao;
 import de.hatoka.tournament.capi.dao.PlayerDao;
 import de.hatoka.tournament.capi.dao.TournamentDao;
 import de.hatoka.tournament.capi.entities.CompetitorPO;
+import de.hatoka.tournament.capi.entities.HistoryEntryType;
 import de.hatoka.tournament.capi.entities.HistoryPO;
 import de.hatoka.tournament.capi.entities.PlayerPO;
 import de.hatoka.tournament.capi.entities.TournamentPO;
@@ -206,10 +207,32 @@ public class CashGameBOImpl implements CashGameBO
     public List<HistoryEntryBO> getHistoryEntries()
     {
         List<HistoryEntryBO> result = new ArrayList<>();
-        for(HistoryPO historyPO : tournamentPO.getHistoryEntries())
+        for (HistoryPO historyPO : tournamentPO.getHistoryEntries())
         {
             result.add(factory.getHistoryBO(historyPO));
         }
         return result;
     }
+
+    @Override
+    public void seatOpen(CompetitorBO competitorBO, Money restAmount)
+    {
+        if (!competitorBO.isActive() || !(competitorBO instanceof CashGameCompetitor))
+        {
+            throw new IllegalStateException("seatOpen not allowed at inactive competitors");
+        }
+        CashGameCompetitor cashGameCompetitor = (CashGameCompetitor) competitorBO;
+        if (restAmount != null)
+        {
+            // pay-back rest amount
+            cashGameCompetitor.setInPlay(cashGameCompetitor.getInPlay().add(restAmount.negate())
+                            );
+        }
+        cashGameCompetitor.setActive(false);
+        Money moneyResult = cashGameCompetitor.getInPlay().negate();
+        cashGameCompetitor.setResult(moneyResult);
+        sortCompetitors();
+        cashGameCompetitor.createEntry(HistoryEntryType.CashOut, restAmount);
+    }
+
 }

@@ -22,6 +22,7 @@ import de.hatoka.tournament.capi.dao.PlayerDao;
 import de.hatoka.tournament.capi.dao.TournamentDao;
 import de.hatoka.tournament.capi.entities.BlindLevelPO;
 import de.hatoka.tournament.capi.entities.CompetitorPO;
+import de.hatoka.tournament.capi.entities.HistoryEntryType;
 import de.hatoka.tournament.capi.entities.HistoryPO;
 import de.hatoka.tournament.capi.entities.PlayerPO;
 import de.hatoka.tournament.capi.entities.TournamentPO;
@@ -271,5 +272,33 @@ public class TournamentBOImpl implements TournamentBO
                 break;
             }
         }
+    }
+
+    @Override
+    public Money getReBuy()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void seatOpen(CompetitorBO competitorBO)
+    {
+        if (!competitorBO.isActive() || !(competitorBO instanceof TournamentCompetitor))
+        {
+            throw new IllegalStateException("seatOpen not allowed at inactive competitors");
+        }
+        Money moneyResult = getResultForNextLooser();
+        TournamentCompetitor tournamentCompetitor = (TournamentCompetitor) competitorBO;
+        tournamentCompetitor.setActive(false);
+        tournamentCompetitor.setResult(moneyResult);
+        sortCompetitors();
+        tournamentCompetitor.createEntry(HistoryEntryType.CashOut, moneyResult);
+    }
+
+    private Money getResultForNextLooser()
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

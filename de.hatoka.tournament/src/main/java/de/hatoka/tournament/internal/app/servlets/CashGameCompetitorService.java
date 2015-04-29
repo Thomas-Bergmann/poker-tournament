@@ -18,7 +18,8 @@ import javax.ws.rs.core.UriInfo;
 import de.hatoka.common.capi.app.servlet.AbstractService;
 import de.hatoka.tournament.capi.business.TournamentBORepository;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
-import de.hatoka.tournament.internal.app.actions.TournamentAction;
+import de.hatoka.tournament.internal.app.actions.CashGameAction;
+import de.hatoka.tournament.internal.app.actions.GameAction;
 import de.hatoka.tournament.internal.app.menu.MenuFactory;
 import de.hatoka.tournament.internal.app.models.FrameModel;
 import de.hatoka.tournament.internal.app.models.HistoryModel;
@@ -38,6 +39,8 @@ public class CashGameCompetitorService extends AbstractService
     private AccountService accountService;
     private final MenuFactory menuFactory = new MenuFactory();
 
+    private Response redirect;
+
     public CashGameCompetitorService()
     {
         super(RESOURCE_PREFIX);
@@ -53,6 +56,32 @@ public class CashGameCompetitorService extends AbstractService
     public void setAccountService(AccountService accountService)
     {
         this.accountService = accountService;
+    }
+
+    private GameAction getGameAction()
+    {
+        String accountRef = accountService.getAccountRef();
+        if (accountRef == null)
+        {
+            redirect = accountService.redirectLogin();
+            return null;
+        }
+        TournamentBORepository tournamentBORepository = getInstance(TournamentBusinessFactory.class)
+                        .getTournamentBORepository(accountRef);
+        return new GameAction(accountRef, tournamentBORepository.getCashGameByID(tournamentID), getInstance(TournamentBusinessFactory.class));
+    }
+
+    private CashGameAction getCashGameAction()
+    {
+        String accountRef = accountService.getAccountRef();
+        if (accountRef == null)
+        {
+            redirect = accountService.redirectLogin();
+            return null;
+        }
+        TournamentBORepository tournamentBORepository = getInstance(TournamentBusinessFactory.class)
+                        .getTournamentBORepository(accountRef);
+        return new CashGameAction(tournamentBORepository.getCashGameByID(tournamentID));
     }
 
     @POST
@@ -85,18 +114,17 @@ public class CashGameCompetitorService extends AbstractService
     @Path("/sortPlayers")
     public Response sortPlayers()
     {
-        String accountRef = accountService.getAccountRef();
-        if (accountRef == null)
+        GameAction action = getGameAction();
+        if (action == null)
         {
-            return accountService.redirectLogin();
+            return redirect;
         }
-        TournamentAction action = getAction(accountRef);
         runInTransaction(new Runnable()
         {
             @Override
             public void run()
             {
-                action.sortPlayers(tournamentID);
+                action.sortPlayers();
             }
         });
         return redirectPlayers();
@@ -106,18 +134,17 @@ public class CashGameCompetitorService extends AbstractService
     @Path("/assignPlayer")
     public Response assignPlayer(@FormParam("playerID") String playerID)
     {
-        String accountRef = accountService.getAccountRef();
-        if (accountRef == null)
+        GameAction action = getGameAction();
+        if (action == null)
         {
-            return accountService.redirectLogin();
+            return redirect;
         }
-        TournamentAction action = getAction(accountRef);
         runInTransaction(new Runnable()
         {
             @Override
             public void run()
             {
-                action.assignPlayer(tournamentID, playerID);
+                action.assignPlayer(playerID);
             }
         });
         return redirectAddPlayer();
@@ -127,41 +154,32 @@ public class CashGameCompetitorService extends AbstractService
     @Path("/createPlayer")
     public Response createPlayer(@FormParam("name") String name)
     {
-        String accountRef = accountService.getAccountRef();
-        if (accountRef == null)
+        GameAction action = getGameAction();
+        if (action == null)
         {
-            return accountService.redirectLogin();
+            return redirect;
         }
-        TournamentAction action = getAction(accountRef);
         runInTransaction(new Runnable()
         {
             @Override
             public void run()
             {
-                action.createPlayer(tournamentID, name);
+                action.createPlayer(name);
             }
         });
         return redirectAddPlayer();
-    }
-
-    protected TournamentAction getAction(String accountRef)
-    {
-        TournamentAction tournamentAction = new TournamentAction(accountRef);
-        getInjector().injectMembers(tournamentAction);
-        return tournamentAction;
     }
 
     @GET
     @Path("/players.html")
     public Response players(@QueryParam("errors") List<String> errors)
     {
-        String accountRef = accountService.getAccountRef();
-        if (accountRef == null)
+        GameAction action = getGameAction();
+        if (action == null)
         {
-            return accountService.redirectLogin();
+            return redirect;
         }
-        final TournamentPlayerListModel model = getAction(accountRef).getPlayerListModel(tournamentID,
-                        getUriBuilder(CashGameListService.class, "list").build(),
+        final TournamentPlayerListModel model = action.getPlayerListModel( getUriBuilder(CashGameListService.class, "list").build(),
                         getUriBuilder(CashGameCompetitorService.class, "players"));
         model.getErrors().addAll(errors);
         try
@@ -179,12 +197,12 @@ public class CashGameCompetitorService extends AbstractService
     @Path("/history.html")
     public Response history()
     {
-        String accountRef = accountService.getAccountRef();
-        if (accountRef == null)
+        GameAction action = getGameAction();
+        if (action == null)
         {
-            return accountService.redirectLogin();
+            return redirect;
         }
-        final HistoryModel model = getAction(accountRef).getHistoryModel(tournamentID);
+        final HistoryModel model = action.getHistoryModel();
         try
         {
             String content = renderStyleSheet(model, "cashgame_history.xslt", getXsltProcessorParameter("tournament"));
@@ -200,12 +218,12 @@ public class CashGameCompetitorService extends AbstractService
     @Path("/addPlayer.html")
     public Response addPlayer()
     {
-        String accountRef = accountService.getAccountRef();
-        if (accountRef == null)
+        GameAction action = getGameAction();
+        if (action == null)
         {
-            return accountService.redirectLogin();
+            return redirect;
         }
-        final TournamentPlayerListModel model = getAction(accountRef).getPlayerListModel(tournamentID,
+        final TournamentPlayerListModel model = action.getPlayerListModel(
                         getUriBuilder(CashGameListService.class, "list").build(),
                         getUriBuilder(CashGameCompetitorService.class, "players"));
         try
@@ -224,23 +242,22 @@ public class CashGameCompetitorService extends AbstractService
     @Path("/rebuyPlayers")
     public Response rebuyPlayers(@FormParam("competitorID") List<String> identifiers, @FormParam("rebuy") String rebuy)
     {
-        String accountRef = accountService.getAccountRef();
-        if (accountRef == null)
+        CashGameAction action = getCashGameAction();
+        if (action == null)
         {
-            return accountService.redirectLogin();
+            return redirect;
         }
-        TournamentAction action = getAction(accountRef);
         List<String> errors = Collections.emptyList();
         try
         {
             errors = runInTransaction(new Callable<List<String>>()
-                            {
+            {
                 @Override
                 public List<String> call()
                 {
-                    return action.rebuyPlayers(tournamentID, identifiers, rebuy);
+                    return action.rebuyPlayers(identifiers, rebuy);
                 }
-                            });
+            });
         }
         catch(Exception e)
         {
@@ -264,7 +281,7 @@ public class CashGameCompetitorService extends AbstractService
     {
         return Response.seeOther(
                         getUriBuilder(CashGameCompetitorService.class, "players")
-                        .queryParam("errors", errors.toArray()).build(tournamentID)).build();
+                                        .queryParam("errors", errors.toArray()).build(tournamentID)).build();
     }
 
     @POST
@@ -272,18 +289,17 @@ public class CashGameCompetitorService extends AbstractService
     public Response seatOpenPlayers(@FormParam("competitorID") List<String> identifiers,
                     @FormParam("amount") String amount)
     {
-        String accountRef = accountService.getAccountRef();
-        if (accountRef == null)
+        CashGameAction action = getCashGameAction();
+        if (action == null)
         {
-            return accountService.redirectLogin();
+            return redirect;
         }
-        TournamentAction action = getAction(accountRef);
         runInTransaction(new Runnable()
         {
             @Override
             public void run()
             {
-                action.seatOpenPlayers(tournamentID, identifiers, amount);
+                action.seatOpenPlayers(identifiers, amount);
             }
         });
         return redirectPlayers();
@@ -293,18 +309,17 @@ public class CashGameCompetitorService extends AbstractService
     @Path("/unassignPlayers")
     public Response unassignPlayers(@FormParam("competitorID") List<String> identifiers)
     {
-        String accountRef = accountService.getAccountRef();
-        if (accountRef == null)
+        GameAction action = getGameAction();
+        if (action == null)
         {
-            return accountService.redirectLogin();
+            return redirect;
         }
-        TournamentAction action = getAction(accountRef);
         runInTransaction(new Runnable()
         {
             @Override
             public void run()
             {
-                action.unassignPlayers(tournamentID, identifiers);
+                action.unassignPlayers(identifiers);
             }
         });
         return redirectPlayers();

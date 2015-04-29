@@ -15,6 +15,7 @@ import javax.ws.rs.core.UriInfo;
 import de.hatoka.common.capi.app.servlet.AbstractService;
 import de.hatoka.tournament.capi.business.TournamentBORepository;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
+import de.hatoka.tournament.internal.app.actions.GameAction;
 import de.hatoka.tournament.internal.app.actions.TournamentAction;
 import de.hatoka.tournament.internal.app.menu.MenuFactory;
 import de.hatoka.tournament.internal.app.models.TournamentPlayerListModel;
@@ -33,6 +34,8 @@ public class TournamentCompetitorService extends AbstractService
     private AccountService accountService;
     private final MenuFactory menuFactory = new MenuFactory();
 
+    private Response redirect;
+
     public TournamentCompetitorService()
     {
         super(RESOURCE_PREFIX);
@@ -50,11 +53,38 @@ public class TournamentCompetitorService extends AbstractService
         this.accountService = accountService;
     }
 
+    private GameAction getGameAction()
+    {
+        String accountRef = accountService.getAccountRef();
+        if (accountRef == null)
+        {
+            redirect = accountService.redirectLogin();
+            return null;
+        }
+        TournamentBORepository tournamentBORepository = getInstance(TournamentBusinessFactory.class)
+                        .getTournamentBORepository(accountRef);
+        return new GameAction(accountRef, tournamentBORepository.getCashGameByID(tournamentID),
+                        getInstance(TournamentBusinessFactory.class));
+    }
+
+    private TournamentAction getTournamentAction()
+    {
+        String accountRef = accountService.getAccountRef();
+        if (accountRef == null)
+        {
+            redirect = accountService.redirectLogin();
+            return null;
+        }
+        TournamentBORepository tournamentBORepository = getInstance(TournamentBusinessFactory.class)
+                        .getTournamentBORepository(accountRef);
+        return new TournamentAction(tournamentBORepository.getTournamentByID(tournamentID));
+    }
+
     @POST
     @Path("/actionPlayerList")
     public Response actionPlayerList(@FormParam("competitorID") List<String> identifiers,
-                    @FormParam("delete") String deleteButton, @FormParam("seatopen") String seatOpenButton, @FormParam("sort") String sortButton,
-                    @FormParam("rebuy") String rebuyButton, @FormParam("amount") String amount)
+                    @FormParam("delete") String deleteButton, @FormParam("seatopen") String seatOpenButton,
+                    @FormParam("sort") String sortButton, @FormParam("rebuy") String rebuyButton)
     {
         if (isButtonPressed(sortButton))
         {
@@ -66,11 +96,11 @@ public class TournamentCompetitorService extends AbstractService
         }
         if (isButtonPressed(rebuyButton))
         {
-            return rebuyPlayers(identifiers, amount);
+            return rebuyPlayers(identifiers);
         }
         if (isButtonPressed(seatOpenButton))
         {
-            return seatOpenPlayers(identifiers, amount);
+            return seatOpenPlayer(identifiers.get(0));
         }
         return redirectPlayers();
     }
@@ -79,18 +109,17 @@ public class TournamentCompetitorService extends AbstractService
     @Path("/sortPlayers")
     public Response sortPlayers()
     {
-        String accountRef = accountService.getAccountRef();
-        if (accountRef == null)
+        GameAction action = getGameAction();
+        if (action == null)
         {
-            return accountService.redirectLogin();
+            return redirect;
         }
-        TournamentAction action = getAction(accountRef);
         runInTransaction(new Runnable()
         {
             @Override
             public void run()
             {
-                action.sortPlayers(tournamentID);
+                action.sortPlayers();
             }
         });
         return redirectPlayers();
@@ -100,18 +129,17 @@ public class TournamentCompetitorService extends AbstractService
     @Path("/assignPlayer")
     public Response assignPlayer(@FormParam("playerID") String playerID)
     {
-        String accountRef = accountService.getAccountRef();
-        if (accountRef == null)
+        GameAction action = getGameAction();
+        if (action == null)
         {
-            return accountService.redirectLogin();
+            return redirect;
         }
-        TournamentAction action = getAction(accountRef);
         runInTransaction(new Runnable()
         {
             @Override
             public void run()
             {
-                action.assignPlayer(tournamentID, playerID);
+                action.assignPlayer(playerID);
             }
         });
         return redirectAddPlayer();
@@ -121,40 +149,32 @@ public class TournamentCompetitorService extends AbstractService
     @Path("/createPlayer")
     public Response createPlayer(@FormParam("name") String name)
     {
-        String accountRef = accountService.getAccountRef();
-        if (accountRef == null)
+        GameAction action = getGameAction();
+        if (action == null)
         {
-            return accountService.redirectLogin();
+            return redirect;
         }
-        TournamentAction action = getAction(accountRef);
         runInTransaction(new Runnable()
         {
             @Override
             public void run()
             {
-                action.createPlayer(tournamentID, name);
+                action.createPlayer(name);
             }
         });
         return redirectAddPlayer();
-    }
-
-    protected TournamentAction getAction(String accountRef)
-    {
-        TournamentAction tournamentAction = new TournamentAction(accountRef);
-        getInjector().injectMembers(tournamentAction);
-        return tournamentAction;
     }
 
     @GET
     @Path("/players.html")
     public Response players()
     {
-        String accountRef = accountService.getAccountRef();
-        if (accountRef == null)
+        GameAction action = getGameAction();
+        if (action == null)
         {
-            return accountService.redirectLogin();
+            return redirect;
         }
-        final TournamentPlayerListModel model = getAction(accountRef).getPlayerListModel(tournamentID,
+        final TournamentPlayerListModel model = action.getPlayerListModel(
                         getUriBuilder(TournamentListService.class, "list").build(),
                         getUriBuilder(TournamentCompetitorService.class, "players"));
         try
@@ -172,17 +192,18 @@ public class TournamentCompetitorService extends AbstractService
     @Path("/addPlayer.html")
     public Response addPlayer()
     {
-        String accountRef = accountService.getAccountRef();
-        if (accountRef == null)
+        GameAction action = getGameAction();
+        if (action == null)
         {
-            return accountService.redirectLogin();
+            return redirect;
         }
-        final TournamentPlayerListModel model = getAction(accountRef).getPlayerListModel(tournamentID,
+        final TournamentPlayerListModel model = action.getPlayerListModel(
                         getUriBuilder(TournamentListService.class, "list").build(),
                         getUriBuilder(TournamentCompetitorService.class, "players"));
         try
         {
-            String content = renderStyleSheet(model, "tournament_player_add.xslt", getXsltProcessorParameter("tournament"));
+            String content = renderStyleSheet(model, "tournament_player_add.xslt",
+                            getXsltProcessorParameter("tournament"));
             return Response.status(200).entity(renderFrame(content, "title.list.players")).build();
         }
         catch(IOException e)
@@ -191,23 +212,21 @@ public class TournamentCompetitorService extends AbstractService
         }
     }
 
-
     @POST
     @Path("/rebuyPlayers")
-    public Response rebuyPlayers(@FormParam("competitorID") List<String> identifiers, @FormParam("rebuy") String rebuy)
+    public Response rebuyPlayers(@FormParam("competitorID") List<String> identifiers)
     {
-        String accountRef = accountService.getAccountRef();
-        if (accountRef == null)
+        TournamentAction action = getTournamentAction();
+        if (action == null)
         {
-            return accountService.redirectLogin();
+            return redirect;
         }
-        TournamentAction action = getAction(accountRef);
         runInTransaction(new Runnable()
         {
             @Override
             public void run()
             {
-                action.rebuyPlayers(tournamentID, identifiers, rebuy);
+                action.rebuyPlayers(identifiers);
             }
         });
         return redirectPlayers();
@@ -215,31 +234,31 @@ public class TournamentCompetitorService extends AbstractService
 
     private Response redirectPlayers()
     {
-        return Response.seeOther(getUriBuilder(TournamentCompetitorService.class, "players").build(tournamentID)).build();
+        return Response.seeOther(getUriBuilder(TournamentCompetitorService.class, "players").build(tournamentID))
+                        .build();
     }
 
     private Response redirectAddPlayer()
     {
-        return Response.seeOther(getUriBuilder(TournamentCompetitorService.class, "addPlayer").build(tournamentID)).build();
+        return Response.seeOther(getUriBuilder(TournamentCompetitorService.class, "addPlayer").build(tournamentID))
+                        .build();
     }
 
     @POST
-    @Path("/seatOpenPlayers")
-    public Response seatOpenPlayers(@FormParam("competitorID") List<String> identifiers,
-                    @FormParam("amount") String amount)
+    @Path("/seatOpenPlayer")
+    public Response seatOpenPlayer(@FormParam("competitorID") String identifier)
     {
-        String accountRef = accountService.getAccountRef();
-        if (accountRef == null)
+        TournamentAction action = getTournamentAction();
+        if (action == null)
         {
-            return accountService.redirectLogin();
+            return redirect;
         }
-        TournamentAction action = getAction(accountRef);
         runInTransaction(new Runnable()
         {
             @Override
             public void run()
             {
-                action.seatOpenPlayers(tournamentID, identifiers, amount);
+                action.seatOpenPlayers(identifier);
             }
         });
         return redirectPlayers();
@@ -249,18 +268,17 @@ public class TournamentCompetitorService extends AbstractService
     @Path("/unassignPlayers")
     public Response unassignPlayers(@FormParam("competitorID") List<String> identifiers)
     {
-        String accountRef = accountService.getAccountRef();
-        if (accountRef == null)
+        GameAction action = getGameAction();
+        if (action == null)
         {
-            return accountService.redirectLogin();
+            return redirect;
         }
-        TournamentAction action = getAction(accountRef);
         runInTransaction(new Runnable()
         {
             @Override
             public void run()
             {
-                action.unassignPlayers(tournamentID, identifiers);
+                action.unassignPlayers(identifiers);
             }
         });
         return redirectPlayers();
@@ -269,7 +287,10 @@ public class TournamentCompetitorService extends AbstractService
     private String renderFrame(String content, String titleKey) throws IOException
     {
         TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
-        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountService.getAccountRef());
-        return renderStyleSheet(menuFactory.getTournamentFrameModel(content, titleKey, getInfo(), tournamentBORepository, tournamentID), "tournament_frame.xslt", getXsltProcessorParameter("tournament"));
+        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountService
+                        .getAccountRef());
+        return renderStyleSheet(menuFactory.getTournamentFrameModel(content, titleKey, getInfo(),
+                        tournamentBORepository, tournamentID), "tournament_frame.xslt",
+                        getXsltProcessorParameter("tournament"));
     }
 }

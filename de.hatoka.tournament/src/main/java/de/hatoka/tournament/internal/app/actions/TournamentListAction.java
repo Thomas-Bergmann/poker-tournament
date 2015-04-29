@@ -46,15 +46,6 @@ public class TournamentListAction
         return result;
     }
 
-    public void deleteTournaments(List<String> identifiers)
-    {
-        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountRef);
-        for (String id : identifiers)
-        {
-            tournamentBORepository.getByID(id).remove();
-        }
-    }
-
     public TournamentListModel getTournamentListModel(UriBuilder uriBuilder)
     {
         return getListModel(uriBuilder, false);
@@ -115,6 +106,24 @@ public class TournamentListAction
     public URI getUri(UriInfo info, Class<?> resource, String methodName)
     {
         return info.getBaseUriBuilder().path(resource).path(resource, methodName).build();
+    }
+
+    public void deleteTournaments(List<String> identifiers)
+    {
+        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountRef);
+        for (String id : identifiers)
+        {
+            tournamentBORepository.getTournamentByID(id).remove();
+        }
+    }
+
+    public void deleteCashGames(List<String> identifiers)
+    {
+        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountRef);
+        for (String id : identifiers)
+        {
+            tournamentBORepository.getCashGameByID(id).remove();
+        }
     }
 
 }

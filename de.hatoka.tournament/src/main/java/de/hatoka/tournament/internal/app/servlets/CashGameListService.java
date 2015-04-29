@@ -88,7 +88,7 @@ public class CashGameListService extends AbstractService
             @Override
             public void run()
             {
-                action.deleteTournaments(identifiers);
+                action.deleteCashGames(identifiers);
             }
         });
         return redirectList();

@@ -75,12 +75,31 @@ public class TournamentBORepositoryImpl implements TournamentBORepository
     }
 
     @Override
-    public CashGameBO getByID(String id)
+    public TournamentBO getTournamentByID(String id)
     {
         TournamentPO tournamentPO = tournamentDao.getById(id);
         if (!accountRef.equals(tournamentPO.getAccountRef()))
         {
             throw new IllegalArgumentException("tournament not assigned to account");
+        }
+        if (tournamentPO.isCashGame())
+        {
+            throw new IllegalArgumentException("requested tournament is a cash game");
+        }
+        return getTournamentBO(tournamentPO);
+    }
+
+    @Override
+    public CashGameBO getCashGameByID(String id)
+    {
+        TournamentPO tournamentPO = tournamentDao.getById(id);
+        if (!accountRef.equals(tournamentPO.getAccountRef()))
+        {
+            throw new IllegalArgumentException("cashgame not assigned to account");
+        }
+        if (!tournamentPO.isCashGame())
+        {
+            throw new IllegalArgumentException("requested cash game is a tournament");
         }
         return getCashGameBO(tournamentPO);
     }

@@ -1,5 +1,7 @@
 package de.hatoka.tournament.capi.business;
 
+import de.hatoka.common.capi.business.Money;
+
 public interface TournamentRoundBO
 {
    /**
@@ -17,4 +19,9 @@ public interface TournamentRoundBO
     * @return BlindLevel in case it's not a pause
     */
    BlindLevelBO getBlindLevelBO();
+
+   /**
+    * @return the re-buy amount (null if no re-buy allowed)
+    */
+   Money getReBuy();
 }

@@ -8,14 +8,12 @@ import java.util.List;
 public interface TournamentBORepository
 {
     TournamentBO createTournament(String name, Date date);
-
-    CashGameBO createCashGame(Date date);
-
-    CashGameBO getByID(String id);
-
+    TournamentBO getTournamentByID(String id);
     List<TournamentBO> getTournamenBOs();
 
-    File exportFile() throws IOException;
-
+    CashGameBO createCashGame(Date date);
+    CashGameBO getCashGameByID(String id);
     List<CashGameBO> getCashGameBOs();
+
+    File exportFile() throws IOException;
 }

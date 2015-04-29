@@ -3,18 +3,10 @@ package de.hatoka.tournament.capi.business;
 import java.util.Date;
 import java.util.List;
 
+import de.hatoka.common.capi.business.Money;
+
 public interface TournamentBO extends GameBO
 {
-    /**
-     * @return the identifier (artificial key)
-     */
-    String getID();
-
-    /**
-     * Removes that object
-     */
-    void remove();
-
     /**
      * @return the start date and time of the tournament
      */
@@ -64,4 +56,17 @@ public interface TournamentBO extends GameBO
      * @param round
      */
     void remove(TournamentRoundBO round);
+
+    /**
+     * @return the rebuy (the rebuy can be different at different {@link TournamentRoundBO}.
+     * @throws IllegalArgumentException in case the rebuy is not allowed
+     */
+    Money getReBuy();
+
+    /**
+     * Player leaves the table and the tournament pays depends on rank.
+     *
+     * @param restAmount
+     */
+    void seatOpen(CompetitorBO competitor);
 }

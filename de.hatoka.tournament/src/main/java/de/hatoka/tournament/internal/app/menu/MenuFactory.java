@@ -54,7 +54,7 @@ public class MenuFactory
         model.setContent(content);
         model.setUriHome(getUri(info, CashGameListService.class, "list"));
         model.addMainMenu("menu.list.cashgames", getUri(info, CashGameListService.class, "list"), false);
-        CashGameBO cashGameBO = tournamentBORepository.getByID(tournamentID);
+        CashGameBO cashGameBO = tournamentBORepository.getCashGameByID(tournamentID);
         MenuItemVO gameMenu = model.addMainMenu("menu.list.cashgames", getUri(info, CashGameCompetitorService.class, "players", cashGameBO.getID()), true);
         gameMenu.setTitle(cashGameBO.getName());
         model.addSideMenu("menu.list.cashgames", getUri(info, CashGameListService.class, "list"), getCashGamesSize(tournamentBORepository),
@@ -72,7 +72,7 @@ public class MenuFactory
         model.setContent(content);
         model.setUriHome(getUri(info, TournamentListService.class, "list"));
         model.addMainMenu("menu.list.tournaments", getUri(info, TournamentListService.class, "list"), false);
-        CashGameBO cashGameBO = tournamentBORepository.getByID(tournamentID);
+        CashGameBO cashGameBO = tournamentBORepository.getCashGameByID(tournamentID);
         MenuItemVO gameMenu = model.addMainMenu("menu.list.cashgames", getUri(info, TournamentCompetitorService.class, "players", cashGameBO.getID()), true);
         gameMenu.setTitle(cashGameBO.getName());
         model.addSideMenu("menu.list.tournaments", getUri(info, TournamentListService.class, "list"), getTournamentsSize(tournamentBORepository),

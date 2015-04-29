@@ -5,7 +5,6 @@ import java.util.Date;
 import com.google.inject.Provider;
 
 import de.hatoka.common.capi.business.Money;
-import de.hatoka.tournament.capi.business.CompetitorBO;
 import de.hatoka.tournament.capi.business.GameBO;
 import de.hatoka.tournament.capi.business.PlayerBO;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
@@ -14,7 +13,7 @@ import de.hatoka.tournament.capi.entities.CompetitorPO;
 import de.hatoka.tournament.capi.entities.HistoryEntryType;
 import de.hatoka.tournament.capi.entities.HistoryPO;
 
-public class CompetitorBOImpl implements CompetitorBO
+public class CompetitorBOImpl implements CashGameCompetitor
 {
     private CompetitorPO competitorPO;
     private final TournamentBusinessFactory factory;
@@ -116,25 +115,6 @@ public class CompetitorBOImpl implements CompetitorBO
     }
 
     @Override
-    public void seatOpen(Money restAmount)
-    {
-        if (!isActive())
-        {
-            throw new IllegalStateException("seatOpen not allowed at inactive competitors");
-        }
-        if (restAmount != null)
-        {
-            // pay-back rest amount
-            competitorPO.setMoneyInPlay(Money.getInstance(competitorPO.getMoneyInPlay()).add(restAmount.negate()).toMoneyPO());
-        }
-        competitorPO.setActive(false);
-        Money moneyResult = Money.getInstance(competitorPO.getMoneyInPlay()).negate();
-        competitorPO.setMoneyResult(moneyResult.toMoneyPO());
-        sortCompetitors();
-        createEntry(HistoryEntryType.CashOut, restAmount);
-    }
-
-    @Override
     public void rebuy(Money amount)
     {
         if (!isActive())
@@ -152,10 +132,29 @@ public class CompetitorBOImpl implements CompetitorBO
         competitorPO.setPositition(position);
     }
 
-    private void createEntry(HistoryEntryType type, Money amount)
+    @Override
+    public void createEntry(HistoryEntryType type, Money amount)
     {
         HistoryPO entry = historyDao.createAndInsert(competitorPO.getTournamentPO(), competitorPO.getPlayerPO(), dateProvider.get());
         entry.setActionKey(type.name());
         entry.setAmount(amount.toMoneyPO());
+    }
+
+    @Override
+    public void setInPlay(Money amount)
+    {
+        competitorPO.setMoneyInPlay(amount.toMoneyPO());
+    }
+
+    @Override
+    public void setActive(boolean active)
+    {
+        competitorPO.setActive(active);
+    }
+
+    @Override
+    public void setResult(Money amount)
+    {
+        competitorPO.setMoneyResult(amount.toMoneyPO());
     }
 }

@@ -7,16 +7,6 @@ import de.hatoka.common.capi.business.Money;
 public interface CashGameBO extends GameBO
 {
     /**
-     * @return the identifier (artificial key)
-     */
-    String getID();
-
-    /**
-     * Removes that object
-     */
-    void remove();
-
-    /**
      * @return amount of money for all active players.
      */
     Money getAverageInplay();
@@ -24,4 +14,11 @@ public interface CashGameBO extends GameBO
     Date getDate();
 
     String getName();
+
+    /**
+     * Player leaves the table and pays the given amount back. The tournament position is not modified.
+     *
+     * @param restAmount
+     */
+    void seatOpen(CompetitorBO competitor, Money restAmount);
 }

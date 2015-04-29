@@ -8,6 +8,16 @@ import de.hatoka.common.capi.business.Money;
 public interface GameBO
 {
     /**
+     * @return the identifier (artificial key)
+     */
+    String getID();
+
+    /**
+     * Removes that object
+     */
+    void remove();
+
+    /**
      * A player likes to attend to the tournament, the buy-in is not paid.
      *
      * @param playerBO
