@@ -1,4 +1,4 @@
-<form xmlns="http://www.w3.org/1999/xhtml" action="actionBlindList" method="POST">
+<form xmlns="http://www.w3.org/1999/xhtml" action="actionLevelList" method="POST">
 <table class="table table-striped">
 <tr>
 <th>Select</th>
@@ -63,19 +63,19 @@
 <td/>
 <td>
 <label class="sr-only" for="inputsmallBlind">Small Blind</label>
-<input placeholder="500" value="" name="smallBlind" type="text" id="inputsmallBlind" class="form-control"/>
+<input placeholder="Small Blind" value="500" name="smallBlind" type="text" id="inputsmallBlind" class="form-control"/>
 </td>
 <td>
 <label class="sr-only" for="inputbigBlind">Big Blind</label>
-<input placeholder="1000" value="" name="bigBlind" type="text" id="inputbigBlind" class="form-control"/>
+<input placeholder="Big Blind" value="1000" name="bigBlind" type="text" id="inputbigBlind" class="form-control"/>
 </td>
 <td>
 <label class="sr-only" for="inputante">Ante</label>
-<input placeholder="0" value="" name="ante" type="text" id="inputante" class="form-control"/>
+<input placeholder="Ante" value="0" name="ante" type="text" id="inputante" class="form-control"/>
 </td>
 <td>
 <label class="sr-only" for="inputduration">Duration</label>
-<input placeholder="0:30" value="" name="duration" type="text" id="inputduration" class="form-control"/>
+<input placeholder="Duration" value="30" name="duration" type="text" id="inputduration" class="form-control"/>
 </td>
 <td>19:45</td>
 <td>20:15</td>

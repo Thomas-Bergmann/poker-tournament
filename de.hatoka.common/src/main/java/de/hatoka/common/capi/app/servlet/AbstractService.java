@@ -87,14 +87,14 @@ public class AbstractService
 
     protected Locale getLocale()
     {
-        Locale result = COUNTRY_HELPER.getLocale(getCookieValue("locale"));
-        return result == null ? Locale.US: result;
+        String cookieValue = getCookieValue("locale");
+        return cookieValue == null ? Locale.US: COUNTRY_HELPER.getLocale(cookieValue);
     }
 
     protected TimeZone getTimeZone()
     {
-        TimeZone result = COUNTRY_HELPER.getTimeZone(getCookieValue("tz"));
-        return result == null ? CountryHelper.UTC : result;
+        String cookieValue = getCookieValue("tz");
+        return cookieValue == null ? CountryHelper.UTC : COUNTRY_HELPER.getTimeZone(cookieValue);
     }
 
     private EntityTransaction getTransaction()

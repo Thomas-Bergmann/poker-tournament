@@ -7,6 +7,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import de.hatoka.common.capi.app.model.MoneyVO;
 import de.hatoka.tournament.capi.business.CashGameBO;
+import de.hatoka.tournament.capi.business.GameBO;
 import de.hatoka.tournament.capi.business.TournamentBO;
 
 @XmlRootElement
@@ -27,24 +28,25 @@ public class TournamentVO
 
     public TournamentVO(TournamentBO tournamentBO, URI uri)
     {
-        id = tournamentBO.getID();
+        this((GameBO) tournamentBO, uri);
         name = tournamentBO.getName();
         date = tournamentBO.getStartTime();
-        buyIn = tournamentBO.getBuyIn() == null ? null : new MoneyVO(tournamentBO.getBuyIn());
-        sumInPlay = tournamentBO.getSumInplay() == null ? null : new MoneyVO(tournamentBO.getSumInplay());
-        competitorsSize = tournamentBO.getCompetitors().size();
-        this.uri = uri;
     }
 
     public TournamentVO(CashGameBO cashGameBO, URI uri)
     {
-        id = cashGameBO.getID();
+        this((GameBO) cashGameBO, uri);
         name = cashGameBO.getName();
         date = cashGameBO.getDate();
-        buyIn = cashGameBO.getBuyIn() == null ? null : new MoneyVO(cashGameBO.getBuyIn());
         average = cashGameBO.getAverageInplay() == null ? null : new MoneyVO(cashGameBO.getAverageInplay());
-        sumInPlay = cashGameBO.getSumInplay() == null ? null : new MoneyVO(cashGameBO.getSumInplay());
-        competitorsSize = cashGameBO.getCompetitors().size();
+    }
+
+    public TournamentVO(GameBO gameBO, URI uri)
+    {
+        id = gameBO.getID();
+        buyIn = gameBO.getBuyIn() == null ? null : new MoneyVO(gameBO.getBuyIn());
+        sumInPlay = gameBO.getSumInplay() == null ? null : new MoneyVO(gameBO.getSumInplay());
+        competitorsSize = gameBO.getCompetitors().size();
         this.uri = uri;
     }
 

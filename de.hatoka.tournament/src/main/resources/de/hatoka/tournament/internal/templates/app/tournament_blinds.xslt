@@ -6,7 +6,7 @@
   <xsl:param name="uriInfo" />
   <xsl:output method="html" encoding="UTF-8" indent="yes" />
   <xsl:template match="/"  xmlns="http://www.w3.org/1999/xhtml">
-    <form method="POST" action="actionBlindList">
+    <form method="POST" action="actionLevelList">
       <table class="table table-striped">
         <tr>
           <th>Select</th>
@@ -55,21 +55,19 @@
             <td> </td>
             <td><xsl:call-template name="input">
               <xsl:with-param name="name">smallBlind</xsl:with-param>
-              <xsl:with-param name="placeholder"><xsl:value-of select="smallBlind" /></xsl:with-param>
+              <xsl:with-param name="value"><xsl:value-of select="smallBlind" /></xsl:with-param>
             </xsl:call-template></td>
             <td><xsl:call-template name="input">
               <xsl:with-param name="name">bigBlind</xsl:with-param>
-              <xsl:with-param name="placeholder"><xsl:value-of select="bigBlind" /></xsl:with-param>
+              <xsl:with-param name="value"><xsl:value-of select="bigBlind" /></xsl:with-param>
             </xsl:call-template></td>
             <td><xsl:call-template name="input">
               <xsl:with-param name="name">ante</xsl:with-param>
-              <xsl:with-param name="placeholder"><xsl:value-of select="ante" /></xsl:with-param>
+              <xsl:with-param name="value"><xsl:value-of select="ante" /></xsl:with-param>
             </xsl:call-template></td>
             <td><xsl:call-template name="input">
               <xsl:with-param name="name">duration</xsl:with-param>
-              <xsl:with-param name="placeholder"><xsl:call-template name="formatDuration">
-                <xsl:with-param name="minutes"><xsl:value-of select="duration" /></xsl:with-param>
-            </xsl:call-template></xsl:with-param>
+              <xsl:with-param name="value"><xsl:value-of select="duration" /></xsl:with-param>
             </xsl:call-template></td>
            <td><xsl:call-template name="formatTime">
                 <xsl:with-param name="date"><xsl:value-of select="estStartDateTime" /></xsl:with-param>

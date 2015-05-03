@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import de.hatoka.tournament.internal.business.TournamentTools;
+
 @XmlRootElement
 public class TournamentBlindLevelModel
 {
@@ -54,20 +56,48 @@ public class TournamentBlindLevelModel
         this.prefilled = prefilled;
     }
 
-    public void fillTime(Date start)
+    /**
+     * call {@link #setTournament(TournamentVO)} with a valid start date before
+     */
+    public void fillTime()
     {
-        Date nextStart = start;
+        if (tournament == null || tournament.getDate() == null)
+        {
+            throw new IllegalStateException();
+        }
+        Date nextStart = tournament.getDate();
+        int maxSmallBlind = 0;
+        int maxAnte = 0;
+        int maxDurationLevel = 15;
         for(BlindLevelVO blindLevel : blindLevels)
         {
             blindLevel.setEstStartDateTime(nextStart);
             nextStart = new Date(nextStart.getTime() + (blindLevel.getDuration() * 60_000));
             blindLevel.setEstEndDateTime(nextStart);
+            maxSmallBlind = Math.max(blindLevel.getSmallBlind(), maxSmallBlind);
+            maxAnte = Math.max(blindLevel.getAnte(), maxAnte);
+            if (!blindLevel.isPause())
+            {
+                maxDurationLevel = Math.max(blindLevel.getDuration(), maxDurationLevel);
+            }
         }
         for(BlindLevelVO blindLevel : prefilled)
         {
+            if (blindLevel.getSmallBlind() == 0)
+            {
+                maxSmallBlind = TournamentTools.getNextSmallBlind(maxSmallBlind);
+                blindLevel.setSmallBlind(maxSmallBlind);
+                blindLevel.setBigBlind(TournamentTools.getBigBlind(maxSmallBlind));
+                blindLevel.setAnte(maxAnte);
+            }
+            if (blindLevel.getDuration() == 0)
+            {
+                blindLevel.setDuration(maxDurationLevel);
+            }
             blindLevel.setEstStartDateTime(nextStart);
             nextStart = new Date(nextStart.getTime() + (blindLevel.getDuration() * 60_000));
             blindLevel.setEstEndDateTime(nextStart);
         }
     }
+
 }

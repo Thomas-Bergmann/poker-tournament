@@ -11,9 +11,12 @@ import de.hatoka.tournament.capi.business.HistoryEntryBO;
 import de.hatoka.tournament.capi.business.PlayerBO;
 import de.hatoka.tournament.capi.business.PlayerBORepository;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
+import de.hatoka.tournament.internal.app.models.CompetitorVO;
 import de.hatoka.tournament.internal.app.models.HistoryEntryVO;
 import de.hatoka.tournament.internal.app.models.HistoryModel;
+import de.hatoka.tournament.internal.app.models.PlayerVO;
 import de.hatoka.tournament.internal.app.models.TournamentPlayerListModel;
+import de.hatoka.tournament.internal.app.models.TournamentVO;
 
 public class GameAction
 {
@@ -74,10 +77,22 @@ public class GameAction
         return result;
     }
 
-
-    public TournamentPlayerListModel getPlayerListModel(URI build, UriBuilder uriBuilder)
+    public TournamentPlayerListModel getPlayerListModel(URI listTournamentURI, UriBuilder uriBuilder)
     {
-        // TODO Auto-generated method stub
-        return null;
+        TournamentPlayerListModel result = new TournamentPlayerListModel();
+        result.setTournament(new TournamentVO(gameBO, uriBuilder.build(gameBO.getID())));
+        for (CompetitorBO competitor : gameBO.getCompetitors())
+        {
+            result.getCompetitors().add(new CompetitorVO(competitor));
+        }
+        PlayerBORepository playerBORepository = factory.getPlayerBORepository(accountRef);
+        for (PlayerBO player : playerBORepository.getPlayerBOs())
+        {
+            if (!gameBO.isCompetitor(player))
+            {
+                result.getUnassignedPlayers().add(new PlayerVO(player));
+            }
+        }
+        return result;
     }
 }

@@ -14,7 +14,6 @@ import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.slf4j.LoggerFactory;
 
 import de.hatoka.common.capi.app.model.MoneyVO;
 import de.hatoka.common.capi.app.xslt.Lib;
@@ -121,7 +120,6 @@ public class TournamentTemplateTest
         model.getTournaments().add(getTournamentVO("123456", "Test 1", parseDate("2011-11-25T08:45")));
         model.getTournaments().add(getTournamentVO("123457", "Test 2", parseDate("2012-11-25T08:45")));
         String content = RENDERER.render(model, RESOURCE_PREFIX + "tournament_list.xslt", getParameter());
-        LoggerFactory.getLogger(getClass()).debug("testTournaments\n" + content);
         Assert.assertEquals("tournaments not listed correctly",getResource("tournament_list.result.xml"), content);
         XMLAssert.assertXMLEqual("tournaments not listed correctly", getResource("tournament_list.result.xml"), content);
     }
@@ -137,7 +135,7 @@ public class TournamentTemplateTest
         blindLevels.add(TournamentViewObjectHelper.getPauseVO("3", 15));
         blindLevels.add(TournamentViewObjectHelper.getBlindLevelVO("4", 250, 500, 0, 30));
         model.getPrefilled().add(TournamentViewObjectHelper.getBlindLevelVO(500, 1000, 0, 30));
-        model.fillTime(model.getTournament().getDate());
+        model.fillTime();
         String content = RENDERER.render(model, RESOURCE_PREFIX + "tournament_blinds.xslt", getParameter());
         // String content = new XMLRenderer().render(model);
 

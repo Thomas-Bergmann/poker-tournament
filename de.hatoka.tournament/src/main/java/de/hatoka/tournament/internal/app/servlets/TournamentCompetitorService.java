@@ -63,7 +63,7 @@ public class TournamentCompetitorService extends AbstractService
         }
         TournamentBORepository tournamentBORepository = getInstance(TournamentBusinessFactory.class)
                         .getTournamentBORepository(accountRef);
-        return new GameAction(accountRef, tournamentBORepository.getCashGameByID(tournamentID),
+        return new GameAction(accountRef, tournamentBORepository.getTournamentByID(tournamentID),
                         getInstance(TournamentBusinessFactory.class));
     }
 
