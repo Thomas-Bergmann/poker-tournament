@@ -31,10 +31,10 @@
 				<li>
 					<a href="../tournaments.html">Tournaments</a>
 				</li>
-				<li class="active">
+				<li>
 					<a href="../cash_games.html">Cash Games</a>
 				</li>
-				<li>
+				<li class="active">
 					<a href="../players.html">Players</a>
 				</li>
 			</ul>
@@ -45,30 +45,23 @@
 	<div class="col-sm-3 col-md-2 sidebar">
 		<ul class="nav-sidebar">
 			<li class="active">
-				<a href="players.html">Players <span class="badge">3</span></a>
-				<a class="glyphicon glyphicon-plus" href="player_add.html"></a>
+				<a href="profile.html">Profile</a>
 			</li>
 			<li>
-				<a href="history.html">History <span class="badge">5</span></a>
+				<a href="history.html">History <span class="badge">4</span></a>
 			</li>
 		</ul>
 	</div>
 	<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-		<h1 class="page-header">25.11.2012 - Add New Player</h1>
-		<h2>New player:</h2>
-		<form action="players.html" method="GET">
-		<label class="sr-only" for="inputname">Players Name</label>
-		<input value="" name="name" type="text" id="inputname" class="form-control" placeholder="Players Name"/>
-		<button name="create" type="submit" class="btn btn-primary">Create, assign and buy-in</button>
-		</form>
-		<h2>Existing player:</h2>
-		<form action="assignPlayer" method="POST">
-		<div class="input">
-		<select name="playerID">
-		<option value="1234581">Player 3</option>
-		</select>
+		<h1 class="page-header">Max Mustermann - Profile</h1>
+		<form action="profile.html" method="POST">
+		<label for="inputbuyIn">Name</label>
+		<input value="Max Mustermann" name="buyIn" type="text" id="inputbuyIn" class="form-control" placeholder="Name"/>
+		<div>
+			<label>Balance Sheet</label>
+			<span>10USD</span>
 		</div>
-		<button name="buyin" type="submit" class="btn btn-primary">Assign and buy-in</button>
+		<button name="save" type="submit" class="btn btn-primary">Save</button>
 		</form>
 	</div>
 </div>

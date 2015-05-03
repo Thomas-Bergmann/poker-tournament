@@ -28,11 +28,14 @@
 		<!-- Collect the nav links, forms, and other content for toggling -->
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-9">
 			<ul class="nav navbar-nav">
-				<li>
+				<li class="active">
 					<a href="../tournaments.html">Tournaments</a>
 				</li>
-				<li class="active">
-					<a href="players.html">Event 1</a>
+				<li>
+					<a href="../cash_games.html">Cash Games</a>
+				</li>
+				<li>
+					<a href="../players.html">Players</a>
 				</li>
 			</ul>
 		</div><!-- /.navbar-collapse -->
@@ -42,8 +45,14 @@
 	<div class="col-sm-3 col-md-2 sidebar">
 		<ul class="nav-sidebar">
 			<li>
+				<a href="general.html">General</a>
+			</li>
+			<li>
 				<a href="players.html">Players <span class="badge">13</span></a>
 				<a class="glyphicon glyphicon-plus" href="player_add.html"></a>
+			</li>
+			<li>
+				<a href="tables.html">Tables <span class="badge">2</span></a>
 			</li>
 			<li class="active">
 				<a href="blind_levels.html">Blind Levels <span class="badge">5</span></a>
@@ -54,7 +63,8 @@
 		</ul>
 	</div>
 	<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-		<h1 class="page-header">Blind Levels</h1>
+		<h1 class="page-header">Main Event - Blind Levels</h1>
+		<p class="bg-info">Currently registered players have 12000 chips (1000 each). You should start with blinds 5/10.</p>
 		<form action="blind_levels.html" method="POST">
 		<table class="table table-striped">
 		<tr>
@@ -62,6 +72,7 @@
 		<th>Small Blind</th>
 		<th>Big Blind</th>
 		<th>Ante</th>
+		<th>Rebuy (USD)</th>
 		<th>Duration (min)</th>
 		<th>est. Start</th>
 		<th>est. End</th>
@@ -72,12 +83,55 @@
 		<input type="checkbox" value="1234578" name="competitorID" class="checkbox"/>
 		</label>
 		</td>
+		<td>5</td>
+		<td>10</td>
+		<td>0</td>
+		<td>3</td>
+		<td>0:20</td>
+		<td>18:00</td>
+		<td>18:20</td>
+		</tr>
+		<tr>
+		<td>
+		<label>
+		<input type="checkbox" value="1234578" name="competitorID" class="checkbox"/>
+		</label>
+		</td>
+		<td>10</td>
+		<td>20</td>
+		<td>-</td>
+		<td>3</td>
+		<td>0:20</td>
+		<td>18:20</td>
+		<td>18:40</td>
+		</tr>
+		<tr>
+		<td>
+		<label>
+		<input type="checkbox" value="1234578" name="competitorID" class="checkbox"/>
+		</label>
+		</td>
+		<td>20</td>
+		<td>40</td>
+		<td>-</td>
+		<td>3</td>
+		<td>0:20</td>
+		<td>18:40</td>
+		<td>19:00</td>
+		</tr>
+		<tr>
+		<td>
+		<label>
+		<input type="checkbox" value="1234578" name="competitorID" class="checkbox"/>
+		</label>
+		</td>
 		<td>50</td>
 		<td>100</td>
-		<td>0</td>
+		<td>-</td>
+		<td>5</td>
 		<td>0:30</td>
-		<td>18:00</td>
-		<td>18:30</td>
+		<td>19:00</td>
+		<td>19:30</td>
 		</tr>
 		<tr>
 		<td>
@@ -87,10 +141,11 @@
 		</td>
 		<td>100</td>
 		<td>200</td>
-		<td>0</td>
+		<td>-</td>
+		<td>5</td>
 		<td>0:30</td>
-		<td>18:30</td>
-		<td>19:00</td>
+		<td>19:30</td>
+		<td>20:00</td>
 		</tr>
 		<tr>
 		<td>
@@ -99,9 +154,10 @@
 		</label>
 		</td>
 		<td colspan="3">Pause</td>
+		<td>5</td>
 		<td>0:15</td>
-		<td>19:00</td>
-		<td>19:15</td>
+		<td>20:00</td>
+		<td>20:15</td>
 		</tr>
 		<tr>
 		<td>
@@ -111,19 +167,21 @@
 		</td>
 		<td>250</td>
 		<td>500</td>
-		<td>0</td>
+		<td>-</td>
+		<td>-</td>
 		<td>0:30</td>
-		<td>19:15</td>
-		<td>19:45</td>
+		<td>20:15</td>
+		<td>20:45</td>
 		</tr>
 		<tr>
 		<td>&nbsp;</td>
-		<td><input placeholder="500" /></td>
-		<td><input placeholder="1000" /></td>
-		<td><input placeholder="0" /></td>
-		<td><input placeholder="0:30" /></td>
-		<td>19:45</td>
-		<td>&nbsp;</td>
+		<td><input value="500" /></td>
+		<td><input value="1000" /></td>
+		<td><input value="0" /></td>
+		<td><input value="0" /></td>
+		<td><input value="30" /></td>
+		<td>20:45</td>
+		<td>21:15</td>
 		</tr>
 		</table>
 		<button name="create" type="submit" class="btn btn-default">Create Level</button>
