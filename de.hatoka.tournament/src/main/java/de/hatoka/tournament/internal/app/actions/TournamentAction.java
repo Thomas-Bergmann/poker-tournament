@@ -5,38 +5,30 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import de.hatoka.common.capi.business.Money;
 import de.hatoka.tournament.capi.business.CompetitorBO;
+import de.hatoka.tournament.capi.business.PlayerBO;
 import de.hatoka.tournament.capi.business.TournamentBO;
+import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
 import de.hatoka.tournament.capi.business.TournamentRoundBO;
 import de.hatoka.tournament.internal.app.models.BlindLevelVO;
 import de.hatoka.tournament.internal.app.models.TournamentBlindLevelModel;
 import de.hatoka.tournament.internal.app.models.TournamentVO;
 
-public class TournamentAction
+public class TournamentAction extends GameAction<TournamentBO>
 {
-    private final TournamentBO tournamentBO;
-
-    public TournamentAction(TournamentBO tournamentBO)
+    public TournamentAction(String accountRef, TournamentBO tournamentBO, TournamentBusinessFactory factory)
     {
-        this.tournamentBO = tournamentBO;
+        super(accountRef, tournamentBO, factory);
     }
 
     public List<String> rebuyPlayers(List<String> identifiers)
     {
-        Money rebuy = tournamentBO.getReBuy();
-        for (CompetitorBO competitorBO : tournamentBO.getCompetitors())
+        TournamentBO tournamentBO = getGame();
+        for (CompetitorBO competitorBO : tournamentBO .getCompetitors())
         {
             if (identifiers.contains(competitorBO.getID()))
             {
-                if (competitorBO.isActive())
-                {
-                    competitorBO.rebuy(rebuy);
-                }
-                else
-                {
-                    competitorBO.buyin(rebuy);
-                }
+                tournamentBO.rebuy(competitorBO);
             }
         }
         return java.util.Collections.emptyList();
@@ -44,6 +36,7 @@ public class TournamentAction
 
     public void seatOpenPlayers(String identifier)
     {
+        TournamentBO tournamentBO = getGame();
         Collection<CompetitorBO> activeCompetitors = tournamentBO.getActiveCompetitors();
         for (CompetitorBO competitorBO : activeCompetitors)
         {
@@ -56,10 +49,11 @@ public class TournamentAction
 
     public TournamentBlindLevelModel getTournamentBlindLevelModel(URI tournamentURI)
     {
+        TournamentBO tournamentBO = getGame();
         TournamentBlindLevelModel model = new TournamentBlindLevelModel();
         model.setTournament(new TournamentVO(tournamentBO, tournamentURI));
         List<BlindLevelVO> blindLevels = model.getBlindLevels();
-        for(TournamentRoundBO roundBO : tournamentBO.getTournamentRoundBOs())
+        for(TournamentRoundBO roundBO : tournamentBO.getTournamentRounds())
         {
             blindLevels.add(new BlindLevelVO(roundBO));
         }
@@ -70,7 +64,8 @@ public class TournamentAction
 
     public void deleteLevels(List<String> identifiers)
     {
-        Iterator<TournamentRoundBO> itRounds = tournamentBO.getTournamentRoundBOs().iterator();
+        TournamentBO tournamentBO = getGame();
+        Iterator<TournamentRoundBO> itRounds = tournamentBO.getTournamentRounds().iterator();
         while(itRounds.hasNext())
         {
             TournamentRoundBO round = itRounds.next();
@@ -79,6 +74,12 @@ public class TournamentAction
                 tournamentBO.remove(round);
             }
         }
+    }
+
+    public void register(PlayerBO playerBO)
+    {
+        TournamentBO tournamentBO = getGame();
+        tournamentBO.register(playerBO);
     }
 
 }

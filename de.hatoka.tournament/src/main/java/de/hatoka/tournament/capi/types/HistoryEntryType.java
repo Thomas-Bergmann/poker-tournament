@@ -1,4 +1,4 @@
-package de.hatoka.tournament.capi.entities;
+package de.hatoka.tournament.capi.types;
 
 public enum HistoryEntryType
 {

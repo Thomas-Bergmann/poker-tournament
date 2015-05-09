@@ -6,10 +6,12 @@ import javax.inject.Inject;
 
 import com.google.inject.Provider;
 
+import de.hatoka.common.capi.dao.SequenceProvider;
+import de.hatoka.common.capi.dao.UUIDGenerator;
 import de.hatoka.tournament.capi.business.BlindLevelBO;
 import de.hatoka.tournament.capi.business.CashGameBO;
+import de.hatoka.tournament.capi.business.CashGameCompetitorBO;
 import de.hatoka.tournament.capi.business.CompetitorBO;
-import de.hatoka.tournament.capi.business.GameBO;
 import de.hatoka.tournament.capi.business.HistoryEntryBO;
 import de.hatoka.tournament.capi.business.PlayerBO;
 import de.hatoka.tournament.capi.business.PlayerBORepository;
@@ -48,10 +50,22 @@ public class TournamentBusinessFactoryImpl implements TournamentBusinessFactory
     @Inject
     private Provider<Date> dateProvider;
 
+    @Inject
+    private UUIDGenerator uuidGenerator;
+
+    @Inject
+    private SequenceProvider sequenceProvider;
+
     @Override
-    public CompetitorBO getCompetitorBO(CompetitorPO competitorPO, GameBO gameBO)
+    public CashGameCompetitorBO getCompetitorBO(CompetitorPO competitorPO, CashGameBO cashGameBO)
     {
-        return new CompetitorBOImpl(competitorPO, gameBO, historyDao, dateProvider, this);
+        return new CompetitorBOImpl(competitorPO, cashGameBO, historyDao, dateProvider, this);
+    }
+
+    @Override
+    public CompetitorBO getCompetitorBO(CompetitorPO competitorPO, TournamentBO tournamentBO)
+    {
+        return new CompetitorBOImpl(competitorPO, tournamentBO, historyDao, dateProvider, this);
     }
 
     @Override
@@ -63,7 +77,7 @@ public class TournamentBusinessFactoryImpl implements TournamentBusinessFactory
     @Override
     public PlayerBORepository getPlayerBORepository(String accountRef)
     {
-        return new PlayerBORepositoryImpl(accountRef, playerDao, this);
+        return new PlayerBORepositoryImpl(accountRef, playerDao, sequenceProvider.create(accountRef), this);
     }
 
     @Override
@@ -81,7 +95,7 @@ public class TournamentBusinessFactoryImpl implements TournamentBusinessFactory
     @Override
     public TournamentBORepository getTournamentBORepository(String accountRef)
     {
-        return new TournamentBORepositoryImpl(accountRef, tournamentDao, playerDao, competitorDao, this);
+        return new TournamentBORepositoryImpl(accountRef, tournamentDao, playerDao, competitorDao, uuidGenerator, sequenceProvider.create(accountRef), this);
     }
 
     @Override

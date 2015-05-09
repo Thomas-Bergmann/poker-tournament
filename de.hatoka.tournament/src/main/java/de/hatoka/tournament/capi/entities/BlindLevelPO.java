@@ -8,7 +8,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.eclipse.persistence.oxm.annotations.XmlInverseReference;
@@ -21,8 +20,7 @@ public class BlindLevelPO implements Serializable, IdentifiableEntity
     private static final long serialVersionUID = 1L;
 
     @Id
-    @XmlAttribute
-    @XmlID
+    @XmlTransient
     private String id;
 
     @NotNull

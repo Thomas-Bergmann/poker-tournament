@@ -15,7 +15,9 @@ public interface TournamentDao extends Dao<TournamentPO>
      * @param isCashGame
      * @return
      */
-    TournamentPO createAndInsert(String accountRef, String name, Date date, boolean isCashGame);
+    TournamentPO createAndInsert(String accountRef, String externalRef, String name, Date date, boolean isCashGame);
+
+    TournamentPO findByExternalRef(String accountRef, String externalRef);
 
     List<TournamentPO> getByAccountRef(String accountRef);
 }

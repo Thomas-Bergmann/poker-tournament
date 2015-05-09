@@ -73,7 +73,7 @@ public class BlindLevelBOImpl implements BlindLevelBO
     }
 
     @Override
-    public BlindLevelBO getBlindLevelBO()
+    public BlindLevelBO getBlindLevel()
     {
         if (blindLevelPO.isPause())
         {

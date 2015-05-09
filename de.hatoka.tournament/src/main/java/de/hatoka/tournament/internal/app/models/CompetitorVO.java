@@ -23,8 +23,8 @@ public class CompetitorVO
         inPlay = competitor.getInPlay() == null ? null : new MoneyVO(competitor.getInPlay());
         result= competitor.getResult() == null ? null : new MoneyVO(competitor.getResult());
         position = competitor.getPosition();
-        playerId = competitor.getPlayerBO().getID();
-        playerName = competitor.getPlayerBO().getName();
+        playerId = competitor.getPlayer().getID();
+        playerName = competitor.getPlayer().getName();
         active = competitor.isActive();
     }
 

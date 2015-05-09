@@ -18,25 +18,27 @@ public interface GameBO
     void remove();
 
     /**
-     * A player likes to attend to the tournament, the buy-in is not paid.
-     *
-     * @param playerBO
-     * @return
+     * @return active players
      */
-    CompetitorBO assign(PlayerBO playerBO);
+    Collection<CompetitorBO> getActiveCompetitors();
 
     /**
-     * Reverse action of assign. The competitor must be inactive (use {@link CompetitorBO#seatOpen(Money)} and requires a zero result.
+     * @return all players (active, inactive and registered)
+     */
+    Collection<CompetitorBO> getCompetitors();
+
+    /**
+     * @param player
+     * @return true if player is registered or more
+     */
+    boolean isCompetitor(PlayerBO player);
+
+    /**
+     * Removes registration of player
      *
      * @param competitorBO
      */
     void unassign(CompetitorBO competitorBO);
-
-    Collection<CompetitorBO> getActiveCompetitors();
-
-    Collection<CompetitorBO> getCompetitors();
-
-    boolean isCompetitor(PlayerBO player);
 
     /**
      * Sort competitors recalculates the position of competitors.
@@ -46,7 +48,6 @@ public interface GameBO
     Money getBuyIn();
 
     void setBuyIn(Money instance);
-
 
     /**
      * @return amount of money for all active players.

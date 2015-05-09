@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 
 import de.hatoka.common.capi.business.Money;
 import de.hatoka.tournament.capi.business.CashGameBO;
+import de.hatoka.tournament.capi.business.CashGameCompetitorBO;
 import de.hatoka.tournament.capi.business.CompetitorBO;
 import de.hatoka.tournament.capi.business.HistoryEntryBO;
 import de.hatoka.tournament.capi.business.PlayerBO;
@@ -17,10 +18,10 @@ import de.hatoka.tournament.capi.dao.CompetitorDao;
 import de.hatoka.tournament.capi.dao.PlayerDao;
 import de.hatoka.tournament.capi.dao.TournamentDao;
 import de.hatoka.tournament.capi.entities.CompetitorPO;
-import de.hatoka.tournament.capi.entities.HistoryEntryType;
 import de.hatoka.tournament.capi.entities.HistoryPO;
 import de.hatoka.tournament.capi.entities.PlayerPO;
 import de.hatoka.tournament.capi.entities.TournamentPO;
+import de.hatoka.tournament.capi.types.HistoryEntryType;
 
 public class CashGameBOImpl implements CashGameBO
 {
@@ -40,17 +41,20 @@ public class CashGameBOImpl implements CashGameBO
         this.factory = factory;
     }
 
-    @Override
-    public CompetitorBO assign(PlayerBO playerBO)
-    {
 
+    @Override
+    public CashGameCompetitorBO sitDown(PlayerBO playerBO, Money buyIn)
+    {
         PlayerPO playerPO = playerDao.getById(playerBO.getID());
         if (playerPO == null)
         {
             throw new IllegalArgumentException("Can't resolve persistent object for playerBO:" + playerBO.getID());
         }
-        return getBO(competitorDao.createAndInsert(tournamentPO, playerPO));
+        CashGameCompetitorBO competitor = getBO(competitorDao.createAndInsert(tournamentPO, playerPO));
+        competitor.buyin(buyIn == null ? getBuyIn() : buyIn);
+        return competitor;
     }
+
 
     @Override
     public Collection<CompetitorBO> getActiveCompetitors()
@@ -58,7 +62,7 @@ public class CashGameBOImpl implements CashGameBO
         return getActiveCompetitorBOStream().collect(Collectors.toList());
     }
 
-    private Stream<CompetitorBO> getActiveCompetitorBOStream()
+    private Stream<CashGameCompetitorBO> getActiveCompetitorBOStream()
     {
         return getCompetitorBOStream().filter(competitor -> competitor.isActive());
     }
@@ -75,7 +79,7 @@ public class CashGameBOImpl implements CashGameBO
         return sum.divide(activeCompetitors);
     }
 
-    private CompetitorBO getBO(CompetitorPO competitorPO)
+    private CashGameCompetitorBO getBO(CompetitorPO competitorPO)
     {
         return factory.getCompetitorBO(competitorPO, this);
     }
@@ -92,7 +96,7 @@ public class CashGameBOImpl implements CashGameBO
         return getCompetitorBOStream().sorted(CompetitorBOComparators.POSITION).collect(Collectors.toList());
     }
 
-    private Stream<CompetitorBO> getCompetitorBOStream()
+    private Stream<CashGameCompetitorBO> getCompetitorBOStream()
     {
         return tournamentPO.getCompetitors().stream().map(competitorPO -> getBO(competitorPO));
     }
@@ -217,22 +221,28 @@ public class CashGameBOImpl implements CashGameBO
     @Override
     public void seatOpen(CompetitorBO competitorBO, Money restAmount)
     {
-        if (!competitorBO.isActive() || !(competitorBO instanceof CashGameCompetitor))
+        if (!competitorBO.isActive() || !(competitorBO instanceof ICompetitor))
         {
             throw new IllegalStateException("seatOpen not allowed at inactive competitors");
         }
-        CashGameCompetitor cashGameCompetitor = (CashGameCompetitor) competitorBO;
+        ICompetitor iCashGameCompetitor = (ICompetitor) competitorBO;
         if (restAmount != null)
         {
             // pay-back rest amount
-            cashGameCompetitor.setInPlay(cashGameCompetitor.getInPlay().add(restAmount.negate())
+            iCashGameCompetitor.setInPlay(iCashGameCompetitor.getInPlay().add(restAmount.negate())
                             );
         }
-        cashGameCompetitor.setActive(false);
-        Money moneyResult = cashGameCompetitor.getInPlay().negate();
-        cashGameCompetitor.setResult(moneyResult);
+        iCashGameCompetitor.setInactive();
+        Money moneyResult = iCashGameCompetitor.getInPlay().negate();
+        iCashGameCompetitor.setResult(moneyResult);
         sortCompetitors();
-        cashGameCompetitor.createEntry(HistoryEntryType.CashOut, restAmount);
+        iCashGameCompetitor.createEntry(HistoryEntryType.CashOut, restAmount);
+    }
+
+    @Override
+    public Collection<CashGameCompetitorBO> getCashGameCompetitors()
+    {
+        return getActiveCompetitorBOStream().collect(Collectors.toList());
     }
 
 }

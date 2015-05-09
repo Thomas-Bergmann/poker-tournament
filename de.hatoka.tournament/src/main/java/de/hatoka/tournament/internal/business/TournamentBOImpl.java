@@ -13,6 +13,7 @@ import de.hatoka.tournament.capi.business.BlindLevelBO;
 import de.hatoka.tournament.capi.business.CompetitorBO;
 import de.hatoka.tournament.capi.business.HistoryEntryBO;
 import de.hatoka.tournament.capi.business.PlayerBO;
+import de.hatoka.tournament.capi.business.TableBO;
 import de.hatoka.tournament.capi.business.TournamentBO;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
 import de.hatoka.tournament.capi.business.TournamentRoundBO;
@@ -22,10 +23,10 @@ import de.hatoka.tournament.capi.dao.PlayerDao;
 import de.hatoka.tournament.capi.dao.TournamentDao;
 import de.hatoka.tournament.capi.entities.BlindLevelPO;
 import de.hatoka.tournament.capi.entities.CompetitorPO;
-import de.hatoka.tournament.capi.entities.HistoryEntryType;
 import de.hatoka.tournament.capi.entities.HistoryPO;
 import de.hatoka.tournament.capi.entities.PlayerPO;
 import de.hatoka.tournament.capi.entities.TournamentPO;
+import de.hatoka.tournament.capi.types.HistoryEntryType;
 
 public class TournamentBOImpl implements TournamentBO
 {
@@ -48,15 +49,68 @@ public class TournamentBOImpl implements TournamentBO
     }
 
     @Override
-    public CompetitorBO assign(PlayerBO playerBO)
+    public CompetitorBO register(PlayerBO playerBO)
     {
-
         PlayerPO playerPO = playerDao.getById(playerBO.getID());
         if (playerPO == null)
         {
             throw new IllegalArgumentException("Can't resolve persistent object for playerBO:" + playerBO.getID());
         }
         return getBO(competitorDao.createAndInsert(tournamentPO, playerPO));
+    }
+
+    @Override
+    public void buyin(CompetitorBO competitorBO)
+    {
+        if (competitorBO.isActive() || !(competitorBO instanceof ICompetitor))
+        {
+            throw new IllegalStateException("buyin not allowed for active competitors");
+        }
+        ICompetitor iTournamentCompetitor = (ICompetitor) competitorBO;
+        iTournamentCompetitor.buyin(getBuyIn());
+    }
+
+
+    @Override
+    public void rebuy(CompetitorBO competitorBO)
+    {
+        if (!competitorBO.isActive() || !(competitorBO instanceof ICompetitor))
+        {
+            throw new IllegalStateException("rebuy not allowed at inactive competitors");
+        }
+        ICompetitor iTournamentCompetitor = (ICompetitor) competitorBO;
+        iTournamentCompetitor.rebuy(getRebuy(getCurrentRound()));
+    }
+
+    private int getCurrentRound()
+    {
+        return tournamentPO.getCurrentRound();
+    }
+
+    private Money getRebuy(int currentRound)
+    {
+        return getTournamentRounds().get(currentRound).getReBuy();
+    }
+
+    @Override
+    public void seatOpen(CompetitorBO competitorBO)
+    {
+        if (!competitorBO.isActive() || !(competitorBO instanceof ICompetitor))
+        {
+            throw new IllegalStateException("seatOpen not allowed at inactive competitors");
+        }
+        Money moneyResult = getResultForNextLooser();
+        ICompetitor iTournamentCompetitor = (ICompetitor) competitorBO;
+        iTournamentCompetitor.setInactive();
+        iTournamentCompetitor.setResult(moneyResult);
+        sortCompetitors();
+        iTournamentCompetitor.createEntry(HistoryEntryType.CashOut, moneyResult);
+    }
+
+    private Money getResultForNextLooser()
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     @Override
@@ -132,7 +186,6 @@ public class TournamentBOImpl implements TournamentBO
     @Override
     public void remove()
     {
-        getCompetitors().stream().forEach(competitor -> remove(competitor));
         tournamentDao.remove(tournamentPO);
         tournamentPO = null;
     }
@@ -150,11 +203,6 @@ public class TournamentBOImpl implements TournamentBO
         {
             throw new IllegalStateException("Can't remove competitor, is/was in play with result.");
         }
-        remove(competitorBO);
-    }
-
-    private void remove(CompetitorBO competitorBO)
-    {
         competitorDao.remove(competitorBO.getID());
     }
 
@@ -241,7 +289,7 @@ public class TournamentBOImpl implements TournamentBO
     }
 
     @Override
-    public List<TournamentRoundBO> getTournamentRoundBOs()
+    public List<TournamentRoundBO> getTournamentRounds()
     {
         List<BlindLevelPO> blindLevels = tournamentPO.getBlindLevels();
         List<TournamentRoundBO> result = new ArrayList<TournamentRoundBO>(blindLevels.size());
@@ -275,28 +323,54 @@ public class TournamentBOImpl implements TournamentBO
     }
 
     @Override
-    public Money getReBuy()
+    public int getMininumNumberOfPlayersPerTable()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return tournamentPO.getMinPlayerPerTable();
     }
 
     @Override
-    public void seatOpen(CompetitorBO competitorBO)
+    public void setMininumNumberOfPlayersPerTable(int number)
     {
-        if (!competitorBO.isActive() || !(competitorBO instanceof TournamentCompetitor))
+        if (number < 2)
         {
-            throw new IllegalStateException("seatOpen not allowed at inactive competitors");
+            throw new IllegalArgumentException("Can't allow less than two players per table: " + number);
         }
-        Money moneyResult = getResultForNextLooser();
-        TournamentCompetitor tournamentCompetitor = (TournamentCompetitor) competitorBO;
-        tournamentCompetitor.setActive(false);
-        tournamentCompetitor.setResult(moneyResult);
-        sortCompetitors();
-        tournamentCompetitor.createEntry(HistoryEntryType.CashOut, moneyResult);
+        if (number >= tournamentPO.getMaxPlayerPerTable())
+        {
+            throw new IllegalArgumentException("Can't allow more players then max players per table: " + number);
+        }
+        tournamentPO.setMinPlayerPerTable(number);
     }
 
-    private Money getResultForNextLooser()
+    @Override
+    public int getMaximumNumberOfPlayersPerTable()
+    {
+        return tournamentPO.getMaxPlayerPerTable();
+    }
+
+    @Override
+    public void setMaximumNumberOfPlayersPerTable(int number)
+    {
+        if (number <= tournamentPO.getMinPlayerPerTable())
+        {
+            throw new IllegalArgumentException("Can't allow less than max players per table: " + number);
+        }
+        if (number >= 10)
+        {
+            throw new IllegalArgumentException("Can't allow more than 10 players as max per table: " + number);
+        }
+        tournamentPO.setMinPlayerPerTable(number);
+    }
+
+    @Override
+    public void placePlayersAtTables()
+    {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public Collection<TableBO> getTables()
     {
         // TODO Auto-generated method stub
         return null;

@@ -8,7 +8,9 @@ import de.hatoka.tournament.capi.entities.TournamentPO;
 
 public interface TournamentBusinessFactory
 {
-    CompetitorBO getCompetitorBO(CompetitorPO competitorPO, GameBO cashGameBO);
+    CashGameCompetitorBO getCompetitorBO(CompetitorPO competitorPO, CashGameBO cashGameBO);
+
+    CompetitorBO getCompetitorBO(CompetitorPO competitorPO, TournamentBO tournamentBO);
 
     PlayerBO getPlayerBO(PlayerPO playerPO);
 

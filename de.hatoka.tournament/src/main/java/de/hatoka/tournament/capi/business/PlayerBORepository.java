@@ -4,11 +4,27 @@ import java.util.List;
 
 public interface PlayerBORepository
 {
+    /**
+     * Creates a player without external reference.
+     *
+     * @param name
+     * @return
+     */
     PlayerBO create(String name);
+
+    /**
+     * Creates a player without external reference.
+     *
+     * @param name
+     * @return
+     */
+    PlayerBO create(String externalRef, String name);
+
+    PlayerBO findByID(String id);
 
     PlayerBO findByName(String name);
 
-    public PlayerBO getByID(String id);
+    PlayerBO findByExternalRef(String externalRef);
 
-    List<PlayerBO> getPlayerBOs();
+    List<PlayerBO> getPlayers();
 }

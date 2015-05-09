@@ -10,10 +10,11 @@ import de.hatoka.tournament.capi.business.PlayerBO;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
 import de.hatoka.tournament.capi.dao.HistoryDao;
 import de.hatoka.tournament.capi.entities.CompetitorPO;
-import de.hatoka.tournament.capi.entities.HistoryEntryType;
 import de.hatoka.tournament.capi.entities.HistoryPO;
+import de.hatoka.tournament.capi.types.CompetitorState;
+import de.hatoka.tournament.capi.types.HistoryEntryType;
 
-public class CompetitorBOImpl implements CashGameCompetitor
+public class CompetitorBOImpl implements ICompetitor
 {
     private CompetitorPO competitorPO;
     private final TournamentBusinessFactory factory;
@@ -68,7 +69,7 @@ public class CompetitorBOImpl implements CashGameCompetitor
             throw new IllegalStateException("Buyin not allowed at active competitors");
         }
         competitorPO.setMoneyInPlay(getInPlay().add(amount).toMoneyPO());
-        competitorPO.setActive(true);
+        competitorPO.setState(CompetitorState.ACTIVE.name());
         sortCompetitors();
         createEntry(HistoryEntryType.BuyIn, amount);
     }
@@ -91,7 +92,7 @@ public class CompetitorBOImpl implements CashGameCompetitor
     }
 
     @Override
-    public PlayerBO getPlayerBO()
+    public PlayerBO getPlayer()
     {
         return factory.getPlayerBO(competitorPO.getPlayerPO());
     }
@@ -99,19 +100,13 @@ public class CompetitorBOImpl implements CashGameCompetitor
     @Override
     public Integer getPosition()
     {
-        return competitorPO.getPositition();
+        return competitorPO.getPosition();
     }
 
     @Override
     public Money getResult()
     {
         return Money.getInstance(competitorPO.getMoneyResult());
-    }
-
-    @Override
-    public boolean isActive()
-    {
-        return competitorPO.isActive();
     }
 
     @Override
@@ -129,7 +124,7 @@ public class CompetitorBOImpl implements CashGameCompetitor
     @Override
     public void setPosition(Integer position)
     {
-        competitorPO.setPositition(position);
+        competitorPO.setPosition(position);
     }
 
     @Override
@@ -147,14 +142,20 @@ public class CompetitorBOImpl implements CashGameCompetitor
     }
 
     @Override
-    public void setActive(boolean active)
-    {
-        competitorPO.setActive(active);
-    }
-
-    @Override
     public void setResult(Money amount)
     {
         competitorPO.setMoneyResult(amount.toMoneyPO());
+    }
+
+    @Override
+    public CompetitorState getState()
+    {
+        return CompetitorState.valueOf(competitorPO.getState());
+    }
+
+    @Override
+    public void setInactive()
+    {
+        competitorPO.setState(CompetitorState.INACTIVE.name());
     }
 }

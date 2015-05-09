@@ -1,9 +1,8 @@
 package de.hatoka.tournament.capi.business;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-
-import de.hatoka.common.capi.business.Money;
 
 public interface TournamentBO extends GameBO
 {
@@ -49,7 +48,7 @@ public interface TournamentBO extends GameBO
     /**
      * @return rounds of tournament
      */
-    List<TournamentRoundBO> getTournamentRoundBOs();
+    List<TournamentRoundBO> getTournamentRounds();
 
     /**
      * Removes a previously created pause or blind level
@@ -57,16 +56,39 @@ public interface TournamentBO extends GameBO
      */
     void remove(TournamentRoundBO round);
 
-    /**
-     * @return the rebuy (the rebuy can be different at different {@link TournamentRoundBO}.
-     * @throws IllegalArgumentException in case the rebuy is not allowed
-     */
-    Money getReBuy();
+    int getMininumNumberOfPlayersPerTable();
+    void setMininumNumberOfPlayersPerTable(int number);
+
+    int getMaximumNumberOfPlayersPerTable();
+    void setMaximumNumberOfPlayersPerTable(int number);
+
+    void placePlayersAtTables();
+    Collection<TableBO> getTables();
 
     /**
-     * Player leaves the table and the tournament pays depends on rank.
+     * Registration can be done without buyin, a preparation step for the tournament
      *
-     * @param restAmount
+     * @param playerBO
+     * @return
      */
-    void seatOpen(CompetitorBO competitor);
+    CompetitorBO register(PlayerBO playerBO);
+
+    /**
+     * Competitor pays the buy-in and is allowed to play (is active afterwards)
+     * @param competitorBO
+     */
+    void buyin(CompetitorBO competitorBO);
+
+    /**
+     * Competitor pays additional re-buy and is allowed to play (is still active)
+     * @param competitorBO
+     */
+    void rebuy(CompetitorBO competitorBO);
+
+    /**
+     * Player leaves the table and the tournament pays depends on rank (is inactive afterwards).
+     *
+     * @param competitorBO
+     */
+    void seatOpen(CompetitorBO competitorBO);
 }

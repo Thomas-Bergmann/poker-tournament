@@ -22,7 +22,7 @@ import de.hatoka.common.capi.resource.LocalizationBundle;
 import de.hatoka.common.capi.resource.LocalizationConstants;
 import de.hatoka.common.capi.resource.ResourceLoader;
 import de.hatoka.common.capi.resource.ResourceLocalizer;
-import de.hatoka.tournament.capi.entities.HistoryEntryType;
+import de.hatoka.tournament.capi.types.HistoryEntryType;
 import de.hatoka.tournament.internal.app.models.CompetitorVO;
 import de.hatoka.tournament.internal.app.models.HistoryEntryVO;
 import de.hatoka.tournament.internal.app.models.HistoryModel;

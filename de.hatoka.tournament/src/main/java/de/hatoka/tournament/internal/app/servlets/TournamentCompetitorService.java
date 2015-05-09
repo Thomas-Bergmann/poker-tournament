@@ -13,9 +13,10 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import de.hatoka.common.capi.app.servlet.AbstractService;
+import de.hatoka.tournament.capi.business.PlayerBO;
 import de.hatoka.tournament.capi.business.TournamentBORepository;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
-import de.hatoka.tournament.internal.app.actions.GameAction;
+import de.hatoka.tournament.internal.app.actions.PlayerAction;
 import de.hatoka.tournament.internal.app.actions.TournamentAction;
 import de.hatoka.tournament.internal.app.menu.MenuFactory;
 import de.hatoka.tournament.internal.app.models.TournamentPlayerListModel;
@@ -53,7 +54,7 @@ public class TournamentCompetitorService extends AbstractService
         this.accountService = accountService;
     }
 
-    private GameAction getGameAction()
+    private PlayerAction getPlayerAction()
     {
         String accountRef = accountService.getAccountRef();
         if (accountRef == null)
@@ -61,10 +62,7 @@ public class TournamentCompetitorService extends AbstractService
             redirect = accountService.redirectLogin();
             return null;
         }
-        TournamentBORepository tournamentBORepository = getInstance(TournamentBusinessFactory.class)
-                        .getTournamentBORepository(accountRef);
-        return new GameAction(accountRef, tournamentBORepository.getTournamentByID(tournamentID),
-                        getInstance(TournamentBusinessFactory.class));
+        return new PlayerAction(accountRef, getInstance(TournamentBusinessFactory.class));
     }
 
     private TournamentAction getTournamentAction()
@@ -75,9 +73,9 @@ public class TournamentCompetitorService extends AbstractService
             redirect = accountService.redirectLogin();
             return null;
         }
-        TournamentBORepository tournamentBORepository = getInstance(TournamentBusinessFactory.class)
-                        .getTournamentBORepository(accountRef);
-        return new TournamentAction(tournamentBORepository.getTournamentByID(tournamentID));
+        TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
+        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountRef);
+        return new TournamentAction(accountRef, tournamentBORepository.getTournamentByID(tournamentID), factory);
     }
 
     @POST
@@ -109,7 +107,7 @@ public class TournamentCompetitorService extends AbstractService
     @Path("/sortPlayers")
     public Response sortPlayers()
     {
-        GameAction action = getGameAction();
+        TournamentAction action = getTournamentAction();
         if (action == null)
         {
             return redirect;
@@ -129,7 +127,7 @@ public class TournamentCompetitorService extends AbstractService
     @Path("/assignPlayer")
     public Response assignPlayer(@FormParam("playerID") String playerID)
     {
-        GameAction action = getGameAction();
+        TournamentAction action = getTournamentAction();
         if (action == null)
         {
             return redirect;
@@ -139,7 +137,8 @@ public class TournamentCompetitorService extends AbstractService
             @Override
             public void run()
             {
-                action.assignPlayer(playerID);
+                PlayerBO playerBO = getPlayerAction().getPlayer(playerID);
+                action.register(playerBO);
             }
         });
         return redirectAddPlayer();
@@ -149,7 +148,7 @@ public class TournamentCompetitorService extends AbstractService
     @Path("/createPlayer")
     public Response createPlayer(@FormParam("name") String name)
     {
-        GameAction action = getGameAction();
+        TournamentAction action = getTournamentAction();
         if (action == null)
         {
             return redirect;
@@ -159,7 +158,8 @@ public class TournamentCompetitorService extends AbstractService
             @Override
             public void run()
             {
-                action.createPlayer(name);
+                PlayerBO playerBO = getPlayerAction().createPlayer(name);
+                action.register(playerBO);
             }
         });
         return redirectAddPlayer();
@@ -169,7 +169,7 @@ public class TournamentCompetitorService extends AbstractService
     @Path("/players.html")
     public Response players()
     {
-        GameAction action = getGameAction();
+        TournamentAction action = getTournamentAction();
         if (action == null)
         {
             return redirect;
@@ -192,7 +192,7 @@ public class TournamentCompetitorService extends AbstractService
     @Path("/addPlayer.html")
     public Response addPlayer()
     {
-        GameAction action = getGameAction();
+        TournamentAction action = getTournamentAction();
         if (action == null)
         {
             return redirect;
@@ -268,7 +268,7 @@ public class TournamentCompetitorService extends AbstractService
     @Path("/unassignPlayers")
     public Response unassignPlayers(@FormParam("competitorID") List<String> identifiers)
     {
-        GameAction action = getGameAction();
+        TournamentAction action = getTournamentAction();
         if (action == null)
         {
             return redirect;

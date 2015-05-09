@@ -32,7 +32,7 @@ public class BlindLevelVO
 
     public BlindLevelVO(TournamentRoundBO round)
     {
-        BlindLevelBO blindLevelBO = round.getBlindLevelBO();
+        BlindLevelBO blindLevelBO = round.getBlindLevel();
         id = round.getID();
         duration = round.getDuration();
         rebuy = round.getReBuy();

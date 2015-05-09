@@ -7,7 +7,9 @@ import javax.inject.Inject;
 
 import de.hatoka.common.capi.dao.GenericJPADao;
 import de.hatoka.common.capi.dao.UUIDGenerator;
+import de.hatoka.tournament.capi.dao.BlindLevelDao;
 import de.hatoka.tournament.capi.dao.CompetitorDao;
+import de.hatoka.tournament.capi.dao.HistoryDao;
 import de.hatoka.tournament.capi.dao.TournamentDao;
 import de.hatoka.tournament.capi.entities.TournamentPO;
 
@@ -19,16 +21,23 @@ public class TournamentDaoJpa extends GenericJPADao<TournamentPO> implements Tou
     @Inject
     private CompetitorDao competitorDao;
 
+    @Inject
+    private BlindLevelDao blindLevelDao;
+
+    @Inject
+    private HistoryDao historyDao;
+
     public TournamentDaoJpa()
     {
         super(TournamentPO.class);
     }
 
     @Override
-    public TournamentPO createAndInsert(String accountRef, String name, Date date, boolean isCashGame)
+    public TournamentPO createAndInsert(String accountRef, String externalRef, String name, Date date, boolean isCashGame)
     {
         TournamentPO result = create();
         result.setId(uuidGenerator.generate());
+        result.setExternalRef(externalRef);
         result.setAccountRef(accountRef);
         result.setName(name);
         result.setDate(date);
@@ -44,9 +53,17 @@ public class TournamentDaoJpa extends GenericJPADao<TournamentPO> implements Tou
     }
 
     @Override
+    public TournamentPO findByExternalRef(String accountRef, String externalRef)
+    {
+        return getOptionalResult(createNamedQuery("TournamentPO.findByExternalRef").setParameter("accountRef", accountRef).setParameter("externalRef", externalRef));
+    }
+
+    @Override
     public void remove(TournamentPO tournamentPO)
     {
-        tournamentPO.getCompetitors().forEach(competitorPO -> competitorDao.remove(competitorPO));
+        tournamentPO.getCompetitors().forEach(element -> competitorDao.remove(element));
+        tournamentPO.getBlindLevels().forEach(element -> blindLevelDao.remove(element));
+        tournamentPO.getHistoryEntries().forEach(element -> historyDao.remove(element));
         super.remove(tournamentPO);
     }
 }

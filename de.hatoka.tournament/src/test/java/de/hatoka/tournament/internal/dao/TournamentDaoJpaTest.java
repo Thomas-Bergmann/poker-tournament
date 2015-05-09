@@ -16,6 +16,7 @@ import org.junit.Test;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
+import de.hatoka.common.capi.dao.SequenceProvider;
 import de.hatoka.common.capi.dao.TransactionProvider;
 import de.hatoka.common.capi.modules.CommonDaoModule;
 import de.hatoka.tournament.capi.dao.CompetitorDao;
@@ -42,6 +43,9 @@ public class TournamentDaoJpaTest
     @Inject
     private TransactionProvider transactionProvider;
 
+    @Inject
+    private SequenceProvider sequenceProvider;
+
     @Before
     public void createTestObject()
     {
@@ -54,8 +58,8 @@ public class TournamentDaoJpaTest
     {
         EntityTransaction transaction = transactionProvider.get();
         transaction.begin();
-        TournamentPO tournamentPO = tournamentDao.createAndInsert(TEST_ACCOUNT_REF, "Tournament1", new Date(), false);
-        PlayerPO playerPO = playerDao.createAndInsert(TEST_ACCOUNT_REF, "Player1");
+        TournamentPO tournamentPO = tournamentDao.createAndInsert(TEST_ACCOUNT_REF, createExternalRef(), "Tournament1", new Date(), false);
+        PlayerPO playerPO = playerDao.createAndInsert(TEST_ACCOUNT_REF, createExternalRef(), "Player1");
         CompetitorPO competitorPO = competitorDao.createAndInsert(tournamentPO, playerPO);
         transaction.commit();
         Set<CompetitorPO> competitors = tournamentPO.getCompetitors();
@@ -66,5 +70,10 @@ public class TournamentDaoJpaTest
         transaction.commit();
 
         assertTrue("delete doesn't work, player still exist", tournamentPO.getCompetitors().isEmpty());
+    }
+
+    private String createExternalRef()
+    {
+        return sequenceProvider.create(TEST_ACCOUNT_REF).generate();
     }
 }

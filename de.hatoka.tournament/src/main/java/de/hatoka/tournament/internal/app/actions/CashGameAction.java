@@ -7,20 +7,28 @@ import java.util.List;
 
 import de.hatoka.common.capi.business.Money;
 import de.hatoka.tournament.capi.business.CashGameBO;
+import de.hatoka.tournament.capi.business.CashGameCompetitorBO;
 import de.hatoka.tournament.capi.business.CompetitorBO;
+import de.hatoka.tournament.capi.business.PlayerBO;
+import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
 
-public class CashGameAction
+public class CashGameAction extends GameAction<CashGameBO>
 {
-    private final CashGameBO cashGameBO;
-
-    public CashGameAction(CashGameBO cashGameBO)
+    public CashGameAction(String accountRef, CashGameBO cashGameBO, TournamentBusinessFactory factory)
     {
-        this.cashGameBO = cashGameBO;
+        super(accountRef, cashGameBO, factory);
     }
 
-    public List<String> rebuyPlayers(List<String> identifiers, String rebuyString)
+    /**
+     *
+     * @param competitorIDs
+     * @param rebuyString
+     * @return a list of error codes
+     */
+    public List<String> rebuyPlayers(Collection<String> competitorIDs, String rebuyString)
     {
         Money rebuy = null;
+        CashGameBO cashGameBO = getGame();
         try
         {
             rebuy = Money.getInstance(rebuyString, cashGameBO.getSumInplay().getCurrency());
@@ -30,9 +38,9 @@ public class CashGameAction
             return new ArrayList<String>(Arrays.asList("error.number.format"));
         }
 
-        for (CompetitorBO competitorBO : cashGameBO.getCompetitors())
+        for (CashGameCompetitorBO competitorBO : cashGameBO.getCashGameCompetitors())
         {
-            if (identifiers.contains(competitorBO.getID()))
+            if (competitorIDs.contains(competitorBO.getID()))
             {
                 if (competitorBO.isActive())
                 {
@@ -47,8 +55,37 @@ public class CashGameAction
         return java.util.Collections.emptyList();
     }
 
+    /**
+     * @param playerBO
+     * @param buyInString (optional)
+     * @return list of error codes
+     */
+    public List<String> sitDown(PlayerBO playerBO, String buyInString)
+    {
+        CashGameBO cashGameBO = getGame();
+        Money buyIn = null;
+        if (buyInString == null || buyInString.isEmpty())
+        {
+            buyIn = cashGameBO.getBuyIn();
+        }
+        else
+        {
+            try
+            {
+                buyIn = Money.getInstance(buyInString, cashGameBO.getSumInplay().getCurrency());
+            }
+            catch(NumberFormatException e)
+            {
+                return new ArrayList<String>(Arrays.asList("error.number.format"));
+            }
+        }
+        cashGameBO.sitDown(playerBO, buyIn);
+        return java.util.Collections.emptyList();
+    }
+
     public void seatOpenPlayers(List<String> identifiers, String restAmountString)
     {
+        CashGameBO cashGameBO = getGame();
         Collection<CompetitorBO> activeCompetitors = cashGameBO.getActiveCompetitors();
         Money restAmount = activeCompetitors.size() == identifiers.size() ? cashGameBO.getSumInplay().divide(
                         identifiers.size()) : Money.getInstance(restAmountString, cashGameBO.getSumInplay()

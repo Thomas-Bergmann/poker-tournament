@@ -19,6 +19,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -32,12 +33,18 @@ public class TournamentPO implements Serializable, IdentifiableEntity
     private static final long serialVersionUID = 1L;
 
     @Id
-    @XmlAttribute
-    @XmlID
+    @XmlTransient
     private String id;
+
+    @NotNull
+    @XmlID
+    @XmlAttribute(name="id")
+    private String externalRef;
+
     @NotNull
     private String accountRef;
     @NotNull
+    @XmlAttribute
     private boolean isCashGame;
     @NotNull
     private String name;
@@ -51,14 +58,30 @@ public class TournamentPO implements Serializable, IdentifiableEntity
         @AttributeOverride(name = "amount", column = @Column(name = "buyInAmount")) })
     private MoneyPO buyIn;
 
+
     @OneToMany(mappedBy = "tournament")
+    @XmlElement(name = "blindLevel")
+    private List<BlindLevelPO> blindLevels = new ArrayList<>();
+
+    @OneToMany(mappedBy = "tournament")
+    @XmlElement(name = "competitor")
     private Set<CompetitorPO> competitors = new HashSet<>();
 
     @OneToMany(mappedBy = "tournament")
+    @XmlElement(name = "historyEntry")
     private List<HistoryPO> historyEntries = new ArrayList<>();
 
-    @OneToMany(mappedBy = "tournament")
-    private List<BlindLevelPO> blindLevels = new ArrayList<>();
+    @NotNull
+    @XmlAttribute
+    private int minPlayerPerTable = 2;
+
+    @NotNull
+    @XmlAttribute
+    private int maxPlayerPerTable = 10;
+
+    @NotNull
+    @XmlAttribute
+    private int currentRound = 0;
 
     public TournamentPO()
     {
@@ -95,6 +118,7 @@ public class TournamentPO implements Serializable, IdentifiableEntity
         return buyIn;
     }
 
+    @XmlTransient
     public Set<CompetitorPO> getCompetitors()
     {
         return competitors;
@@ -159,6 +183,7 @@ public class TournamentPO implements Serializable, IdentifiableEntity
         this.name = name;
     }
 
+    @XmlTransient
     public boolean isCashGame()
     {
         return isCashGame;
@@ -169,6 +194,7 @@ public class TournamentPO implements Serializable, IdentifiableEntity
         this.isCashGame = isCashGame;
     }
 
+    @XmlTransient
     public List<HistoryPO> getHistoryEntries()
     {
         return historyEntries;
@@ -179,6 +205,7 @@ public class TournamentPO implements Serializable, IdentifiableEntity
         this.historyEntries = historyEntries;
     }
 
+    @XmlTransient
     public List<BlindLevelPO> getBlindLevels()
     {
         return blindLevels;
@@ -187,5 +214,49 @@ public class TournamentPO implements Serializable, IdentifiableEntity
     public void setBlindLevels(List<BlindLevelPO> blindLevels)
     {
         this.blindLevels = blindLevels;
+    }
+
+    @XmlTransient
+    public int getMinPlayerPerTable()
+    {
+        return minPlayerPerTable;
+    }
+
+    public void setMinPlayerPerTable(int minPlayerPerTable)
+    {
+        this.minPlayerPerTable = minPlayerPerTable;
+    }
+
+    @XmlTransient
+    public int getMaxPlayerPerTable()
+    {
+        return maxPlayerPerTable;
+    }
+
+    public void setMaxPlayerPerTable(int maxPlayerPerTable)
+    {
+        this.maxPlayerPerTable = maxPlayerPerTable;
+    }
+
+    @XmlTransient
+    public int getCurrentRound()
+    {
+        return currentRound;
+    }
+
+    public void setCurrentRound(int currentRound)
+    {
+        this.currentRound = currentRound;
+    }
+
+    @XmlTransient
+    public String getExternalRef()
+    {
+        return externalRef;
+    }
+
+    public void setExternalRef(String externalRef)
+    {
+        this.externalRef = externalRef;
     }
 }

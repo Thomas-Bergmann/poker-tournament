@@ -1,6 +1,7 @@
 package de.hatoka.tournament.capi.business;
 
 import de.hatoka.common.capi.business.Money;
+import de.hatoka.tournament.capi.types.CompetitorState;
 
 /**
  * A competitor is an player attending at a tournament.
@@ -13,12 +14,6 @@ public interface CompetitorBO
     */
    String getID();
 
-   /**
-     * Player activates the competitor, with paying the buy in.
-     * @param money
-     */
-    void buyin(Money amount);
-
     /**
      * @return the amount of money spend by player (buy-in and re-buy)
      */
@@ -27,7 +22,7 @@ public interface CompetitorBO
     /**
      * @return the player instance
      */
-    PlayerBO getPlayerBO();
+    PlayerBO getPlayer();
 
     /**
      * (Current) tournament position of player.
@@ -40,17 +35,20 @@ public interface CompetitorBO
      * @return the amount of money won or lost by player after going out.
      */
     Money getResult();
+
     /**
      * Player is in.
      * @return
      */
-    boolean isActive();
+    CompetitorState getState();
 
     /**
-     * Player re-buys an amount, the amount will be added to the money in play.
-     * @param reBuy
+     * @return true if player is active, means can playing cards
      */
-    void rebuy(Money reBuy);
+    default boolean isActive()
+    {
+        return CompetitorState.ACTIVE.equals(getState());
+    }
 
     /**
      * Defines the position of the player. The position is independent from "inPlayStatus"

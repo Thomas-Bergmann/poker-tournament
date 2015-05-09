@@ -18,13 +18,13 @@ import de.hatoka.tournament.internal.app.models.PlayerVO;
 import de.hatoka.tournament.internal.app.models.TournamentPlayerListModel;
 import de.hatoka.tournament.internal.app.models.TournamentVO;
 
-public class GameAction
+/* package */ class GameAction<T extends GameBO>
 {
     private final TournamentBusinessFactory factory;
     private final String accountRef;
-    private final GameBO gameBO;
+    private final T gameBO;
 
-    public GameAction(String accountRef, GameBO gameBO, TournamentBusinessFactory factory)
+    public GameAction(String accountRef, T gameBO, TournamentBusinessFactory factory)
     {
         this.accountRef = accountRef;
         this.gameBO = gameBO;
@@ -36,23 +36,9 @@ public class GameAction
         gameBO.sortCompetitors();
     }
 
-    public void assignPlayer(String playerID)
+    protected T getGame()
     {
-        PlayerBORepository playerBORepository = factory.getPlayerBORepository(accountRef);
-        PlayerBO playerBO = playerBORepository.getByID(playerID);
-        if (playerBO != null)
-        {
-            CompetitorBO competitorBO = gameBO.assign(playerBO);
-            competitorBO.buyin(gameBO.getBuyIn());
-        }
-    }
-
-    public void createPlayer(String name)
-    {
-        PlayerBORepository playerBORepository = factory.getPlayerBORepository(accountRef);
-        PlayerBO playerBO = playerBORepository.create(name);
-        CompetitorBO competitorBO = gameBO.assign(playerBO);
-        competitorBO.buyin(gameBO.getBuyIn());
+        return gameBO;
     }
 
     public void unassignPlayers(List<String> identifiers)
@@ -86,7 +72,7 @@ public class GameAction
             result.getCompetitors().add(new CompetitorVO(competitor));
         }
         PlayerBORepository playerBORepository = factory.getPlayerBORepository(accountRef);
-        for (PlayerBO player : playerBORepository.getPlayerBOs())
+        for (PlayerBO player : playerBORepository.getPlayers())
         {
             if (!gameBO.isCompetitor(player))
             {

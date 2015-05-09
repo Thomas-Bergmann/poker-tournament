@@ -8,6 +8,7 @@ import de.hatoka.tournament.capi.dao.CompetitorDao;
 import de.hatoka.tournament.capi.entities.CompetitorPO;
 import de.hatoka.tournament.capi.entities.PlayerPO;
 import de.hatoka.tournament.capi.entities.TournamentPO;
+import de.hatoka.tournament.capi.types.CompetitorState;
 
 public class CompetitorDaoJpa extends GenericJPADao<CompetitorPO> implements CompetitorDao
 {
@@ -27,7 +28,7 @@ public class CompetitorDaoJpa extends GenericJPADao<CompetitorPO> implements Com
         competitorPO.setPlayerPO(playerPO);
         competitorPO.setTournamentPO(tournamentPO);
         competitorPO.setAccountRef(tournamentPO.getAccountRef());
-        competitorPO.setActive(false);
+        competitorPO.setState(CompetitorState.REGISTERED.name());
         // add relations
         playerPO.getCompetitors().add(competitorPO);
         tournamentPO.getCompetitors().add(competitorPO);

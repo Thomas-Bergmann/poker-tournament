@@ -1,5 +1,7 @@
 package de.hatoka.common.capi.dao;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -72,6 +74,12 @@ public class GenericJPADao<T extends IdentifiableEntity> implements Dao<T>
     public void remove(T element)
     {
         getManager().remove(element);
+    }
+
+    protected T getOptionalResult(TypedQuery<T> query)
+    {
+        List<T> list = query.getResultList();
+        return list.isEmpty() ? null : list.iterator().next();
     }
 
 }

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:tournamentModel xmlns:ns2="de.hatoka.xml.tournament">
+    <players>
+        <player id="100" name="player1"/>
+    </players>
+    <tournaments>
+        <tournament id="101" isCashGame="false" date="2011-11-25T08:45:00+01:00" minPlayerPerTable="2" maxPlayerPerTable="10" currentRound="0">
+            <blindLevel isPause="false" duration="30"/>
+            <competitor playerRef="100" state="REGISTERED">
+                <inplay code="EUR" amount="5"/>
+                <result code="EUR" amount="-5"/>
+            </competitor>
+            <historyEntry playerRef="100" actionKey="BuyIn" date="2011-11-25T08:45:00+01:00"/>
+            <buyIn code="EUR" amount="5"/>
+        </tournament>
+    </tournaments>
+</ns2:tournamentModel>

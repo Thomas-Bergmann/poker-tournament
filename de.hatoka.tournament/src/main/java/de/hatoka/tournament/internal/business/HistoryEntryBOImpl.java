@@ -6,8 +6,8 @@ import de.hatoka.common.capi.business.Money;
 import de.hatoka.tournament.capi.business.HistoryEntryBO;
 import de.hatoka.tournament.capi.business.PlayerBO;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
-import de.hatoka.tournament.capi.entities.HistoryEntryType;
 import de.hatoka.tournament.capi.entities.HistoryPO;
+import de.hatoka.tournament.capi.types.HistoryEntryType;
 
 public class HistoryEntryBOImpl implements HistoryEntryBO
 {
@@ -68,7 +68,7 @@ public class HistoryEntryBOImpl implements HistoryEntryBO
     }
 
     @Override
-    public PlayerBO getPlayerBO()
+    public PlayerBO getPlayer()
     {
         return factory.getPlayerBO(historyPO.getPlayerPO());
     }

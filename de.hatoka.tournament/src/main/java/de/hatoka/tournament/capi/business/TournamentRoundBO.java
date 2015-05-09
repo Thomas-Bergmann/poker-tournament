@@ -18,7 +18,7 @@ public interface TournamentRoundBO
    /**
     * @return BlindLevel in case it's not a pause
     */
-   BlindLevelBO getBlindLevelBO();
+   BlindLevelBO getBlindLevel();
 
    /**
     * @return the re-buy amount (null if no re-buy allowed)

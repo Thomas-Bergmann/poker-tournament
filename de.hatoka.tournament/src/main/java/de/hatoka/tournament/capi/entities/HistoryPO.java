@@ -16,7 +16,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.eclipse.persistence.oxm.annotations.XmlInverseReference;
@@ -30,8 +30,7 @@ public class HistoryPO implements Serializable, IdentifiableEntity
     private static final long serialVersionUID = 1L;
 
     @Id
-    @XmlAttribute
-    @XmlID
+    @XmlTransient
     private String id;
 
     @NotNull
@@ -42,6 +41,8 @@ public class HistoryPO implements Serializable, IdentifiableEntity
     @NotNull
     @ManyToOne
     @JoinColumn(name = "player", updatable = false)
+    @XmlIDREF
+    @XmlAttribute(name="playerRef")
     private PlayerPO player;
 
     @NotNull
@@ -114,7 +115,7 @@ public class HistoryPO implements Serializable, IdentifiableEntity
         return amount;
     }
 
-    @XmlAttribute(name="playerRef")
+    @XmlTransient
     public String getPlayerRef()
     {
         return player.getId();

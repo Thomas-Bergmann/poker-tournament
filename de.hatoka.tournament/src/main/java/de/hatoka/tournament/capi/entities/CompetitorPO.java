@@ -13,13 +13,14 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.eclipse.persistence.oxm.annotations.XmlInverseReference;
 
 import de.hatoka.common.capi.dao.IdentifiableEntity;
 import de.hatoka.common.capi.entities.MoneyPO;
+import de.hatoka.tournament.capi.types.CompetitorState;
 
 @Entity
 public class CompetitorPO implements Serializable, IdentifiableEntity
@@ -27,8 +28,7 @@ public class CompetitorPO implements Serializable, IdentifiableEntity
     private static final long serialVersionUID = 1L;
 
     @Id
-    @XmlAttribute
-    @XmlID
+    @XmlTransient
     private String id;
 
     @NotNull
@@ -39,6 +39,8 @@ public class CompetitorPO implements Serializable, IdentifiableEntity
     @NotNull
     @ManyToOne
     @JoinColumn(name = "player", updatable = false)
+    @XmlIDREF
+    @XmlAttribute(name="playerRef")
     private PlayerPO player;
 
     @NotNull
@@ -48,16 +50,10 @@ public class CompetitorPO implements Serializable, IdentifiableEntity
     private TournamentPO tournament;
 
     /**
-     * The player is in play
-     */
-    @XmlAttribute(name="active")
-    private boolean isActive = false;
-
-    /**
      * The player is out and was placed at position
      */
     @XmlAttribute
-    private Integer positition;
+    private Integer position;
 
     @Embedded
     @AttributeOverrides({ @AttributeOverride(name = "currencyCode", column = @Column(name = "inplayCur")),
@@ -70,6 +66,13 @@ public class CompetitorPO implements Serializable, IdentifiableEntity
                     @AttributeOverride(name = "amount", column = @Column(name = "resultAmount")) })
     @XmlElement(name="result")
     private MoneyPO moneyResult;
+
+    /**
+     * state of player see {@link CompetitorState}
+     */
+    @NotNull
+    @XmlAttribute
+    private String state;
 
     public CompetitorPO()
     {
@@ -121,7 +124,7 @@ public class CompetitorPO implements Serializable, IdentifiableEntity
         return moneyResult;
     }
 
-    @XmlAttribute(name="playerRef")
+    @XmlTransient
     public String getPlayerRef()
     {
         return player.getId();
@@ -134,9 +137,9 @@ public class CompetitorPO implements Serializable, IdentifiableEntity
     }
 
     @XmlTransient
-    public Integer getPositition()
+    public Integer getPosition()
     {
-        return positition;
+        return position;
     }
 
     @XmlTransient
@@ -154,20 +157,9 @@ public class CompetitorPO implements Serializable, IdentifiableEntity
         return result;
     }
 
-    @XmlTransient
-    public boolean isActive()
-    {
-        return isActive;
-    }
-
     public void setAccountRef(String accountRef)
     {
         this.accountRef = accountRef;
-    }
-
-    public void setActive(boolean isActive)
-    {
-        this.isActive = isActive;
     }
 
     @Override
@@ -191,13 +183,24 @@ public class CompetitorPO implements Serializable, IdentifiableEntity
         player = playerPO;
     }
 
-    public void setPositition(Integer positition)
+    public void setPosition(Integer position)
     {
-        this.positition = positition;
+        this.position = position;
     }
 
     public void setTournamentPO(TournamentPO tournamentPO)
     {
         tournament = tournamentPO;
+    }
+
+    @XmlTransient
+    public String getState()
+    {
+        return state;
+    }
+
+    public void setState(String state)
+    {
+        this.state = state;
     }
 }

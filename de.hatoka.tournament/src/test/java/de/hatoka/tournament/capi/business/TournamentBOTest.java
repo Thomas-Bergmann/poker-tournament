@@ -46,7 +46,7 @@ public class TournamentBOTest
     @Test
     public void testAssignUnassign()
     {
-        CompetitorBO competitorBO = underTest.assign(player1);
+        CompetitorBO competitorBO = underTest.register(player1);
         assertTrue(underTest.getCompetitors().contains(competitorBO));
         underTest.unassign(competitorBO);
         assertFalse(underTest.getCompetitors().contains(competitorBO));
@@ -56,24 +56,24 @@ public class TournamentBOTest
     public void testSumInPlay()
     {
         underTest.setBuyIn(BUY_IN);
-        CompetitorBO competitorBO_1 = underTest.assign(player1);
-        CompetitorBO competitorBO_2 = underTest.assign(player2);
-        competitorBO_1.buyin(underTest.getBuyIn());
-        competitorBO_2.buyin(Money.getInstance("15 EUR"));
-        assertEquals(Money.getInstance("20 EUR"), underTest.getSumInplay());
+        CompetitorBO competitorBO_1 = underTest.register(player1);
+        CompetitorBO competitorBO_2 = underTest.register(player2);
+        underTest.buyin(competitorBO_1);
+        underTest.buyin(competitorBO_2);
+        assertEquals(Money.getInstance("10 EUR"), underTest.getSumInplay());
     }
 
     @Test
     public void testCompetitors()
     {
-        CompetitorBO competitorBO_1 = underTest.assign(player1);
+        CompetitorBO competitorBO_1 = underTest.register(player1);
         assertTrue("player one is competitor", underTest.isCompetitor(player1));
         assertFalse("player two is not competitor", underTest.isCompetitor(player2));
-        CompetitorBO competitorBO_2 = underTest.assign(player2);
-        competitorBO_2.buyin(BUY_IN);
+        CompetitorBO competitorBO_2 = underTest.register(player2);
+        underTest.buyin(competitorBO_2);
         assertFalse("player one is not active", underTest.getActiveCompetitors().contains(competitorBO_1));
         assertTrue("player two is active", underTest.getActiveCompetitors().contains(competitorBO_2));
-        assertEquals("correct player assigned", player1, competitorBO_1.getPlayerBO());
+        assertEquals("correct player assigned", player1, competitorBO_1.getPlayer());
     }
 
     @Test
@@ -91,17 +91,17 @@ public class TournamentBOTest
         underTest.createPause(15);
         underTest.createBlindLevel(30, 500, 1000, 0);
         underTest.createBlindLevel(30, 500, 1000, 100);
-        List<TournamentRoundBO> rounds = underTest.getTournamentRoundBOs();
+        List<TournamentRoundBO> rounds = underTest.getTournamentRounds();
         assertEquals("five rounds added", 5, rounds.size());
-        assertNull("third round is pause", rounds.get(2).getBlindLevelBO());
-        assertEquals("second round is level with small blind", Integer.valueOf(200), rounds.get(1).getBlindLevelBO().getSmallBlind());
+        assertNull("third round is pause", rounds.get(2).getBlindLevel());
+        assertEquals("second round is level with small blind", Integer.valueOf(200), rounds.get(1).getBlindLevel().getSmallBlind());
         // remove pause
         underTest.remove(rounds.get(2));
-        List<TournamentRoundBO> roundsAfterDelete = underTest.getTournamentRoundBOs();
+        List<TournamentRoundBO> roundsAfterDelete = underTest.getTournamentRounds();
         assertEquals("four rounds left", 4, roundsAfterDelete.size());
         for(TournamentRoundBO roundBO : roundsAfterDelete)
         {
-            assertNotNull("only levels left", roundBO.getBlindLevelBO());
+            assertNotNull("only levels left", roundBO.getBlindLevel());
         }
     }
 }

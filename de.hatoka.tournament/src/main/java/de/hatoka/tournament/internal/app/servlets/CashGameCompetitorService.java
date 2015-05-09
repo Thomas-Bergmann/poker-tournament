@@ -16,10 +16,11 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import de.hatoka.common.capi.app.servlet.AbstractService;
+import de.hatoka.tournament.capi.business.PlayerBO;
 import de.hatoka.tournament.capi.business.TournamentBORepository;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
 import de.hatoka.tournament.internal.app.actions.CashGameAction;
-import de.hatoka.tournament.internal.app.actions.GameAction;
+import de.hatoka.tournament.internal.app.actions.PlayerAction;
 import de.hatoka.tournament.internal.app.menu.MenuFactory;
 import de.hatoka.tournament.internal.app.models.FrameModel;
 import de.hatoka.tournament.internal.app.models.HistoryModel;
@@ -58,7 +59,7 @@ public class CashGameCompetitorService extends AbstractService
         this.accountService = accountService;
     }
 
-    private GameAction getGameAction()
+    private PlayerAction getPlayerAction()
     {
         String accountRef = accountService.getAccountRef();
         if (accountRef == null)
@@ -66,9 +67,7 @@ public class CashGameCompetitorService extends AbstractService
             redirect = accountService.redirectLogin();
             return null;
         }
-        TournamentBORepository tournamentBORepository = getInstance(TournamentBusinessFactory.class)
-                        .getTournamentBORepository(accountRef);
-        return new GameAction(accountRef, tournamentBORepository.getCashGameByID(tournamentID), getInstance(TournamentBusinessFactory.class));
+        return new PlayerAction(accountRef, getInstance(TournamentBusinessFactory.class));
     }
 
     private CashGameAction getCashGameAction()
@@ -79,9 +78,9 @@ public class CashGameCompetitorService extends AbstractService
             redirect = accountService.redirectLogin();
             return null;
         }
-        TournamentBORepository tournamentBORepository = getInstance(TournamentBusinessFactory.class)
-                        .getTournamentBORepository(accountRef);
-        return new CashGameAction(tournamentBORepository.getCashGameByID(tournamentID));
+        TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
+        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountRef);
+        return new CashGameAction(accountRef, tournamentBORepository.getCashGameByID(tournamentID), factory);
     }
 
     @POST
@@ -114,7 +113,7 @@ public class CashGameCompetitorService extends AbstractService
     @Path("/sortPlayers")
     public Response sortPlayers()
     {
-        GameAction action = getGameAction();
+        CashGameAction action = getCashGameAction();
         if (action == null)
         {
             return redirect;
@@ -132,9 +131,9 @@ public class CashGameCompetitorService extends AbstractService
 
     @POST
     @Path("/assignPlayer")
-    public Response assignPlayer(@FormParam("playerID") String playerID)
+    public Response assignPlayer(@FormParam("playerID") String playerID, @FormParam("amount") String amount)
     {
-        GameAction action = getGameAction();
+        CashGameAction action = getCashGameAction();
         if (action == null)
         {
             return redirect;
@@ -144,7 +143,8 @@ public class CashGameCompetitorService extends AbstractService
             @Override
             public void run()
             {
-                action.assignPlayer(playerID);
+                PlayerBO playerBO = getPlayerAction().getPlayer(playerID);
+                action.sitDown(playerBO, amount);
             }
         });
         return redirectAddPlayer();
@@ -152,9 +152,9 @@ public class CashGameCompetitorService extends AbstractService
 
     @POST
     @Path("/createPlayer")
-    public Response createPlayer(@FormParam("name") String name)
+    public Response createPlayer(@FormParam("name") String name, @FormParam("amount") String amount)
     {
-        GameAction action = getGameAction();
+        CashGameAction action = getCashGameAction();
         if (action == null)
         {
             return redirect;
@@ -164,7 +164,8 @@ public class CashGameCompetitorService extends AbstractService
             @Override
             public void run()
             {
-                action.createPlayer(name);
+                PlayerBO playerBO = getPlayerAction().createPlayer(name);
+                action.sitDown(playerBO, amount);
             }
         });
         return redirectAddPlayer();
@@ -174,12 +175,13 @@ public class CashGameCompetitorService extends AbstractService
     @Path("/players.html")
     public Response players(@QueryParam("errors") List<String> errors)
     {
-        GameAction action = getGameAction();
+        CashGameAction action = getCashGameAction();
         if (action == null)
         {
             return redirect;
         }
-        final TournamentPlayerListModel model = action.getPlayerListModel( getUriBuilder(CashGameListService.class, "list").build(),
+        final TournamentPlayerListModel model = action.getPlayerListModel(
+                        getUriBuilder(CashGameListService.class, "list").build(),
                         getUriBuilder(CashGameCompetitorService.class, "players"));
         model.getErrors().addAll(errors);
         try
@@ -197,7 +199,7 @@ public class CashGameCompetitorService extends AbstractService
     @Path("/history.html")
     public Response history()
     {
-        GameAction action = getGameAction();
+        CashGameAction action = getCashGameAction();
         if (action == null)
         {
             return redirect;
@@ -218,7 +220,7 @@ public class CashGameCompetitorService extends AbstractService
     @Path("/addPlayer.html")
     public Response addPlayer()
     {
-        GameAction action = getGameAction();
+        CashGameAction action = getCashGameAction();
         if (action == null)
         {
             return redirect;
@@ -309,7 +311,7 @@ public class CashGameCompetitorService extends AbstractService
     @Path("/unassignPlayers")
     public Response unassignPlayers(@FormParam("competitorID") List<String> identifiers)
     {
-        GameAction action = getGameAction();
+        CashGameAction action = getCashGameAction();
         if (action == null)
         {
             return redirect;

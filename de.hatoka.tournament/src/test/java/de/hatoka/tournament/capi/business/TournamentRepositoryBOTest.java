@@ -1,48 +1,56 @@
 package de.hatoka.tournament.capi.business;
 
-import java.io.File;
-import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.persistence.EntityTransaction;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
 
+import org.custommonkey.xmlunit.XMLAssert;
+import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
+import de.hatoka.common.capi.business.CountryHelper;
 import de.hatoka.common.capi.business.Money;
+import de.hatoka.common.capi.dao.SequenceProvider;
 import de.hatoka.common.capi.dao.TransactionProvider;
+import de.hatoka.common.capi.dao.UUIDGenerator;
 import de.hatoka.common.capi.modules.CommonDaoModule;
+import de.hatoka.common.capi.resource.LocalizationConstants;
+import de.hatoka.common.capi.resource.ResourceLoader;
 import de.hatoka.tournament.capi.dao.BlindLevelDao;
 import de.hatoka.tournament.capi.dao.CompetitorDao;
 import de.hatoka.tournament.capi.dao.HistoryDao;
 import de.hatoka.tournament.capi.dao.PlayerDao;
 import de.hatoka.tournament.capi.dao.TournamentDao;
-import de.hatoka.tournament.capi.entities.BlindLevelPO;
 import de.hatoka.tournament.capi.entities.CompetitorPO;
-import de.hatoka.tournament.capi.entities.HistoryEntryType;
 import de.hatoka.tournament.capi.entities.HistoryPO;
 import de.hatoka.tournament.capi.entities.PlayerPO;
-import de.hatoka.tournament.capi.entities.TournamentModel;
 import de.hatoka.tournament.capi.entities.TournamentPO;
+import de.hatoka.tournament.capi.types.HistoryEntryType;
 import de.hatoka.tournament.internal.business.TournamentBORepositoryImpl;
 import de.hatoka.tournament.internal.dao.DerbyEntityManagerRule;
+import de.hatoka.tournament.internal.modules.TournamentBusinessModule;
 import de.hatoka.tournament.internal.modules.TournamentDaoJpaModule;
 
 public class TournamentRepositoryBOTest
 {
+    private static final String RESOURCE_PREFIX = "de/hatoka/tournament/internal/business/";
     private static final String ACCOUNT_REF = "accountRef_OK";
-    private static final String ACCOUNT_REF_OTHER = "accountRef_WRONG";
-    private static final Date CURRENT_DATE = new Date();
+    private static final Date CURRENT_DATE = parseDate("2011-11-25T08:45");
+    private static final ResourceLoader RESOURCE_LOADER = new ResourceLoader();
 
     @Rule
     public DerbyEntityManagerRule rule = new DerbyEntityManagerRule();
@@ -60,66 +68,63 @@ public class TournamentRepositoryBOTest
     @Inject
     private TransactionProvider transactionProvider;
 
+    @Inject
+    private TournamentBusinessFactory factory;
+    @Inject
+    private UUIDGenerator uuidGenerator;
+    @Inject
+    private SequenceProvider sequenceProvider;
+
     @Before
     public void createTestObject()
     {
-        Injector injector = Guice.createInjector(new CommonDaoModule(), new TournamentDaoJpaModule(), rule.getModule());
+        Injector injector = Guice.createInjector(new CommonDaoModule(100), new TournamentDaoJpaModule(), new TournamentBusinessModule(), rule.getModule());
         injector.injectMembers(this);
+        getRepository().getTournaments().iterator().forEachRemaining(bo -> bo.remove());
+    }
+
+    @BeforeClass
+    public static void initClass()
+    {
+        XMLUnit.setIgnoreWhitespace(true);
+    }
+
+    private String getResource(String resource) throws IOException
+    {
+        return RESOURCE_LOADER.getResourceAsString(RESOURCE_PREFIX + resource);
+    }
+
+    private InputStream getResourceStream(String resource) throws IOException
+    {
+        return RESOURCE_LOADER.getResourceAsStream(RESOURCE_PREFIX + resource);
     }
 
     @Test
     public void testExport() throws Exception
     {
         createData(ACCOUNT_REF);
-        File exportFile = new TournamentBORepositoryImpl(ACCOUNT_REF, tournamentDao, playerDao, competitorDao, null).exportFile();
-        validateData(ACCOUNT_REF, exportFile, true);
+        StringWriter writer = new StringWriter();
+        getRepository().exportXML(writer);
+        // Assert.assertEquals("export correct", getResource("tournament_export.result.xml"), writer.toString());
+        XMLAssert.assertXMLEqual("export correct", getResource("tournament_export.result.xml"), writer.toString());
+    }
+
+    private TournamentBORepositoryImpl getRepository()
+    {
+        return new TournamentBORepositoryImpl(ACCOUNT_REF, tournamentDao, playerDao, competitorDao, uuidGenerator, sequenceProvider.create(ACCOUNT_REF), factory);
     }
 
     @Test
-    @Ignore
     public void testImport() throws Exception
     {
-        createData(ACCOUNT_REF_OTHER);
-        File exportFile = new TournamentBORepositoryImpl(ACCOUNT_REF_OTHER, tournamentDao, playerDao, competitorDao, null).exportFile();
-        List<String> warnings = new TournamentBORepositoryImpl(ACCOUNT_REF, tournamentDao, playerDao, competitorDao, null).importFile(exportFile);
+        TournamentBORepositoryImpl repository = getRepository();
+        List<String> warnings = repository.importXML(getResourceStream("tournament_export.result.xml"));
+        StringWriter writer = new StringWriter();
+        repository.exportXML(writer);
+        Assert.assertEquals("export correct", getResource("tournament_export.result.xml"), writer.toString());
         for(String warning : warnings)
         {
-            System.out.println(warning);
-        }
-        validateData(ACCOUNT_REF, exportFile, false);
-    }
-    private void validateData(String accountRef, File exportFile, boolean checkAccountRef) throws Exception
-    {
-        JAXBContext context = JAXBContext.newInstance(TournamentModel.class);
-        Unmarshaller um = context.createUnmarshaller();
-        TournamentModel tournamentModel = (TournamentModel)um.unmarshal(new FileReader(exportFile));
-        if (checkAccountRef)
-        {
-            Assert.assertEquals(accountRef, tournamentModel.getAccountRef());
-        }
-        for (PlayerPO playerXML : tournamentModel.getPlayerPOs())
-        {
-            playerXML.setAccountRef(accountRef); // accountRef not stored at each element
-            PlayerPO playerPO = playerDao.getById(playerXML.getId());
-            Assert.assertEquals(playerXML.getName(), playerPO, playerXML);
-        }
-        for (TournamentPO tournamentXML : tournamentModel.getTournamentPOs())
-        {
-            tournamentXML.setAccountRef(accountRef); // accountRef not stored at each element
-            TournamentPO tournamentPO = tournamentDao.getById(tournamentXML.getId());
-            Assert.assertEquals(tournamentXML.getId(), tournamentPO, tournamentXML);
-            for(CompetitorPO competitorXML : tournamentXML.getCompetitors())
-            {
-                Assert.assertTrue(competitorXML.getId(), tournamentPO.getCompetitors().contains(competitorXML));
-            }
-            for(HistoryPO historyXML : tournamentXML.getHistoryEntries())
-            {
-                Assert.assertTrue(historyXML.getId(), tournamentPO.getHistoryEntries().contains(historyXML));
-            }
-            for(BlindLevelPO blindLevelXML : tournamentXML.getBlindLevels())
-            {
-                Assert.assertTrue(blindLevelXML.getId(), tournamentPO.getBlindLevels().contains(blindLevelXML));
-            }
+            Assert.assertNull(warning);
         }
     }
 
@@ -127,8 +132,8 @@ public class TournamentRepositoryBOTest
     {
         EntityTransaction entityTransaction = transactionProvider.get();
         entityTransaction.begin();
-        PlayerPO player1 = playerDao.createAndInsert(accountRef, "player1");
-        TournamentPO tournamentPO = tournamentDao.createAndInsert(accountRef, "tournament", CURRENT_DATE, false);
+        PlayerPO player1 = playerDao.createAndInsert(accountRef, sequenceProvider.create(ACCOUNT_REF).generate(), "player1");
+        TournamentPO tournamentPO = tournamentDao.createAndInsert(accountRef, sequenceProvider.create(ACCOUNT_REF).generate(), "tournament", CURRENT_DATE, false);
         tournamentPO.setBuyIn(Money.getInstance("5 EUR").toMoneyPO());
         CompetitorPO competitor1 = competitorDao.createAndInsert(tournamentPO, player1);
         competitor1.setMoneyInPlay(Money.getInstance("5 EUR").toMoneyPO());
@@ -141,4 +146,17 @@ public class TournamentRepositoryBOTest
         entityTransaction.commit();
     }
 
+    private static Date parseDate(String dateString)
+    {
+        SimpleDateFormat result = new SimpleDateFormat(LocalizationConstants.XML_DATEFORMAT_MINUTES);
+        result.setTimeZone(CountryHelper.TZ_BERLIN);
+        try
+        {
+            return result.parse(dateString);
+        }
+        catch(ParseException e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
 }

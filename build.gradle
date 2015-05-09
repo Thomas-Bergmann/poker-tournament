@@ -216,8 +216,8 @@ task jacocoReport(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
     executionData = files(fileTree('.').include('**/*.exec').getFiles())
     reports {
         csv.enabled = false
-        html.enabled = false
-        // html.destination "${buildDir}/reports/jacoco/html"
+        html.enabled = true
+        html.destination "${buildDir}/reports/jacoco/html"
         xml.enabled = true
         xml.destination "${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
     }

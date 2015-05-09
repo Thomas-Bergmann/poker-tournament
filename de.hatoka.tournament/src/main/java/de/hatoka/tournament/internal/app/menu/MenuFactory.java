@@ -43,12 +43,12 @@ public class MenuFactory
 
     private Integer getTournamentsSize(TournamentBORepository tournamentBORepository)
     {
-        return tournamentBORepository.getTournamenBOs().size();
+        return tournamentBORepository.getTournaments().size();
     }
 
     private Integer getCashGamesSize(TournamentBORepository tournamentBORepository)
     {
-        return tournamentBORepository.getCashGameBOs().size();
+        return tournamentBORepository.getCashGames().size();
     }
 
     public FrameModel getCashGameFrameModel(String content, String titleKey, UriInfo info,
@@ -97,7 +97,7 @@ public class MenuFactory
                         getUri(info, TournamentCompetitorService.class, "addPlayer", tournamentBO.getID()), titleKey.equals("title.list.players"));
         model.addSideMenu("menu.tournament.levels",
                         getUri(info, TournamentBlindLevelService.class, "levels", tournamentBO.getID()), tournamentBO
-                                        .getTournamentRoundBOs().size(), null, titleKey.equals("title.list.levels"));
+                                        .getTournamentRounds().size(), null, titleKey.equals("title.list.levels"));
         return model;
     }
 

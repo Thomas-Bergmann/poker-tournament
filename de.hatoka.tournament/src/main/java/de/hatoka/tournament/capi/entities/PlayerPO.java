@@ -29,15 +29,24 @@ public class PlayerPO implements Serializable, IdentifiableEntity
 {
     private static final long serialVersionUID = 1L;
 
+    @XmlTransient
     @Id
-    @XmlAttribute
-    @XmlID
     private String id;
+
+    @NotNull
+    @XmlID
+    @XmlAttribute(name="id")
+    private String externalRef;
+
     @NotNull
     private String accountRef;
+
     @NotNull
     @XmlAttribute
     private String name;
+
+    @XmlAttribute
+    private String eMail;
 
     @Override
     public int hashCode()
@@ -128,6 +137,28 @@ public class PlayerPO implements Serializable, IdentifiableEntity
     public void setName(String name)
     {
         this.name = name;
+    }
+
+    @XmlTransient
+    public String getExternalRef()
+    {
+        return externalRef;
+    }
+
+    public void setExternalRef(String externalRef)
+    {
+        this.externalRef = externalRef;
+    }
+
+    @XmlTransient
+    public String getEMail()
+    {
+        return eMail;
+    }
+
+    public void setEMail(String eMail)
+    {
+        this.eMail = eMail;
     }
 
 }

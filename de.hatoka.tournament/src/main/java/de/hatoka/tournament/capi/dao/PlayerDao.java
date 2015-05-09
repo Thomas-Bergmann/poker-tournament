@@ -13,9 +13,11 @@ public interface PlayerDao extends Dao<PlayerPO>
      *            of player
      * @return
      */
-    public PlayerPO createAndInsert(String accountRef, String name);
+    public PlayerPO createAndInsert(String accountRef, String externalRef, String name);
 
     public PlayerPO findByName(String accountRef, String name);
+
+    public PlayerPO findByExternalRef(String accountRef, String externalRef);
 
     public Collection<PlayerPO> getByAccountRef(String accountRef);
 }

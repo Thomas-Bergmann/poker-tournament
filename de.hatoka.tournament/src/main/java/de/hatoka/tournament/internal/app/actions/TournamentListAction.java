@@ -74,7 +74,7 @@ public class TournamentListAction
     private void addCashGames(UriBuilder uriBuilder, TournamentBORepository tournamentBORepository,
                     final TournamentListModel model)
     {
-        List<CashGameBO> cashGameBOs = tournamentBORepository.getCashGameBOs();
+        List<CashGameBO> cashGameBOs = tournamentBORepository.getCashGames();
         Consumer<CashGameBO> mapper = new Consumer<CashGameBO>()
         {
             @Override
@@ -90,7 +90,7 @@ public class TournamentListAction
     private void addTournaments(UriBuilder uriBuilder, TournamentBORepository tournamentBORepository,
                     final TournamentListModel model)
     {
-        List<TournamentBO> cashGameBOs = tournamentBORepository.getTournamenBOs();
+        List<TournamentBO> cashGameBOs = tournamentBORepository.getTournaments();
         Consumer<TournamentBO> mapper = new Consumer<TournamentBO>()
         {
             @Override

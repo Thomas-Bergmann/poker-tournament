@@ -61,7 +61,7 @@ public class TournamentBlindLevelService extends AbstractService
             redirect = accountService.redirectLogin();
             return null;
         }
-        return new TournamentAction(getTournamentBO());
+        return new TournamentAction(accountRef, getTournamentBO(), getInstance(TournamentBusinessFactory.class));
     }
 
     @POST

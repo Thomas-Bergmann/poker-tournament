@@ -24,14 +24,21 @@ public class PlayerDaoJpa extends GenericJPADao<PlayerPO> implements PlayerDao
     }
 
     @Override
-    public PlayerPO createAndInsert(String accountRef, String name)
+    public PlayerPO createAndInsert(String accountRef, String externalRef, String name)
     {
         PlayerPO result = create();
         result.setId(uuidGenerator.generate());
         result.setAccountRef(accountRef);
+        result.setExternalRef(externalRef);
         result.setName(name);
         insert(result);
         return result;
+    }
+
+    @Override
+    public PlayerPO findByExternalRef(String accountRef, String externalRef)
+    {
+        return getOptionalResult(createNamedQuery("PlayerPO.findByRef").setParameter("accountRef", accountRef).setParameter("externalRef", externalRef));
     }
 
     @Override
@@ -52,4 +59,5 @@ public class PlayerDaoJpa extends GenericJPADao<PlayerPO> implements PlayerDao
         playerPO.getCompetitors().forEach(competitorPO -> competitorDao.remove(competitorPO));
         super.remove(playerPO);
     }
+
 }
