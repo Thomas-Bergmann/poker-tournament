@@ -81,7 +81,7 @@
 <td>20:15</td>
 </tr>
 </table>
-<button name="level" type="submit" class="btn btn-primary">Create Level</button>
+<button name="level" type="submit" class="btn btn-primary">Add Level</button>
 <button name="delete" type="submit" class="btn">Delete</button>
-<button name="pause" type="submit" class="btn">Create Pause</button>
+<button name="pause" type="submit" class="btn">Add Pause</button>
 </form>

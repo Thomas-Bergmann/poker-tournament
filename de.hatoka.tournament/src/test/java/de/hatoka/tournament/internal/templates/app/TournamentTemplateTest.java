@@ -1,6 +1,7 @@
 package de.hatoka.tournament.internal.templates.app;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -27,9 +28,11 @@ import de.hatoka.common.capi.resource.ResourceLocalizer;
 import de.hatoka.tournament.internal.app.models.BlindLevelVO;
 import de.hatoka.tournament.internal.app.models.CompetitorVO;
 import de.hatoka.tournament.internal.app.models.PlayerVO;
+import de.hatoka.tournament.internal.app.models.RankVO;
 import de.hatoka.tournament.internal.app.models.TournamentBlindLevelModel;
 import de.hatoka.tournament.internal.app.models.TournamentListModel;
 import de.hatoka.tournament.internal.app.models.TournamentPlayerListModel;
+import de.hatoka.tournament.internal.app.models.TournamentRankModel;
 import de.hatoka.tournament.internal.app.models.TournamentVO;
 
 public class TournamentTemplateTest
@@ -57,8 +60,7 @@ public class TournamentTemplateTest
     private Map<String, Object> getParameter()
     {
         Map<String, Object> result = new HashMap<>();
-        result.put(Lib.XSLT_LOCALIZER, new ResourceLocalizer(new LocalizationBundle(RESOURCE_PREFIX + "tournament",
-                        Locale.GERMANY, CountryHelper.TZ_BERLIN)));
+        result.put(Lib.XSLT_LOCALIZER, new ResourceLocalizer(new LocalizationBundle(RESOURCE_PREFIX + "tournament", Locale.GERMANY, CountryHelper.TZ_BERLIN)));
         return result;
     }
 
@@ -109,8 +111,7 @@ public class TournamentTemplateTest
 
         // Assert.assertEquals("players not listed correctly",
         // getResource("tournament_no_unassigned.result.xml"), content);
-        XMLAssert.assertXMLEqual("players unassigned incorrectly",
-                        wrapXMLRoot(getResource("tournament_no_unassigned.result.xml")), wrapXMLRoot(content));
+        XMLAssert.assertXMLEqual("players unassigned incorrectly", wrapXMLRoot(getResource("tournament_no_unassigned.result.xml")), wrapXMLRoot(content));
     }
 
     @Test
@@ -120,7 +121,7 @@ public class TournamentTemplateTest
         model.getTournaments().add(getTournamentVO("123456", "Test 1", parseDate("2011-11-25T08:45")));
         model.getTournaments().add(getTournamentVO("123457", "Test 2", parseDate("2012-11-25T08:45")));
         String content = RENDERER.render(model, RESOURCE_PREFIX + "tournament_list.xslt", getParameter());
-        Assert.assertEquals("tournaments not listed correctly",getResource("tournament_list.result.xml"), content);
+        Assert.assertEquals("tournaments not listed correctly", getResource("tournament_list.result.xml"), content);
         XMLAssert.assertXMLEqual("tournaments not listed correctly", getResource("tournament_list.result.xml"), content);
     }
 
@@ -141,6 +142,25 @@ public class TournamentTemplateTest
 
         Assert.assertEquals("players not listed correctly", getResource("tournament_blinds.result.xml"), content);
         XMLAssert.assertXMLEqual("players not listed correctly", getResource("tournament_blinds.result.xml"), content);
+    }
+
+    @Test
+    public void testTournamentRanks() throws Exception
+    {
+        TournamentRankModel model = new TournamentRankModel();
+        model.setTournament(getTournamentVO("123456", "Test 1", parseDate("2011-11-25T18:00")));
+        List<RankVO> blindLevels = model.getRanks();
+        blindLevels.add(TournamentViewObjectHelper.getFixPriceRankVO("1", 1, 1, BigDecimal.valueOf(100)));
+        blindLevels.add(TournamentViewObjectHelper.getPercentageRankVO("2", 2, 2, BigDecimal.valueOf(50), BigDecimal.valueOf(50)));
+        blindLevels.add(TournamentViewObjectHelper.getPercentageCalcRankVO("3", 3, 5, BigDecimal.valueOf(25), BigDecimal.valueOf(25)));
+        RankVO lastRank = TournamentViewObjectHelper.getPercentageCalcRankVO("4", 6, 10, BigDecimal.valueOf(25), BigDecimal.valueOf(25));
+        lastRank.setLastPositionCalculated(false);
+        blindLevels.add(lastRank);
+        String content = RENDERER.render(model, RESOURCE_PREFIX + "tournament_ranks.xslt", getParameter());
+        // String content = new XMLRenderer().render(model);
+
+        Assert.assertEquals("content not correct rendered", getResource("tournament_ranks.result.xml"), content);
+        XMLAssert.assertXMLEqual("content not correct rendered", getResource("tournament_ranks.result.xml"), content);
     }
 
     private Date parseDate(String dateString) throws ParseException

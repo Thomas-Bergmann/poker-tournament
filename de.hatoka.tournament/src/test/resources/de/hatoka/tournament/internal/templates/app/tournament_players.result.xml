@@ -30,7 +30,7 @@
 <td>-1USD</td>
 </tr>
 </table>
-<p class="bg-info">Average: 1<br/>Sum: 2</p>
+<p class="bg-info">Average: 1<br/>Sum: 200</p>
 <label class="sr-only" for="inputamount">Amount</label>
 <input value="" name="amount" type="text" id="inputamount" class="form-control" placeholder="Amount"/>
 <button name="rebuy" type="submit" class="btn btn-primary">Re-Buy</button>
