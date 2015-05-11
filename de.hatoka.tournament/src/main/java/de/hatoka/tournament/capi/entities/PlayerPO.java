@@ -22,7 +22,8 @@ import de.hatoka.common.capi.dao.IdentifiableEntity;
 @Entity
 @NamedQueries(value = {
                 @NamedQuery(name = "PlayerPO.findByAccountRef", query = "select a from PlayerPO a where a.accountRef = :accountRef"),
-                @NamedQuery(name = "PlayerPO.findByName", query = "select a from PlayerPO a where a.accountRef = :accountRef and a.name = :name")
+                @NamedQuery(name = "PlayerPO.findByName", query = "select a from PlayerPO a where a.accountRef = :accountRef and a.name = :name"),
+                @NamedQuery(name = "PlayerPO.findByExternalRef", query = "select a from PlayerPO a where a.accountRef = :accountRef and a.externalRef = :externalRef")
 })
 @XmlRootElement(name="player")
 public class PlayerPO implements Serializable, IdentifiableEntity

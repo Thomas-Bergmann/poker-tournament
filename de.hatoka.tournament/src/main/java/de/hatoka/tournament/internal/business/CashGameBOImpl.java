@@ -141,7 +141,6 @@ public class CashGameBOImpl implements CashGameBO
     @Override
     public void remove()
     {
-        getCompetitors().stream().forEach(competitor -> remove(competitor));
         tournamentDao.remove(tournamentPO);
         tournamentPO = null;
     }

@@ -32,6 +32,7 @@ public class CompetitorDaoJpa extends GenericJPADao<CompetitorPO> implements Com
         // add relations
         playerPO.getCompetitors().add(competitorPO);
         tournamentPO.getCompetitors().add(competitorPO);
+        // insert
         insert(competitorPO);
         return competitorPO;
     }
@@ -40,8 +41,19 @@ public class CompetitorDaoJpa extends GenericJPADao<CompetitorPO> implements Com
     @Override
     public void remove(CompetitorPO competitorPO)
     {
-        competitorPO.getPlayerPO().getCompetitors().remove(competitorPO);
-        competitorPO.getTournamentPO().getCompetitors().remove(competitorPO);
+        // remove relations
+        PlayerPO player = competitorPO.getPlayerPO();
+        if (player != null)
+        {
+            player.getCompetitors().remove(competitorPO);
+            competitorPO.setPlayerPO(null);
+        }
+        TournamentPO tournament = competitorPO.getTournamentPO();
+        if (tournament != null)
+        {
+            tournament.getCompetitors().remove(competitorPO);
+            competitorPO.setTournamentPO(null);
+        }
         super.remove(competitorPO);
     }
 }

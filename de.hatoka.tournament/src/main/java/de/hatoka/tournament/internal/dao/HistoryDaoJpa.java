@@ -26,10 +26,12 @@ public class HistoryDaoJpa extends GenericJPADao<HistoryPO> implements HistoryDa
     {
         HistoryPO result = create();
         result.setId(uuidGenerator.generate());
-        result.setPlayerPO(playerPO);
-        result.setTournamentPO(tournamentPO);
         result.setAccountRef(tournamentPO.getAccountRef());
         result.setDate(date);
+        // set relations
+        result.setPlayerPO(playerPO);
+        result.setTournamentPO(tournamentPO);
+        tournamentPO.getHistoryEntries().add(result);
         insert(result);
         return result;
     }
@@ -38,7 +40,13 @@ public class HistoryDaoJpa extends GenericJPADao<HistoryPO> implements HistoryDa
     @Override
     public void remove(HistoryPO historyPO)
     {
-        historyPO.getTournamentPO().getHistoryEntries().remove(historyPO);
+        // remove relations
+        TournamentPO tournament = historyPO.getTournamentPO();
+        if (tournament != null)
+        {
+            tournament.getHistoryEntries().remove(historyPO);
+            historyPO.setTournamentPO(null);
+        }
         super.remove(historyPO);
     }
 }

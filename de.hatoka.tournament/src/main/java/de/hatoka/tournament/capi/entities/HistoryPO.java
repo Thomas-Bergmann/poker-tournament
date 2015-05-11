@@ -48,7 +48,7 @@ public class HistoryPO implements Serializable, IdentifiableEntity
     @NotNull
     @ManyToOne
     @JoinColumn(name = "tournament", updatable = false)
-    @XmlInverseReference(mappedBy="tournament")
+    @XmlInverseReference(mappedBy="historyEntries")
     private TournamentPO tournament;
 
     /**
@@ -116,12 +116,6 @@ public class HistoryPO implements Serializable, IdentifiableEntity
     }
 
     @XmlTransient
-    public String getPlayerRef()
-    {
-        return player.getId();
-    }
-
-    @XmlTransient
     public PlayerPO getPlayerPO()
     {
         return player;
@@ -165,15 +159,7 @@ public class HistoryPO implements Serializable, IdentifiableEntity
 
     public void setTournamentPO(TournamentPO tournamentPO)
     {
-        if (tournament != null)
-        {
-            tournament.getHistoryEntries().remove(this);
-        }
-        tournament = tournamentPO;
-        if (tournament != null)
-        {
-            tournament.getHistoryEntries().add(this);
-        }
+        this.tournament = tournamentPO;
     }
 
     @XmlTransient

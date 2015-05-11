@@ -74,6 +74,19 @@ public class CompetitorPO implements Serializable, IdentifiableEntity
     @XmlAttribute
     private String state;
 
+    /**
+     * The player seats on table
+     */
+    @XmlAttribute
+    private Integer tableNo;
+
+    /**
+     * The player seats at seat on table
+     */
+    @XmlAttribute
+    private Integer seatNo;
+
+
     public CompetitorPO()
     {
 
@@ -122,12 +135,6 @@ public class CompetitorPO implements Serializable, IdentifiableEntity
     public MoneyPO getMoneyResult()
     {
         return moneyResult;
-    }
-
-    @XmlTransient
-    public String getPlayerRef()
-    {
-        return player.getId();
     }
 
     @XmlTransient
@@ -202,5 +209,27 @@ public class CompetitorPO implements Serializable, IdentifiableEntity
     public void setState(String state)
     {
         this.state = state;
+    }
+
+    @XmlTransient
+    public Integer getTableNo()
+    {
+        return tableNo;
+    }
+
+    public void setTableNo(Integer tableNo)
+    {
+        this.tableNo = tableNo;
+    }
+
+    @XmlTransient
+    public Integer getSeatNo()
+    {
+        return seatNo;
+    }
+
+    public void setSeatNo(Integer seatNo)
+    {
+        this.seatNo = seatNo;
     }
 }

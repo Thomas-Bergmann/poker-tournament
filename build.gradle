@@ -77,7 +77,6 @@ subprojects {
         compile 'xalan:xalan:2.7.2'
 
         runtime "ch.qos.logback:logback-classic:$logbackVersion"
-        runtime "ch.qos.logback:logback-classic:$logbackVersion"
 		runtime 'org.postgresql:postgresql:9.3-1102-jdbc4'
 		compile 'org.apache.commons:commons-dbcp2:2.0.1'
         testCompile "junit:junit:$junitVersion"

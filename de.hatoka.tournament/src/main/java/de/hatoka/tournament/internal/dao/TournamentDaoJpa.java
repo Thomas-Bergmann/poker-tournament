@@ -1,5 +1,6 @@
 package de.hatoka.tournament.internal.dao;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -17,13 +18,10 @@ public class TournamentDaoJpa extends GenericJPADao<TournamentPO> implements Tou
 {
     @Inject
     private UUIDGenerator uuidGenerator;
-
     @Inject
     private CompetitorDao competitorDao;
-
     @Inject
     private BlindLevelDao blindLevelDao;
-
     @Inject
     private HistoryDao historyDao;
 
@@ -58,12 +56,14 @@ public class TournamentDaoJpa extends GenericJPADao<TournamentPO> implements Tou
         return getOptionalResult(createNamedQuery("TournamentPO.findByExternalRef").setParameter("accountRef", accountRef).setParameter("externalRef", externalRef));
     }
 
+
     @Override
     public void remove(TournamentPO tournamentPO)
     {
-        tournamentPO.getCompetitors().forEach(element -> competitorDao.remove(element));
-        tournamentPO.getBlindLevels().forEach(element -> blindLevelDao.remove(element));
-        tournamentPO.getHistoryEntries().forEach(element -> historyDao.remove(element));
+        new ArrayList<>(tournamentPO.getCompetitors()).forEach(element -> competitorDao.remove(element));
+        new ArrayList<>(tournamentPO.getBlindLevels()).forEach(element -> blindLevelDao.remove(element));
+        new ArrayList<>(tournamentPO.getHistoryEntries()).forEach(element -> historyDao.remove(element));
         super.remove(tournamentPO);
     }
+
 }

@@ -1,5 +1,6 @@
 package de.hatoka.tournament.internal.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -38,7 +39,7 @@ public class PlayerDaoJpa extends GenericJPADao<PlayerPO> implements PlayerDao
     @Override
     public PlayerPO findByExternalRef(String accountRef, String externalRef)
     {
-        return getOptionalResult(createNamedQuery("PlayerPO.findByRef").setParameter("accountRef", accountRef).setParameter("externalRef", externalRef));
+        return getOptionalResult(createNamedQuery("PlayerPO.findByExternalRef").setParameter("accountRef", accountRef).setParameter("externalRef", externalRef));
     }
 
     @Override
@@ -56,7 +57,7 @@ public class PlayerDaoJpa extends GenericJPADao<PlayerPO> implements PlayerDao
     @Override
     public void remove(PlayerPO playerPO)
     {
-        playerPO.getCompetitors().forEach(competitorPO -> competitorDao.remove(competitorPO));
+        new ArrayList<>(playerPO.getCompetitors()).forEach(element -> competitorDao.remove(element));
         super.remove(playerPO);
     }
 

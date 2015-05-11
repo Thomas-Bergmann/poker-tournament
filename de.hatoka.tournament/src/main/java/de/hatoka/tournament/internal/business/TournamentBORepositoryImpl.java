@@ -19,10 +19,14 @@ import de.hatoka.tournament.capi.business.CashGameBO;
 import de.hatoka.tournament.capi.business.TournamentBO;
 import de.hatoka.tournament.capi.business.TournamentBORepository;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
+import de.hatoka.tournament.capi.dao.BlindLevelDao;
 import de.hatoka.tournament.capi.dao.CompetitorDao;
+import de.hatoka.tournament.capi.dao.HistoryDao;
 import de.hatoka.tournament.capi.dao.PlayerDao;
 import de.hatoka.tournament.capi.dao.TournamentDao;
+import de.hatoka.tournament.capi.entities.BlindLevelPO;
 import de.hatoka.tournament.capi.entities.CompetitorPO;
+import de.hatoka.tournament.capi.entities.HistoryPO;
 import de.hatoka.tournament.capi.entities.PlayerPO;
 import de.hatoka.tournament.capi.entities.TournamentModel;
 import de.hatoka.tournament.capi.entities.TournamentPO;
@@ -35,17 +39,21 @@ public class TournamentBORepositoryImpl implements TournamentBORepository
     private final TournamentDao tournamentDao;
     private final PlayerDao playerDao;
     private final CompetitorDao competitorDao;
+    private final BlindLevelDao blindLevelDao;
+    private final HistoryDao historyDao;
     private final UUIDGenerator uuidGenerator;
     private final UUIDGenerator externalRefGenerator;
 
     public TournamentBORepositoryImpl(String accountRef, TournamentDao tournamentDao, PlayerDao playerDao,
-                    CompetitorDao competitorDao, UUIDGenerator uuidGenerator, UUIDGenerator externalRefGenerator, TournamentBusinessFactory factory)
+                    CompetitorDao competitorDao, UUIDGenerator uuidGenerator, UUIDGenerator externalRefGenerator, BlindLevelDao blindLevelDao, HistoryDao historyDao, TournamentBusinessFactory factory)
     {
         this.accountRef = accountRef;
         this.factory = factory;
         this.tournamentDao = tournamentDao;
         this.playerDao = playerDao;
         this.competitorDao = competitorDao;
+        this.blindLevelDao = blindLevelDao;
+        this.historyDao = historyDao;
         this.uuidGenerator = uuidGenerator;
         this.externalRefGenerator = externalRefGenerator;
     }
@@ -175,6 +183,8 @@ public class TournamentBORepositoryImpl implements TournamentBORepository
                 tournamentXML.setId(uuidGenerator.generate());
                 tournamentDao.insert(tournamentXML);
                 importCompetitors(tournamentXML);
+                importBindLevels(tournamentXML);
+                importHistory(tournamentXML);
             }
             else
             {
@@ -193,6 +203,24 @@ public class TournamentBORepositoryImpl implements TournamentBORepository
             //PlayerPO playerPO = playerDao.findByExternalRef(accountRef, competitorXML.getPlayerRef());
             //competitorXML.setPlayerPO(playerPO);
             competitorDao.insert(competitorXML);
+        }
+    }
+
+    private void importBindLevels(TournamentPO tournamentXML)
+    {
+        for (BlindLevelPO blindLevelXML : tournamentXML.getBlindLevels())
+        {
+            blindLevelXML.setId(uuidGenerator.generate());
+            blindLevelDao.insert(blindLevelXML);
+        }
+    }
+
+    private void importHistory(TournamentPO tournamentXML)
+    {
+        for (HistoryPO xml : tournamentXML.getHistoryEntries())
+        {
+            xml.setId(uuidGenerator.generate());
+            historyDao.insert(xml);
         }
     }
 

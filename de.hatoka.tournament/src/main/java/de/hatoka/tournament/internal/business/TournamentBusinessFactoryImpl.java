@@ -95,7 +95,7 @@ public class TournamentBusinessFactoryImpl implements TournamentBusinessFactory
     @Override
     public TournamentBORepository getTournamentBORepository(String accountRef)
     {
-        return new TournamentBORepositoryImpl(accountRef, tournamentDao, playerDao, competitorDao, uuidGenerator, sequenceProvider.create(accountRef), this);
+        return new TournamentBORepositoryImpl(accountRef, tournamentDao, playerDao, competitorDao, sequenceProvider.create(accountRef), uuidGenerator, blindLevelDao, historyDao, this);
     }
 
     @Override

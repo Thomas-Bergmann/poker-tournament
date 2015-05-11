@@ -13,6 +13,7 @@ import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
@@ -27,7 +28,9 @@ import de.hatoka.common.capi.dao.IdentifiableEntity;
 import de.hatoka.common.capi.entities.MoneyPO;
 
 @Entity
-@NamedQuery(name = "TournamentPO.findByAccountRef", query = "select a from TournamentPO a where a.accountRef = :accountRef")
+@NamedQueries(value = {
+                @NamedQuery(name = "TournamentPO.findByAccountRef", query = "select a from TournamentPO a where a.accountRef = :accountRef"),
+                @NamedQuery(name = "TournamentPO.findByExternalRef", query = "select a from TournamentPO a where a.accountRef = :accountRef and a.externalRef = :externalRef") })
 public class TournamentPO implements Serializable, IdentifiableEntity
 {
     private static final long serialVersionUID = 1L;
@@ -38,7 +41,7 @@ public class TournamentPO implements Serializable, IdentifiableEntity
 
     @NotNull
     @XmlID
-    @XmlAttribute(name="id")
+    @XmlAttribute(name = "id")
     private String externalRef;
 
     @NotNull
@@ -55,9 +58,8 @@ public class TournamentPO implements Serializable, IdentifiableEntity
 
     @Embedded
     @AttributeOverrides({ @AttributeOverride(name = "currencyCode", column = @Column(name = "buyInCur")),
-        @AttributeOverride(name = "amount", column = @Column(name = "buyInAmount")) })
+                    @AttributeOverride(name = "amount", column = @Column(name = "buyInAmount")) })
     private MoneyPO buyIn;
-
 
     @OneToMany(mappedBy = "tournament")
     @XmlElement(name = "blindLevel")

@@ -23,10 +23,11 @@ public class BlindLevelDaoJpa extends GenericJPADao<BlindLevelPO> implements Bli
     {
         BlindLevelPO result = create();
         result.setId(uuidGenerator.generate());
-        result.setTournamentPO(tournamentPO);
         result.setDuration(duration);
-        insert(result);
+        // set relations
+        result.setTournamentPO(tournamentPO);
         tournamentPO.getBlindLevels().add(result);
+        insert(result);
         return result;
     }
 
@@ -34,7 +35,12 @@ public class BlindLevelDaoJpa extends GenericJPADao<BlindLevelPO> implements Bli
     @Override
     public void remove(BlindLevelPO blindLevelPO)
     {
-        blindLevelPO.getTournamentPO().getBlindLevels().remove(blindLevelPO);
+        TournamentPO tournament = blindLevelPO.getTournamentPO();
+        if (tournament != null)
+        {
+            tournament.getBlindLevels().remove(blindLevelPO);
+            blindLevelPO.setTournamentPO(null);
+        }
         super.remove(blindLevelPO);
     }
 }

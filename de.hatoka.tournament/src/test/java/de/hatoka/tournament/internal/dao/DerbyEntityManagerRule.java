@@ -39,7 +39,7 @@ public class DerbyEntityManagerRule extends ExternalResource implements EntityMa
             ds.setDatabaseName("build/derby-test-db");
             // tell Derby to create the database if it does not already exist
             ds.setCreateDatabase("create");
-            ic.bind("java:comp/env/jdbc/TournamentTestDS", ds);
+            ic.bind("java:comp/env/jdbc/TestDS", ds);
         }
         catch(NamingException e)
         {
