@@ -31,7 +31,7 @@ public class CashGameAction extends GameAction<CashGameBO>
         CashGameBO cashGameBO = getGame();
         try
         {
-            rebuy = Money.getInstance(rebuyString, cashGameBO.getSumInplay().getCurrency());
+            rebuy = Money.valueOf(rebuyString, cashGameBO.getSumInplay().getCurrency());
         }
         catch(NumberFormatException e)
         {
@@ -72,7 +72,7 @@ public class CashGameAction extends GameAction<CashGameBO>
         {
             try
             {
-                buyIn = Money.getInstance(buyInString, cashGameBO.getSumInplay().getCurrency());
+                buyIn = Money.valueOf(buyInString, cashGameBO.getSumInplay().getCurrency());
             }
             catch(NumberFormatException e)
             {
@@ -88,7 +88,7 @@ public class CashGameAction extends GameAction<CashGameBO>
         CashGameBO cashGameBO = getGame();
         Collection<CompetitorBO> activeCompetitors = cashGameBO.getActiveCompetitors();
         Money restAmount = activeCompetitors.size() == identifiers.size() ? cashGameBO.getSumInplay().divide(
-                        identifiers.size()) : Money.getInstance(restAmountString, cashGameBO.getSumInplay()
+                        identifiers.size()) : Money.valueOf(restAmountString, cashGameBO.getSumInplay()
                         .getCurrency());
         for (CompetitorBO competitorBO : activeCompetitors)
         {

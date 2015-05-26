@@ -19,8 +19,14 @@
 <input placeholder="First Position" value="1" name="firstPosition_1" type="text" id="inputfirstPosition_1" class="form-control"/>
 </td>
 <td>1</td>
-<td><input name="percentage_1" value="" /></td>
-<td><input name="amountPlayer_1" value="100" /></td>
+<td>
+<label class="sr-only" for="inputpercentage_1">Percentage</label>
+<input placeholder="Percentage" value="" name="percentage_1" type="text" id="inputpercentage_1" class="form-control"/>
+</td>
+<td>
+<label class="sr-only" for="inputamountPerPlayer_1">Amount per Player</label>
+<input placeholder="Amount per Player" value="100" name="amountPerPlayer_1" type="text" id="inputamountPerPlayer_1" class="form-control"/>
+</td>
 <td>100</td>
 </tr>
 <tr>
@@ -34,8 +40,14 @@
 <input placeholder="First Position" value="2" name="firstPosition_2" type="text" id="inputfirstPosition_2" class="form-control"/>
 </td>
 <td>2</td>
-<td><input name="percentage_2" value="50" /></td>
-<td><input name="amountPlayer_2" placeholder="50" /></td>
+<td>
+<label class="sr-only" for="inputpercentage_2">Percentage</label>
+<input placeholder="Percentage" value="50" name="percentage_2" type="text" id="inputpercentage_2" class="form-control"/>
+</td>
+<td>
+<label class="sr-only" for="inputamountPerPlayer_2">Amount per Player</label>
+<input placeholder="50" value="" name="amountPerPlayer_2" type="text" id="inputamountPerPlayer_2" class="form-control"/>
+</td>
 <td>50</td>
 </tr>
 <tr>
@@ -49,8 +61,14 @@
 <input placeholder="First Position" value="3" name="firstPosition_3" type="text" id="inputfirstPosition_3" class="form-control"/>
 </td>
 <td>5</td>
-<td><input name="percentage_3" placeholder="25" /></td>
-<td><input name="amountPlayer_3" placeholder="8.33" /></td>
+<td>
+<label class="sr-only" for="inputpercentage_3">Percentage</label>
+<input placeholder="25" value="" name="percentage_3" type="text" id="inputpercentage_3" class="form-control"/>
+</td>
+<td>
+<label class="sr-only" for="inputamountPerPlayer_3">Amount per Player</label>
+<input placeholder="8.33" value="" name="amountPerPlayer_3" type="text" id="inputamountPerPlayer_3" class="form-control"/>
+</td>
 <td>25</td>
 </tr>
 <tr>
@@ -63,9 +81,18 @@
 <label class="sr-only" for="inputfirstPosition_4">First Position</label>
 <input placeholder="First Position" value="6" name="firstPosition_4" type="text" id="inputfirstPosition_4" class="form-control"/>
 </td>
-<td><input name="lastPosition" value="10" /></td>
-<td><input name="percentage_4" placeholder="25" /></td>
-<td><input name="amountPlayer_4" placeholder="5" /></td>
+<td>
+<label class="sr-only" for="inputlastposition_4">Last Position</label>
+<input placeholder="Last Position" value="10" name="lastposition_4" type="text" id="inputlastposition_4" class="form-control"/>
+</td>
+<td>
+<label class="sr-only" for="inputpercentage_4">Percentage</label>
+<input placeholder="25" value="" name="percentage_4" type="text" id="inputpercentage_4" class="form-control"/>
+</td>
+<td>
+<label class="sr-only" for="inputamountPerPlayer_4">Amount per Player</label>
+<input placeholder="5" value="" name="amountPerPlayer_4" type="text" id="inputamountPerPlayer_4" class="form-control"/>
+</td>
 <td>25</td>
 </tr>
 </table>

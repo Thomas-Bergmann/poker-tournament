@@ -4,6 +4,7 @@ import de.hatoka.tournament.capi.entities.BlindLevelPO;
 import de.hatoka.tournament.capi.entities.CompetitorPO;
 import de.hatoka.tournament.capi.entities.HistoryPO;
 import de.hatoka.tournament.capi.entities.PlayerPO;
+import de.hatoka.tournament.capi.entities.RankPO;
 import de.hatoka.tournament.capi.entities.TournamentPO;
 
 public interface TournamentBusinessFactory
@@ -27,5 +28,7 @@ public interface TournamentBusinessFactory
     BlindLevelBO getBlindLevelBO(BlindLevelPO blindLevelPO);
 
     TournamentRoundBO getPauseBO(BlindLevelPO blindLevelPO);
+
+    RankBO getRankBO(RankPO rankPO, TournamentBO tournamentBO);
 
 }

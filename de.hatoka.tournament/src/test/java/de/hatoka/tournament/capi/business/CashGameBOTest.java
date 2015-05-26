@@ -24,14 +24,14 @@ import de.hatoka.tournament.internal.modules.TournamentDaoJpaModule;
 
 public class CashGameBOTest
 {
-    private static final Money USD_4  = Money.getInstance("4 USD");
-    private static final Money USD_5  = Money.getInstance("5 USD");
-    private static final Money USD_6  = Money.getInstance("6 USD");
-    private static final Money USD_7  = Money.getInstance("7 USD");
-    private static final Money USD_10 = Money.getInstance("10 USD");
-    private static final Money USD_11 = Money.getInstance("11 USD");
-    private static final Money USD_6_MINUS  = Money.getInstance("-6 USD");
-    private static final Money USD_7_MINUS  = Money.getInstance("-7 USD");
+    private static final Money USD_4  = Money.valueOf("4 USD");
+    private static final Money USD_5  = Money.valueOf("5 USD");
+    private static final Money USD_6  = Money.valueOf("6 USD");
+    private static final Money USD_7  = Money.valueOf("7 USD");
+    private static final Money USD_10 = Money.valueOf("10 USD");
+    private static final Money USD_11 = Money.valueOf("11 USD");
+    private static final Money USD_6_MINUS  = Money.valueOf("-6 USD");
+    private static final Money USD_7_MINUS  = Money.valueOf("-7 USD");
     private static final String ACCOUNT_REF = "TEST_ACCOUNT_REF";
     private static final Date CURRENT_DATE = new Date();
 
@@ -49,7 +49,7 @@ public class CashGameBOTest
         Injector injector = Guice.createInjector(new CommonDaoModule(), new TournamentDaoJpaModule(), new TournamentBusinessModule(), rule.getModule());
         injector.injectMembers(this);
         cashGameBO = factory.getTournamentBORepository(ACCOUNT_REF).createCashGame(CURRENT_DATE);
-        cashGameBO.setBuyIn(Money.getInstance("5 EUR"));
+        cashGameBO.setBuyIn(Money.valueOf("5 EUR"));
     }
 
     /**

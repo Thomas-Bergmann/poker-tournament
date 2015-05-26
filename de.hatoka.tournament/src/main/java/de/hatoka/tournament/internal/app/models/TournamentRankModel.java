@@ -41,4 +41,27 @@ public class TournamentRankModel
     {
         this.ranks = ranks;
     }
+
+    /**
+     * Set calculated flags <li>ranks are added and sorted
+     */
+    public void fill()
+    {
+        fillLastPosition();
+    }
+
+    private void fillLastPosition()
+    {
+        RankVO lastRank = null;
+        for (RankVO rank : ranks)
+        {
+            if (lastRank != null)
+            {
+                lastRank.setLastPosition(rank.getFirstPosition() - 1);
+                lastRank.setLastPositionCalculated(true);
+            }
+            lastRank = rank;
+            lastRank.setLastPositionCalculated(false);
+        }
+    }
 }

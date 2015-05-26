@@ -46,7 +46,11 @@
         <xsl:with-param name="placeholderKey">placeholder.amount</xsl:with-param>
       </xsl:call-template>
       <xsl:call-template name="button">
+        <xsl:with-param name="name">buyin</xsl:with-param>
+      </xsl:call-template>
+      <xsl:call-template name="button">
         <xsl:with-param name="name">rebuy</xsl:with-param>
+        <xsl:with-param name="cssClass">btn</xsl:with-param>
       </xsl:call-template>
       <xsl:call-template name="button">
         <xsl:with-param name="name">seatopen</xsl:with-param>

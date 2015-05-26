@@ -17,7 +17,7 @@ public class Price
         {
             return null;
         }
-        return new Price(Money.getInstance(price.getAmount()), Quantity.getInstance(price.getQuantity()));
+        return new Price(Money.valueOf(price.getAmount()), Quantity.getInstance(price.getQuantity()));
     }
 
     private final Money amount;
@@ -31,7 +31,7 @@ public class Price
      */
     public Price(BigDecimal amount, Currency currency)
     {
-        this(new Money(amount, currency), Quantity.ONE_PCS);
+        this(Money.valueOf(amount, currency), Quantity.ONE_PCS);
     }
 
     public Price(Money amount, Quantity quantity)

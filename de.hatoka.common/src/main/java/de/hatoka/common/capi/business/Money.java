@@ -9,7 +9,7 @@ import de.hatoka.common.capi.exceptions.MandatoryParameterException;
 
 public class Money
 {
-    public static Money getInstance(MoneyPO money)
+    public static Money valueOf(MoneyPO money)
     {
         if (money == null)
         {
@@ -18,25 +18,29 @@ public class Money
         return new Money(money.getAmount(), Currency.getInstance(money.getCurrencyCode()));
     }
 
-    public static Money getInstance(String amount)
+    public static Money valueOf(String amount)
     {
         if (amount == null || amount.isEmpty())
         {
             return Money.NOTHING;
         }
         String[] splitAmount = amount.split("\\s+");
-        return getInstance(splitAmount[0], splitAmount[1]);
+        return valueOf(splitAmount[0], splitAmount[1]);
     }
 
-    public static Money getInstance(String amount, Currency currency)
+    public static Money valueOf(String amount, Currency currency)
     {
-        return new Money(new BigDecimal(amount), currency);
+        return valueOf(new BigDecimal(amount), currency);
     }
 
-    public static Money getInstance(String amount, String currencyCode)
+    public static Money valueOf(BigDecimal amount, Currency currency)
     {
-        Currency currency = Currency.getInstance(currencyCode);
-        return getInstance(amount, currency);
+        return new Money(amount, currency);
+    }
+
+    public static Money valueOf(String amount, String currencyCode)
+    {
+        return valueOf(new BigDecimal(amount), Currency.getInstance(currencyCode));
     }
 
     public static final Money NOTHING = new Money(BigDecimal.ZERO, CurrencyConstants.USD);
@@ -56,7 +60,7 @@ public class Money
         return BigDecimal.ZERO.equals(amount.getAmount().stripTrailingZeros());
     }
 
-    public Money(BigDecimal amount, Currency currency)
+    private Money(BigDecimal amount, Currency currency)
     {
         if (amount == null)
         {
@@ -133,9 +137,9 @@ public class Money
             if (other.amount != null)
                 return false;
         }
-        else if (!getTrimmedAmount().equals(other.getTrimmedAmount()))
+        else if (!amount.stripTrailingZeros().equals(other.amount.stripTrailingZeros()))
             return false;
-        if (currency != other.currency)
+        if (!currency.equals(other.currency))
             return false;
         return true;
     }
@@ -150,9 +154,9 @@ public class Money
         return currency;
     }
 
-    public BigDecimal getTrimmedAmount()
+    public Money stripTrailingZeros()
     {
-        return amount.stripTrailingZeros();
+        return new Money(amount.stripTrailingZeros(), currency);
     }
 
     @Override
@@ -160,7 +164,7 @@ public class Money
     {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((amount == null) ? 0 : getTrimmedAmount().hashCode());
+        result = prime * result + ((amount == null) ? 0 : amount.stripTrailingZeros().hashCode());
         result = prime * result + currency.getNumericCode();
         return result;
     }

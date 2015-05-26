@@ -1,5 +1,6 @@
 package de.hatoka.tournament.capi.business;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -48,7 +49,7 @@ public interface TournamentBO extends GameBO
     /**
      * @return rounds of tournament
      */
-    List<TournamentRoundBO> getTournamentRounds();
+    List<TournamentRoundBO> getBlindLevels();
 
     /**
      * Removes a previously created pause or blind level
@@ -91,4 +92,31 @@ public interface TournamentBO extends GameBO
      * @param competitorBO
      */
     void seatOpen(CompetitorBO competitorBO);
+
+    /**
+     * Creates a new rank
+     * @param firstPosition (mandatory)
+     * @param lastPosition (optional)
+     * @param percentage (optional)
+     * @param amount (optional)
+     */
+    RankBO createRank(int firstPosition, int lastPosition, BigDecimal percentage, BigDecimal amount);
+    default RankBO createFixRank(int firstPosition, int lastPosition, BigDecimal amount)
+    {
+        return createRank(firstPosition, lastPosition, null, amount);
+    }
+
+    default RankBO createRank(int firstPosition, int lastPosition, BigDecimal percentage)
+    {
+        return createRank(firstPosition, lastPosition, percentage, null);
+    }
+
+    default RankBO createRank(int firstPosition, int lastPosition)
+    {
+        return createRank(firstPosition, lastPosition, null, null);
+    }
+
+    List<RankBO> getRanks();
+
+    void remove(RankBO rank);
 }

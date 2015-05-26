@@ -64,7 +64,7 @@ public class HistoryEntryBOImpl implements HistoryEntryBO
     @Override
     public Money getAmount()
     {
-        return Money.getInstance(historyPO.getAmount());
+        return Money.valueOf(historyPO.getAmount());
     }
 
     @Override

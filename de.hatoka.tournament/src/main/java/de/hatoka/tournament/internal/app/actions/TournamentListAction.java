@@ -34,7 +34,7 @@ public class TournamentListAction
     {
         TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountRef);
         CashGameBO result = tournamentBORepository.createCashGame(date);
-        result.setBuyIn(Money.getInstance(buyIn));
+        result.setBuyIn(Money.valueOf(buyIn));
         return result;
     }
 
@@ -42,7 +42,7 @@ public class TournamentListAction
     {
         TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountRef);
         TournamentBO result = tournamentBORepository.createTournament(name, date);
-        result.setBuyIn(Money.getInstance(buyIn));
+        result.setBuyIn(Money.valueOf(buyIn));
         return result;
     }
 

@@ -9,6 +9,7 @@ import java.util.Set;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -61,9 +62,13 @@ public class TournamentPO implements Serializable, IdentifiableEntity
                     @AttributeOverride(name = "amount", column = @Column(name = "buyInAmount")) })
     private MoneyPO buyIn;
 
-    @OneToMany(mappedBy = "tournament")
+    @OneToMany(mappedBy = "tournament", cascade=CascadeType.ALL)
     @XmlElement(name = "blindLevel")
     private List<BlindLevelPO> blindLevels = new ArrayList<>();
+
+    @OneToMany(mappedBy = "tournament", cascade=CascadeType.ALL)
+    @XmlElement(name = "rank")
+    private List<RankPO> ranks = new ArrayList<>();
 
     @OneToMany(mappedBy = "tournament")
     @XmlElement(name = "competitor")
@@ -260,5 +265,16 @@ public class TournamentPO implements Serializable, IdentifiableEntity
     public void setExternalRef(String externalRef)
     {
         this.externalRef = externalRef;
+    }
+
+    @XmlTransient
+    public List<RankPO> getRanks()
+    {
+        return ranks;
+    }
+
+    public void setRanks(List<RankPO> ranks)
+    {
+        this.ranks = ranks;
     }
 }

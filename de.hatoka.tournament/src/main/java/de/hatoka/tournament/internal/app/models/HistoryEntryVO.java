@@ -26,7 +26,7 @@ public class HistoryEntryVO
         this.playerName = historyPO.getPlayerPO().getName();
         this.entryType = HistoryEntryType.valueOf(historyPO.getActionKey());
         this.date = historyPO.getDate();
-        this.amount = new MoneyVO(Money.getInstance(historyPO.getAmount()));
+        this.amount = new MoneyVO(Money.valueOf(historyPO.getAmount()));
     }
 
     public HistoryEntryVO(HistoryEntryBO historyBO)

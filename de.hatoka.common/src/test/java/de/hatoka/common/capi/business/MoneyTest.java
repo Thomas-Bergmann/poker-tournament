@@ -15,7 +15,8 @@ public class MoneyTest
 
     private static final BigDecimal BIG_DECIMAL_0_8403 = new BigDecimal("0.8403");
     private static final BigDecimal BIG_DECIMAL_1_19 = new BigDecimal("1.19");
-    private static final Money UNDER_TEST_ONE = new Money(BigDecimal.ONE, EUR);
+    private static final Money UNDER_TEST_ONE = Money.valueOf(BigDecimal.ONE, EUR);
+    private static final Money MONEY_1_19_EUR = Money.valueOf(BIG_DECIMAL_1_19, EUR);
 
     @Test
     public void testAdd()
@@ -34,16 +35,16 @@ public class MoneyTest
     @Test
     public void testEquals()
     {
-        assertEquals(new Money(BIG_DECIMAL_1_19, EUR).hashCode(), new Money(BIG_DECIMAL_1_19, EUR).hashCode());
-        assertEquals(new Money(BIG_DECIMAL_1_19, EUR), new Money(BIG_DECIMAL_1_19, EUR));
-        assertEquals(new Money(BIG_DECIMAL_1_19, EUR), new Money(new BigDecimal("1.190"), EUR));
+        assertEquals(MONEY_1_19_EUR.hashCode(), MONEY_1_19_EUR.hashCode());
+        assertEquals(MONEY_1_19_EUR, MONEY_1_19_EUR);
+        assertEquals(MONEY_1_19_EUR, Money.valueOf(new BigDecimal("1.190"), EUR));
     }
 
     @Test
     public void testNonEquals()
     {
-        assertFalse(new Money(BIG_DECIMAL_1_19, EUR).equals(new Money(BIG_DECIMAL_1_19, USD)));
-        assertFalse(new Money(new BigDecimal("700.01"), EUR).equals(new Money(BIG_DECIMAL_1_19, EUR)));
+        assertFalse(MONEY_1_19_EUR.equals(Money.valueOf(BIG_DECIMAL_1_19, USD)));
+        assertFalse(Money.valueOf(new BigDecimal("700.01"), EUR).equals(MONEY_1_19_EUR));
     }
 
     @Test

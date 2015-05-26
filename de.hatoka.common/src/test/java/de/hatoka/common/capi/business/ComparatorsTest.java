@@ -11,8 +11,8 @@ public class ComparatorsTest
 {
     private static final List<String> STRING_START = Arrays.asList("A", null, "D", "B");
     private static final List<String> STRING_EXPECTED = Arrays.asList(null, "A", "B", "D");
-    private static final List<Money> MONEY_START = Arrays.asList(Money.getInstance("-5 EUR"), Money.getInstance("-15 EUR"), Money.getInstance("20 EUR"));
-    private static final List<Money> MONEY_EXPECTED = Arrays.asList(Money.getInstance("-15 EUR"), Money.getInstance("-5 EUR"), Money.getInstance("20 EUR"));
+    private static final List<Money> MONEY_START = Arrays.asList(Money.valueOf("-5 EUR"), Money.valueOf("-15 EUR"), Money.valueOf("20 EUR"));
+    private static final List<Money> MONEY_EXPECTED = Arrays.asList(Money.valueOf("-15 EUR"), Money.valueOf("-5 EUR"), Money.valueOf("20 EUR"));
     private static final List<Boolean> BOOLEAN_START = Arrays.asList(true, null, false);
     private static final List<Boolean> BOOLEAN_EXPECTED = Arrays.asList(null, false, true);
 

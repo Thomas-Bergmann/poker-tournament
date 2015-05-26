@@ -28,7 +28,7 @@ public final class TournamentViewObjectHelper
         result.setBuyIn(new MoneyVO(Money.ONE_USD));
         result.setUri(UriBuilder.fromPath("tournament/{id}/players.html").build(id));
         result.setAverage(new MoneyVO(Money.ONE_USD));
-        result.setSumInPlay(new MoneyVO(Money.getInstance("200", "USD")));
+        result.setSumInPlay(new MoneyVO(Money.valueOf("200", "USD")));
         result.setCompetitorsSize(20);
         return result;
     }

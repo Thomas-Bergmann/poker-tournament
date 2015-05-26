@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlTransient;
 
+import de.hatoka.tournament.capi.business.RankBO;
+
 public class RankVO
 {
     @XmlAttribute
@@ -26,6 +28,20 @@ public class RankVO
     @XmlAttribute
     private BigDecimal amount;
 
+    public RankVO()
+    {
+
+    }
+
+    public RankVO(RankBO rank)
+    {
+        id = rank.getID();
+        firstPosition = rank.getFirstPosition();
+        lastPosition = rank.getLastPosition();
+        percentage = rank.getPercentage();
+        amountPerPlayer = rank.getAmountPerPlayer().getAmount();
+        amount = rank.getAmount().getAmount();
+    }
     @XmlTransient
     public String getId()
     {

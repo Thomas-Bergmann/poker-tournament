@@ -88,7 +88,7 @@ public class CompetitorBOImpl implements ICompetitor
     @Override
     public Money getInPlay()
     {
-        return Money.getInstance(competitorPO.getMoneyInPlay());
+        return Money.valueOf(competitorPO.getMoneyInPlay());
     }
 
     @Override
@@ -106,7 +106,7 @@ public class CompetitorBOImpl implements ICompetitor
     @Override
     public Money getResult()
     {
-        return Money.getInstance(competitorPO.getMoneyResult());
+        return Money.valueOf(competitorPO.getMoneyResult());
     }
 
     @Override
@@ -116,7 +116,7 @@ public class CompetitorBOImpl implements ICompetitor
         {
             throw new IllegalStateException("Rebuy not allowed at inactive competitors");
         }
-        competitorPO.setMoneyInPlay(Money.getInstance(competitorPO.getMoneyInPlay()).add(amount).toMoneyPO());
+        competitorPO.setMoneyInPlay(Money.valueOf(competitorPO.getMoneyInPlay()).add(amount).toMoneyPO());
         sortCompetitors();
         createEntry(HistoryEntryType.ReBuy, amount);
     }

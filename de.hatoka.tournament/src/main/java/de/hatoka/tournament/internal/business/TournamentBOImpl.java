@@ -1,5 +1,6 @@
 package de.hatoka.tournament.internal.business;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -13,6 +14,7 @@ import de.hatoka.tournament.capi.business.BlindLevelBO;
 import de.hatoka.tournament.capi.business.CompetitorBO;
 import de.hatoka.tournament.capi.business.HistoryEntryBO;
 import de.hatoka.tournament.capi.business.PlayerBO;
+import de.hatoka.tournament.capi.business.RankBO;
 import de.hatoka.tournament.capi.business.TableBO;
 import de.hatoka.tournament.capi.business.TournamentBO;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
@@ -20,11 +22,13 @@ import de.hatoka.tournament.capi.business.TournamentRoundBO;
 import de.hatoka.tournament.capi.dao.BlindLevelDao;
 import de.hatoka.tournament.capi.dao.CompetitorDao;
 import de.hatoka.tournament.capi.dao.PlayerDao;
+import de.hatoka.tournament.capi.dao.RankDao;
 import de.hatoka.tournament.capi.dao.TournamentDao;
 import de.hatoka.tournament.capi.entities.BlindLevelPO;
 import de.hatoka.tournament.capi.entities.CompetitorPO;
 import de.hatoka.tournament.capi.entities.HistoryPO;
 import de.hatoka.tournament.capi.entities.PlayerPO;
+import de.hatoka.tournament.capi.entities.RankPO;
 import de.hatoka.tournament.capi.entities.TournamentPO;
 import de.hatoka.tournament.capi.types.HistoryEntryType;
 
@@ -35,16 +39,18 @@ public class TournamentBOImpl implements TournamentBO
     private final CompetitorDao competitorDao;
     private final PlayerDao playerDao;
     private final BlindLevelDao blindLevelDao;
+    private final RankDao rankDao;
     private final TournamentBusinessFactory factory;
 
     public TournamentBOImpl(TournamentPO tournamentPO, TournamentDao tournamentDao, CompetitorDao competitorDao,
-                    PlayerDao playerDao, BlindLevelDao blindLevelDao, TournamentBusinessFactory factory)
+                    PlayerDao playerDao, BlindLevelDao blindLevelDao, RankDao rankDao, TournamentBusinessFactory factory)
     {
         this.tournamentPO = tournamentPO;
         this.tournamentDao = tournamentDao;
         this.competitorDao = competitorDao;
         this.playerDao = playerDao;
         this.blindLevelDao = blindLevelDao;
+        this.rankDao = rankDao;
         this.factory = factory;
     }
 
@@ -89,7 +95,7 @@ public class TournamentBOImpl implements TournamentBO
 
     private Money getRebuy(int currentRound)
     {
-        return getTournamentRounds().get(currentRound).getReBuy();
+        return getBlindLevels().get(currentRound).getReBuy();
     }
 
     @Override
@@ -132,7 +138,7 @@ public class TournamentBOImpl implements TournamentBO
     @Override
     public Money getBuyIn()
     {
-        return Money.getInstance(tournamentPO.getBuyIn());
+        return Money.valueOf(tournamentPO.getBuyIn());
     }
 
     @Override
@@ -289,7 +295,7 @@ public class TournamentBOImpl implements TournamentBO
     }
 
     @Override
-    public List<TournamentRoundBO> getTournamentRounds()
+    public List<TournamentRoundBO> getBlindLevels()
     {
         List<BlindLevelPO> blindLevels = tournamentPO.getBlindLevels();
         List<TournamentRoundBO> result = new ArrayList<TournamentRoundBO>(blindLevels.size());
@@ -374,5 +380,60 @@ public class TournamentBOImpl implements TournamentBO
     {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public List<RankBO> getRanks()
+    {
+        List<RankPO> ranks = new ArrayList<RankPO>(tournamentPO.getRanks());
+        ranks.sort(RankPOComparators.DEFAULT);
+        List<RankBO> result = new ArrayList<>(ranks.size());
+        for(RankPO rank : ranks)
+        {
+            result.add(factory.getRankBO(rank, this));
+        }
+        return result;
+    }
+
+    @Override
+    public RankBO createRank(int firstPosition, int lastPosition, BigDecimal percentage, BigDecimal amount)
+    {
+        RankPO rankPO = rankDao.createAndInsert(tournamentPO, firstPosition);
+        rankPO.setPercentage(percentage);
+        rankPO.setLastPosition(lastPosition);
+        rankPO.setAmount(amount);
+        return factory.getRankBO(rankPO, this);
+    }
+    @Override
+    public void remove(RankBO rank)
+    {
+        Iterator<RankPO> ranks = tournamentPO.getRanks().iterator();
+        RankPO removedRank = null;
+        while(ranks.hasNext())
+        {
+            RankPO rankPO = ranks.next();
+            if (rankPO.getId().equals(rank.getID()))
+            {
+                rankDao.remove(rankPO);
+                removedRank = rankPO;
+                break;
+            }
+        }
+        fixRemovedRank(removedRank);
+    }
+
+    private void fixRemovedRank(RankPO removedRank)
+    {
+        // fix last position
+        if (removedRank.getLastPosition() != null)
+        {
+            List<RankPO> ranks = tournamentPO.getRanks();
+            if (!ranks.isEmpty())
+            {
+                ranks.sort(RankPOComparators.DEFAULT);
+                ranks.get(ranks.size() -1).setLastPosition(removedRank.getLastPosition());
+            }
+        }
+        // TODO fix percentage
     }
 }

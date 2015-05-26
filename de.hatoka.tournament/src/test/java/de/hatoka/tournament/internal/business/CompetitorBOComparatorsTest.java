@@ -38,10 +38,10 @@ public class CompetitorBOComparatorsTest
         Mockito.when(competitorBO_B.isActive()).thenReturn(true);
         Mockito.when(competitorBO_C.isActive()).thenReturn(false);
         Mockito.when(competitorBO_D.isActive()).thenReturn(false);
-        Mockito.when(competitorBO_A.getInPlay()).thenReturn(Money.getInstance("15 EUR"));
-        Mockito.when(competitorBO_B.getInPlay()).thenReturn(Money.getInstance("5 EUR"));
-        Mockito.when(competitorBO_C.getResult()).thenReturn(Money.getInstance("-5 EUR"));
-        Mockito.when(competitorBO_D.getResult()).thenReturn(Money.getInstance("5 EUR"));
+        Mockito.when(competitorBO_A.getInPlay()).thenReturn(Money.valueOf("15 EUR"));
+        Mockito.when(competitorBO_B.getInPlay()).thenReturn(Money.valueOf("5 EUR"));
+        Mockito.when(competitorBO_C.getResult()).thenReturn(Money.valueOf("-5 EUR"));
+        Mockito.when(competitorBO_D.getResult()).thenReturn(Money.valueOf("5 EUR"));
 
         List<CompetitorBO> competitorBOs = Arrays.asList(competitorBO_A, competitorBO_B, competitorBO_C, competitorBO_D);
         competitorBOs.sort(CompetitorBOComparators.DEFAULT);
@@ -68,8 +68,8 @@ public class CompetitorBOComparatorsTest
     {
         Mockito.when(competitorBO_A.isActive()).thenReturn(true);
         Mockito.when(competitorBO_B.isActive()).thenReturn(true);
-        Mockito.when(competitorBO_A.getInPlay()).thenReturn(Money.getInstance("15 EUR"));
-        Mockito.when(competitorBO_B.getInPlay()).thenReturn(Money.getInstance("5 EUR"));
+        Mockito.when(competitorBO_A.getInPlay()).thenReturn(Money.valueOf("15 EUR"));
+        Mockito.when(competitorBO_B.getInPlay()).thenReturn(Money.valueOf("5 EUR"));
 
         List<CompetitorBO> competitorBOs = Arrays.asList(competitorBO_A, competitorBO_B);
         competitorBOs.sort(CompetitorBOComparators.DEFAULT);
@@ -82,8 +82,8 @@ public class CompetitorBOComparatorsTest
     {
         Mockito.when(competitorBO_C.isActive()).thenReturn(false);
         Mockito.when(competitorBO_D.isActive()).thenReturn(false);
-        Mockito.when(competitorBO_C.getResult()).thenReturn(Money.getInstance("-5 EUR"));
-        Mockito.when(competitorBO_D.getResult()).thenReturn(Money.getInstance("5 EUR"));
+        Mockito.when(competitorBO_C.getResult()).thenReturn(Money.valueOf("-5 EUR"));
+        Mockito.when(competitorBO_D.getResult()).thenReturn(Money.valueOf("5 EUR"));
 
         List<CompetitorBO> competitorBOs = Arrays.asList(competitorBO_C, competitorBO_D);
         competitorBOs.sort(CompetitorBOComparators.DEFAULT);

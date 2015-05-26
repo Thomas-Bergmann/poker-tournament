@@ -97,7 +97,10 @@ public class MenuFactory
                         getUri(info, TournamentCompetitorService.class, "addPlayer", tournamentBO.getID()), titleKey.equals("title.list.players"));
         model.addSideMenu("menu.tournament.levels",
                         getUri(info, TournamentBlindLevelService.class, "levels", tournamentBO.getID()), tournamentBO
-                                        .getTournamentRounds().size(), null, titleKey.equals("title.list.levels"));
+                                        .getBlindLevels().size(), null, titleKey.equals("title.list.levels"));
+        model.addSideMenu("menu.tournament.ranks",
+                        getUri(info, TournamentBlindLevelService.class, "ranks", tournamentBO.getID()), tournamentBO
+                                        .getRanks().size(), null, titleKey.equals("title.list.ranks"));
         return model;
     }
 

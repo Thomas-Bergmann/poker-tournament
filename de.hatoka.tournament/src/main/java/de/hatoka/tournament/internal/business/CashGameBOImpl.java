@@ -87,7 +87,7 @@ public class CashGameBOImpl implements CashGameBO
     @Override
     public Money getBuyIn()
     {
-        return Money.getInstance(tournamentPO.getBuyIn());
+        return Money.valueOf(tournamentPO.getBuyIn());
     }
 
     @Override

@@ -39,6 +39,6 @@ public class MoneyVO
 
     public Money toMoney()
     {
-        return Money.getInstance(amount, currencyCode);
+        return Money.valueOf(amount, currencyCode);
     }
 }

@@ -29,15 +29,52 @@
               <xsl:with-param name="value"><xsl:value-of select="@firstPosition" /></xsl:with-param>
               <xsl:with-param name="placeholderKey">placeholder.rank.firstPosition</xsl:with-param>
             </xsl:call-template></td>
-            <td><xsl:call-template name="formatInteger">
-              <xsl:with-param name="amount"><xsl:value-of select="@lastPosition" /></xsl:with-param>
-            </xsl:call-template></td>
-              <td><xsl:call-template name="formatInteger">
-                <xsl:with-param name="amount"><xsl:value-of select="@percentage" /></xsl:with-param>
-              </xsl:call-template></td>
-            <td><xsl:call-template name="formatInteger">
-                <xsl:with-param name="amount"><xsl:value-of select="@amountPerPlayer" /></xsl:with-param>
-            </xsl:call-template></td>
+            <td>
+              <xsl:if test="@isLastPositionCalculated = 'false'">
+                <xsl:call-template name="input">
+                  <xsl:with-param name="name">lastposition_<xsl:value-of select="@id" /></xsl:with-param>
+                  <xsl:with-param name="value"><xsl:value-of select="@lastPosition" /></xsl:with-param>
+                  <xsl:with-param name="placeholderKey">placeholder.rank.lastPosition</xsl:with-param>
+                </xsl:call-template>
+              </xsl:if>
+              <xsl:if test="@isLastPositionCalculated = 'true'">
+                <xsl:call-template name="formatInteger">
+                  <xsl:with-param name="amount"><xsl:value-of select="@lastPosition" /></xsl:with-param>
+                </xsl:call-template>
+              </xsl:if>
+            </td>
+            <td>
+              <xsl:if test="@isPercentageCalculated = 'false'">
+                <xsl:call-template name="input">
+                  <xsl:with-param name="name">percentage_<xsl:value-of select="@id" /></xsl:with-param>
+                  <xsl:with-param name="value"><xsl:value-of select="@percentage" /></xsl:with-param>
+                  <xsl:with-param name="placeholderKey">placeholder.rank.percentage</xsl:with-param>
+                </xsl:call-template>
+              </xsl:if>
+              <xsl:if test="@isPercentageCalculated = 'true'">
+                <xsl:call-template name="input">
+                  <xsl:with-param name="name">percentage_<xsl:value-of select="@id" /></xsl:with-param>
+                  <xsl:with-param name="placeholder"><xsl:value-of select="@percentage" /></xsl:with-param>
+                  <xsl:with-param name="placeholderKey">placeholder.rank.percentage</xsl:with-param>
+                </xsl:call-template>
+              </xsl:if>
+            </td>
+            <td>
+              <xsl:if test="@isAmountPerPlayerCalculated = 'false'">
+                <xsl:call-template name="input">
+                  <xsl:with-param name="name">amountPerPlayer_<xsl:value-of select="@id" /></xsl:with-param>
+                  <xsl:with-param name="placeholderKey">placeholder.rank.amountPerPlayer</xsl:with-param>
+                  <xsl:with-param name="value"><xsl:value-of select="@amountPerPlayer" /></xsl:with-param>
+                </xsl:call-template>
+              </xsl:if>
+              <xsl:if test="@isAmountPerPlayerCalculated = 'true'">
+                <xsl:call-template name="input">
+                  <xsl:with-param name="name">amountPerPlayer_<xsl:value-of select="@id" /></xsl:with-param>
+                  <xsl:with-param name="placeholderKey">placeholder.rank.amountPerPlayer</xsl:with-param>
+                  <xsl:with-param name="placeholder"><xsl:value-of select="@amountPerPlayer" /></xsl:with-param>
+                </xsl:call-template>
+              </xsl:if>
+            </td>
             <td><xsl:call-template name="formatInteger">
                 <xsl:with-param name="amount"><xsl:value-of select="@amount" /></xsl:with-param>
             </xsl:call-template></td>

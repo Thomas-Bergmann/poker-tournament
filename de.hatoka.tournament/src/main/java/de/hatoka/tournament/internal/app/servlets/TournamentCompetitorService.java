@@ -82,7 +82,7 @@ public class TournamentCompetitorService extends AbstractService
     @Path("/actionPlayerList")
     public Response actionPlayerList(@FormParam("competitorID") List<String> identifiers,
                     @FormParam("delete") String deleteButton, @FormParam("seatopen") String seatOpenButton,
-                    @FormParam("sort") String sortButton, @FormParam("rebuy") String rebuyButton)
+                    @FormParam("sort") String sortButton, @FormParam("rebuy") String rebuyButton, @FormParam("buyin") String buyInButton)
     {
         if (isButtonPressed(sortButton))
         {
@@ -91,6 +91,10 @@ public class TournamentCompetitorService extends AbstractService
         if (isButtonPressed(deleteButton))
         {
             return unassignPlayers(identifiers);
+        }
+        if (isButtonPressed(buyInButton))
+        {
+            return buyInPlayers(identifiers);
         }
         if (isButtonPressed(rebuyButton))
         {
@@ -210,6 +214,26 @@ public class TournamentCompetitorService extends AbstractService
         {
             return render(500, e);
         }
+    }
+
+    @POST
+    @Path("/buyInPlayers")
+    public Response buyInPlayers(@FormParam("competitorID") List<String> identifiers)
+    {
+        TournamentAction action = getTournamentAction();
+        if (action == null)
+        {
+            return redirect;
+        }
+        runInTransaction(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                action.buyInPlayers(identifiers);
+            }
+        });
+        return redirectPlayers();
     }
 
     @POST

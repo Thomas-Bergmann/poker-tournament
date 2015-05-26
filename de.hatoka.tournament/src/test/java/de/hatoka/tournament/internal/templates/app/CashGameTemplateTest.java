@@ -101,7 +101,7 @@ public class CashGameTemplateTest
                         LocalizationConstants.XML_DATEFORMAT_MILLIS).parse("2011-11-25T08:42:55.624+01:00")));
         model.getCompetitors().add(getCompetitorVO("1234578", "Player 1", "playerid-1"));
         CompetitorVO competitorVO = getCompetitorVO("1234579", "Player 2", "playerid-2");
-        competitorVO.setResult(new MoneyVO(Money.getInstance("-1", "USD")));
+        competitorVO.setResult(new MoneyVO(Money.valueOf("-1", "USD")));
         competitorVO.setActive(false);
         model.getCompetitors().add(competitorVO);
         model.getUnassignedPlayers().add(getPlayerVO("1234581", "Player 3"));

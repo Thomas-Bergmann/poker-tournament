@@ -15,8 +15,8 @@ public class PriceTest
     private static final BigDecimal BIG_DECIMAL_1_19 = new BigDecimal("1.19");
     private static final Price UNDER_TEST_ONE = new Price(BigDecimal.ONE, CurrencyConstants.EUR);
 
-    private static final Price PRICE_10_EUR_PER_KILO = new Price(new Money(BigDecimal.TEN, CurrencyConstants.EUR), ONE_KILO_GRAM);
-    private static final Price PRICE_7_EUR_PER_SEVEN_HUNDED_GRAM = new Price(new Money(new BigDecimal("7"), CurrencyConstants.EUR), SEVEN_HUNDRED_GRAM);
+    private static final Price PRICE_10_EUR_PER_KILO = new Price(Money.valueOf(BigDecimal.TEN, CurrencyConstants.EUR), ONE_KILO_GRAM);
+    private static final Price PRICE_7_EUR_PER_SEVEN_HUNDED_GRAM = new Price(Money.valueOf(new BigDecimal("7"), CurrencyConstants.EUR), SEVEN_HUNDRED_GRAM);
 
     @Test
     public void testDivide()

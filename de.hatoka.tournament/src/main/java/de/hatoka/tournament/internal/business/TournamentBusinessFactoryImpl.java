@@ -15,6 +15,7 @@ import de.hatoka.tournament.capi.business.CompetitorBO;
 import de.hatoka.tournament.capi.business.HistoryEntryBO;
 import de.hatoka.tournament.capi.business.PlayerBO;
 import de.hatoka.tournament.capi.business.PlayerBORepository;
+import de.hatoka.tournament.capi.business.RankBO;
 import de.hatoka.tournament.capi.business.TournamentBO;
 import de.hatoka.tournament.capi.business.TournamentBORepository;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
@@ -23,11 +24,13 @@ import de.hatoka.tournament.capi.dao.BlindLevelDao;
 import de.hatoka.tournament.capi.dao.CompetitorDao;
 import de.hatoka.tournament.capi.dao.HistoryDao;
 import de.hatoka.tournament.capi.dao.PlayerDao;
+import de.hatoka.tournament.capi.dao.RankDao;
 import de.hatoka.tournament.capi.dao.TournamentDao;
 import de.hatoka.tournament.capi.entities.BlindLevelPO;
 import de.hatoka.tournament.capi.entities.CompetitorPO;
 import de.hatoka.tournament.capi.entities.HistoryPO;
 import de.hatoka.tournament.capi.entities.PlayerPO;
+import de.hatoka.tournament.capi.entities.RankPO;
 import de.hatoka.tournament.capi.entities.TournamentPO;
 
 public class TournamentBusinessFactoryImpl implements TournamentBusinessFactory
@@ -46,6 +49,9 @@ public class TournamentBusinessFactoryImpl implements TournamentBusinessFactory
 
     @Inject
     private BlindLevelDao blindLevelDao;
+
+    @Inject
+    private RankDao rankDao;
 
     @Inject
     private Provider<Date> dateProvider;
@@ -89,7 +95,7 @@ public class TournamentBusinessFactoryImpl implements TournamentBusinessFactory
     @Override
     public TournamentBO getTournamentBO(TournamentPO tournamentPO)
     {
-        return new TournamentBOImpl(tournamentPO, tournamentDao, competitorDao, playerDao, blindLevelDao, this);
+        return new TournamentBOImpl(tournamentPO, tournamentDao, competitorDao, playerDao, blindLevelDao, rankDao, this);
     }
 
     @Override
@@ -114,5 +120,11 @@ public class TournamentBusinessFactoryImpl implements TournamentBusinessFactory
     public TournamentRoundBO getPauseBO(BlindLevelPO blindLevelPO)
     {
         return new BlindLevelBOImpl(blindLevelPO);
+    }
+
+    @Override
+    public RankBO getRankBO(RankPO rankPO, TournamentBO tournamentBO)
+    {
+        return new RankBOImpl(rankPO, tournamentBO);
     }
 }

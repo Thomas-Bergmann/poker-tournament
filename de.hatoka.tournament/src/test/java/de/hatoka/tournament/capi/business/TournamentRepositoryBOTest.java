@@ -142,10 +142,10 @@ public class TournamentRepositoryBOTest
         transactionProvider.get().begin();
         PlayerPO player1 = playerDao.createAndInsert(accountRef, sequenceProvider.create(ACCOUNT_REF).generate(), "player1");
         TournamentPO tournamentPO = tournamentDao.createAndInsert(accountRef, sequenceProvider.create(ACCOUNT_REF).generate(), "tournament", CURRENT_DATE, false);
-        tournamentPO.setBuyIn(Money.getInstance("5 EUR").toMoneyPO());
+        tournamentPO.setBuyIn(Money.valueOf("5 EUR").toMoneyPO());
         CompetitorPO competitor1 = competitorDao.createAndInsert(tournamentPO, player1);
-        competitor1.setMoneyInPlay(Money.getInstance("5 EUR").toMoneyPO());
-        competitor1.setMoneyResult(Money.getInstance("-5 EUR").toMoneyPO());
+        competitor1.setMoneyInPlay(Money.valueOf("5 EUR").toMoneyPO());
+        competitor1.setMoneyResult(Money.valueOf("-5 EUR").toMoneyPO());
 
         HistoryPO historyEntry = historyDao.createAndInsert(tournamentPO, player1, CURRENT_DATE);
         historyEntry.setActionKey(HistoryEntryType.BuyIn.name());
