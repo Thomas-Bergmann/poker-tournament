@@ -1,5 +1,6 @@
 package de.hatoka.tournament.internal.app.actions;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.util.Date;
 import java.util.List;
@@ -43,6 +44,10 @@ public class TournamentListAction
         TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountRef);
         TournamentBO result = tournamentBORepository.createTournament(name, date);
         result.setBuyIn(Money.valueOf(buyIn));
+
+        result.createRank(1, 1, new BigDecimal("0.5"));
+        result.createRank(2, 2, new BigDecimal("0.3"));
+        result.createRank(3, 3, new BigDecimal("0.2"));
         return result;
     }
 

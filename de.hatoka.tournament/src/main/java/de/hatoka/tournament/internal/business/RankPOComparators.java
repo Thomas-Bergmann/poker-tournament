@@ -30,7 +30,12 @@ public final class RankPOComparators
             {
                 return Comparators.NULL.compare(o1, o2);
             }
-            return Comparators.INTEGER.compare(o1.getFirstPosition(), o2.getFirstPosition());
+            int result = Comparators.INTEGER.compare(o1.getFirstPosition(), o2.getFirstPosition());
+            if (result == 0)
+            {
+                result = Comparators.INTEGER.compare(o1.getLastPosition(), o2.getLastPosition());
+            }
+            return result;
         }
     };
 }

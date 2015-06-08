@@ -42,8 +42,8 @@ public class TournamentBOImpl implements TournamentBO
     private final RankDao rankDao;
     private final TournamentBusinessFactory factory;
 
-    public TournamentBOImpl(TournamentPO tournamentPO, TournamentDao tournamentDao, CompetitorDao competitorDao,
-                    PlayerDao playerDao, BlindLevelDao blindLevelDao, RankDao rankDao, TournamentBusinessFactory factory)
+    public TournamentBOImpl(TournamentPO tournamentPO, TournamentDao tournamentDao, CompetitorDao competitorDao, PlayerDao playerDao, BlindLevelDao blindLevelDao, RankDao rankDao,
+                    TournamentBusinessFactory factory)
     {
         this.tournamentPO = tournamentPO;
         this.tournamentDao = tournamentDao;
@@ -72,10 +72,9 @@ public class TournamentBOImpl implements TournamentBO
         {
             throw new IllegalStateException("buyin not allowed for active competitors");
         }
-        ICompetitor iTournamentCompetitor = (ICompetitor) competitorBO;
+        ICompetitor iTournamentCompetitor = (ICompetitor)competitorBO;
         iTournamentCompetitor.buyin(getBuyIn());
     }
-
 
     @Override
     public void rebuy(CompetitorBO competitorBO)
@@ -84,7 +83,7 @@ public class TournamentBOImpl implements TournamentBO
         {
             throw new IllegalStateException("rebuy not allowed at inactive competitors");
         }
-        ICompetitor iTournamentCompetitor = (ICompetitor) competitorBO;
+        ICompetitor iTournamentCompetitor = (ICompetitor)competitorBO;
         iTournamentCompetitor.rebuy(getRebuy(getCurrentRound()));
     }
 
@@ -106,7 +105,7 @@ public class TournamentBOImpl implements TournamentBO
             throw new IllegalStateException("seatOpen not allowed at inactive competitors");
         }
         Money moneyResult = getResultForNextLooser();
-        ICompetitor iTournamentCompetitor = (ICompetitor) competitorBO;
+        ICompetitor iTournamentCompetitor = (ICompetitor)competitorBO;
         iTournamentCompetitor.setInactive();
         iTournamentCompetitor.setResult(moneyResult);
         sortCompetitors();
@@ -185,8 +184,7 @@ public class TournamentBOImpl implements TournamentBO
     public boolean isCompetitor(PlayerBO player)
     {
         String playerID = player.getID();
-        return tournamentPO.getCompetitors().stream()
-                        .anyMatch(competitorPO -> competitorPO.getPlayerPO().getId().equals(playerID));
+        return tournamentPO.getCompetitors().stream().anyMatch(competitorPO -> competitorPO.getPlayerPO().getId().equals(playerID));
     }
 
     @Override
@@ -245,8 +243,7 @@ public class TournamentBOImpl implements TournamentBO
     public void sortCompetitors()
     {
         int position = 1;
-        for (CompetitorBO competitorBO : getCompetitorBOStream().sorted(CompetitorBOComparators.DEFAULT).collect(
-                        Collectors.toList()))
+        for (CompetitorBO competitorBO : getCompetitorBOStream().sorted(CompetitorBOComparators.DEFAULT).collect(Collectors.toList()))
         {
             competitorBO.setPosition(position++);
         }
@@ -256,7 +253,7 @@ public class TournamentBOImpl implements TournamentBO
     public List<HistoryEntryBO> getHistoryEntries()
     {
         List<HistoryEntryBO> result = new ArrayList<>();
-        for(HistoryPO historyPO : tournamentPO.getHistoryEntries())
+        for (HistoryPO historyPO : tournamentPO.getHistoryEntries())
         {
             result.add(factory.getHistoryBO(historyPO));
         }
@@ -299,7 +296,7 @@ public class TournamentBOImpl implements TournamentBO
     {
         List<BlindLevelPO> blindLevels = tournamentPO.getBlindLevels();
         List<TournamentRoundBO> result = new ArrayList<TournamentRoundBO>(blindLevels.size());
-        for(BlindLevelPO blindLevelPO : blindLevels)
+        for (BlindLevelPO blindLevelPO : blindLevels)
         {
             if (blindLevelPO.isPause())
             {
@@ -388,7 +385,7 @@ public class TournamentBOImpl implements TournamentBO
         List<RankPO> ranks = new ArrayList<RankPO>(tournamentPO.getRanks());
         ranks.sort(RankPOComparators.DEFAULT);
         List<RankBO> result = new ArrayList<>(ranks.size());
-        for(RankPO rank : ranks)
+        for (RankPO rank : ranks)
         {
             result.add(factory.getRankBO(rank, this));
         }
@@ -402,38 +399,72 @@ public class TournamentBOImpl implements TournamentBO
         rankPO.setPercentage(percentage);
         rankPO.setLastPosition(lastPosition);
         rankPO.setAmount(amount);
+        validateAndFixRanks();
         return factory.getRankBO(rankPO, this);
     }
+
     @Override
     public void remove(RankBO rank)
     {
         Iterator<RankPO> ranks = tournamentPO.getRanks().iterator();
-        RankPO removedRank = null;
         while(ranks.hasNext())
         {
             RankPO rankPO = ranks.next();
             if (rankPO.getId().equals(rank.getID()))
             {
                 rankDao.remove(rankPO);
-                removedRank = rankPO;
                 break;
             }
         }
-        fixRemovedRank(removedRank);
+        validateAndFixRanks();
     }
 
-    private void fixRemovedRank(RankPO removedRank)
+    private void validateAndFixRanks()
     {
-        // fix last position
-        if (removedRank.getLastPosition() != null)
+        // fix first and last position
+        List<RankPO> ranks = tournamentPO.getRanks();
+        ranks.sort(RankPOComparators.DEFAULT);
+        int firstPosition = 0;
+        int lastPosition = 0;
+        for (RankPO rank : ranks)
         {
-            List<RankPO> ranks = tournamentPO.getRanks();
-            if (!ranks.isEmpty())
+            int nextFirstPosition = lastPosition + 1;
+            firstPosition = rank.getFirstPosition();
+            // fix first position
+            if (firstPosition != nextFirstPosition)
             {
-                ranks.sort(RankPOComparators.DEFAULT);
-                ranks.get(ranks.size() -1).setLastPosition(removedRank.getLastPosition());
+                rank.setFirstPosition(nextFirstPosition);
+                firstPosition = nextFirstPosition;
+            }
+            lastPosition = rank.getLastPosition();
+            if (lastPosition < firstPosition)
+            {
+                lastPosition = firstPosition;
+                rank.setLastPosition(lastPosition);
             }
         }
-        // TODO fix percentage
+        BigDecimal percentageSum = BigDecimal.ZERO;
+        boolean setPercentageNull = false;
+        for (RankPO rank : ranks)
+        {
+            if (setPercentageNull)
+            {
+                rank.setPercentage(null);
+            }
+            else
+            {
+                BigDecimal percentage = rank.getPercentage();
+                if (percentage != null && !percentage.equals(BigDecimal.ZERO))
+                {
+                    percentageSum = percentageSum.add(percentage);
+                    if (BigDecimal.ONE.subtract(percentageSum).signum() == -1)
+                    {
+                        rank.setPercentage(null);
+                        setPercentageNull = true;
+                    }
+                }
+            }
+        }
+
     }
 }

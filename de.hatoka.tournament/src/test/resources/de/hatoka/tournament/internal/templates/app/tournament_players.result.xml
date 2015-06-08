@@ -33,7 +33,8 @@
 <p class="bg-info">Average: 1<br/>Sum: 200</p>
 <label class="sr-only" for="inputamount">Amount</label>
 <input value="" name="amount" type="text" id="inputamount" class="form-control" placeholder="Amount"/>
-<button name="rebuy" type="submit" class="btn btn-primary">Re-Buy</button>
+<button name="buyin" type="submit" class="btn btn-primary">Buy-In</button>
+<button name="rebuy" type="submit" class="btn">Re-Buy</button>
 <button name="seatopen" type="submit" class="btn">Seat-Open</button>
 <button name="sort" type="submit" class="btn">Sort</button>
 </form>

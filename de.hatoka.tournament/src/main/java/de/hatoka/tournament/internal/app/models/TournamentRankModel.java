@@ -10,6 +10,7 @@ public class TournamentRankModel
 {
     private TournamentVO tournament;
     private List<RankVO> ranks = new ArrayList<>();
+    private List<RankVO> prefilled = new ArrayList<>();
     private List<String> errors = new ArrayList<>();
 
     public List<String> getErrors()
@@ -42,26 +43,13 @@ public class TournamentRankModel
         this.ranks = ranks;
     }
 
-    /**
-     * Set calculated flags <li>ranks are added and sorted
-     */
-    public void fill()
+    public List<RankVO> getPrefilled()
     {
-        fillLastPosition();
+        return prefilled;
     }
 
-    private void fillLastPosition()
+    public void setPrefilled(List<RankVO> prefilled)
     {
-        RankVO lastRank = null;
-        for (RankVO rank : ranks)
-        {
-            if (lastRank != null)
-            {
-                lastRank.setLastPosition(rank.getFirstPosition() - 1);
-                lastRank.setLastPositionCalculated(true);
-            }
-            lastRank = rank;
-            lastRank.setLastPositionCalculated(false);
-        }
+        this.prefilled = prefilled;
     }
 }

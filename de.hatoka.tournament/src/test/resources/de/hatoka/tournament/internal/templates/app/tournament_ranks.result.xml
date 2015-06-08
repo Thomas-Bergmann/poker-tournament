@@ -1,4 +1,4 @@
-<form xmlns="http://www.w3.org/1999/xhtml" action="actionLevelList" method="POST">
+<form xmlns="http://www.w3.org/1999/xhtml" action="actionRankList" method="POST">
 <table class="table table-striped">
 <tr>
 <th>Select</th>
@@ -14,19 +14,10 @@
 <input type="checkbox" value="1" name="rankID" class="checkbox"/>
 </label>
 </td>
-<td>
-<label class="sr-only" for="inputfirstPosition_1">First Position</label>
-<input placeholder="First Position" value="1" name="firstPosition_1" type="text" id="inputfirstPosition_1" class="form-control"/>
-</td>
 <td>1</td>
-<td>
-<label class="sr-only" for="inputpercentage_1">Percentage</label>
-<input placeholder="Percentage" value="" name="percentage_1" type="text" id="inputpercentage_1" class="form-control"/>
-</td>
-<td>
-<label class="sr-only" for="inputamountPerPlayer_1">Amount per Player</label>
-<input placeholder="Amount per Player" value="100" name="amountPerPlayer_1" type="text" id="inputamountPerPlayer_1" class="form-control"/>
-</td>
+<td>1</td>
+<td>-</td>
+<td>100</td>
 <td>100</td>
 </tr>
 <tr>
@@ -35,19 +26,10 @@
 <input type="checkbox" value="2" name="rankID" class="checkbox"/>
 </label>
 </td>
-<td>
-<label class="sr-only" for="inputfirstPosition_2">First Position</label>
-<input placeholder="First Position" value="2" name="firstPosition_2" type="text" id="inputfirstPosition_2" class="form-control"/>
-</td>
 <td>2</td>
-<td>
-<label class="sr-only" for="inputpercentage_2">Percentage</label>
-<input placeholder="Percentage" value="50" name="percentage_2" type="text" id="inputpercentage_2" class="form-control"/>
-</td>
-<td>
-<label class="sr-only" for="inputamountPerPlayer_2">Amount per Player</label>
-<input placeholder="50" value="" name="amountPerPlayer_2" type="text" id="inputamountPerPlayer_2" class="form-control"/>
-</td>
+<td>2</td>
+<td>50</td>
+<td>50</td>
 <td>50</td>
 </tr>
 <tr>
@@ -56,19 +38,10 @@
 <input type="checkbox" value="3" name="rankID" class="checkbox"/>
 </label>
 </td>
-<td>
-<label class="sr-only" for="inputfirstPosition_3">First Position</label>
-<input placeholder="First Position" value="3" name="firstPosition_3" type="text" id="inputfirstPosition_3" class="form-control"/>
-</td>
+<td>3</td>
 <td>5</td>
-<td>
-<label class="sr-only" for="inputpercentage_3">Percentage</label>
-<input placeholder="25" value="" name="percentage_3" type="text" id="inputpercentage_3" class="form-control"/>
-</td>
-<td>
-<label class="sr-only" for="inputamountPerPlayer_3">Amount per Player</label>
-<input placeholder="8.33" value="" name="amountPerPlayer_3" type="text" id="inputamountPerPlayer_3" class="form-control"/>
-</td>
+<td>25</td>
+<td>8.33</td>
 <td>25</td>
 </tr>
 <tr>
@@ -77,26 +50,34 @@
 <input type="checkbox" value="4" name="rankID" class="checkbox"/>
 </label>
 </td>
-<td>
-<label class="sr-only" for="inputfirstPosition_4">First Position</label>
-<input placeholder="First Position" value="6" name="firstPosition_4" type="text" id="inputfirstPosition_4" class="form-control"/>
-</td>
-<td>
-<label class="sr-only" for="inputlastposition_4">Last Position</label>
-<input placeholder="Last Position" value="10" name="lastposition_4" type="text" id="inputlastposition_4" class="form-control"/>
-</td>
-<td>
-<label class="sr-only" for="inputpercentage_4">Percentage</label>
-<input placeholder="25" value="" name="percentage_4" type="text" id="inputpercentage_4" class="form-control"/>
-</td>
-<td>
-<label class="sr-only" for="inputamountPerPlayer_4">Amount per Player</label>
-<input placeholder="5" value="" name="amountPerPlayer_4" type="text" id="inputamountPerPlayer_4" class="form-control"/>
-</td>
+<td>6</td>
+<td>10</td>
 <td>25</td>
+<td>5</td>
+<td>25</td>
+</tr>
+<tr>
+<td/>
+<td>
+<label class="sr-only" for="inputfirstPosition_new">First Position</label>
+<input placeholder="First Position" value="0" name="firstPosition_new" type="text" id="inputfirstPosition_new" class="form-control"/>
+</td>
+<td>
+<label class="sr-only" for="inputlastPosition_new">Last Position</label>
+<input placeholder="Last Position" value="" name="lastPosition_new" type="text" id="inputlastPosition_new" class="form-control"/>
+</td>
+<td>
+<label class="sr-only" for="inputpercentage_new">Percentage</label>
+<input placeholder="Percentage" value="" name="percentage_new" type="text" id="inputpercentage_new" class="form-control"/>
+</td>
+<td>-</td>
+<td>
+<label class="sr-only" for="inputamount_new">Amount For Rank</label>
+<input placeholder="Amount For Rank" value="" name="amount_new" type="text" id="inputamount_new" class="form-control"/>
+</td>
 </tr>
 </table>
 <button name="save" type="submit" class="btn btn-primary">Save</button>
-<button name="line" type="submit" class="btn">Add Rank</button>
+<button name="sort" type="submit" class="btn">Sort</button>
 <button name="delete" type="submit" class="btn">Delete</button>
 </form>

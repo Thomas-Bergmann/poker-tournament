@@ -74,8 +74,7 @@ public class TournamentCompetitorService extends AbstractService
             return null;
         }
         TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
-        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountRef);
-        return new TournamentAction(accountRef, tournamentBORepository.getTournamentByID(tournamentID), factory);
+        return new TournamentAction(accountRef, tournamentID, factory);
     }
 
     @POST

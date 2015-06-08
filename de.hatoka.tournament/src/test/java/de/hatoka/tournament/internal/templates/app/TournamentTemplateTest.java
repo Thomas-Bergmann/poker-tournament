@@ -92,8 +92,7 @@ public class TournamentTemplateTest
         model.getUnassignedPlayers().add(getPlayerVO("1234581", "Player 3"));
         String content = RENDERER.render(model, RESOURCE_PREFIX + "tournament_players.xslt", getParameter());
 
-        // Assert.assertEquals("players not listed correctly",
-        // getResource("tournament_players.result.xml"), content);
+        // Assert.assertEquals("players not listed correctly", getResource("tournament_players.result.xml"), content);
         XMLAssert.assertXMLEqual("players not listed correctly", getResource("tournament_players.result.xml"), content);
     }
 
@@ -153,13 +152,12 @@ public class TournamentTemplateTest
         blindLevels.add(TournamentViewObjectHelper.getFixPriceRankVO("1", 1, 1, BigDecimal.valueOf(100)));
         blindLevels.add(TournamentViewObjectHelper.getPercentageRankVO("2", 2, 2, BigDecimal.valueOf(50), BigDecimal.valueOf(50)));
         blindLevels.add(TournamentViewObjectHelper.getPercentageCalcRankVO("3", 3, 5, BigDecimal.valueOf(25), BigDecimal.valueOf(25)));
-        RankVO lastRank = TournamentViewObjectHelper.getPercentageCalcRankVO("4", 6, 10, BigDecimal.valueOf(25), BigDecimal.valueOf(25));
-        lastRank.setLastPositionCalculated(false);
-        blindLevels.add(lastRank);
+        blindLevels.add(TournamentViewObjectHelper.getPercentageCalcRankVO("4", 6, 10, BigDecimal.valueOf(25), BigDecimal.valueOf(25)));
+        model.getPrefilled().add(new RankVO("new"));
         String content = RENDERER.render(model, RESOURCE_PREFIX + "tournament_ranks.xslt", getParameter());
-        // String content = new XMLRenderer().render(model);
+        // String content1 = new XMLRenderer().render(model);
 
-        Assert.assertEquals("content not correct rendered", getResource("tournament_ranks.result.xml"), content);
+        // Assert.assertEquals("content not correct rendered", getResource("tournament_ranks.result.xml"), content);
         XMLAssert.assertXMLEqual("content not correct rendered", getResource("tournament_ranks.result.xml"), content);
     }
 

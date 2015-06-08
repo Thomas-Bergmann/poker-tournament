@@ -88,7 +88,6 @@ public final class TournamentViewObjectHelper
         result.setFirstPosition(firstPosition);
         result.setLastPosition(lastPosition);
         result.setAmountPerPlayer(amountPerPlayer);
-        result.setAmountPerPlayerCalculated(false);
         result.setAmount(amountPerPlayer.multiply(BigDecimal.valueOf(lastPosition - firstPosition + 1)));
         return result;
     }
@@ -100,9 +99,7 @@ public final class TournamentViewObjectHelper
         result.setFirstPosition(firstPosition);
         result.setLastPosition(lastPosition);
         result.setPercentage(percentage);
-        result.setPercentageCalculated(false);
         result.setAmountPerPlayer(amount.divide(BigDecimal.valueOf(lastPosition - firstPosition + 1), 2, BigDecimal.ROUND_DOWN).stripTrailingZeros());
-        result.setAmountPerPlayerCalculated(true);
         result.setAmount(amount);
         return result;
     }
@@ -111,7 +108,6 @@ public final class TournamentViewObjectHelper
                     BigDecimal amount)
     {
         RankVO result = getPercentageRankVO(id, firstPosition, lastPosition, percentageCalculated, amount);
-        result.setPercentageCalculated(true);
         return result;
     }
 

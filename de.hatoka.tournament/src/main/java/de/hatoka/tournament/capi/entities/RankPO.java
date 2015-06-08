@@ -3,6 +3,7 @@ package de.hatoka.tournament.capi.entities;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -33,10 +34,12 @@ public class RankPO implements Serializable, IdentifiableEntity
     @XmlAttribute
     private int firstPosition;
     @XmlAttribute
-    private Integer lastPosition;
+    private int lastPosition;
     @XmlAttribute
+    @Column(precision=10, scale=4)
     private BigDecimal percentage; // 0.5 for 50%
     @XmlAttribute
+    @Column(precision=10, scale=4)
     private BigDecimal amount;
 
     @Override
@@ -64,12 +67,12 @@ public class RankPO implements Serializable, IdentifiableEntity
     }
 
     @XmlTransient
-    public Integer getLastPosition()
+    public int getLastPosition()
     {
         return lastPosition;
     }
 
-    public void setLastPosition(Integer lastPosition)
+    public void setLastPosition(int lastPosition)
     {
         this.lastPosition = lastPosition;
     }
@@ -85,6 +88,10 @@ public class RankPO implements Serializable, IdentifiableEntity
         this.percentage = percentage;
     }
 
+    /**
+     * Amount per player
+     * @return
+     */
     @XmlTransient
     public BigDecimal getAmount()
     {

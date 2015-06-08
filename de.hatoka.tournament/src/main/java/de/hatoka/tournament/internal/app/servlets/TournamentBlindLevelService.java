@@ -13,10 +13,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import de.hatoka.common.capi.app.servlet.AbstractService;
-import de.hatoka.tournament.capi.business.TournamentBO;
 import de.hatoka.tournament.capi.business.TournamentBORepository;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
-import de.hatoka.tournament.internal.app.actions.TournamentAction;
+import de.hatoka.tournament.internal.app.actions.BlindLevelAction;
 import de.hatoka.tournament.internal.app.menu.MenuFactory;
 import de.hatoka.tournament.internal.app.models.TournamentBlindLevelModel;
 
@@ -53,7 +52,7 @@ public class TournamentBlindLevelService extends AbstractService
         this.accountService = accountService;
     }
 
-    private TournamentAction getTournamentAction()
+    private BlindLevelAction getBlindLevelAction()
     {
         String accountRef = accountService.getAccountRef();
         if (accountRef == null)
@@ -61,7 +60,7 @@ public class TournamentBlindLevelService extends AbstractService
             redirect = accountService.redirectLogin();
             return null;
         }
-        return new TournamentAction(accountRef, getTournamentBO(), getInstance(TournamentBusinessFactory.class));
+        return new BlindLevelAction(accountRef, tournamentID, getInstance(TournamentBusinessFactory.class));
     }
 
     @POST
@@ -91,7 +90,7 @@ public class TournamentBlindLevelService extends AbstractService
     @Path("/createPause")
     public Response createPause(@FormParam("duration") Integer duration)
     {
-        TournamentAction action = getTournamentAction();
+        BlindLevelAction action = getBlindLevelAction();
         if (action == null)
         {
             return redirect;
@@ -101,7 +100,7 @@ public class TournamentBlindLevelService extends AbstractService
             @Override
             public void run()
             {
-                getTournamentBO().createPause(duration);
+                action.createPause(duration);
             }
         });
         return redirectLevels();
@@ -112,7 +111,7 @@ public class TournamentBlindLevelService extends AbstractService
     public Response createLevel(@FormParam("duration") Integer duration, @FormParam("smallBlind") Integer smallBlind,
                     @FormParam("bigBlind") Integer bigBlind, @FormParam("ante") Integer ante)
     {
-        TournamentAction action = getTournamentAction();
+        BlindLevelAction action = getBlindLevelAction();
         if (action == null)
         {
             return redirect;
@@ -122,7 +121,7 @@ public class TournamentBlindLevelService extends AbstractService
             @Override
             public void run()
             {
-                getTournamentBO().createBlindLevel(duration, smallBlind, bigBlind, ante);
+                action.createBlindLevel(duration, smallBlind, bigBlind, ante);
             }
         });
         return redirectLevels();
@@ -132,7 +131,7 @@ public class TournamentBlindLevelService extends AbstractService
     @Path("/deleteLevels")
     public Response deleteLevels(List<String> identifiers)
     {
-        TournamentAction action = getTournamentAction();
+        BlindLevelAction action = getBlindLevelAction();
         if (action == null)
         {
             return redirect;
@@ -152,7 +151,7 @@ public class TournamentBlindLevelService extends AbstractService
     @Path("/levels.html")
     public Response levels()
     {
-        TournamentAction action = getTournamentAction();
+        BlindLevelAction action = getBlindLevelAction();
         if (action == null)
         {
             return redirect;
@@ -174,11 +173,6 @@ public class TournamentBlindLevelService extends AbstractService
     {
         return Response.seeOther(getUriBuilder(TournamentBlindLevelService.class, "levels").build(tournamentID))
                         .build();
-    }
-
-    private TournamentBO getTournamentBO()
-    {
-        return getTournamentBORepository().getTournamentByID(tournamentID);
     }
 
     private String renderFrame(String content, String titleKey) throws IOException

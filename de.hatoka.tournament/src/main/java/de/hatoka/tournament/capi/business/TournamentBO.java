@@ -98,9 +98,10 @@ public interface TournamentBO extends GameBO
      * @param firstPosition (mandatory)
      * @param lastPosition (optional)
      * @param percentage (optional)
-     * @param amount (optional)
+     * @param amount of rank (optional)
      */
     RankBO createRank(int firstPosition, int lastPosition, BigDecimal percentage, BigDecimal amount);
+
     default RankBO createFixRank(int firstPosition, int lastPosition, BigDecimal amount)
     {
         return createRank(firstPosition, lastPosition, null, amount);
