@@ -11,7 +11,7 @@ public class PriceTest
     private static final Quantity ONE_KILO_GRAM = new Quantity(BigDecimal.ONE, UnitScale.KILO, Unit.GRAM);
     private static final Quantity SEVEN_HUNDRED_GRAM = new Quantity(new BigDecimal("700"), Unit.GRAM);
 
-    private static final BigDecimal BIG_DECIMAL_0_8403 = new BigDecimal("0.8403");
+    private static final BigDecimal BIG_DECIMAL_0_84 = new BigDecimal("0.84");
     private static final BigDecimal BIG_DECIMAL_1_19 = new BigDecimal("1.19");
     private static final Price UNDER_TEST_ONE = new Price(BigDecimal.ONE, CurrencyConstants.EUR);
 
@@ -21,7 +21,7 @@ public class PriceTest
     @Test
     public void testDivide()
     {
-        assertEquals(BIG_DECIMAL_0_8403, UNDER_TEST_ONE.divide(BIG_DECIMAL_1_19).getMoney().getAmount());
+        assertEquals(BIG_DECIMAL_0_84, UNDER_TEST_ONE.divide(BIG_DECIMAL_1_19).getMoney().round().getAmount());
     }
 
     @Test
@@ -33,6 +33,6 @@ public class PriceTest
     @Test
     public void testMulitiply()
     {
-        assertEquals(BIG_DECIMAL_1_19, UNDER_TEST_ONE.multiply(BIG_DECIMAL_1_19).getMoney().getAmount());
+        assertEquals(BIG_DECIMAL_1_19, UNDER_TEST_ONE.multiply(BIG_DECIMAL_1_19).getMoney().round().getAmount());
     }
 }

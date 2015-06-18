@@ -109,16 +109,16 @@ public class TournamentBOTest
         underTest.setBuyIn(BUY_IN);
         buyInPlayers(10);
         assertEquals(Money.valueOf("50 EUR"), underTest.getSumInplay());
-        underTest.createFixRank(1, 1, new BigDecimal("20")); // 20
-        underTest.createRank(2, 2, new BigDecimal("0.5")); // (50-20) * 0.5 = 15
-        underTest.createRank(3, 3); // means 25% = 7.5
-        underTest.createRank(4, 5);// means 25%  = 3.75
+        underTest.createRank(1, 1, new BigDecimal("0.5")); // (50-20) * 0.5 = 15
+        underTest.createRank(2, 2, new BigDecimal("0.3")); // (50-20) * 0.5 = 15
+        underTest.createRank(3, 3, new BigDecimal("0.2")); // means 25% = 7.5
+        underTest.createFixRank(4, 9, BigDecimal.TEN);// means 25%  = 3.75
         List<RankBO> ranks = underTest.getRanks();
         assertEquals("five rounds added", 4, ranks.size());
         assertEquals("first rank", Money.valueOf(BigDecimal.valueOf(20), getCurrency()), ranks.get(0).getAmountPerPlayer());
-        assertEquals("second rank", Money.valueOf(BigDecimal.valueOf(15), getCurrency()), ranks.get(1).getAmountPerPlayer());
-        assertEquals("third rank", Money.valueOf(BigDecimal.valueOf(7.5), getCurrency()), ranks.get(2).getAmountPerPlayer());
-        assertEquals("fourth rank", Money.valueOf(BigDecimal.valueOf(3.75), getCurrency()), ranks.get(3).getAmountPerPlayer());
+        assertEquals("second rank", Money.valueOf(BigDecimal.valueOf(12), getCurrency()), ranks.get(1).getAmountPerPlayer());
+        assertEquals("third rank", Money.valueOf(BigDecimal.valueOf(8), getCurrency()), ranks.get(2).getAmountPerPlayer());
+        assertEquals("fourth rank", Money.valueOf(BigDecimal.valueOf(1.66), getCurrency()), ranks.get(3).getAmountPerPlayer());
     }
 
     private Currency getCurrency()

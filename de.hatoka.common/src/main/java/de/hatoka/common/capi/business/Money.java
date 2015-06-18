@@ -103,14 +103,38 @@ public class Money
         return new Money(amount.add(augend.getAmount()), currency);
     }
 
+    /**
+     * Divide the amount with an additional scale of 4.
+     * (e.g. 10.divide(3) == 3.3333)
+     *
+     * @param divisor
+     * @return the divisor with an additional scale of 4
+     */
     public Money divide(BigDecimal divisor)
+    {
+        return divide(divisor, 4);
+    }
+
+    /**
+     * Divide the amount with an additional scale. The given scale will be added
+     * to positive scale of amount or divisor. Negative scales will be ignored.
+     *
+     * @param divisor
+     * @param additionalScale
+     * @return the rounded divisor
+     */
+    public Money divide(BigDecimal divisor, int additionalScale)
     {
         if (isZero(this))
         {
             return this;
         }
-        return new Money(amount.setScale(amount.scale() + divisor.scale() + 2).divide(divisor, RoundingMode.HALF_EVEN),
-                        currency);
+        return new Money(amount.setScale(getPositiveScale(amount) + getPositiveScale(divisor) + additionalScale).divide(divisor, RoundingMode.HALF_EVEN), currency);
+    }
+
+    private static int getPositiveScale(BigDecimal value)
+    {
+        return value.scale() < 0 ? 0 : value.scale();
     }
 
     public Money divide(long divisor)
@@ -152,6 +176,16 @@ public class Money
     public Currency getCurrency()
     {
         return currency;
+    }
+
+    public Money round(RoundingMode mode)
+    {
+        return new Money(amount.setScale(currency.getDefaultFractionDigits(), mode).stripTrailingZeros(), currency);
+    }
+
+    public Money round()
+    {
+        return round(RoundingMode.HALF_EVEN);
     }
 
     public Money stripTrailingZeros()

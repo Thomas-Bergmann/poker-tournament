@@ -13,8 +13,8 @@ public class MoneyTest
     public static final Currency EUR = CurrencyConstants.EUR;
     public static final Currency USD = CurrencyConstants.USD;
 
-    private static final BigDecimal BIG_DECIMAL_0_8403 = new BigDecimal("0.8403");
     private static final BigDecimal BIG_DECIMAL_1_19 = new BigDecimal("1.19");
+    private static final BigDecimal BIG_DECIMAL_TEN_SCALE = new BigDecimal("1E1");
     private static final Money UNDER_TEST_ONE = Money.valueOf(BigDecimal.ONE, EUR);
     private static final Money MONEY_1_19_EUR = Money.valueOf(BIG_DECIMAL_1_19, EUR);
 
@@ -29,7 +29,8 @@ public class MoneyTest
     @Test
     public void testDivide()
     {
-        assertEquals(BIG_DECIMAL_0_8403, UNDER_TEST_ONE.divide(BIG_DECIMAL_1_19).getAmount());
+        assertEquals(new BigDecimal("0.840336"), UNDER_TEST_ONE.divide(BIG_DECIMAL_1_19).getAmount());
+        assertEquals(new BigDecimal("1.6667"), Money.valueOf(BIG_DECIMAL_TEN_SCALE, EUR).divide(new BigDecimal(6)).getAmount());
     }
 
     @Test

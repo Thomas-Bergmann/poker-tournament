@@ -1,6 +1,7 @@
 package de.hatoka.tournament.internal.business;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Currency;
 
 import de.hatoka.common.capi.business.Money;
@@ -69,7 +70,12 @@ public class RankBOImpl implements RankBO
     @Override
     public BigDecimal getPercentage()
     {
-        return rankPO.getPercentage();
+        BigDecimal percentage = rankPO.getPercentage();
+        if (percentage == null)
+        {
+            return null;
+        }
+        return percentage.setScale(2, RoundingMode.HALF_EVEN);
     }
 
     @Override
@@ -77,7 +83,8 @@ public class RankBOImpl implements RankBO
     {
         Money sum = getAmount();
         long numberOfPlayers = getLastPosition() - getFirstPosition() + 1;
-        return sum.divide(numberOfPlayers);
+        // it must be DOWN otherwise the sum of the rank is higher than the available amount
+        return sum.divide(numberOfPlayers).round(RoundingMode.DOWN);
     }
 
     @Override
@@ -86,7 +93,7 @@ public class RankBOImpl implements RankBO
         BigDecimal amount = rankPO.getAmount();
         if (amount != null)
         {
-            return Money.valueOf(amount, getCurrency());
+            return Money.valueOf(amount.stripTrailingZeros(), getCurrency());
         }
         BigDecimal percentage = rankPO.getPercentage();
         if (percentage == null)
@@ -95,7 +102,7 @@ public class RankBOImpl implements RankBO
         }
         Money sum = tournamentBO.getSumInplay();
         Money fix = getFixRankAmount();
-        return sum.subtract(fix).multiply(percentage).stripTrailingZeros();
+        return sum.subtract(fix).multiply(percentage).round();
     }
 
     private BigDecimal getCalculatedPercentage()
