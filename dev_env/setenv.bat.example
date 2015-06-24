@@ -16,5 +16,5 @@ REM Account configuration
 set JAVA_OPTS=%JAVA_OPTS% -DSMTP_HOST=%SMTP_HOST% -DSMTP_USER=%SMTP_USER% -DSMTP_PASSWORD=%SMTP_PASSWORD% -DACCOUNT_FROM_EMAIL=%ACCOUNT_FROM_EMAIL%
 REM Tournament configuration
 set JAVA_OPTS=%JAVA_OPTS% -DACCOUNT_LOGIN=%HATOKA_LOGIN_URI% -DACCOUNT_SECRET=%ACCOUNT_SECRET%
-ECHO GOTO BROWSER http://localhost:8090/de.hatoka.account-0.1/account/login/index.html
+ECHO GOTO BROWSER http://localhost:8090/de.hatoka.tournament-0.1.15/tournament/tournaments/list.html
 ECHO catalina.bat jpda run

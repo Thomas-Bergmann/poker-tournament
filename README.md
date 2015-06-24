@@ -106,7 +106,7 @@ The server should be available 7 days a week and 24 hours a day.
 This project is a java project (JDK8), it uses some important frameworks:
 * Google Guice for dependency injection
 * javax.ws as web application
-* JPA for persistence (with hibernate implementation and postgres database)
+* JPA for persistence (with eclipse link implementation and postgres database)
 * gradle build tool
 * XSLT for template processing
 
@@ -123,7 +123,7 @@ Before you submit code, please
 * add the pre-commit checker dev_env/git_hooks_pre-commit
 
 # Installation
-
+This installation is an example, you can choose your favorite database system, as long as there is a JPA support available.
 * Installation of PostgreSQL (http://www.postgresql.org/)
     * create two databases (accountdb and tournamentdb)
 * Installation of "Tomcat 8" (http://tomcat.apache.org/) to
@@ -131,7 +131,7 @@ Before you submit code, please
     * you can change the http port conf/httpd.conf
 * use services.bat to register as service (optional)
     * use SERVICE_NAME with http port in name
-    * define JRE_HOME at beginning set JRE_HOME=d:\jdk1.7.0_45\jre
+    * define JRE_HOME at beginning set JRE_HOME=d:\jdk1.8.0_45\jre
 * set environment of applications
     * see example setenv.bat (can be located 'bin' of tomcat)
 * copy application war file from build directory
