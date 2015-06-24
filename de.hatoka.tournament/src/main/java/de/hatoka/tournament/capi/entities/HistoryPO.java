@@ -18,9 +18,11 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.eclipse.persistence.oxm.annotations.XmlInverseReference;
 
+import de.hatoka.common.capi.app.xslt.DateXmlAdapter;
 import de.hatoka.common.capi.dao.IdentifiableEntity;
 import de.hatoka.common.capi.entities.MoneyPO;
 
@@ -63,6 +65,7 @@ public class HistoryPO implements Serializable, IdentifiableEntity
     @NotNull
     @Temporal(TemporalType.TIMESTAMP)
     @XmlAttribute
+    @XmlJavaTypeAdapter(DateXmlAdapter.class)
     private Date date;
 
     @Embedded

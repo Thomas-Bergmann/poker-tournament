@@ -24,7 +24,9 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import de.hatoka.common.capi.app.xslt.DateXmlAdapter;
 import de.hatoka.common.capi.dao.IdentifiableEntity;
 import de.hatoka.common.capi.entities.MoneyPO;
 
@@ -52,9 +54,11 @@ public class TournamentPO implements Serializable, IdentifiableEntity
     private boolean isCashGame;
     @NotNull
     private String name;
+
     @NotNull
     @Temporal(TemporalType.DATE)
     @XmlAttribute
+    @XmlJavaTypeAdapter(DateXmlAdapter.class)
     private Date date;
 
     @Embedded
