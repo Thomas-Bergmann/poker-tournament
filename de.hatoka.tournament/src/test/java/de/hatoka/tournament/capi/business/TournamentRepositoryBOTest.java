@@ -3,6 +3,7 @@ package de.hatoka.tournament.capi.business;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -24,6 +25,7 @@ import com.google.inject.Injector;
 
 import de.hatoka.common.capi.business.CountryHelper;
 import de.hatoka.common.capi.business.Money;
+import de.hatoka.common.capi.business.Warning;
 import de.hatoka.common.capi.dao.SequenceProvider;
 import de.hatoka.common.capi.dao.TransactionProvider;
 import de.hatoka.common.capi.modules.CommonDaoModule;
@@ -33,13 +35,14 @@ import de.hatoka.tournament.capi.dao.BlindLevelDao;
 import de.hatoka.tournament.capi.dao.CompetitorDao;
 import de.hatoka.tournament.capi.dao.HistoryDao;
 import de.hatoka.tournament.capi.dao.PlayerDao;
+import de.hatoka.tournament.capi.dao.RankDao;
 import de.hatoka.tournament.capi.dao.TournamentDao;
 import de.hatoka.tournament.capi.entities.CompetitorPO;
 import de.hatoka.tournament.capi.entities.HistoryPO;
 import de.hatoka.tournament.capi.entities.PlayerPO;
+import de.hatoka.tournament.capi.entities.RankPO;
 import de.hatoka.tournament.capi.entities.TournamentPO;
 import de.hatoka.tournament.capi.types.HistoryEntryType;
-import de.hatoka.tournament.internal.business.TournamentBORepositoryImpl;
 import de.hatoka.tournament.internal.dao.DerbyEntityManagerRule;
 import de.hatoka.tournament.internal.modules.TournamentBusinessModule;
 import de.hatoka.tournament.internal.modules.TournamentDaoJpaModule;
@@ -63,6 +66,8 @@ public class TournamentRepositoryBOTest
     private HistoryDao historyDao;
     @Inject
     private BlindLevelDao blindLevelDao;
+    @Inject
+    private RankDao rankDao;
 
     @Inject
     private TransactionProvider transactionProvider;
@@ -115,23 +120,21 @@ public class TournamentRepositoryBOTest
         XMLAssert.assertXMLEqual("export correct", getResource("tournament_export.result.xml"), writer.toString());
     }
 
-    private TournamentBORepositoryImpl getTournamentRepository()
+    private TournamentBORepository getTournamentRepository()
     {
-        return (TournamentBORepositoryImpl) factory.getTournamentBORepository(ACCOUNT_REF);
+        return factory.getTournamentBORepository(ACCOUNT_REF);
     }
 
     @Test
     public void testImport() throws Exception
     {
-        transactionProvider.get().begin();
-        TournamentBORepositoryImpl repository = getTournamentRepository();
-        List<String> warnings = repository.importXML(getResourceStream("tournament_export.result.xml"));
-        transactionProvider.get().commit();
+        TournamentBORepository repository = getTournamentRepository();
+        List<Warning> warnings = repository.importXML(getResourceStream("tournament_export.result.xml"));
         StringWriter writer = new StringWriter();
         repository.exportXML(writer);
         // Assert.assertEquals("export correct", getResource("tournament_export.result.xml"), writer.toString());
         XMLAssert.assertXMLEqual("export correct", getResource("tournament_export.result.xml"), writer.toString());
-        for(String warning : warnings)
+        for(Warning warning : warnings)
         {
             Assert.assertNull(warning);
         }
@@ -151,6 +154,14 @@ public class TournamentRepositoryBOTest
         historyEntry.setActionKey(HistoryEntryType.BuyIn.name());
 
         blindLevelDao.createAndInsert(tournamentPO, 30);
+
+        RankPO rank1 = rankDao.createAndInsert(tournamentPO, 1);
+        rank1.setPercentage(new BigDecimal("0.5"));
+        rank1.setLastPosition(1);
+        RankPO rank2 = rankDao.createAndInsert(tournamentPO, 2);
+        rank2.setPercentage(new BigDecimal("0.3"));
+        rank2.setLastPosition(2);
+
         transactionProvider.get().commit();
     }
 

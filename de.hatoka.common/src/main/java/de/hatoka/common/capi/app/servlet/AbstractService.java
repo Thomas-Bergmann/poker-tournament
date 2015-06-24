@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.TimeZone;
 import java.util.concurrent.Callable;
 
-import javax.persistence.EntityTransaction;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Cookie;
@@ -97,9 +96,9 @@ public class AbstractService
         return cookieValue == null ? CountryHelper.UTC : COUNTRY_HELPER.getTimeZone(cookieValue);
     }
 
-    private EntityTransaction getTransaction()
+    private TransactionProvider getTransactionProvider()
     {
-        return getInstance(TransactionProvider.class).get();
+        return getInstance(TransactionProvider.class);
     }
 
     public UriBuilder getUriBuilder(Class<?> resource, String methodName)
@@ -178,22 +177,7 @@ public class AbstractService
 
     protected <T> T runInTransaction(Callable<T> callable) throws Exception
     {
-        T result = null;
-        EntityTransaction transaction = getTransaction();
-        try
-        {
-            transaction.begin();
-            result = callable.call();
-            transaction.commit();
-        }
-        finally
-        {
-            if (transaction.isActive())
-            {
-                transaction.rollback();
-            }
-        }
-        return result;
+        return getTransactionProvider().runInTransaction(callable);
     }
 
     /**
@@ -203,20 +187,7 @@ public class AbstractService
      */
     protected void runInTransaction(Runnable runnable)
     {
-        EntityTransaction transaction = getTransaction();
-        try
-        {
-            transaction.begin();
-            runnable.run();
-            transaction.commit();
-        }
-        finally
-        {
-            if (transaction.isActive())
-            {
-                transaction.rollback();
-            }
-        }
+        getTransactionProvider().runInTransaction(runnable);
     }
 
     /**

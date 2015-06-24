@@ -142,6 +142,7 @@ public class RankPO implements Serializable, IdentifiableEntity
         return true;
     }
 
+    @XmlTransient
     public TournamentPO getTournament()
     {
         return tournament;

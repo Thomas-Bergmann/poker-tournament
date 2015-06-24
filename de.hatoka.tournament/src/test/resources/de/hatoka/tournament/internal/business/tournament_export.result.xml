@@ -6,6 +6,8 @@
     <tournaments>
         <tournament id="101" isCashGame="false" date="2011-11-25T07:45:00Z" minPlayerPerTable="2" maxPlayerPerTable="10" currentRound="0">
             <blindLevel isPause="false" duration="30"/>
+            <rank firstPosition="1" lastPosition="1" percentage="0.5"/>
+            <rank firstPosition="2" lastPosition="2" percentage="0.3"/>
             <competitor playerRef="100" state="REGISTERED">
                 <inplay code="EUR" amount="5"/>
                 <result code="EUR" amount="-5"/>

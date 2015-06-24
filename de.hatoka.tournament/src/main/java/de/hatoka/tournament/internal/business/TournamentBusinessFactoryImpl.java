@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import com.google.inject.Provider;
 
 import de.hatoka.common.capi.dao.SequenceProvider;
+import de.hatoka.common.capi.dao.TransactionProvider;
 import de.hatoka.common.capi.dao.UUIDGenerator;
 import de.hatoka.tournament.capi.business.BlindLevelBO;
 import de.hatoka.tournament.capi.business.CashGameBO;
@@ -62,6 +63,9 @@ public class TournamentBusinessFactoryImpl implements TournamentBusinessFactory
     @Inject
     private SequenceProvider sequenceProvider;
 
+    @Inject
+    private TransactionProvider transactionProvider;
+
     @Override
     public CashGameCompetitorBO getCompetitorBO(CompetitorPO competitorPO, CashGameBO cashGameBO)
     {
@@ -101,7 +105,7 @@ public class TournamentBusinessFactoryImpl implements TournamentBusinessFactory
     @Override
     public TournamentBORepository getTournamentBORepository(String accountRef)
     {
-        return new TournamentBORepositoryImpl(accountRef, tournamentDao, playerDao, competitorDao, sequenceProvider.create(accountRef), uuidGenerator, blindLevelDao, historyDao, this);
+        return new TournamentBORepositoryImpl(accountRef, tournamentDao, playerDao, competitorDao, blindLevelDao, historyDao, rankDao, sequenceProvider.create(accountRef), uuidGenerator, transactionProvider, this);
     }
 
     @Override
