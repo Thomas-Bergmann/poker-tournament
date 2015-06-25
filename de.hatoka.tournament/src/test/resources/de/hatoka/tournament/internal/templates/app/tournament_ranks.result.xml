@@ -78,6 +78,5 @@
 </tr>
 </table>
 <button name="save" type="submit" class="btn btn-primary">Save</button>
-<button name="sort" type="submit" class="btn">Sort</button>
 <button name="delete" type="submit" class="btn">Delete</button>
 </form>

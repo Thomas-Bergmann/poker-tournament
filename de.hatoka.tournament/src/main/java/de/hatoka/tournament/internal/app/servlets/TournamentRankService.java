@@ -68,7 +68,7 @@ public class TournamentRankService extends AbstractService
     @POST
     @Path("/actionRankList")
     public Response actionPlayerList(@FormParam("rankID") List<String> identifiers, @FormParam("delete") String deleteButton, @FormParam("save") String saveButton,
-                    @FormParam("sort") String sortButton, @FormParam("firstPosition_new") String firstPosition, @FormParam("lastPosition_new") String lastPosition,
+                    @FormParam("firstPosition_new") String firstPosition, @FormParam("lastPosition_new") String lastPosition,
                     @FormParam("amount_new") String amount, @FormParam("percentage_new") String percentage)
     {
         if (isButtonPressed(deleteButton))
