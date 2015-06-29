@@ -16,8 +16,8 @@ public final class CompetitorBOComparators
         @Override
         public int compare(CompetitorBO o1, CompetitorBO o2)
         {
-            // inactive first
-            int result = ACTIVE.compare(o1, o2);
+            // inactive last
+            int result = ACTIVE.reversed().compare(o1, o2);
             if (result == 0)
             {
                 // first with most amount in result

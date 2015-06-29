@@ -26,6 +26,16 @@
         <xsl:attribute name="type">password</xsl:attribute>
         <xsl:attribute name="required">required</xsl:attribute>
       </xsl:if>
+      <xsl:if test="$type = 'date'">
+        <xsl:attribute name="autocomplete">off</xsl:attribute>
+        <xsl:attribute name="type">text</xsl:attribute>
+        <xsl:attribute name="value"><xsl:value-of select="hatoka:formatDate($localizer, $value)" /></xsl:attribute>
+      </xsl:if>
+      <xsl:if test="$type = 'dateTime'">
+        <xsl:attribute name="autocomplete">off</xsl:attribute>
+        <xsl:attribute name="type">text</xsl:attribute>
+        <xsl:attribute name="value"><xsl:value-of select="hatoka:formatDateTime($localizer, $value)" /></xsl:attribute>
+      </xsl:if>
       <xsl:if test="$isRequired = 'true'">
         <xsl:attribute name="required">required</xsl:attribute>
       </xsl:if>

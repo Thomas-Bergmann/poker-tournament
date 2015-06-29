@@ -156,6 +156,6 @@ public class CompetitorBOImpl implements ICompetitor
     @Override
     public void setInactive()
     {
-        competitorPO.setState(CompetitorState.INACTIVE.name());
+        competitorPO.setState(CompetitorState.OUT.name());
     }
 }

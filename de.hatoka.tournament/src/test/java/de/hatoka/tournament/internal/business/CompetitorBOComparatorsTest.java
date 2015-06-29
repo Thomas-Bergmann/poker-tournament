@@ -45,10 +45,10 @@ public class CompetitorBOComparatorsTest
 
         List<CompetitorBO> competitorBOs = Arrays.asList(competitorBO_A, competitorBO_B, competitorBO_C, competitorBO_D);
         competitorBOs.sort(CompetitorBOComparators.DEFAULT);
-        assertEquals("D is first; inactive with most result", competitorBO_D, competitorBOs.get(0));
-        assertEquals("C is second; inactive with lowest result", competitorBO_C, competitorBOs.get(1));
-        assertEquals("B is third; active with lowest invest", competitorBO_B, competitorBOs.get(2));
-        assertEquals("A is last; active with highest invest", competitorBO_A, competitorBOs.get(3));
+        assertEquals("B is first; active with lowest invest", competitorBO_B, competitorBOs.get(0));
+        assertEquals("A is second; active with highest invest", competitorBO_A, competitorBOs.get(1));
+        assertEquals("D is third; inactive with most result", competitorBO_D, competitorBOs.get(2));
+        assertEquals("C is last; inactive with lowest result", competitorBO_C, competitorBOs.get(3));
     }
 
     @Test
@@ -59,8 +59,8 @@ public class CompetitorBOComparatorsTest
 
         List<CompetitorBO> competitorBOs = Arrays.asList(competitorBO_A, competitorBO_C);
         competitorBOs.sort(CompetitorBOComparators.DEFAULT);
-        assertEquals("C is second; inactive with lowest result", competitorBO_C, competitorBOs.get(0));
-        assertEquals("A is last; active with highest invest", competitorBO_A, competitorBOs.get(1));
+        assertEquals("A is first; active with highest invest", competitorBO_A, competitorBOs.get(0));
+        assertEquals("C is second; inactive with lowest result", competitorBO_C, competitorBOs.get(1));
     }
 
     @Test

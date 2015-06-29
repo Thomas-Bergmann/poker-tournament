@@ -37,7 +37,11 @@
         <xsl:with-param name="placeholderKey">placeholder.name.player</xsl:with-param>
       </xsl:call-template>
       <xsl:call-template name="button">
+        <xsl:with-param name="name">buyin</xsl:with-param>
+      </xsl:call-template>
+      <xsl:call-template name="button">
         <xsl:with-param name="name">create</xsl:with-param>
+        <xsl:with-param name="cssClass">btn</xsl:with-param>
       </xsl:call-template>
     </form>
   </xsl:template>

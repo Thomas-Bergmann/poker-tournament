@@ -23,6 +23,7 @@ import de.hatoka.tournament.internal.app.servlets.TournamentBlindLevelService;
 import de.hatoka.tournament.internal.app.servlets.TournamentCompetitorService;
 import de.hatoka.tournament.internal.app.servlets.TournamentListService;
 import de.hatoka.tournament.internal.app.servlets.TournamentRankService;
+import de.hatoka.tournament.internal.app.servlets.TournamentService;
 import de.hatoka.tournament.internal.modules.TournamentBusinessModule;
 import de.hatoka.tournament.internal.modules.TournamentDaoJpaModule;
 
@@ -53,6 +54,7 @@ public class TournamentApplication extends Application
         final Set<Class<?>> result = new HashSet<>();
         result.add(ResourceService.class);
         result.add(TournamentListService.class);
+        result.add(TournamentService.class);
         result.add(TournamentCompetitorService.class);
         result.add(TournamentBlindLevelService.class);
         result.add(TournamentRankService.class);

@@ -8,13 +8,13 @@ import de.hatoka.tournament.capi.business.CashGameBO;
 import de.hatoka.tournament.capi.business.TournamentBO;
 import de.hatoka.tournament.capi.business.TournamentBORepository;
 import de.hatoka.tournament.internal.app.models.FrameModel;
-import de.hatoka.tournament.internal.app.models.MenuItemVO;
 import de.hatoka.tournament.internal.app.servlets.CashGameCompetitorService;
 import de.hatoka.tournament.internal.app.servlets.CashGameListService;
 import de.hatoka.tournament.internal.app.servlets.TournamentBlindLevelService;
 import de.hatoka.tournament.internal.app.servlets.TournamentCompetitorService;
 import de.hatoka.tournament.internal.app.servlets.TournamentListService;
 import de.hatoka.tournament.internal.app.servlets.TournamentRankService;
+import de.hatoka.tournament.internal.app.servlets.TournamentService;
 
 public class MenuFactory
 {
@@ -30,8 +30,7 @@ public class MenuFactory
         model.setTitleKey(titleKey);
         model.setContent(content);
         model.setUriHome(getUri(info, isCashGame ? CashGameListService.class : TournamentListService.class, "list"));
-        model.addMainMenu("menu.list.tournaments", getUri(info, TournamentListService.class, "list"), !isCashGame);
-        model.addMainMenu("menu.list.cashgames", getUri(info, CashGameListService.class, "list"), isCashGame);
+        defineMainMenu(info, isCashGame, model);
 
         model.addSideMenu("menu.list.tournaments", getUri(info, TournamentListService.class, "list"),
                         getTournamentsSize(tournamentBORepository), getUri(info, TournamentListService.class, "add"),
@@ -40,6 +39,12 @@ public class MenuFactory
                         getCashGamesSize(tournamentBORepository), getUri(info, CashGameListService.class, "add"),
                         isCashGame);
         return model;
+    }
+
+    private void defineMainMenu(UriInfo info, boolean isCashGame, FrameModel model)
+    {
+        model.addMainMenu("menu.list.tournaments", getUri(info, TournamentListService.class, "list"), !isCashGame);
+        model.addMainMenu("menu.list.cashgames", getUri(info, CashGameListService.class, "list"), isCashGame);
     }
 
     private Integer getTournamentsSize(TournamentBORepository tournamentBORepository)
@@ -59,13 +64,9 @@ public class MenuFactory
         model.setTitleKey(titleKey);
         model.setContent(content);
         model.setUriHome(getUri(info, CashGameListService.class, "list"));
-        model.addMainMenu("menu.list.cashgames", getUri(info, CashGameListService.class, "list"), false);
+        defineMainMenu(info, true, model);
+
         CashGameBO cashGameBO = tournamentBORepository.getCashGameByID(tournamentID);
-        MenuItemVO gameMenu = model.addMainMenu("menu.list.cashgames",
-                        getUri(info, CashGameCompetitorService.class, "players", cashGameBO.getID()), true);
-        gameMenu.setTitle(cashGameBO.getName());
-        model.addSideMenu("menu.list.cashgames", getUri(info, CashGameListService.class, "list"),
-                        getCashGamesSize(tournamentBORepository), getUri(info, CashGameListService.class, "add"), false);
         model.addSideMenu("menu.cashgame.players",
                         getUri(info, CashGameCompetitorService.class, "players", cashGameBO.getID()), cashGameBO
                                         .getCompetitors().size(),
@@ -84,14 +85,11 @@ public class MenuFactory
         model.setTitleKey(titleKey);
         model.setContent(content);
         model.setUriHome(getUri(info, TournamentListService.class, "list"));
-        model.addMainMenu("menu.list.tournaments", getUri(info, TournamentListService.class, "list"), false);
+        defineMainMenu(info, false, model);
+
         TournamentBO tournamentBO = tournamentBORepository.getTournamentByID(tournamentID);
-        MenuItemVO gameMenu = model.addMainMenu("menu.list.cashgames",
-                        getUri(info, TournamentCompetitorService.class, "players", tournamentBO.getID()), true);
-        gameMenu.setTitle(tournamentBO.getName());
-        model.addSideMenu("menu.list.tournaments", getUri(info, TournamentListService.class, "list"),
-                        getTournamentsSize(tournamentBORepository), getUri(info, TournamentListService.class, "add"),
-                        false);
+        model.addSideMenu("menu.tournament.general",
+                        getUri(info, TournamentService.class, "general", tournamentBO.getID()), null, null, titleKey.equals("title.tournament.general"));
         model.addSideMenu("menu.tournament.players",
                         getUri(info, TournamentCompetitorService.class, "players", tournamentBO.getID()), tournamentBO
                                         .getCompetitors().size(),

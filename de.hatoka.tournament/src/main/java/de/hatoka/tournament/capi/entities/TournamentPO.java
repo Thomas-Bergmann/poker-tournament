@@ -84,11 +84,15 @@ public class TournamentPO implements Serializable, IdentifiableEntity
 
     @NotNull
     @XmlAttribute
-    private int minPlayerPerTable = 2;
+    private int minPlayerPerTable = 9;
 
     @NotNull
     @XmlAttribute
     private int maxPlayerPerTable = 10;
+
+    @NotNull
+    @XmlAttribute
+    private int initialStacksize= 1000;
 
     @NotNull
     @XmlAttribute
@@ -280,5 +284,16 @@ public class TournamentPO implements Serializable, IdentifiableEntity
     public void setRanks(List<RankPO> ranks)
     {
         this.ranks = ranks;
+    }
+
+    @XmlTransient
+    public int getInitialStacksize()
+    {
+        return initialStacksize;
+    }
+
+    public void setInitialStacksize(int initialStacksize)
+    {
+        this.initialStacksize = initialStacksize;
     }
 }

@@ -104,18 +104,24 @@ public class TournamentBOImpl implements TournamentBO
         {
             throw new IllegalStateException("seatOpen not allowed at inactive competitors");
         }
-        Money moneyResult = getResultForNextLooser();
+        int position = getActiveCompetitors().size();
+        Money moneyResult = getResultForPosition(position);
         ICompetitor iTournamentCompetitor = (ICompetitor)competitorBO;
         iTournamentCompetitor.setInactive();
         iTournamentCompetitor.setResult(moneyResult);
+        iTournamentCompetitor.setPosition(position);
         sortCompetitors();
         iTournamentCompetitor.createEntry(HistoryEntryType.CashOut, moneyResult);
     }
 
-    private Money getResultForNextLooser()
+    private Money getResultForPosition(int position)
     {
-        // TODO Auto-generated method stub
-        return null;
+        List<RankBO> assignedRanks = getRanks().stream().filter(rankBO -> rankBO.getFirstPosition() <= position && position <= rankBO.getLastPosition()).collect(Collectors.toList());
+        if (assignedRanks.isEmpty())
+        {
+            return Money.NOTHING;
+        }
+        return assignedRanks.get(0).getAmountPerPlayer();
     }
 
     @Override
@@ -466,5 +472,24 @@ public class TournamentBOImpl implements TournamentBO
             }
         }
 
+    }
+
+    @Override
+    public int getInitialStacksize()
+    {
+        return tournamentPO.getInitialStacksize();
+    }
+
+    @Override
+    public void setInitialStacksize(int initialStacksize)
+    {
+        tournamentPO.setInitialStacksize(initialStacksize);
+    }
+
+    @Override
+    public int getFinalStacksize()
+    {
+        // TODO need to add re-buy here
+        return tournamentPO.getInitialStacksize() * tournamentPO.getCompetitors().size();
     }
 }

@@ -9,7 +9,7 @@ import java.util.List;
 import javax.xml.bind.JAXBException;
 
 import de.hatoka.common.capi.business.Warning;
-import de.hatoka.tournament.capi.entities.TournamentModel;
+import de.hatoka.tournament.capi.entities.TournamentPersistenceModel;
 
 public interface TournamentBORepository
 {
@@ -32,7 +32,7 @@ public interface TournamentBORepository
     void exportXML(Writer writer) throws JAXBException;
 
     /**
-     * Imports the XML stream of tournaments, see structure {@link TournamentModel}.
+     * Imports the XML stream of tournaments, see structure {@link TournamentPersistenceModel}.
      * The transactions are handled, and encapsulate each tournament.
      *
      * @param resourceStream

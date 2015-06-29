@@ -17,6 +17,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.hatoka.common.capi.app.model.MoneyVO;
+import de.hatoka.common.capi.app.model.SelectOptionVO;
 import de.hatoka.common.capi.app.xslt.Lib;
 import de.hatoka.common.capi.app.xslt.XSLTRenderer;
 import de.hatoka.common.capi.business.CountryHelper;
@@ -30,6 +31,7 @@ import de.hatoka.tournament.internal.app.models.CompetitorVO;
 import de.hatoka.tournament.internal.app.models.PlayerVO;
 import de.hatoka.tournament.internal.app.models.RankVO;
 import de.hatoka.tournament.internal.app.models.TournamentBlindLevelModel;
+import de.hatoka.tournament.internal.app.models.TournamentConfigurationModel;
 import de.hatoka.tournament.internal.app.models.TournamentListModel;
 import de.hatoka.tournament.internal.app.models.TournamentPlayerListModel;
 import de.hatoka.tournament.internal.app.models.TournamentRankModel;
@@ -108,8 +110,7 @@ public class TournamentTemplateTest
         model.getCompetitors().add(competitorVO);
         String content = RENDERER.render(model, RESOURCE_PREFIX + "tournament_player_add.xslt", getParameter());
 
-        // Assert.assertEquals("players not listed correctly",
-        // getResource("tournament_no_unassigned.result.xml"), content);
+        // Assert.assertEquals("players not listed correctly",getResource("tournament_no_unassigned.result.xml"), content);
         XMLAssert.assertXMLEqual("players unassigned incorrectly", wrapXMLRoot(getResource("tournament_no_unassigned.result.xml")), wrapXMLRoot(content));
     }
 
@@ -166,6 +167,24 @@ public class TournamentTemplateTest
         SimpleDateFormat result = new SimpleDateFormat(LocalizationConstants.XML_DATEFORMAT_MINUTES);
         result.setTimeZone(CountryHelper.TZ_BERLIN);
         return result.parse(dateString);
+    }
+
+    @Test
+    public void testTournamentConfiguration() throws Exception
+    {
+        TournamentConfigurationModel model = new TournamentConfigurationModel();
+        TournamentVO tournamentVO = getTournamentVO("123456", "Test 1", parseDate("2011-11-25T18:00"));
+        tournamentVO.setBuyIn(new MoneyVO(Money.valueOf("5", "USD")));
+        List<SelectOptionVO> options = tournamentVO.getReBuyOption().getOptions();
+        options.add(new SelectOptionVO("single", true));
+        options.add(new SelectOptionVO("multi", false));
+        options.add(new SelectOptionVO("no", false));
+        model.setTournament(tournamentVO);
+        String content = RENDERER.render(model, RESOURCE_PREFIX + "tournament_general.xslt", getParameter());
+        // String content = new XMLRenderer().render(model);
+
+        // Assert.assertEquals("overview not correct", getResource("tournament_general.result.xml"), content);
+        XMLAssert.assertXMLEqual("overview not correct", getResource("tournament_general.result.xml"), content);
     }
 
 }

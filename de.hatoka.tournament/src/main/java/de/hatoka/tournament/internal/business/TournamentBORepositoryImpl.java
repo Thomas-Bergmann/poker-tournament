@@ -32,7 +32,7 @@ import de.hatoka.tournament.capi.entities.CompetitorPO;
 import de.hatoka.tournament.capi.entities.HistoryPO;
 import de.hatoka.tournament.capi.entities.PlayerPO;
 import de.hatoka.tournament.capi.entities.RankPO;
-import de.hatoka.tournament.capi.entities.TournamentModel;
+import de.hatoka.tournament.capi.entities.TournamentPersistenceModel;
 import de.hatoka.tournament.capi.entities.TournamentPO;
 
 public class TournamentBORepositoryImpl implements TournamentBORepository
@@ -150,40 +150,40 @@ public class TournamentBORepositoryImpl implements TournamentBORepository
     @Override
     public void exportXML(Writer writer) throws JAXBException
     {
-        TournamentModel tournamentModel = new TournamentModel();
-        tournamentModel.setPlayerPOs(playerDao.getByAccountRef(accountRef));
-        tournamentModel.setTournamentPOs(tournamentDao.getByAccountRef(accountRef));
+        TournamentPersistenceModel tournamentPersistenceModel = new TournamentPersistenceModel();
+        tournamentPersistenceModel.setPlayerPOs(playerDao.getByAccountRef(accountRef));
+        tournamentPersistenceModel.setTournamentPOs(tournamentDao.getByAccountRef(accountRef));
 
         // create JAXB context and instantiate marshaller
-        JAXBContext context = JAXBContext.newInstance(TournamentModel.class);
+        JAXBContext context = JAXBContext.newInstance(TournamentPersistenceModel.class);
         Marshaller m = context.createMarshaller();
         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-        m.marshal(tournamentModel, writer);
+        m.marshal(tournamentPersistenceModel, writer);
     }
 
     @Override
     public List<Warning> importXML(InputStream inputStream) throws IOException
     {
         List<Warning> warnings = new ArrayList<>();
-        TournamentModel tournamentModel = null;
+        TournamentPersistenceModel tournamentPersistenceModel = null;
         try
         {
-            JAXBContext context = JAXBContext.newInstance(TournamentModel.class);
+            JAXBContext context = JAXBContext.newInstance(TournamentPersistenceModel.class);
             Unmarshaller um = context.createUnmarshaller();
-            tournamentModel = (TournamentModel)um.unmarshal(inputStream);
+            tournamentPersistenceModel = (TournamentPersistenceModel)um.unmarshal(inputStream);
         }
         catch(JAXBException e)
         {
             throw new IOException(e);
         }
-        importPlayers(tournamentModel);
-        importTournaments(warnings, tournamentModel);
+        importPlayers(tournamentPersistenceModel);
+        importTournaments(warnings, tournamentPersistenceModel);
         return warnings;
     }
 
-    private void importTournaments(List<Warning> warnings, TournamentModel tournamentModel)
+    private void importTournaments(List<Warning> warnings, TournamentPersistenceModel tournamentPersistenceModel)
     {
-        for (TournamentPO tournamentXML : tournamentModel.getTournamentPOs())
+        for (TournamentPO tournamentXML : tournamentPersistenceModel.getTournamentPOs())
         {
             TournamentPO tournamentPO = tournamentDao.findByExternalRef(accountRef, tournamentXML.getExternalRef());
             if (tournamentPO == null)
@@ -253,13 +253,13 @@ public class TournamentBORepositoryImpl implements TournamentBORepository
 
     /**
      * Imports the players from given persistence model
-     * @param tournamentModel
+     * @param tournamentPersistenceModel
      * @return map of external identifier to internal identifier
      */
-    private void importPlayers(TournamentModel tournamentModel)
+    private void importPlayers(TournamentPersistenceModel tournamentPersistenceModel)
     {
         // remember stored id of player
-        for (PlayerPO playerXML : tournamentModel.getPlayerPOs())
+        for (PlayerPO playerXML : tournamentPersistenceModel.getPlayerPOs())
         {
             PlayerPO playerPO = playerDao.findByExternalRef(accountRef, playerXML.getExternalRef());
             if (playerPO == null)

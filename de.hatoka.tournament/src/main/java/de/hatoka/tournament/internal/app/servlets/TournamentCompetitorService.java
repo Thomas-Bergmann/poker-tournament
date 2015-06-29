@@ -1,6 +1,7 @@
 package de.hatoka.tournament.internal.app.servlets;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.ws.rs.FormParam;
@@ -13,6 +14,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import de.hatoka.common.capi.app.servlet.AbstractService;
+import de.hatoka.tournament.capi.business.CompetitorBO;
 import de.hatoka.tournament.capi.business.PlayerBO;
 import de.hatoka.tournament.capi.business.TournamentBORepository;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
@@ -149,7 +151,7 @@ public class TournamentCompetitorService extends AbstractService
 
     @POST
     @Path("/createPlayer")
-    public Response createPlayer(@FormParam("name") String name)
+    public Response createPlayer(@FormParam("name") String name, @FormParam("buyin") String buttonBuyIn)
     {
         TournamentAction action = getTournamentAction();
         if (action == null)
@@ -162,7 +164,11 @@ public class TournamentCompetitorService extends AbstractService
             public void run()
             {
                 PlayerBO playerBO = getPlayerAction().createPlayer(name);
-                action.register(playerBO);
+                CompetitorBO competitor = action.register(playerBO);
+                if (isButtonPressed(buttonBuyIn))
+                {
+                    action.buyInPlayers(Arrays.asList(competitor.getID()));
+                }
             }
         });
         return redirectAddPlayer();

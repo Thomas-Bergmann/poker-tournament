@@ -57,6 +57,7 @@ public class TournamentFrameTemplateTest
         MenuItemVO menu = model.addMainMenu("menu.cashgame.players", URI.create("players.xml"), true);
         menu.setTitle("Event 1");
 
+        model.addSideMenu("menu.cashgame.config", URI.create("config.xml"), null, null, false);
         model.addSideMenu("menu.cashgame.players", URI.create("players.xml"), 3, URI.create("player_add.xml"), true);
         model.addSideMenu("menu.cashgame.history", URI.create("history.xml"), 4, null, false);
 

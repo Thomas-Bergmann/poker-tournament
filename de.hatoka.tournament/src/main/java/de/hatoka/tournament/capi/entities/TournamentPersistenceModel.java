@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 @XmlRootElement(namespace = "de.hatoka.xml.tournament")
-public class TournamentModel
+public class TournamentPersistenceModel
 {
     @XmlElementWrapper(name = "players")
     @XmlElement(name = "player")

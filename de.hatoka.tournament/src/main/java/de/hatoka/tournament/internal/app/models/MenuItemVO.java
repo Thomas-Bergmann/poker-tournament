@@ -31,7 +31,7 @@ public class MenuItemVO
         this.hasAddUri = false;
     }
 
-    public MenuItemVO(String titleKey, URI uriList, boolean isActive, int count, URI uriAdd)
+    public MenuItemVO(String titleKey, URI uriList, boolean isActive, Integer count, URI uriAdd)
     {
         this(titleKey, uriList, isActive);
         this.count = count;
