@@ -2,6 +2,7 @@ package de.hatoka.tournament.internal.app.servlets;
 
 import java.io.IOException;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -16,6 +17,7 @@ import de.hatoka.tournament.capi.business.TournamentBO;
 import de.hatoka.tournament.capi.business.TournamentBORepository;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
 import de.hatoka.tournament.internal.app.actions.TournamentAction;
+import de.hatoka.tournament.internal.app.filter.AccountRequestFilter;
 import de.hatoka.tournament.internal.app.menu.MenuFactory;
 import de.hatoka.tournament.internal.app.models.TournamentConfigurationModel;
 
@@ -23,57 +25,41 @@ import de.hatoka.tournament.internal.app.models.TournamentConfigurationModel;
 public class TournamentService extends AbstractService
 {
     private static final String RESOURCE_PREFIX = "de/hatoka/tournament/internal/templates/app/";
+    private static final String METHOD_NAME_LIST = "list";
 
     @PathParam("id")
     private String tournamentID;
 
     @Context
     private UriInfo info;
+    @Context
+    private HttpServletRequest servletRequest;
 
-    private AccountService accountService;
     private final MenuFactory menuFactory = new MenuFactory();
-
-    private Response redirect;
 
     public TournamentService()
     {
         super(RESOURCE_PREFIX);
-        accountService = new AccountService(this);
     }
 
-    public TournamentService(AccountService accountService)
+    private String getAccountRef()
     {
-        super(RESOURCE_PREFIX);
-        this.accountService = accountService;
-    }
-
-    public void setAccountService(AccountService accountService)
-    {
-        this.accountService = accountService;
+        return AccountRequestFilter.getAccountRef(servletRequest);
     }
 
     private TournamentAction getTournamentAction()
     {
-        String accountRef = accountService.getAccountRef();
-        if (accountRef == null)
-        {
-            redirect = accountService.redirectLogin();
-            return null;
-        }
+        String accountRef = getAccountRef();
         TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
         return new TournamentAction(accountRef, tournamentID, factory);
     }
 
     @GET
-    @Path("/general.html")
-    public Response general()
+    @Path("/overview.html")
+    public Response list()
     {
         TournamentAction action = getTournamentAction();
-        if (action == null)
-        {
-            return redirect;
-        }
-        final TournamentConfigurationModel model = action.getTournamentConfigurationModel(getUriBuilder(TournamentListService.class, "list").build());
+        final TournamentConfigurationModel model = action.getTournamentConfigurationModel(getUriBuilder(TournamentListService.class, METHOD_NAME_LIST).build());
         try
         {
             String content = renderStyleSheet(model, "tournament_general.xslt", getXsltProcessorParameter("tournament"));
@@ -85,28 +71,18 @@ public class TournamentService extends AbstractService
         }
     }
 
-    private Response redirectOverview()
-    {
-        return Response.seeOther(getUriBuilder(TournamentService.class, "general").build(tournamentID)).build();
-    }
-
     @POST
     @Path("/saveConfiguration")
     public Response saveConfiguration(@FormParam("name") String name, @FormParam("initialStack") Integer initialStack, @FormParam("smallestTable") Integer smallestTable,
                     @FormParam("largestTable") Integer largestTable)
     {
-        TournamentAction action = getTournamentAction();
-        if (action == null)
-        {
-            return redirect;
-        }
         runInTransaction(new Runnable()
         {
             @Override
             public void run()
             {
                 TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
-                TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountService.getAccountRef());
+                TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(getAccountRef());
                 TournamentBO tournament = tournamentBORepository.getTournamentByID(tournamentID);
                 tournament.setMininumNumberOfPlayersPerTable(smallestTable);
                 tournament.setMaximumNumberOfPlayersPerTable(largestTable);
@@ -114,14 +90,14 @@ public class TournamentService extends AbstractService
                 tournament.setName(name);
             }
         });
-        return redirectOverview();
+        return redirect(METHOD_NAME_LIST);
     }
 
     private String renderFrame(String content, String titleKey) throws IOException
     {
         TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
-        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountService.getAccountRef());
-        return renderStyleSheet(menuFactory.getTournamentFrameModel(content, titleKey, getInfo(), tournamentBORepository, tournamentID), "tournament_frame.xslt",
+        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(getAccountRef());
+        return renderStyleSheet(menuFactory.getTournamentFrameModel(content, titleKey, info, tournamentBORepository, tournamentID), "tournament_frame.xslt",
                         getXsltProcessorParameter("tournament"));
     }
 }

@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -21,15 +22,17 @@ import de.hatoka.tournament.capi.business.TournamentBORepository;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
 import de.hatoka.tournament.internal.app.actions.CashGameAction;
 import de.hatoka.tournament.internal.app.actions.PlayerAction;
+import de.hatoka.tournament.internal.app.filter.AccountRequestFilter;
 import de.hatoka.tournament.internal.app.menu.MenuFactory;
 import de.hatoka.tournament.internal.app.models.FrameModel;
 import de.hatoka.tournament.internal.app.models.HistoryModel;
 import de.hatoka.tournament.internal.app.models.TournamentPlayerListModel;
 
-@Path("/cashgame/{id}")
+@Path("/cashgame/{id}/competitors")
 public class CashGameCompetitorService extends AbstractService
 {
     private static final String RESOURCE_PREFIX = "de/hatoka/tournament/internal/templates/app/";
+    private static final String METHOD_NAME_LIST = "list";
 
     @PathParam("id")
     private String tournamentID;
@@ -37,54 +40,32 @@ public class CashGameCompetitorService extends AbstractService
     @Context
     private UriInfo info;
 
-    private AccountService accountService;
-    private final MenuFactory menuFactory = new MenuFactory();
+    @Context
+    private HttpServletRequest servletRequest;
 
-    private Response redirect;
+    private final MenuFactory menuFactory = new MenuFactory();
 
     public CashGameCompetitorService()
     {
         super(RESOURCE_PREFIX);
-        accountService = new AccountService(this);
-    }
-
-    public CashGameCompetitorService(AccountService accountService)
-    {
-        super(RESOURCE_PREFIX);
-        this.accountService = accountService;
-    }
-
-    public void setAccountService(AccountService accountService)
-    {
-        this.accountService = accountService;
     }
 
     private PlayerAction getPlayerAction()
     {
-        String accountRef = accountService.getAccountRef();
-        if (accountRef == null)
-        {
-            redirect = accountService.redirectLogin();
-            return null;
-        }
+        String accountRef = AccountRequestFilter.getAccountRef(servletRequest);
         return new PlayerAction(accountRef, getInstance(TournamentBusinessFactory.class));
     }
 
     private CashGameAction getCashGameAction()
     {
-        String accountRef = accountService.getAccountRef();
-        if (accountRef == null)
-        {
-            redirect = accountService.redirectLogin();
-            return null;
-        }
+        String accountRef = AccountRequestFilter.getAccountRef(servletRequest);
         TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
         TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountRef);
         return new CashGameAction(accountRef, tournamentBORepository.getCashGameByID(tournamentID), factory);
     }
 
     @POST
-    @Path("/actionPlayerList")
+    @Path("/actionList")
     public Response actionPlayerList(@FormParam("competitorID") List<String> identifiers,
                     @FormParam("delete") String deleteButton, @FormParam("seatopen") String seatOpenButton,
                     @FormParam("sort") String sortButton, @FormParam("rebuy") String rebuyButton,
@@ -110,14 +91,10 @@ public class CashGameCompetitorService extends AbstractService
     }
 
     @POST
-    @Path("/sortPlayers")
+    @Path("/sort")
     public Response sortPlayers()
     {
         CashGameAction action = getCashGameAction();
-        if (action == null)
-        {
-            return redirect;
-        }
         runInTransaction(new Runnable()
         {
             @Override
@@ -130,14 +107,10 @@ public class CashGameCompetitorService extends AbstractService
     }
 
     @POST
-    @Path("/assignPlayer")
+    @Path("/assign")
     public Response assignPlayer(@FormParam("playerID") String playerID, @FormParam("amount") String amount)
     {
         CashGameAction action = getCashGameAction();
-        if (action == null)
-        {
-            return redirect;
-        }
         runInTransaction(new Runnable()
         {
             @Override
@@ -151,14 +124,10 @@ public class CashGameCompetitorService extends AbstractService
     }
 
     @POST
-    @Path("/createPlayer")
+    @Path("/create")
     public Response createPlayer(@FormParam("name") String name, @FormParam("amount") String amount)
     {
         CashGameAction action = getCashGameAction();
-        if (action == null)
-        {
-            return redirect;
-        }
         runInTransaction(new Runnable()
         {
             @Override
@@ -172,17 +141,20 @@ public class CashGameCompetitorService extends AbstractService
     }
 
     @GET
+    @Path("/list.html")
+    public Response list()
+    {
+        return players(Collections.emptyList());
+    }
+
+    @GET
     @Path("/players.html")
     public Response players(@QueryParam("errors") List<String> errors)
     {
         CashGameAction action = getCashGameAction();
-        if (action == null)
-        {
-            return redirect;
-        }
         final TournamentPlayerListModel model = action.getPlayerListModel(
-                        getUriBuilder(CashGameListService.class, "list").build(),
-                        getUriBuilder(CashGameCompetitorService.class, "players"));
+                        getUriBuilder(CashGameListService.class, METHOD_NAME_LIST).build(),
+                        getUriBuilder(CashGameCompetitorService.class, METHOD_NAME_LIST));
         model.getErrors().addAll(errors);
         try
         {
@@ -200,10 +172,6 @@ public class CashGameCompetitorService extends AbstractService
     public Response history()
     {
         CashGameAction action = getCashGameAction();
-        if (action == null)
-        {
-            return redirect;
-        }
         final HistoryModel model = action.getHistoryModel();
         try
         {
@@ -221,13 +189,9 @@ public class CashGameCompetitorService extends AbstractService
     public Response addPlayer()
     {
         CashGameAction action = getCashGameAction();
-        if (action == null)
-        {
-            return redirect;
-        }
         final TournamentPlayerListModel model = action.getPlayerListModel(
-                        getUriBuilder(CashGameListService.class, "list").build(),
-                        getUriBuilder(CashGameCompetitorService.class, "players"));
+                        getUriBuilder(CashGameListService.class, METHOD_NAME_LIST).build(),
+                        getUriBuilder(CashGameCompetitorService.class, METHOD_NAME_LIST));
         try
         {
             String content = renderStyleSheet(model, "tournament_player_add.xslt",
@@ -241,14 +205,10 @@ public class CashGameCompetitorService extends AbstractService
     }
 
     @POST
-    @Path("/rebuyPlayers")
+    @Path("/rebuy")
     public Response rebuyPlayers(@FormParam("competitorID") List<String> identifiers, @FormParam("rebuy") String rebuy)
     {
         CashGameAction action = getCashGameAction();
-        if (action == null)
-        {
-            return redirect;
-        }
         List<String> errors = Collections.emptyList();
         try
         {
@@ -282,20 +242,16 @@ public class CashGameCompetitorService extends AbstractService
     private Response redirectPlayers(List<String> errors)
     {
         return Response.seeOther(
-                        getUriBuilder(CashGameCompetitorService.class, "players")
+                        getUriBuilder(CashGameCompetitorService.class, METHOD_NAME_LIST)
                                         .queryParam("errors", errors.toArray()).build(tournamentID)).build();
     }
 
     @POST
-    @Path("/seatOpenPlayers")
+    @Path("/seatOpen")
     public Response seatOpenPlayers(@FormParam("competitorID") List<String> identifiers,
                     @FormParam("amount") String amount)
     {
         CashGameAction action = getCashGameAction();
-        if (action == null)
-        {
-            return redirect;
-        }
         runInTransaction(new Runnable()
         {
             @Override
@@ -308,14 +264,10 @@ public class CashGameCompetitorService extends AbstractService
     }
 
     @POST
-    @Path("/unassignPlayers")
+    @Path("/unassign")
     public Response unassignPlayers(@FormParam("competitorID") List<String> identifiers)
     {
         CashGameAction action = getCashGameAction();
-        if (action == null)
-        {
-            return redirect;
-        }
         runInTransaction(new Runnable()
         {
             @Override
@@ -330,10 +282,9 @@ public class CashGameCompetitorService extends AbstractService
     private String renderFrame(String content, String actionName) throws IOException
     {
         TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
-        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountService
-                        .getAccountRef());
-        FrameModel frameModel = menuFactory.getCashGameFrameModel(content, "title.list." + actionName, getInfo(),
-                        tournamentBORepository, tournamentID, actionName);
+        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(AccountRequestFilter.getAccountRef(servletRequest));
+        FrameModel frameModel = menuFactory.getCashGameFrameModel(content, "title.list." + actionName, info,
+                        tournamentBORepository, tournamentID);
         return renderStyleSheet(frameModel, "tournament_frame.xslt", getXsltProcessorParameter("tournament"));
     }
 }

@@ -9,7 +9,7 @@
     <form method="POST" action="create">
       <xsl:call-template name="input">
         <xsl:with-param name="name">buyIn</xsl:with-param>
-        <xsl:with-param name="placeholderKey">placeholder.buyin</xsl:with-param>
+        <xsl:with-param name="placeholderKey">placeholder.buyIn</xsl:with-param>
       </xsl:call-template>
       <xsl:call-template name="button">
         <xsl:with-param name="name">create</xsl:with-param>

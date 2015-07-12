@@ -6,7 +6,7 @@
   <xsl:param name="uriInfo" />
   <xsl:output method="html" encoding="UTF-8" indent="yes" />
   <xsl:template match="/"  xmlns="http://www.w3.org/1999/xhtml">
-    <form method="POST" action="actionRankList">
+    <form method="POST" action="actionList">
       <table class="table table-striped">
         <tr>
           <th>Select</th>

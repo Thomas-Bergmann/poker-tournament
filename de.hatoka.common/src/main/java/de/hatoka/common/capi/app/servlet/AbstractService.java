@@ -103,7 +103,7 @@ public class AbstractService
 
     public UriBuilder getUriBuilder(Class<?> resource, String methodName)
     {
-        return getInfo().getBaseUriBuilder().path(resource).path(resource, methodName);
+        return info.getBaseUriBuilder().path(resource).path(resource, methodName);
     }
 
     protected String getUUID()
@@ -166,7 +166,7 @@ public class AbstractService
     protected Map<String, Object> getXsltProcessorParameter(String localizationResource)
     {
         Map<String, Object> result = new HashMap<String, Object>();
-        result.put("uriInfo", getInfo());
+        result.put("uriInfo", info);
         if (localizationResource != null)
         {
             result.put("localizer", new ResourceLocalizer(new LocalizationBundle(resourcePrefix
@@ -200,8 +200,8 @@ public class AbstractService
         return button != null;
     }
 
-    public UriInfo getInfo()
+    protected Response redirect(String methodName)
     {
-        return info;
+        return Response.seeOther(getUriBuilder(getClass(), methodName).build()).build();
     }
 }

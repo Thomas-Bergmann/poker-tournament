@@ -15,7 +15,7 @@
     <h2>
       <xsl:value-of select="hatoka:getText($localizer, 'info.unassigned.player', 'Assign xyz')" />
     </h2>
-    <form method="POST" action="assignPlayer">
+    <form method="POST" action="assign">
       <div class="input">
         <select name="playerID">
           <xsl:for-each select="tournamentPlayerListModel/unassignedPlayers">
@@ -31,7 +31,7 @@
       </xsl:call-template>
     </form>
     </xsl:if>
-    <form method="POST" action="createPlayer">
+    <form method="POST" action="create">
       <xsl:call-template name="input">
         <xsl:with-param name="name">name</xsl:with-param>
         <xsl:with-param name="placeholderKey">placeholder.name.player</xsl:with-param>

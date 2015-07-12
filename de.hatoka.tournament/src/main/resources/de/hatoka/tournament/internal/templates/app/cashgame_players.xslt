@@ -6,7 +6,7 @@
   <xsl:param name="uriInfo" />
   <xsl:output method="html" encoding="UTF-8" indent="yes" />
   <xsl:template match="/"  xmlns="http://www.w3.org/1999/xhtml">
-    <form method="POST" action="actionPlayerList">
+    <form method="POST" action="actionList">
       <xsl:for-each select="tournamentPlayerListModel/errors" xmlns="http://www.w3.org/1999/xhtml">
         <p class="bg-warning"><xsl:value-of select="hatoka:getText($localizer, ., .)" /></p>
       </xsl:for-each>

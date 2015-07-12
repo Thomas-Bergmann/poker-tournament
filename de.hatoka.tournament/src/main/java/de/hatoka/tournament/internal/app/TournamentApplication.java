@@ -17,6 +17,7 @@ import de.hatoka.common.capi.app.servlet.ResourceService;
 import de.hatoka.common.capi.app.servlet.ServletConstants;
 import de.hatoka.common.capi.modules.CommonDaoModule;
 import de.hatoka.common.capi.modules.JpaDBModule;
+import de.hatoka.tournament.internal.app.filter.AccountRequestFilter;
 import de.hatoka.tournament.internal.app.servlets.CashGameCompetitorService;
 import de.hatoka.tournament.internal.app.servlets.CashGameListService;
 import de.hatoka.tournament.internal.app.servlets.TournamentBlindLevelService;
@@ -60,6 +61,7 @@ public class TournamentApplication extends Application
         result.add(TournamentRankService.class);
         result.add(CashGameListService.class);
         result.add(CashGameCompetitorService.class);
+        result.add(AccountRequestFilter.class);
         return result;
     }
 

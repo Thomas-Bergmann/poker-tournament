@@ -3,6 +3,7 @@ package de.hatoka.tournament.internal.app.servlets;
 import java.io.IOException;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -16,60 +17,49 @@ import de.hatoka.common.capi.app.servlet.AbstractService;
 import de.hatoka.tournament.capi.business.TournamentBORepository;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
 import de.hatoka.tournament.internal.app.actions.RankAction;
+import de.hatoka.tournament.internal.app.filter.AccountRequestFilter;
 import de.hatoka.tournament.internal.app.menu.MenuFactory;
 import de.hatoka.tournament.internal.app.models.RankVO;
 import de.hatoka.tournament.internal.app.models.TournamentRankModel;
 
-@Path("/tournament/{id}")
+@Path("/tournament/{id}/ranks")
 public class TournamentRankService extends AbstractService
 {
     private static final String RESOURCE_PREFIX = "de/hatoka/tournament/internal/templates/app/";
+    private static final String METHOD_NAME_LIST = "list";
 
     @PathParam("id")
     private String tournamentID;
 
     @Context
     private UriInfo info;
+    @Context
+    private HttpServletRequest servletRequest;
 
-    private AccountService accountService;
     private final MenuFactory menuFactory = new MenuFactory();
-
-    private Response redirect;
 
     public TournamentRankService()
     {
         super(RESOURCE_PREFIX);
-        accountService = new AccountService(this);
     }
 
-    public TournamentRankService(AccountService accountService)
+    private String getAccountRef()
     {
-        super(RESOURCE_PREFIX);
-        this.accountService = accountService;
-    }
-
-    public void setAccountService(AccountService accountService)
-    {
-        this.accountService = accountService;
+        return AccountRequestFilter.getAccountRef(servletRequest);
     }
 
     private RankAction getRankAction()
     {
-        String accountRef = accountService.getAccountRef();
-        if (accountRef == null)
-        {
-            redirect = accountService.redirectLogin();
-            return null;
-        }
+        String accountRef = getAccountRef();
         TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
         return new RankAction(accountRef, tournamentID, factory);
     }
 
     @POST
-    @Path("/actionRankList")
+    @Path("/actionList")
     public Response actionPlayerList(@FormParam("rankID") List<String> identifiers, @FormParam("delete") String deleteButton, @FormParam("save") String saveButton,
-                    @FormParam("firstPosition_new") String firstPosition, @FormParam("lastPosition_new") String lastPosition,
-                    @FormParam("amount_new") String amount, @FormParam("percentage_new") String percentage)
+                    @FormParam("firstPosition_new") String firstPosition, @FormParam("lastPosition_new") String lastPosition, @FormParam("amount_new") String amount,
+                    @FormParam("percentage_new") String percentage)
     {
         if (isButtonPressed(deleteButton))
         {
@@ -79,19 +69,15 @@ public class TournamentRankService extends AbstractService
         {
             return createRank(firstPosition, lastPosition, amount, percentage);
         }
-        return redirectRanks();
+        return redirect(METHOD_NAME_LIST);
     }
 
     @POST
-    @Path("/createRank")
+    @Path("/create")
     public Response createRank(@FormParam("firstPosition_new") String firstPosition, @FormParam("lastPosition_new") String lastPosition, @FormParam("amount_new") String amount,
                     @FormParam("percentage_new") String percentage)
     {
         RankAction action = getRankAction();
-        if (action == null)
-        {
-            return redirect;
-        }
         runInTransaction(new Runnable()
         {
             @Override
@@ -100,19 +86,15 @@ public class TournamentRankService extends AbstractService
                 action.createRank(firstPosition, lastPosition, amount, percentage);
             }
         });
-        return redirectRanks();
+        return redirect(METHOD_NAME_LIST);
     }
 
     @GET
-    @Path("/ranks.html")
-    public Response ranks()
+    @Path("/list.html")
+    public Response list()
     {
         RankAction action = getRankAction();
-        if (action == null)
-        {
-            return redirect;
-        }
-        final TournamentRankModel model = action.getTournamentRankModel(getUriBuilder(TournamentListService.class, "list").build());
+        final TournamentRankModel model = action.getTournamentRankModel(getUriBuilder(TournamentListService.class, METHOD_NAME_LIST).build());
         model.getPrefilled().add(new RankVO("new"));
         try
         {
@@ -125,20 +107,11 @@ public class TournamentRankService extends AbstractService
         }
     }
 
-    private Response redirectRanks()
-    {
-        return Response.seeOther(getUriBuilder(TournamentRankService.class, "ranks").build(tournamentID)).build();
-    }
-
     @POST
-    @Path("/deleteRanks")
+    @Path("/delete")
     public Response deleteRanks(@FormParam("rankID") List<String> identifiers)
     {
         RankAction action = getRankAction();
-        if (action == null)
-        {
-            return redirect;
-        }
         runInTransaction(new Runnable()
         {
             @Override
@@ -147,14 +120,14 @@ public class TournamentRankService extends AbstractService
                 action.deleteRanks(identifiers);
             }
         });
-        return redirectRanks();
+        return redirect(METHOD_NAME_LIST);
     }
 
     private String renderFrame(String content, String titleKey) throws IOException
     {
         TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
-        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountService.getAccountRef());
-        return renderStyleSheet(menuFactory.getTournamentFrameModel(content, titleKey, getInfo(), tournamentBORepository, tournamentID), "tournament_frame.xslt",
+        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(getAccountRef());
+        return renderStyleSheet(menuFactory.getTournamentFrameModel(content, titleKey, info, tournamentBORepository, tournamentID), "tournament_frame.xslt",
                         getXsltProcessorParameter("tournament"));
     }
 }

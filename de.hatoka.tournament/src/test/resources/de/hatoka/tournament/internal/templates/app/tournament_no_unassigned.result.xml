@@ -1,5 +1,5 @@
 <p xmlns="http://www.w3.org/1999/xhtml" class="bg-info">20 players assigned.</p>
-<form xmlns="http://www.w3.org/1999/xhtml" action="createPlayer" method="POST">
+<form xmlns="http://www.w3.org/1999/xhtml" action="create" method="POST">
 <label class="sr-only" for="inputname">Players Name</label>
 <input value="" name="name" type="text" id="inputname" class="form-control" placeholder="Players Name"/>
 <button name="buyin" type="submit" class="btn btn-primary">Buy-In</button>

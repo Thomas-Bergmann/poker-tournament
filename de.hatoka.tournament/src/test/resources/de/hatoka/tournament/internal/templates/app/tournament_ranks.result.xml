@@ -1,4 +1,4 @@
-<form xmlns="http://www.w3.org/1999/xhtml" action="actionRankList" method="POST">
+<form xmlns="http://www.w3.org/1999/xhtml" action="actionList" method="POST">
 <table class="table table-striped">
 <tr>
 <th>Select</th>
