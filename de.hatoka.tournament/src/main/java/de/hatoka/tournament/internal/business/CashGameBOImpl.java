@@ -241,7 +241,7 @@ public class CashGameBOImpl implements CashGameBO
     @Override
     public Collection<CashGameCompetitorBO> getCashGameCompetitors()
     {
-        return getActiveCompetitorBOStream().collect(Collectors.toList());
+        return getCompetitorBOStream().collect(Collectors.toList());
     }
 
 }
