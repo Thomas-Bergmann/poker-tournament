@@ -53,44 +53,46 @@ public interface TournamentBO extends GameBO
 
     /**
      * Removes a previously created pause or blind level
+     *
      * @param round
      */
     void remove(TournamentRoundBO round);
 
     /**
-     * Defines the lower limit of players per table. The tournament will balance tables in case that a table is lower as this threshold.
-     * (default is 9; means if one table has 8 players, this table will get player from another table if that is possible.
+     * Defines the upper limit of players per table. This limit has an higher
+     * priority than the lower limit.
      *
-     * @return minimum amount of players at one table.
-     */
-    int getMininumNumberOfPlayersPerTable();
-    void setMininumNumberOfPlayersPerTable(int number);
-
-    /**
-     * Defines the upper limit of players per table. This limit has an higher priority than the lower limit.
      * @return maximum amount of player at one table
      */
     int getMaximumNumberOfPlayersPerTable();
+
     void setMaximumNumberOfPlayersPerTable(int number);
 
     /**
-     * The initial stack size is used to convert the buy in value to chip amount. The ratio is used for re-buy, also.
+     * The initial stack size is used to convert the buy in value to chip
+     * amount. The ratio is used for re-buy, also.
+     *
      * @return initial stack size per player
      */
     int getInitialStacksize();
+
     void setInitialStacksize(int initialStacksize);
 
     /**
-     * Calculate the stack size of the winner. This includes all initial stacks plus re-buy stacks.
+     * Calculate the stack size of the winner. This includes all initial stacks
+     * plus re-buy stacks.
+     *
      * @return stack size of the winner
      */
     int getFinalStacksize();
 
     void placePlayersAtTables();
+
     Collection<TableBO> getTables();
 
     /**
-     * Registration can be done without buyin, a preparation step for the tournament
+     * Registration can be done without buyin, a preparation step for the
+     * tournament
      *
      * @param playerBO
      * @return
@@ -99,18 +101,22 @@ public interface TournamentBO extends GameBO
 
     /**
      * Competitor pays the buy-in and is allowed to play (is active afterwards)
+     *
      * @param competitorBO
      */
     void buyin(CompetitorBO competitorBO);
 
     /**
-     * Competitor pays additional re-buy and is allowed to play (is still active)
+     * Competitor pays additional re-buy and is allowed to play (is still
+     * active)
+     *
      * @param competitorBO
      */
     void rebuy(CompetitorBO competitorBO);
 
     /**
-     * Player leaves the table and the tournament pays depends on rank (is inactive afterwards).
+     * Player leaves the table and the tournament pays depends on rank (is
+     * inactive afterwards).
      *
      * @param competitorBO
      */
@@ -118,10 +124,15 @@ public interface TournamentBO extends GameBO
 
     /**
      * Creates a new rank
-     * @param firstPosition (mandatory)
-     * @param lastPosition (optional)
-     * @param percentage (optional)
-     * @param amount of rank (optional)
+     *
+     * @param firstPosition
+     *            (mandatory)
+     * @param lastPosition
+     *            (optional)
+     * @param percentage
+     *            (optional)
+     * @param amount
+     *            of rank (optional)
      */
     RankBO createRank(int firstPosition, int lastPosition, BigDecimal percentage, BigDecimal amount);
 

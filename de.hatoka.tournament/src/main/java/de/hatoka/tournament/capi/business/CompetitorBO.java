@@ -8,11 +8,11 @@ import de.hatoka.tournament.capi.types.CompetitorState;
  */
 public interface CompetitorBO
 {
-   /**
-    *
-    * @return the identifier (signature) of the business object
-    */
-   String getID();
+    /**
+     *
+     * @return the identifier (signature) of the business object
+     */
+    String getID();
 
     /**
      * @return the amount of money spend by player (buy-in and re-buy)
@@ -38,6 +38,7 @@ public interface CompetitorBO
 
     /**
      * Player is in.
+     *
      * @return
      */
     CompetitorState getState();
@@ -51,8 +52,18 @@ public interface CompetitorBO
     }
 
     /**
-     * Defines the position of the player. The position is independent from "inPlayStatus"
+     * Defines the position of the player. The position is independent from
+     * "inPlayStatus"
+     *
      * @param position
      */
     void setPosition(Integer position);
+
+    /**
+     * player is placed at table number.
+     *
+     * @param tableNumber
+     * @param position at table (0 is dealer)
+     */
+    void takeSeat(int tableNo, int seatNo);
 }

@@ -30,7 +30,6 @@ public final class TournamentViewObjectHelper
         result.setAverage(new MoneyVO(Money.ONE_USD));
         result.setSumInPlay(new MoneyVO(Money.valueOf("200", "USD")));
         result.setCompetitorsSize(20);
-        result.setSmallestTable(6);
         result.setLargestTable(10);
         result.setInitialStack(1000);
         return result;

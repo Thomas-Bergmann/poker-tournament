@@ -78,13 +78,13 @@ public class CompetitorPO implements Serializable, IdentifiableEntity
      * The player seats on table
      */
     @XmlAttribute
-    private Integer tableNo;
+    private int tableNo = 0;
 
     /**
      * The player seats at seat on table
      */
     @XmlAttribute
-    private Integer seatNo;
+    private int seatNo = 0;
 
 
     public CompetitorPO()
@@ -212,23 +212,23 @@ public class CompetitorPO implements Serializable, IdentifiableEntity
     }
 
     @XmlTransient
-    public Integer getTableNo()
+    public int getTableNo()
     {
         return tableNo;
     }
 
-    public void setTableNo(Integer tableNo)
+    public void setTableNo(int tableNo)
     {
         this.tableNo = tableNo;
     }
 
     @XmlTransient
-    public Integer getSeatNo()
+    public int getSeatNo()
     {
         return seatNo;
     }
 
-    public void setSeatNo(Integer seatNo)
+    public void setSeatNo(int seatNo)
     {
         this.seatNo = seatNo;
     }

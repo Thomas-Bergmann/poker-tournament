@@ -84,7 +84,6 @@ public class TournamentService extends AbstractService
                 TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
                 TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(getAccountRef());
                 TournamentBO tournament = tournamentBORepository.getTournamentByID(tournamentID);
-                tournament.setMininumNumberOfPlayersPerTable(smallestTable);
                 tournament.setMaximumNumberOfPlayersPerTable(largestTable);
                 tournament.setInitialStacksize(initialStack);
                 tournament.setName(name);

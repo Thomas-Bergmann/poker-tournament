@@ -16,8 +16,6 @@
 <div class="select-option">
 <input type="radio" name="rebuyOption" value="no"/>No</div>
 </div>
-<label class="sr-only" for="inputsmallestTable">Smallest Table</label>
-<input placeholder="Smallest Table" value="6" name="smallestTable" type="text" id="inputsmallestTable" class="form-control"/>
 <label class="sr-only" for="inputlargestTable">Largest Table</label>
 <input placeholder="Largest Table" value="10" name="largestTable" type="text" id="inputlargestTable" class="form-control"/>
 <button name="save" type="submit" class="btn btn-primary">Save</button>

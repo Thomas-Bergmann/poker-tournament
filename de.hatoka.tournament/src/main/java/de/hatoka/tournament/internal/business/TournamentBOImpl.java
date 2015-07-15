@@ -1,11 +1,14 @@
 package de.hatoka.tournament.internal.business;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -332,26 +335,6 @@ public class TournamentBOImpl implements TournamentBO
     }
 
     @Override
-    public int getMininumNumberOfPlayersPerTable()
-    {
-        return tournamentPO.getMinPlayerPerTable();
-    }
-
-    @Override
-    public void setMininumNumberOfPlayersPerTable(int number)
-    {
-        if (number < 2)
-        {
-            throw new IllegalArgumentException("Can't allow less than two players per table: " + number);
-        }
-        if (number >= tournamentPO.getMaxPlayerPerTable())
-        {
-            throw new IllegalArgumentException("Can't allow more players then max players per table: " + number);
-        }
-        tournamentPO.setMinPlayerPerTable(number);
-    }
-
-    @Override
     public int getMaximumNumberOfPlayersPerTable()
     {
         return tournamentPO.getMaxPlayerPerTable();
@@ -360,29 +343,66 @@ public class TournamentBOImpl implements TournamentBO
     @Override
     public void setMaximumNumberOfPlayersPerTable(int number)
     {
-        if (number <= tournamentPO.getMinPlayerPerTable())
+        if (number < 2)
         {
-            throw new IllegalArgumentException("Can't allow less than max players per table: " + number);
+            throw new IllegalArgumentException("Can't allow less than 2 players per table: " + number);
         }
-        if (number >= 10)
+        if (number > 10)
         {
             throw new IllegalArgumentException("Can't allow more than 10 players as max per table: " + number);
         }
-        tournamentPO.setMinPlayerPerTable(number);
+        tournamentPO.setMaxPlayerPerTable(number);
     }
 
     @Override
     public void placePlayersAtTables()
     {
-        // TODO Auto-generated method stub
+        List<CompetitorBO> competitors = getCompetitors();
+        int numberOfTables = determineNumberTables(competitors.size());
+        Collections.shuffle(competitors, new Random(System.nanoTime()));
+        int position = 0;
+        int table = 0;
+        for(CompetitorBO competitorBO : competitors)
+        {
+            competitorBO.takeSeat(table, position);
+            table++;
+            if (table >= numberOfTables)
+            {
+                table = 0;
+                position++;
+            }
+        }
+    }
 
+    private int determineNumberTables(int competitorSize)
+    {
+        return new BigDecimal(competitorSize).divide(new BigDecimal(getMaximumNumberOfPlayersPerTable()), 0, RoundingMode.CEILING).intValue();
     }
 
     @Override
     public Collection<TableBO> getTables()
     {
-        // TODO Auto-generated method stub
-        return null;
+        Collection<CompetitorPO> competitors = tournamentPO.getCompetitors();
+        int numberOfTables = determineNumberTables(competitors.size());
+        CompetitorPO[][] places = new CompetitorPO[numberOfTables][getMaximumNumberOfPlayersPerTable()];
+        for(CompetitorPO competitor : competitors)
+        {
+            places[competitor.getTableNo()][competitor.getSeatNo()] = competitor;
+        }
+        List<TableBO> tables = new ArrayList<>();
+        for(int i=0;i <places.length;i++)
+        {
+            TableBO table = factory.getTableBO(i);
+            tables.add(table);
+            for(CompetitorPO competitor : places[i])
+            {
+                if (competitor != null)
+                {
+                    table.addCompetitor(factory.getCompetitorBO(competitor, this));
+                }
+            }
+        }
+        return tables;
     }
 
     @Override
@@ -492,4 +512,5 @@ public class TournamentBOImpl implements TournamentBO
         // TODO need to add re-buy here
         return tournamentPO.getInitialStacksize() * tournamentPO.getCompetitors().size();
     }
+
 }

@@ -158,4 +158,11 @@ public class CompetitorBOImpl implements ICompetitor
     {
         competitorPO.setState(CompetitorState.OUT.name());
     }
+
+    @Override
+    public void takeSeat(int tableNo, int seatNo)
+    {
+        competitorPO.setTableNo(tableNo);
+        competitorPO.setSeatNo(seatNo);
+    }
 }

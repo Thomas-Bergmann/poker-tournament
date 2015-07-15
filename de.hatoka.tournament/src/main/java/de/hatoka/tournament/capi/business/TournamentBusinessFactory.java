@@ -31,4 +31,5 @@ public interface TournamentBusinessFactory
 
     RankBO getRankBO(RankPO rankPO, TournamentBO tournamentBO);
 
+    TableBO getTableBO(int tableNo);
 }

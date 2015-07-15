@@ -84,10 +84,6 @@ public class TournamentPO implements Serializable, IdentifiableEntity
 
     @NotNull
     @XmlAttribute
-    private int minPlayerPerTable = 9;
-
-    @NotNull
-    @XmlAttribute
     private int maxPlayerPerTable = 10;
 
     @NotNull
@@ -229,17 +225,6 @@ public class TournamentPO implements Serializable, IdentifiableEntity
     public void setBlindLevels(List<BlindLevelPO> blindLevels)
     {
         this.blindLevels = blindLevels;
-    }
-
-    @XmlTransient
-    public int getMinPlayerPerTable()
-    {
-        return minPlayerPerTable;
-    }
-
-    public void setMinPlayerPerTable(int minPlayerPerTable)
-    {
-        this.minPlayerPerTable = minPlayerPerTable;
     }
 
     @XmlTransient

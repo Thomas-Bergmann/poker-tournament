@@ -7,6 +7,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.Currency;
 import java.util.Date;
 import java.util.List;
@@ -134,5 +135,36 @@ public class TournamentBOTest
             CompetitorBO competitorBO = underTest.register(player);
             underTest.buyin(competitorBO);
         }
+    }
+
+    @Test
+    public void testPlaceCompetitors()
+    {
+        underTest.setMaximumNumberOfPlayersPerTable(10);
+        for(int i = 0; i < 17; i++)
+        {
+            createCompetitor("player testPlaceCompetitors" + i);
+        }
+        underTest.placePlayersAtTables();
+        Collection<TableBO> tables = underTest.getTables();
+        assertEquals("numberOfTables", 2, tables.size());
+        int maxPlayer = 0;
+        int sumPlayers = 0;
+        for(TableBO table : tables)
+        {
+            final int playersOnTable = table.getCompetitors().size();
+            sumPlayers += playersOnTable;
+            if (maxPlayer < playersOnTable)
+            {
+                maxPlayer = playersOnTable;
+            }
+        }
+        assertEquals("maxPlayer", 9, maxPlayer);
+        assertEquals("sumPlayers", 17, sumPlayers);
+    }
+
+    private CompetitorBO createCompetitor(String name)
+    {
+        return underTest.register(factory.getPlayerBORepository(ACCOUNT_REF).create(name));
     }
 }

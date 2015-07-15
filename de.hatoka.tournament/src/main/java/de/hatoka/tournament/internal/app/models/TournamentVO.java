@@ -23,7 +23,6 @@ public class TournamentVO
     private MoneyVO sumInPlay;
     private Integer competitorsSize;
     private Integer initialStack;
-    private Integer smallestTable;
     private Integer largestTable;
     private SelectVO reBuyOption = new SelectVO();
 
@@ -37,7 +36,6 @@ public class TournamentVO
         name = tournamentBO.getName();
         date = tournamentBO.getStartTime();
         initialStack = tournamentBO.getInitialStacksize();
-        smallestTable = tournamentBO.getMininumNumberOfPlayersPerTable();
         largestTable = tournamentBO.getMaximumNumberOfPlayersPerTable();
     }
 
@@ -146,16 +144,6 @@ public class TournamentVO
     public void setInitialStack(Integer initialStack)
     {
         this.initialStack = initialStack;
-    }
-
-    public Integer getSmallestTable()
-    {
-        return smallestTable;
-    }
-
-    public void setSmallestTable(Integer smallestTable)
-    {
-        this.smallestTable = smallestTable;
     }
 
     public Integer getLargestTable()

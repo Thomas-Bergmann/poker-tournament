@@ -42,11 +42,6 @@
       </xsl:for-each>
     </div>
       <xsl:call-template name="input">
-        <xsl:with-param name="name">smallestTable</xsl:with-param>
-        <xsl:with-param name="value"><xsl:value-of select="tournamentConfigurationModel/tournament/smallestTable" /></xsl:with-param>
-        <xsl:with-param name="placeholderKey">placeholder.tournament.smallestTable</xsl:with-param>
-      </xsl:call-template>
-      <xsl:call-template name="input">
         <xsl:with-param name="name">largestTable</xsl:with-param>
         <xsl:with-param name="value"><xsl:value-of select="tournamentConfigurationModel/tournament/largestTable" /></xsl:with-param>
         <xsl:with-param name="placeholderKey">placeholder.tournament.largestTable</xsl:with-param>
