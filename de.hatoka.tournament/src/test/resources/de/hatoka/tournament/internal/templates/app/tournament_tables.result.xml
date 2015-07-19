@@ -1,0 +1,24 @@
+<form xmlns="http://www.w3.org/1999/xhtml" action="actionList" method="POST">
+<div class="table">
+<h2>Table 1</h2>
+<p>
+<span class="seat">100</span>
+<span class="player">Obi-Wan</span>
+</p>
+<p>
+<span class="seat">101</span>
+<span class="player">Trinity</span>
+</p>
+</div>
+<div class="table">
+<h2>Table 2</h2>
+<p>
+<span class="seat">102</span>
+<span class="player">Neo</span>
+</p>
+<p>
+<span class="seat">103</span>
+<span class="player">Barni</span>
+</p>
+</div>
+</form>

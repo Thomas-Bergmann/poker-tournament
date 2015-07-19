@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -30,11 +32,13 @@ import de.hatoka.tournament.internal.app.models.BlindLevelVO;
 import de.hatoka.tournament.internal.app.models.CompetitorVO;
 import de.hatoka.tournament.internal.app.models.PlayerVO;
 import de.hatoka.tournament.internal.app.models.RankVO;
+import de.hatoka.tournament.internal.app.models.TableVO;
 import de.hatoka.tournament.internal.app.models.TournamentBlindLevelModel;
 import de.hatoka.tournament.internal.app.models.TournamentConfigurationModel;
 import de.hatoka.tournament.internal.app.models.TournamentListModel;
 import de.hatoka.tournament.internal.app.models.TournamentPlayerListModel;
 import de.hatoka.tournament.internal.app.models.TournamentRankModel;
+import de.hatoka.tournament.internal.app.models.TournamentTableModel;
 import de.hatoka.tournament.internal.app.models.TournamentVO;
 
 public class TournamentTemplateTest
@@ -187,4 +191,34 @@ public class TournamentTemplateTest
         XMLAssert.assertXMLEqual("overview not correct", getResource("tournament_general.result.xml"), content);
     }
 
+    @Test
+    public void testTournamentTables() throws Exception
+    {
+        TournamentTableModel model = new TournamentTableModel();
+        TournamentVO tournamentVO = getTournamentVO("123456", "Test 1", parseDate("2011-11-25T18:00"));
+        tournamentVO.setBuyIn(new MoneyVO(Money.valueOf("5", "USD")));
+        model.getTables().addAll(getTables());
+        model.setTournament(tournamentVO);
+        String content = RENDERER.render(model, RESOURCE_PREFIX + "tournament_tables.xslt", getParameter());
+        // String content = new XMLRenderer().render(model);
+
+        //Assert.assertEquals("overview not correct", getResource("tournament_tables.result.xml"), content);
+        XMLAssert.assertXMLEqual("overview not correct", getResource("tournament_tables.result.xml"), content);
+    }
+
+    private Collection<TableVO> getTables()
+    {
+        List<TableVO> result = new ArrayList<>();
+        TableVO table = new TableVO();
+        table.setNumber(1);
+        table.getCompetitors().add(getCompetitorVO("100", "Obi-Wan", "200"));
+        table.getCompetitors().add(getCompetitorVO("101", "Trinity", "201"));
+        result.add(table);
+        table = new TableVO();
+        table.setNumber(2);
+        table.getCompetitors().add(getCompetitorVO("102", "Neo", "202"));
+        table.getCompetitors().add(getCompetitorVO("103", "Barni", "203"));
+        result.add(table);
+        return result;
+    }
 }

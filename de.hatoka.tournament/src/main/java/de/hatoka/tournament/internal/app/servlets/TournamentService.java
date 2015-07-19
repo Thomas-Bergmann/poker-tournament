@@ -92,6 +92,24 @@ public class TournamentService extends AbstractService
         return redirect(METHOD_NAME_LIST);
     }
 
+    @POST
+    @Path("/assignTables")
+    public Response assignTables()
+    {
+        runInTransaction(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
+                TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(getAccountRef());
+                TournamentBO tournament = tournamentBORepository.getTournamentByID(tournamentID);
+                tournament.placePlayersAtTables();
+            }
+        });
+        return redirect(METHOD_NAME_LIST);
+    }
+
     private String renderFrame(String content, String titleKey) throws IOException
     {
         TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
