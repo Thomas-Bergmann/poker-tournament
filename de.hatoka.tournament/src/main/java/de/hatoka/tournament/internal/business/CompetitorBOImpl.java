@@ -116,6 +116,10 @@ public class CompetitorBOImpl implements ICompetitor
         {
             throw new IllegalStateException("Rebuy not allowed at inactive competitors");
         }
+        if (amount == null)
+        {
+            return;
+        }
         competitorPO.setMoneyInPlay(Money.valueOf(competitorPO.getMoneyInPlay()).add(amount).toMoneyPO());
         sortCompetitors();
         createEntry(HistoryEntryType.ReBuy, amount);

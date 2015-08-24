@@ -20,12 +20,14 @@ import de.hatoka.tournament.internal.app.actions.TournamentAction;
 import de.hatoka.tournament.internal.app.filter.AccountRequestFilter;
 import de.hatoka.tournament.internal.app.menu.MenuFactory;
 import de.hatoka.tournament.internal.app.models.TournamentConfigurationModel;
+import de.hatoka.tournament.internal.app.models.TournamentTableModel;
 
 @Path("/tournament/{id}")
 public class TournamentService extends AbstractService
 {
     private static final String RESOURCE_PREFIX = "de/hatoka/tournament/internal/templates/app/";
-    private static final String METHOD_NAME_LIST = "list";
+    public static final String METHOD_NAME_LIST = "list";
+    private static final String METHOD_NAME_TABLES = "tables";
 
     @PathParam("id")
     private String tournamentID;
@@ -92,6 +94,23 @@ public class TournamentService extends AbstractService
         return redirect(METHOD_NAME_LIST);
     }
 
+    @GET
+    @Path("/tables.html")
+    public Response tables()
+    {
+        TournamentAction action = getTournamentAction();
+        final TournamentTableModel model = action.getTournamentTableModel(getUriBuilder(TournamentListService.class, METHOD_NAME_LIST).build());
+        try
+        {
+            String content = renderStyleSheet(model, "tournament_tables.xslt", getXsltProcessorParameter("tournament"));
+            return Response.status(200).entity(renderFrame(content, "title.tournament.tables")).build();
+        }
+        catch(IOException e)
+        {
+            return render(500, e);
+        }
+    }
+
     @POST
     @Path("/assignTables")
     public Response assignTables()
@@ -107,7 +126,7 @@ public class TournamentService extends AbstractService
                 tournament.placePlayersAtTables();
             }
         });
-        return redirect(METHOD_NAME_LIST);
+        return redirect(METHOD_NAME_TABLES);
     }
 
     private String renderFrame(String content, String titleKey) throws IOException

@@ -5,6 +5,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Currency;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -87,17 +88,19 @@ public class TournamentBOImpl implements TournamentBO
             throw new IllegalStateException("rebuy not allowed at inactive competitors");
         }
         ICompetitor iTournamentCompetitor = (ICompetitor)competitorBO;
-        iTournamentCompetitor.rebuy(getRebuy(getCurrentRound()));
+        iTournamentCompetitor.rebuy(getCurrentRebuy());
     }
 
-    private int getCurrentRound()
+    @Override
+    public Money getCurrentRebuy()
     {
-        return tournamentPO.getCurrentRound();
-    }
-
-    private Money getRebuy(int currentRound)
-    {
-        return getBlindLevels().get(currentRound).getReBuy();
+        final List<TournamentRoundBO> blindLevels = getBlindLevels();
+        int currentRound = tournamentPO.getCurrentRound();
+        if (currentRound < 0 || blindLevels.size() <= currentRound)
+        {
+            return null;
+        }
+        return blindLevels.get(currentRound).getReBuy();
     }
 
     @Override
@@ -276,14 +279,20 @@ public class TournamentBOImpl implements TournamentBO
     }
 
     @Override
-    public BlindLevelBO createBlindLevel(int duration, int smallBlind, int bigBlind, int ante)
+    public BlindLevelBO createBlindLevel(int duration, int smallBlind, int bigBlind, int ante, BigDecimal rebuyAmount)
     {
         BlindLevelPO blindLevelPO = blindLevelDao.createAndInsert(tournamentPO, duration);
         blindLevelPO.setPause(false);
         blindLevelPO.setSmallBlind(smallBlind);
         blindLevelPO.setBigBlind(bigBlind);
         blindLevelPO.setAnte(ante);
-        return factory.getBlindLevelBO(blindLevelPO);
+        blindLevelPO.setRebuyAmount(rebuyAmount);
+        return factory.getBlindLevelBO(blindLevelPO, getCurrency());
+    }
+
+    private Currency getCurrency()
+    {
+        return getBuyIn().getCurrency();
     }
 
     @Override
@@ -291,7 +300,7 @@ public class TournamentBOImpl implements TournamentBO
     {
         BlindLevelPO blindLevelPO = blindLevelDao.createAndInsert(tournamentPO, duration);
         blindLevelPO.setPause(true);
-        return factory.getPauseBO(blindLevelPO);
+        return factory.getPauseBO(blindLevelPO, getCurrency());
     }
 
     @Override
@@ -305,15 +314,16 @@ public class TournamentBOImpl implements TournamentBO
     {
         List<BlindLevelPO> blindLevels = tournamentPO.getBlindLevels();
         List<TournamentRoundBO> result = new ArrayList<TournamentRoundBO>(blindLevels.size());
+        Currency currency = getCurrency();
         for (BlindLevelPO blindLevelPO : blindLevels)
         {
             if (blindLevelPO.isPause())
             {
-                result.add(factory.getPauseBO(blindLevelPO));
+                result.add(factory.getPauseBO(blindLevelPO, currency));
             }
             else
             {
-                result.add(factory.getBlindLevelBO(blindLevelPO));
+                result.add(factory.getBlindLevelBO(blindLevelPO, currency));
             }
         }
         return result;
@@ -511,6 +521,12 @@ public class TournamentBOImpl implements TournamentBO
     {
         // TODO need to add re-buy here
         return tournamentPO.getInitialStacksize() * tournamentPO.getCompetitors().size();
+    }
+
+    @Override
+    public void start()
+    {
+        tournamentPO.setCurrentRound(0);
     }
 
 }

@@ -1,5 +1,6 @@
 package de.hatoka.tournament.internal.business;
 
+import java.util.Currency;
 import java.util.Date;
 
 import javax.inject.Inject;
@@ -116,15 +117,15 @@ public class TournamentBusinessFactoryImpl implements TournamentBusinessFactory
     }
 
     @Override
-    public BlindLevelBO getBlindLevelBO(BlindLevelPO blindLevelPO)
+    public BlindLevelBO getBlindLevelBO(BlindLevelPO blindLevelPO, Currency currency)
     {
-        return new BlindLevelBOImpl(blindLevelPO);
+        return new BlindLevelBOImpl(blindLevelPO, currency);
     }
 
     @Override
-    public TournamentRoundBO getPauseBO(BlindLevelPO blindLevelPO)
+    public TournamentRoundBO getPauseBO(BlindLevelPO blindLevelPO, Currency currency)
     {
-        return new BlindLevelBOImpl(blindLevelPO);
+        return new BlindLevelBOImpl(blindLevelPO, currency);
     }
 
     @Override

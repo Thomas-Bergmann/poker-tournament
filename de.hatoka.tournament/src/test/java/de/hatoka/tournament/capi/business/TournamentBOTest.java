@@ -73,6 +73,8 @@ public class TournamentBOTest
         assertFalse("player one is not active", underTest.getActiveCompetitors().contains(competitorBO_1));
         assertTrue("player two is active", underTest.getActiveCompetitors().contains(competitorBO_2));
         assertEquals("correct player assigned", player1, competitorBO_1.getPlayer());
+        underTest.buyin(competitorBO_1);
+        assertTrue("player one is now active", underTest.getActiveCompetitors().contains(competitorBO_1));
     }
 
     @Test
@@ -102,6 +104,22 @@ public class TournamentBOTest
         {
             assertNotNull("only levels left", roundBO.getBlindLevel());
         }
+    }
+
+    @Test
+    public void testPlayerLifeCycle()
+    {
+        PlayerBO player1 = factory.getPlayerBORepository(ACCOUNT_REF).create("testPlayer1");
+        CompetitorBO competitor = underTest.register(player1);
+        underTest.createBlindLevel(30, 100, 200, 0, BigDecimal.TEN);
+        underTest.buyin(competitor);
+        underTest.start();
+        Money rebuy=  underTest.getCurrentRebuy();
+        assertNotNull("rebuy was defined at createBlindLevel", rebuy);
+        underTest.rebuy(competitor);
+        assertEquals("player one payed buyin and rebuy",rebuy.add(underTest.getBuyIn()), competitor.getInPlay());
+        underTest.seatOpen(competitor);
+        assertFalse("player is not longer active", competitor.isActive());
     }
 
     @Test

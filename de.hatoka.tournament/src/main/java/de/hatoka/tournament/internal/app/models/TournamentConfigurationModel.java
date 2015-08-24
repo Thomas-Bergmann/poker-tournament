@@ -5,10 +5,13 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import de.hatoka.common.capi.app.model.SelectVO;
+
 @XmlRootElement
 public class TournamentConfigurationModel
 {
     private TournamentVO tournament;
+    private SelectVO reBuyOption = new SelectVO();
     private List<String> errors = new ArrayList<>();
 
     public List<String> getErrors()
@@ -29,5 +32,15 @@ public class TournamentConfigurationModel
     public void setTournament(TournamentVO tournament)
     {
         this.tournament = tournament;
+    }
+
+    public SelectVO getReBuyOption()
+    {
+        return reBuyOption;
+    }
+
+    public void setReBuyOption(SelectVO reBuyOption)
+    {
+        this.reBuyOption = reBuyOption;
     }
 }

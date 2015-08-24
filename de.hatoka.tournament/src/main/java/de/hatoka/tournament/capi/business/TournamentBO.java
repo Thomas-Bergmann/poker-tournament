@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import de.hatoka.common.capi.business.Money;
+
 public interface TournamentBO extends GameBO
 {
     /**
@@ -36,8 +38,22 @@ public interface TournamentBO extends GameBO
      * @param ante
      * @return
      */
-    BlindLevelBO createBlindLevel(int duration, int smallBlind, int bigBlind, int ante);
+    default BlindLevelBO createBlindLevel(int duration, int smallBlind, int bigBlind, int ante)
+    {
+        return createBlindLevel(duration, smallBlind, bigBlind, ante, BigDecimal.ZERO);
+    }
 
+    /**
+     * Creates a new blind level for the tournament
+     *
+     * @param duration
+     * @param smallBlind
+     * @param bigBlind
+     * @param ante
+     * @param rebuyAmount
+     * @return
+     */
+    BlindLevelBO createBlindLevel(int duration, int smallBlind, int bigBlind, int ante, BigDecimal rebuyAmount);
     /**
      * Creates a new blind level for the tournament
      *
@@ -57,6 +73,11 @@ public interface TournamentBO extends GameBO
      * @param round
      */
     void remove(TournamentRoundBO round);
+
+    /**
+     * @return current amount of rebuy (null if no rebuy possible)
+     */
+    Money getCurrentRebuy();
 
     /**
      * Defines the upper limit of players per table. This limit has an higher
@@ -154,4 +175,9 @@ public interface TournamentBO extends GameBO
     List<RankBO> getRanks();
 
     void remove(RankBO rank);
+
+    /**
+     * Starts the tournament (current round is set to 0), registration, modifications of ranks, blind levels is not longer possible.
+     */
+    void start();
 }

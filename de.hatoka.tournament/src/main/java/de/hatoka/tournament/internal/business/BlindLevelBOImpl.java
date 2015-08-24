@@ -1,5 +1,8 @@
 package de.hatoka.tournament.internal.business;
 
+import java.math.BigDecimal;
+import java.util.Currency;
+
 import de.hatoka.common.capi.business.Money;
 import de.hatoka.tournament.capi.business.BlindLevelBO;
 import de.hatoka.tournament.capi.entities.BlindLevelPO;
@@ -7,10 +10,12 @@ import de.hatoka.tournament.capi.entities.BlindLevelPO;
 public class BlindLevelBOImpl implements BlindLevelBO
 {
     private final BlindLevelPO blindLevelPO;
+    private final Currency currency;
 
-    public BlindLevelBOImpl(BlindLevelPO blindLevelPO)
+    public BlindLevelBOImpl(BlindLevelPO blindLevelPO, Currency currency)
     {
         this.blindLevelPO = blindLevelPO;
+        this.currency = currency;
     }
 
     @Override
@@ -85,8 +90,12 @@ public class BlindLevelBOImpl implements BlindLevelBO
     @Override
     public Money getReBuy()
     {
-        // TODO Auto-generated method stub
-        return null;
+        final BigDecimal rebuyAmount = blindLevelPO.getRebuyAmount();
+        if (rebuyAmount == null)
+        {
+            return null;
+        }
+        return Money.valueOf(rebuyAmount, currency);
     }
 
 }

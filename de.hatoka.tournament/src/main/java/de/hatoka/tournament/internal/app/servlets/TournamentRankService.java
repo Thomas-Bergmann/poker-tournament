@@ -26,7 +26,7 @@ import de.hatoka.tournament.internal.app.models.TournamentRankModel;
 public class TournamentRankService extends AbstractService
 {
     private static final String RESOURCE_PREFIX = "de/hatoka/tournament/internal/templates/app/";
-    private static final String METHOD_NAME_LIST = "list";
+    public static final String METHOD_NAME_LIST = "list";
 
     @PathParam("id")
     private String tournamentID;

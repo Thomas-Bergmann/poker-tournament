@@ -1,5 +1,7 @@
 package de.hatoka.tournament.capi.business;
 
+import java.util.Currency;
+
 import de.hatoka.tournament.capi.entities.BlindLevelPO;
 import de.hatoka.tournament.capi.entities.CompetitorPO;
 import de.hatoka.tournament.capi.entities.HistoryPO;
@@ -25,9 +27,9 @@ public interface TournamentBusinessFactory
 
     HistoryEntryBO getHistoryBO(HistoryPO historyPO);
 
-    BlindLevelBO getBlindLevelBO(BlindLevelPO blindLevelPO);
+    BlindLevelBO getBlindLevelBO(BlindLevelPO blindLevelPO, Currency currency);
 
-    TournamentRoundBO getPauseBO(BlindLevelPO blindLevelPO);
+    TournamentRoundBO getPauseBO(BlindLevelPO blindLevelPO, Currency currency);
 
     RankBO getRankBO(RankPO rankPO, TournamentBO tournamentBO);
 

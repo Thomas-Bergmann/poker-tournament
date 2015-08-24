@@ -92,7 +92,7 @@ public class TournamentPO implements Serializable, IdentifiableEntity
 
     @NotNull
     @XmlAttribute
-    private int currentRound = 0;
+    private int currentRound = -1;
 
     public TournamentPO()
     {

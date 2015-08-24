@@ -37,6 +37,7 @@ import de.hatoka.tournament.capi.dao.HistoryDao;
 import de.hatoka.tournament.capi.dao.PlayerDao;
 import de.hatoka.tournament.capi.dao.RankDao;
 import de.hatoka.tournament.capi.dao.TournamentDao;
+import de.hatoka.tournament.capi.entities.BlindLevelPO;
 import de.hatoka.tournament.capi.entities.CompetitorPO;
 import de.hatoka.tournament.capi.entities.HistoryPO;
 import de.hatoka.tournament.capi.entities.PlayerPO;
@@ -153,7 +154,20 @@ public class TournamentRepositoryBOTest
         HistoryPO historyEntry = historyDao.createAndInsert(tournamentPO, player1, CURRENT_DATE);
         historyEntry.setActionKey(HistoryEntryType.BuyIn.name());
 
-        blindLevelDao.createAndInsert(tournamentPO, 30);
+        BlindLevelPO level1 = blindLevelDao.createAndInsert(tournamentPO, 30);
+        level1.setSmallBlind(2);
+        level1.setBigBlind(4);
+        level1.setAnte(1);
+        level1.setRebuyAmount(BigDecimal.ONE);
+
+        BlindLevelPO pause = blindLevelDao.createAndInsert(tournamentPO, 30);
+        pause.setPause(true);
+
+        BlindLevelPO level2 = blindLevelDao.createAndInsert(tournamentPO, 30);
+        level2.setSmallBlind(4);
+        level2.setBigBlind(8);
+        level2.setAnte(2);
+        level2.setRebuyAmount(BigDecimal.TEN);
 
         RankPO rank1 = rankDao.createAndInsert(tournamentPO, 1);
         rank1.setPercentage(new BigDecimal("0.5"));

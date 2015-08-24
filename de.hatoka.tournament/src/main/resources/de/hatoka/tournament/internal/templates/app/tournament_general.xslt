@@ -29,7 +29,7 @@
       </xsl:call-template>
     <label><xsl:value-of select="hatoka:getText($localizer, 'placeholder.tournament.reBuyOption', 'Rebuy Option')" /></label>
     <div class="select-radio">
-      <xsl:for-each select="tournamentConfigurationModel/tournament/reBuyOption/option">
+      <xsl:for-each select="tournamentConfigurationModel/reBuyOption/option">
         <div class="select-option">
         <input name="rebuyOption" type="radio">
             <xsl:attribute name="value"><xsl:value-of select="@name" /></xsl:attribute>

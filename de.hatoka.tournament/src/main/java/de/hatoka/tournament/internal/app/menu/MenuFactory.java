@@ -18,8 +18,6 @@ import de.hatoka.tournament.internal.app.servlets.TournamentService;
 
 public class MenuFactory
 {
-    private static final String METHOD_NAME_LIST = "list";
-
     private URI getUri(UriInfo info, Class<?> resource, String methodName, Object... values)
     {
         return info.getBaseUriBuilder().path(resource).path(resource, methodName).build(values);
@@ -31,22 +29,22 @@ public class MenuFactory
         FrameModel model = new FrameModel();
         model.setTitleKey(titleKey);
         model.setContent(content);
-        model.setUriHome(getUri(info, isCashGame ? CashGameListService.class : TournamentListService.class, METHOD_NAME_LIST));
+        model.setUriHome(getUri(info, isCashGame ? CashGameListService.class : TournamentListService.class, TournamentListService.METHOD_NAME_LIST));
         defineMainMenu(info, isCashGame, model);
 
-        model.addSideMenu("menu.list.tournaments", getUri(info, TournamentListService.class, METHOD_NAME_LIST),
-                        getTournamentsSize(tournamentBORepository), getUri(info, TournamentListService.class, "add"),
+        model.addSideMenu("menu.list.tournaments", getUri(info, TournamentListService.class, TournamentListService.METHOD_NAME_LIST),
+                        getTournamentsSize(tournamentBORepository), getUri(info, TournamentListService.class, TournamentListService.METHOD_NAME_ADD),
                         !isCashGame);
-        model.addSideMenu("menu.list.cashgames", getUri(info, CashGameListService.class, METHOD_NAME_LIST),
-                        getCashGamesSize(tournamentBORepository), getUri(info, CashGameListService.class, "add"),
+        model.addSideMenu("menu.list.cashgames", getUri(info, CashGameListService.class, CashGameListService.METHOD_NAME_LIST),
+                        getCashGamesSize(tournamentBORepository), getUri(info, CashGameListService.class, CashGameListService.METHOD_NAME_ADD),
                         isCashGame);
         return model;
     }
 
     private void defineMainMenu(UriInfo info, boolean isCashGame, FrameModel model)
     {
-        model.addMainMenu("menu.list.tournaments", getUri(info, TournamentListService.class, METHOD_NAME_LIST), !isCashGame);
-        model.addMainMenu("menu.list.cashgames", getUri(info, CashGameListService.class, METHOD_NAME_LIST), isCashGame);
+        model.addMainMenu("menu.list.tournaments", getUri(info, TournamentListService.class, TournamentListService.METHOD_NAME_LIST), !isCashGame);
+        model.addMainMenu("menu.list.cashgames", getUri(info, CashGameListService.class, CashGameListService.METHOD_NAME_LIST), isCashGame);
     }
 
     private Integer getTournamentsSize(TournamentBORepository tournamentBORepository)
@@ -65,12 +63,12 @@ public class MenuFactory
         FrameModel model = new FrameModel();
         model.setTitleKey(titleKey);
         model.setContent(content);
-        model.setUriHome(getUri(info, CashGameListService.class, METHOD_NAME_LIST));
+        model.setUriHome(getUri(info, CashGameListService.class, CashGameListService.METHOD_NAME_LIST));
         defineMainMenu(info, true, model);
 
         CashGameBO cashGameBO = tournamentBORepository.getCashGameByID(tournamentID);
         model.addSideMenu("menu.cashgame.players",
-                        getUri(info, CashGameCompetitorService.class, METHOD_NAME_LIST, cashGameBO.getID()), cashGameBO
+                        getUri(info, CashGameCompetitorService.class, CashGameCompetitorService.METHOD_NAME_LIST, cashGameBO.getID()), cashGameBO
                                         .getCompetitors().size(),
                         getUri(info, CashGameCompetitorService.class, "addPlayer", cashGameBO.getID()), titleKey.equals("title.list.players"));
         model.addSideMenu("menu.cashgame.history",
@@ -84,22 +82,24 @@ public class MenuFactory
         FrameModel model = new FrameModel();
         model.setTitleKey(titleKey);
         model.setContent(content);
-        model.setUriHome(getUri(info, TournamentListService.class, METHOD_NAME_LIST));
+        model.setUriHome(getUri(info, TournamentListService.class, TournamentListService.METHOD_NAME_LIST));
         defineMainMenu(info, false, model);
 
         TournamentBO tournamentBO = tournamentBORepository.getTournamentByID(tournamentID);
         model.addSideMenu("menu.tournament.general",
-                        getUri(info, TournamentService.class, METHOD_NAME_LIST, tournamentBO.getID()), null, null, titleKey.equals("title.tournament.general"));
+                        getUri(info, TournamentService.class, TournamentService.METHOD_NAME_LIST, tournamentBO.getID()), null, null, titleKey.equals("title.tournament.general"));
         model.addSideMenu("menu.tournament.players",
-                        getUri(info, TournamentCompetitorService.class, METHOD_NAME_LIST, tournamentBO.getID()), tournamentBO
+                        getUri(info, TournamentCompetitorService.class, TournamentCompetitorService.METHOD_NAME_LIST, tournamentBO.getID()), tournamentBO
                                         .getCompetitors().size(),
                         getUri(info, TournamentCompetitorService.class, "addPlayer", tournamentBO.getID()), titleKey.equals("title.list.players"));
         model.addSideMenu("menu.tournament.levels",
-                        getUri(info, TournamentBlindLevelService.class, METHOD_NAME_LIST, tournamentBO.getID()), tournamentBO
+                        getUri(info, TournamentBlindLevelService.class, TournamentBlindLevelService.METHOD_NAME_LIST, tournamentBO.getID()), tournamentBO
                                         .getBlindLevels().size(), null, titleKey.equals("title.list.levels"));
         model.addSideMenu("menu.tournament.ranks",
-                        getUri(info, TournamentRankService.class, METHOD_NAME_LIST, tournamentBO.getID()), tournamentBO
+                        getUri(info, TournamentRankService.class, TournamentRankService.METHOD_NAME_LIST, tournamentBO.getID()), tournamentBO
                                         .getRanks().size(), null, titleKey.equals("title.list.ranks"));
+        model.addSideMenu("menu.tournament.tables",
+                        getUri(info, TournamentService.class, TournamentService.METHOD_NAME_LIST, tournamentBO.getID()), null, null, titleKey.equals("title.tournament.general"));
         return model;
     }
 

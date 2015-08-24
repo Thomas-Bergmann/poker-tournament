@@ -179,7 +179,7 @@ public class TournamentTemplateTest
         TournamentConfigurationModel model = new TournamentConfigurationModel();
         TournamentVO tournamentVO = getTournamentVO("123456", "Test 1", parseDate("2011-11-25T18:00"));
         tournamentVO.setBuyIn(new MoneyVO(Money.valueOf("5", "USD")));
-        List<SelectOptionVO> options = tournamentVO.getReBuyOption().getOptions();
+        List<SelectOptionVO> options = model.getReBuyOption().getOptions();
         options.add(new SelectOptionVO("single", true));
         options.add(new SelectOptionVO("multi", false));
         options.add(new SelectOptionVO("no", false));

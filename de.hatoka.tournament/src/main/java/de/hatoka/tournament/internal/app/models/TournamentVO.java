@@ -6,7 +6,6 @@ import java.util.Date;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import de.hatoka.common.capi.app.model.MoneyVO;
-import de.hatoka.common.capi.app.model.SelectVO;
 import de.hatoka.tournament.capi.business.CashGameBO;
 import de.hatoka.tournament.capi.business.GameBO;
 import de.hatoka.tournament.capi.business.TournamentBO;
@@ -24,7 +23,6 @@ public class TournamentVO
     private Integer competitorsSize;
     private Integer initialStack;
     private Integer largestTable;
-    private SelectVO reBuyOption = new SelectVO();
 
     public TournamentVO()
     {
@@ -154,15 +152,5 @@ public class TournamentVO
     public void setLargestTable(Integer largestTable)
     {
         this.largestTable = largestTable;
-    }
-
-    public SelectVO getReBuyOption()
-    {
-        return reBuyOption;
-    }
-
-    public void setReBuyOption(SelectVO reBuyOption)
-    {
-        this.reBuyOption = reBuyOption;
     }
 }
