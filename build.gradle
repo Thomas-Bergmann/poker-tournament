@@ -65,29 +65,6 @@ subprojects {
         main { compileClasspath += configurations.provided }
     }
 
-    dependencies {
-        compile 'commons-lang:commons-lang:2.+'
-        compile 'commons-io:commons-io:2.+'
-        compile "org.slf4j:slf4j-api:$slf4jVersion"
-        compile 'com.google.inject:guice:3.0'
-        compile 'javax.inject:javax.inject:1'
-        compile 'javax.validation:validation-api:1.1.0.Final'
-        compile 'org.eclipse.persistence:eclipselink:2.5.2'
-        compile 'javax.ejb:ejb-api:3.0'
-        compile 'xalan:xalan:2.7.2'
-
-        runtime "ch.qos.logback:logback-classic:$logbackVersion"
-		runtime 'org.postgresql:postgresql:9.3-1102-jdbc4'
-		compile 'org.apache.commons:commons-dbcp2:2.0.1'
-        testCompile "junit:junit:$junitVersion"
-        testCompile "org.mockito:mockito-all:$mockitoVersion"
-        testCompile "org.apache.derby:derby:$apacheDerbyVersion"
-        testCompile 'xmlunit:xmlunit:1.6'
-
-        testRuntime "org.apache.derby:derby:$apacheDerbyVersion"
-        testRuntime "ch.qos.logback:logback-classic:$logbackVersion"
-    }
-
     sonarRunner {
         sonarProperties {
             property "sonar.dynamicAnalysis", "reuseReports"
@@ -147,8 +124,14 @@ project('de.hatoka.account')
         compile "org.glassfish.jersey.core:jersey-server:$jerseyVersion"
         compile "org.glassfish.jersey.containers:jersey-container-servlet:$jerseyVersion"
         provided "org.apache.tomcat:tomcat-catalina:$tomcatVersion"
-        testCompile "org.apache.tomcat:tomcat-catalina:$tomcatVersion"
         runtime "javax.mail:mail:$mailVersion"
+
+        testCompile "junit:junit:$junitVersion"
+        testCompile "org.apache.tomcat:tomcat-catalina:$tomcatVersion"
+        testCompile "org.apache.derby:derby:$apacheDerbyVersion"
+        testCompile 'xmlunit:xmlunit:1.6'
+        testCompile "org.mockito:mockito-all:$mockitoVersion"
+        testRuntime 'xalan:xalan:2.7.2'
     }
 }
 
@@ -156,15 +139,29 @@ project('de.hatoka.address')
 {
     dependencies {
         compile project(":de.hatoka.common")
+        testCompile "junit:junit:$junitVersion"
     }
 }
 
 project('de.hatoka.common')
 {
     dependencies {
+        compile 'javax.validation:validation-api:1.1.0.Final'
+        compile 'javax.ejb:ejb-api:3.0'
+        compile "org.slf4j:slf4j-api:$slf4jVersion"
+        compile 'org.eclipse.persistence:eclipselink:2.5.2' // embeddable
         compile "org.glassfish.jersey.core:jersey-common:$jerseyVersion"
+        compile 'com.google.inject:guice:3.0'
+        compile 'commons-lang:commons-lang:2.+' // RandomUtils
+        compile 'commons-io:commons-io:2.+'
         provided "org.apache.tomcat:tomcat-catalina:$tomcatVersion"
+		runtime 'org.apache.commons:commons-dbcp2:2.0.1'
+		runtime 'org.postgresql:postgresql:9.3-1102-jdbc4'
+        runtime 'xalan:xalan:2.7.2'
+
+        testCompile "junit:junit:$junitVersion"
         testCompile "org.apache.tomcat:tomcat-catalina:$tomcatVersion"
+        testRuntime 'xalan:xalan:2.7.2'
     }
 }
 
@@ -174,7 +171,9 @@ project('de.hatoka.mail')
         compile project(":de.hatoka.common")
         compile "javax.mail:mail:$mailVersion"
         provided "org.apache.tomcat:tomcat-catalina:$tomcatVersion"
+        testCompile "junit:junit:$junitVersion"
         testCompile "org.apache.tomcat:tomcat-catalina:$tomcatVersion"
+        testCompile "org.apache.derby:derby:$apacheDerbyVersion"
     }
     test {
         // https://javamail.java.net/nonav/docs/api/com/sun/mail/smtp/package-summary.html
@@ -205,6 +204,11 @@ project('de.hatoka.tournament')
         compile "org.glassfish.jersey.containers:jersey-container-servlet:$jerseyVersion"
         provided "org.apache.tomcat:tomcat-catalina:$tomcatVersion"
         testCompile "org.apache.tomcat:tomcat-catalina:$tomcatVersion"
+        testCompile "junit:junit:$junitVersion"
+        testCompile 'xmlunit:xmlunit:1.6'
+        testCompile "org.mockito:mockito-all:$mockitoVersion"
+        testCompile "org.apache.derby:derby:$apacheDerbyVersion"
+        testRuntime 'xalan:xalan:2.7.2'
     }
 }
 // based on http://www.jroller.com/aalmiray/entry/gradle_glam_jacoco_coveralls
