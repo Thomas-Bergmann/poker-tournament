@@ -9,9 +9,6 @@
 </tr>
 <tr>
 <td>
-<label>
-<input type="checkbox" value="1234578" name="competitorID" class="checkbox"/>
-</label>
 </td>
 <td>Player 1</td>
 <td>active</td>
@@ -30,11 +27,5 @@
 <td>-1USD</td>
 </tr>
 </table>
-<p class="bg-info">Average: 1<br/>Sum: 200</p>
-<label class="sr-only" for="inputamount">Amount</label>
-<input value="" name="amount" type="text" id="inputamount" class="form-control" placeholder="Amount"/>
 <button name="buyin" type="submit" class="btn btn-primary">Buy-In</button>
-<button name="rebuy" type="submit" class="btn">Re-Buy</button>
-<button name="seatopen" type="submit" class="btn">Seat-Open</button>
-<button name="sort" type="submit" class="btn">Sort</button>
 </form>

@@ -2,6 +2,7 @@ package de.hatoka.tournament.internal.templates.app;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.URI;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import de.hatoka.common.capi.app.model.ActionVO;
 import de.hatoka.common.capi.app.model.MoneyVO;
 import de.hatoka.common.capi.app.model.SelectOptionVO;
 import de.hatoka.common.capi.app.xslt.Lib;
@@ -98,7 +100,8 @@ public class TournamentTemplateTest
         model.getUnassignedPlayers().add(getPlayerVO("1234581", "Player 3"));
         String content = RENDERER.render(model, RESOURCE_PREFIX + "tournament_players.xslt", getParameter());
 
-        // Assert.assertEquals("players not listed correctly", getResource("tournament_players.result.xml"), content);
+        // Assert.assertEquals("players not listed correctly",
+        // getResource("tournament_players.result.xml"), content);
         XMLAssert.assertXMLEqual("players not listed correctly", getResource("tournament_players.result.xml"), content);
     }
 
@@ -114,7 +117,8 @@ public class TournamentTemplateTest
         model.getCompetitors().add(competitorVO);
         String content = RENDERER.render(model, RESOURCE_PREFIX + "tournament_player_add.xslt", getParameter());
 
-        // Assert.assertEquals("players not listed correctly",getResource("tournament_no_unassigned.result.xml"), content);
+        // Assert.assertEquals("players not listed correctly",getResource("tournament_no_unassigned.result.xml"),
+        // content);
         XMLAssert.assertXMLEqual("players unassigned incorrectly", wrapXMLRoot(getResource("tournament_no_unassigned.result.xml")), wrapXMLRoot(content));
     }
 
@@ -162,7 +166,8 @@ public class TournamentTemplateTest
         String content = RENDERER.render(model, RESOURCE_PREFIX + "tournament_ranks.xslt", getParameter());
         // String content1 = new XMLRenderer().render(model);
 
-        // Assert.assertEquals("content not correct rendered", getResource("tournament_ranks.result.xml"), content);
+        // Assert.assertEquals("content not correct rendered",
+        // getResource("tournament_ranks.result.xml"), content);
         XMLAssert.assertXMLEqual("content not correct rendered", getResource("tournament_ranks.result.xml"), content);
     }
 
@@ -187,7 +192,8 @@ public class TournamentTemplateTest
         String content = RENDERER.render(model, RESOURCE_PREFIX + "tournament_general.xslt", getParameter());
         // String content = new XMLRenderer().render(model);
 
-        // Assert.assertEquals("overview not correct", getResource("tournament_general.result.xml"), content);
+        // Assert.assertEquals("overview not correct",
+        // getResource("tournament_general.result.xml"), content);
         XMLAssert.assertXMLEqual("overview not correct", getResource("tournament_general.result.xml"), content);
     }
 
@@ -202,7 +208,7 @@ public class TournamentTemplateTest
         String content = RENDERER.render(model, RESOURCE_PREFIX + "tournament_tables.xslt", getParameter());
         // String content = new XMLRenderer().render(model);
 
-        //Assert.assertEquals("overview not correct", getResource("tournament_tables.result.xml"), content);
+        // Assert.assertEquals("overview not correct", getResource("tournament_tables.result.xml"), content);
         XMLAssert.assertXMLEqual("overview not correct", getResource("tournament_tables.result.xml"), content);
     }
 
@@ -211,14 +217,25 @@ public class TournamentTemplateTest
         List<TableVO> result = new ArrayList<>();
         TableVO table = new TableVO();
         table.setNumber(1);
-        table.getCompetitors().add(getCompetitorVO("100", "Obi-Wan", "200"));
-        table.getCompetitors().add(getCompetitorVO("101", "Trinity", "201"));
+        table.getCompetitors().add(getCompetitorVOWithActions("100", "Obi-Wan", "200"));
+        table.getCompetitors().add(getCompetitorVOWithActions("101", "Trinity", "201"));
         result.add(table);
         table = new TableVO();
         table.setNumber(2);
-        table.getCompetitors().add(getCompetitorVO("102", "Neo", "202"));
-        table.getCompetitors().add(getCompetitorVO("103", "Barni", "203"));
+        table.getCompetitors().add(getCompetitorVOWithActions("102", "Neo", "202"));
+        final CompetitorVO barni = getCompetitorVO("103", "Barni", "203");
+        barni.setActive(false);
+        barni.setPosition(4);
+        table.getCompetitors().add(barni);
         result.add(table);
+        return result;
+    }
+
+    private CompetitorVO getCompetitorVOWithActions(String id, String name, String playerID)
+    {
+        CompetitorVO result = getCompetitorVO(id, name, playerID);
+        result.getActions().add(new ActionVO("rebuy", URI.create("http://local/rebuy?competitor=" + id), "repeat"));
+        result.getActions().add(new ActionVO("seatopen", URI.create("http://local/seatOpen?competitor=" + id),"remove-circle"));
         return result;
     }
 }

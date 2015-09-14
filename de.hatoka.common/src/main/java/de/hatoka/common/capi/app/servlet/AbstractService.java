@@ -200,8 +200,8 @@ public class AbstractService
         return button != null;
     }
 
-    protected Response redirect(String methodName)
+    protected Response redirect(String methodName, Object... params)
     {
-        return Response.seeOther(getUriBuilder(getClass(), methodName).build()).build();
+        return Response.seeOther(getUriBuilder(getClass(), methodName).build(params)).build();
     }
 }

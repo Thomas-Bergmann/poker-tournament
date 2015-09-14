@@ -44,7 +44,7 @@ public class CompetitorBOComparatorsTest
         Mockito.when(competitorBO_D.getResult()).thenReturn(Money.valueOf("5 EUR"));
 
         List<CompetitorBO> competitorBOs = Arrays.asList(competitorBO_A, competitorBO_B, competitorBO_C, competitorBO_D);
-        competitorBOs.sort(CompetitorBOComparators.DEFAULT);
+        competitorBOs.sort(CompetitorBOComparators.CASH_GAME);
         assertEquals("B is first; active with lowest invest", competitorBO_B, competitorBOs.get(0));
         assertEquals("A is second; active with highest invest", competitorBO_A, competitorBOs.get(1));
         assertEquals("D is third; inactive with most result", competitorBO_D, competitorBOs.get(2));
@@ -58,7 +58,7 @@ public class CompetitorBOComparatorsTest
         Mockito.when(competitorBO_C.isActive()).thenReturn(false);
 
         List<CompetitorBO> competitorBOs = Arrays.asList(competitorBO_A, competitorBO_C);
-        competitorBOs.sort(CompetitorBOComparators.DEFAULT);
+        competitorBOs.sort(CompetitorBOComparators.CASH_GAME);
         assertEquals("A is first; active with highest invest", competitorBO_A, competitorBOs.get(0));
         assertEquals("C is second; inactive with lowest result", competitorBO_C, competitorBOs.get(1));
     }
@@ -72,7 +72,7 @@ public class CompetitorBOComparatorsTest
         Mockito.when(competitorBO_B.getInPlay()).thenReturn(Money.valueOf("5 EUR"));
 
         List<CompetitorBO> competitorBOs = Arrays.asList(competitorBO_A, competitorBO_B);
-        competitorBOs.sort(CompetitorBOComparators.DEFAULT);
+        competitorBOs.sort(CompetitorBOComparators.CASH_GAME);
         assertEquals("B is third; active with lowest invest", competitorBO_B, competitorBOs.get(0));
         assertEquals("A is last; active with highest invest", competitorBO_A, competitorBOs.get(1));
     }
@@ -86,7 +86,7 @@ public class CompetitorBOComparatorsTest
         Mockito.when(competitorBO_D.getResult()).thenReturn(Money.valueOf("5 EUR"));
 
         List<CompetitorBO> competitorBOs = Arrays.asList(competitorBO_C, competitorBO_D);
-        competitorBOs.sort(CompetitorBOComparators.DEFAULT);
+        competitorBOs.sort(CompetitorBOComparators.CASH_GAME);
         assertEquals("D is first; inactive with most result", competitorBO_D, competitorBOs.get(0));
         assertEquals("C is second; inactive with lowest result", competitorBO_C, competitorBOs.get(1));
     }

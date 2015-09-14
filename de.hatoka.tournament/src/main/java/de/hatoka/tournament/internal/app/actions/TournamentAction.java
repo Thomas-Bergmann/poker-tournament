@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import de.hatoka.common.capi.app.model.ActionVO;
 import de.hatoka.common.capi.app.model.SelectOptionVO;
 import de.hatoka.tournament.capi.business.CompetitorBO;
 import de.hatoka.tournament.capi.business.PlayerBO;
@@ -24,7 +25,7 @@ public class TournamentAction extends GameAction<TournamentBO>
         super(accountRef, factory.getTournamentBORepository(accountRef).getTournamentByID(tournamentID), factory);
     }
 
-    public List<String> buyInPlayers(List<String> identifiers)
+    public void buyInPlayers(List<String> identifiers)
     {
         TournamentBO tournamentBO = getGame();
         for (CompetitorBO competitorBO : tournamentBO.getCompetitors())
@@ -34,33 +35,20 @@ public class TournamentAction extends GameAction<TournamentBO>
                 tournamentBO.buyin(competitorBO);
             }
         }
-        return java.util.Collections.emptyList();
     }
 
-    public List<String> rebuyPlayers(List<String> identifiers)
+    public void rebuyCompetitor(String competitorID)
     {
         TournamentBO tournamentBO = getGame();
-        for (CompetitorBO competitorBO : tournamentBO.getCompetitors())
-        {
-            if (identifiers.contains(competitorBO.getID()))
-            {
-                tournamentBO.rebuy(competitorBO);
-            }
-        }
-        return java.util.Collections.emptyList();
+        CompetitorBO competitorBO = tournamentBO.getCompetitorBO(competitorID);
+        tournamentBO.rebuy(competitorBO);
     }
 
-    public void seatOpenPlayers(String identifier)
+    public void seatOpenCompetitor(String competitorID)
     {
         TournamentBO tournamentBO = getGame();
-        Collection<CompetitorBO> activeCompetitors = tournamentBO.getActiveCompetitors();
-        for (CompetitorBO competitorBO : activeCompetitors)
-        {
-            if (identifier.equals(competitorBO.getID()))
-            {
-                tournamentBO.seatOpen(competitorBO);
-            }
-        }
+        CompetitorBO competitorBO = tournamentBO.getCompetitorBO(competitorID);
+        tournamentBO.seatOpen(competitorBO);
     }
 
     public CompetitorBO register(PlayerBO playerBO)
@@ -81,17 +69,24 @@ public class TournamentAction extends GameAction<TournamentBO>
         return result;
     }
 
-    public TournamentTableModel getTournamentTableModel(URI tournamentUri)
+    public TournamentTableModel getTournamentTableModel(URI tournamentUri, TournamentTableURIBuilder uriBuilder)
     {
         TournamentBO tournamentBO = getGame();
         TournamentTableModel result = new TournamentTableModel();
         TournamentVO tournamentVO = new TournamentVO(tournamentBO, tournamentUri);
         result.setTournament(tournamentVO);
-        result.getTables().addAll(getTables(tournamentBO));
+        result.getTables().addAll(getTables(tournamentBO, uriBuilder));
         return result;
     }
 
-    private Collection<? extends TableVO> getTables(TournamentBO tournamentBO)
+    public static interface TournamentTableURIBuilder
+    {
+        URI getRebuyURI(String competitorID);
+
+        URI getSeatOpenURI(String competitorID);
+    }
+
+    private Collection<? extends TableVO> getTables(TournamentBO tournamentBO, TournamentTableURIBuilder uriBuilder)
     {
         List<TableVO> result = new ArrayList<>();
         int tableNo = 1;
@@ -102,7 +97,10 @@ public class TournamentAction extends GameAction<TournamentBO>
             final List<CompetitorVO> competitorVOs = tableVO.getCompetitors();
             for (CompetitorBO competitorBO : tableBO.getCompetitors())
             {
-                competitorVOs.add(new CompetitorVO(competitorBO));
+                final CompetitorVO competitorVO = new CompetitorVO(competitorBO);
+                competitorVO.getActions().add(new ActionVO("reBuy", uriBuilder.getRebuyURI(competitorBO.getID()),"repeat"));
+                competitorVO.getActions().add(new ActionVO("seatOpen", uriBuilder.getSeatOpenURI(competitorBO.getID()), "remove-circle"));
+                competitorVOs.add(competitorVO);
             }
             result.add(tableVO);
         }

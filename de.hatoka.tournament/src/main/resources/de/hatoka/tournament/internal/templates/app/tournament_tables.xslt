@@ -6,15 +6,32 @@
   <xsl:param name="uriInfo" />
   <xsl:output method="html" encoding="UTF-8" indent="yes" />
   <xsl:template match="/"  xmlns="http://www.w3.org/1999/xhtml">
-    <form method="POST" action="actionList">
-        <xsl:for-each select="tournamentTableModel/tables" xmlns="http://www.w3.org/1999/xhtml">
-		  <div class="table">
-		    <h2><xsl:value-of select="hatoka:getText($localizer, 'info.tournament.table', 'Tab {0]', @number)" /></h2>
+    <div>
+     <xsl:for-each select="tournamentTableModel/tables" xmlns="http://www.w3.org/1999/xhtml">
+        <h2><xsl:value-of select="hatoka:getText($localizer, 'info.tournament.table', 'Tab {0]', @number)" /></h2>
+        <table class="tournamentTable table table-striped">
         <xsl:for-each select="competitors" xmlns="http://www.w3.org/1999/xhtml">
-		    <p><span class="seat"><xsl:value-of select="id" /></span><span class="player"><xsl:value-of select="playerName" /></span></p>
+            <tr>
+                <td class="player"><xsl:value-of select="playerName" /></td>
+                <td>
+                <xsl:if test="active = 'true'">
+                    <xsl:for-each select="actions" xmlns="http://www.w3.org/1999/xhtml">
+                        <form method="POST" action="{@uri}"><button class="glyphicon glyphicon-{@glyphicon}"><xsl:value-of select="@name" /></button></form>
+                    </xsl:for-each>
+                </xsl:if>
+                <xsl:if test="active = 'false'">
+                <span class="position"><xsl:value-of select="position" /></span>
+                </xsl:if>
+                </td>
+            </tr>
         </xsl:for-each>
-		  </div>
+          </table>
         </xsl:for-each>
+    <form method="POST" action="actionTables">
+      <xsl:call-template name="button">
+        <xsl:with-param name="name">assignTables</xsl:with-param>
+      </xsl:call-template>
     </form>
+    </div>
   </xsl:template>
 </xsl:stylesheet>

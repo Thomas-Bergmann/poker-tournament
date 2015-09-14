@@ -19,6 +19,11 @@ public class CashGameAction extends GameAction<CashGameBO>
         super(accountRef, cashGameBO, factory);
     }
 
+    public void sortPlayers()
+    {
+        getGame().sortCompetitors();
+    }
+
     /**
      *
      * @param competitorIDs

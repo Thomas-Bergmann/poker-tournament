@@ -25,6 +25,7 @@ import de.hatoka.tournament.internal.app.servlets.TournamentCompetitorService;
 import de.hatoka.tournament.internal.app.servlets.TournamentListService;
 import de.hatoka.tournament.internal.app.servlets.TournamentRankService;
 import de.hatoka.tournament.internal.app.servlets.TournamentService;
+import de.hatoka.tournament.internal.app.servlets.TournamentTableService;
 import de.hatoka.tournament.internal.modules.TournamentBusinessModule;
 import de.hatoka.tournament.internal.modules.TournamentDaoJpaModule;
 
@@ -59,6 +60,7 @@ public class TournamentApplication extends Application
         result.add(TournamentCompetitorService.class);
         result.add(TournamentBlindLevelService.class);
         result.add(TournamentRankService.class);
+        result.add(TournamentTableService.class);
         result.add(CashGameListService.class);
         result.add(CashGameCompetitorService.class);
         result.add(AccountRequestFilter.class);

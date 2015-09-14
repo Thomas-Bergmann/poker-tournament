@@ -31,11 +31,6 @@ import de.hatoka.tournament.internal.app.models.TournamentVO;
         this.factory = factory;
     }
 
-    public void sortPlayers()
-    {
-        gameBO.sortCompetitors();
-    }
-
     protected T getGame()
     {
         return gameBO;

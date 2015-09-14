@@ -67,13 +67,8 @@ public class TournamentCompetitorService extends AbstractService
     @POST
     @Path("/actionList")
     public Response actionPlayerList(@FormParam("competitorID") List<String> identifiers,
-                    @FormParam("delete") String deleteButton, @FormParam("seatopen") String seatOpenButton,
-                    @FormParam("sort") String sortButton, @FormParam("rebuy") String rebuyButton, @FormParam("buyin") String buyInButton)
+                    @FormParam("delete") String deleteButton, @FormParam("buyin") String buyInButton)
     {
-        if (isButtonPressed(sortButton))
-        {
-            return sortPlayers();
-        }
         if (isButtonPressed(deleteButton))
         {
             return unassignPlayers(identifiers);
@@ -82,31 +77,7 @@ public class TournamentCompetitorService extends AbstractService
         {
             return buyInPlayers(identifiers);
         }
-        if (isButtonPressed(rebuyButton))
-        {
-            return rebuyPlayers(identifiers);
-        }
-        if (isButtonPressed(seatOpenButton))
-        {
-            return seatOpenPlayer(identifiers.get(0));
-        }
-        return redirect(METHOD_NAME_LIST);
-    }
-
-    @POST
-    @Path("/sort")
-    public Response sortPlayers()
-    {
-        TournamentAction action = getTournamentAction();
-        runInTransaction(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                action.sortPlayers();
-            }
-        });
-        return redirect(METHOD_NAME_LIST);
+        return redirect(METHOD_NAME_LIST, tournamentID);
     }
 
     @POST
@@ -199,45 +170,13 @@ public class TournamentCompetitorService extends AbstractService
                 action.buyInPlayers(identifiers);
             }
         });
-        return redirect(METHOD_NAME_LIST);
-    }
-
-    @POST
-    @Path("/rebuy")
-    public Response rebuyPlayers(@FormParam("competitorID") List<String> identifiers)
-    {
-        TournamentAction action = getTournamentAction();
-        runInTransaction(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                action.rebuyPlayers(identifiers);
-            }
-        });
-        return redirect(METHOD_NAME_LIST);
+        return redirect(METHOD_NAME_LIST, tournamentID);
     }
 
     private Response redirectAddPlayer()
     {
         return Response.seeOther(getUriBuilder(TournamentCompetitorService.class, "addPlayer").build(tournamentID))
                         .build();
-    }
-
-    @POST
-    @Path("/seatOpen")
-    public Response seatOpenPlayer(@FormParam("competitorID") String identifier)
-    {
-        TournamentAction action = getTournamentAction();
-        runInTransaction(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                action.seatOpenPlayers(identifier);
-            }
-        });
-        return redirect(METHOD_NAME_LIST);
     }
 
     @POST
@@ -253,7 +192,7 @@ public class TournamentCompetitorService extends AbstractService
                 action.unassignPlayers(identifiers);
             }
         });
-        return redirect(METHOD_NAME_LIST);
+        return redirect(METHOD_NAME_LIST, tournamentID);
     }
 
     private String renderFrame(String content, String titleKey) throws IOException

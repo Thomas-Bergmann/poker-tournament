@@ -1,5 +1,9 @@
 package de.hatoka.tournament.internal.app.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import de.hatoka.common.capi.app.model.ActionVO;
 import de.hatoka.common.capi.app.model.MoneyVO;
 import de.hatoka.tournament.capi.business.CompetitorBO;
 
@@ -12,6 +16,7 @@ public class CompetitorVO
     private MoneyVO result;
     private boolean active = false;
     private Integer position;
+    private List<ActionVO> actions = new ArrayList<>();
 
     public CompetitorVO()
     {
@@ -97,4 +102,15 @@ public class CompetitorVO
     {
         this.result = result;
     }
+
+    public List<ActionVO> getActions()
+    {
+        return actions;
+    }
+
+    public void setActions(List<ActionVO> actions)
+    {
+        this.actions = actions;
+    }
+
 }

@@ -180,4 +180,10 @@ public interface TournamentBO extends GameBO
      * Starts the tournament (current round is set to 0), registration, modifications of ranks, blind levels is not longer possible.
      */
     void start();
+
+    /**
+     * @param competitorID
+     * @return competitor by given identifier
+     */
+    CompetitorBO getCompetitorBO(String competitorID);
 }

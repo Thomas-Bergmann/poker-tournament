@@ -15,6 +15,7 @@ import de.hatoka.tournament.internal.app.servlets.TournamentCompetitorService;
 import de.hatoka.tournament.internal.app.servlets.TournamentListService;
 import de.hatoka.tournament.internal.app.servlets.TournamentRankService;
 import de.hatoka.tournament.internal.app.servlets.TournamentService;
+import de.hatoka.tournament.internal.app.servlets.TournamentTableService;
 
 public class MenuFactory
 {
@@ -99,7 +100,7 @@ public class MenuFactory
                         getUri(info, TournamentRankService.class, TournamentRankService.METHOD_NAME_LIST, tournamentBO.getID()), tournamentBO
                                         .getRanks().size(), null, titleKey.equals("title.list.ranks"));
         model.addSideMenu("menu.tournament.tables",
-                        getUri(info, TournamentService.class, TournamentService.METHOD_NAME_LIST, tournamentBO.getID()), null, null, titleKey.equals("title.tournament.general"));
+                        getUri(info, TournamentTableService.class, TournamentTableService.METHOD_NAME_LIST, tournamentBO.getID()), null, null, titleKey.equals("title.tournament.tables"));
         return model;
     }
 

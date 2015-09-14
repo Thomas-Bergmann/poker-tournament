@@ -18,10 +18,12 @@
         <xsl:for-each select="tournamentPlayerListModel/competitors" xmlns="http://www.w3.org/1999/xhtml">
           <tr>
             <td>
+            <xsl:if test="active != 'true'">
               <xsl:call-template name="checkbox">
                 <xsl:with-param name="name">competitorID</xsl:with-param>
                 <xsl:with-param name="value"><xsl:value-of select="id" /></xsl:with-param>
               </xsl:call-template>
+              </xsl:if>
             </td>
             <td><xsl:value-of select="playerName" /></td>
             <td>
@@ -37,28 +39,8 @@
           </tr>
         </xsl:for-each>
       </table>
-      <p class="bg-info">
-        Average: <xsl:value-of select="tournamentPlayerListModel/tournament/average/amount" />
-        <br />Sum: <xsl:value-of select="tournamentPlayerListModel/tournament/sumInPlay/amount" />
-      </p>
-      <xsl:call-template name="input">
-        <xsl:with-param name="name">amount</xsl:with-param>
-        <xsl:with-param name="placeholderKey">placeholder.amount</xsl:with-param>
-      </xsl:call-template>
       <xsl:call-template name="button">
         <xsl:with-param name="name">buyin</xsl:with-param>
-      </xsl:call-template>
-      <xsl:call-template name="button">
-        <xsl:with-param name="name">rebuy</xsl:with-param>
-        <xsl:with-param name="cssClass">btn</xsl:with-param>
-      </xsl:call-template>
-      <xsl:call-template name="button">
-        <xsl:with-param name="name">seatopen</xsl:with-param>
-        <xsl:with-param name="cssClass">btn</xsl:with-param>
-      </xsl:call-template>
-      <xsl:call-template name="button">
-        <xsl:with-param name="name">sort</xsl:with-param>
-        <xsl:with-param name="cssClass">btn</xsl:with-param>
       </xsl:call-template>
     </form>
   </xsl:template>

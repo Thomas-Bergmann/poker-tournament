@@ -116,7 +116,6 @@ public class TournamentBOImpl implements TournamentBO
         iTournamentCompetitor.setInactive();
         iTournamentCompetitor.setResult(moneyResult);
         iTournamentCompetitor.setPosition(position);
-        sortCompetitors();
         iTournamentCompetitor.createEntry(HistoryEntryType.CashOut, moneyResult);
     }
 
@@ -155,7 +154,7 @@ public class TournamentBOImpl implements TournamentBO
     @Override
     public List<CompetitorBO> getCompetitors()
     {
-        return getCompetitorBOStream().sorted(CompetitorBOComparators.POSITION).collect(Collectors.toList());
+        return getCompetitorBOStream().sorted(CompetitorBOComparators.TOURNAMENT).collect(Collectors.toList());
     }
 
     private Stream<CompetitorBO> getCompetitorBOStream()
@@ -251,14 +250,13 @@ public class TournamentBOImpl implements TournamentBO
         return true;
     }
 
+    /**
+     * Sort competitors recalculates the position of competitors.
+     */
     @Override
     public void sortCompetitors()
     {
-        int position = 1;
-        for (CompetitorBO competitorBO : getCompetitorBOStream().sorted(CompetitorBOComparators.DEFAULT).collect(Collectors.toList()))
-        {
-            competitorBO.setPosition(position++);
-        }
+        // nothing to do at tournament
     }
 
     @Override
@@ -362,6 +360,7 @@ public class TournamentBOImpl implements TournamentBO
             throw new IllegalArgumentException("Can't allow more than 10 players as max per table: " + number);
         }
         tournamentPO.setMaxPlayerPerTable(number);
+        placePlayersAtTables();
     }
 
     @Override
@@ -527,6 +526,17 @@ public class TournamentBOImpl implements TournamentBO
     public void start()
     {
         tournamentPO.setCurrentRound(0);
+    }
+
+    @Override
+    public CompetitorBO getCompetitorBO(String competitorID)
+    {
+        CompetitorPO competitorPO = competitorDao.getById(competitorID);
+        if (competitorPO == null || !competitorPO.getTournamentPO().equals(tournamentPO))
+        {
+            return null;
+        }
+        return factory.getCompetitorBO(competitorPO, this);
     }
 
 }

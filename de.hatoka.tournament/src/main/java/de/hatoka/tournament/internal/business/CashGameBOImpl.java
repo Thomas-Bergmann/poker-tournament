@@ -199,7 +199,7 @@ public class CashGameBOImpl implements CashGameBO
     public void sortCompetitors()
     {
         int position = 1;
-        for (CompetitorBO competitorBO : getCompetitorBOStream().sorted(CompetitorBOComparators.DEFAULT).collect(
+        for (CompetitorBO competitorBO : getCompetitorBOStream().sorted(CompetitorBOComparators.CASH_GAME).collect(
                         Collectors.toList()))
         {
             competitorBO.setPosition(position++);

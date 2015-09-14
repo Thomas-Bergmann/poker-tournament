@@ -1,24 +1,50 @@
-<form xmlns="http://www.w3.org/1999/xhtml" action="actionList" method="POST">
-<div class="table">
+<div xmlns="http://www.w3.org/1999/xhtml">
 <h2>Table 1</h2>
-<p>
-<span class="seat">100</span>
-<span class="player">Obi-Wan</span>
-</p>
-<p>
-<span class="seat">101</span>
-<span class="player">Trinity</span>
-</p>
-</div>
-<div class="table">
-<h2>Table 2</h2>
-<p>
-<span class="seat">102</span>
-<span class="player">Neo</span>
-</p>
-<p>
-<span class="seat">103</span>
-<span class="player">Barni</span>
-</p>
-</div>
+<table class="tournamentTable table table-striped">
+<tr>
+<td class="player">Obi-Wan</td>
+<td>
+<form action="http://local/rebuy?competitor=100" method="POST">
+<button class="glyphicon glyphicon-repeat">rebuy</button>
 </form>
+<form action="http://local/seatOpen?competitor=100" method="POST">
+<button class="glyphicon glyphicon-remove-circle">seatopen</button>
+</form>
+</td>
+</tr>
+<tr>
+<td class="player">Trinity</td>
+<td>
+<form action="http://local/rebuy?competitor=101" method="POST">
+<button class="glyphicon glyphicon-repeat">rebuy</button>
+</form>
+<form action="http://local/seatOpen?competitor=101" method="POST">
+<button class="glyphicon glyphicon-remove-circle">seatopen</button>
+</form>
+</td>
+</tr>
+</table>
+<h2>Table 2</h2>
+<table class="tournamentTable table table-striped">
+<tr>
+<td class="player">Neo</td>
+<td>
+<form action="http://local/rebuy?competitor=102" method="POST">
+<button class="glyphicon glyphicon-repeat">rebuy</button>
+</form>
+<form action="http://local/seatOpen?competitor=102" method="POST">
+<button class="glyphicon glyphicon-remove-circle">seatopen</button>
+</form>
+</td>
+</tr>
+<tr>
+<td class="player">Barni</td>
+<td>
+<span class="position">4</span>
+</td>
+</tr>
+</table>
+<form action="actionTables" method="POST">
+<button name="assignTables" type="submit" class="btn btn-primary">Assign Tables</button>
+</form>
+</div>
