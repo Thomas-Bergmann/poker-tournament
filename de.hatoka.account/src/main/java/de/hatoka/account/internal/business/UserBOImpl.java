@@ -87,7 +87,7 @@ public class UserBOImpl implements UserBO
         signUpVerifyEmailModel.setLink(link);
         try
         {
-            RENDERER.render(writer, signUpVerifyEmailModel, "signUpVerifyEmail.html.xslt", getXsltProcessorParameter());
+            RENDERER.render(writer, signUpVerifyEmailModel, RESOURCE_PREFIX + "signUpVerifyEmail.html.xslt", getXsltProcessorParameter());
         }
         catch(IOException e)
         {
