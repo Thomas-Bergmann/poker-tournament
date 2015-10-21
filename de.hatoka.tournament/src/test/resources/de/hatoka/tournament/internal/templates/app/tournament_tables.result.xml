@@ -3,7 +3,7 @@
 <table class="tournamentTable table table-striped">
 <tr>
 <td class="player">Obi-Wan</td>
-<td>
+<td class="actions">
 <form action="http://local/rebuy?competitor=100" method="POST">
 <button class="glyphicon glyphicon-repeat">rebuy</button>
 </form>
@@ -14,7 +14,7 @@
 </tr>
 <tr>
 <td class="player">Trinity</td>
-<td>
+<td class="actions">
 <form action="http://local/rebuy?competitor=101" method="POST">
 <button class="glyphicon glyphicon-repeat">rebuy</button>
 </form>
@@ -28,7 +28,7 @@
 <table class="tournamentTable table table-striped">
 <tr>
 <td class="player">Neo</td>
-<td>
+<td class="actions">
 <form action="http://local/rebuy?competitor=102" method="POST">
 <button class="glyphicon glyphicon-repeat">rebuy</button>
 </form>
@@ -37,10 +37,16 @@
 </form>
 </td>
 </tr>
+</table>
+<h2>Inactive players</h2>
+<table class="tournamentTable table table-striped">
 <tr>
-<td class="player">Barni</td>
-<td>
-<span class="position">4</span>
+<td class="player">Darth Mouth</td>
+<td class="position">9</td>
+<td class="actions">
+<form action="http://local/rebuy?competitor=109" method="POST">
+<button class="glyphicon glyphicon-repeat">rebuy</button>
+</form>
 </td>
 </tr>
 </table>

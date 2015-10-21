@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import de.hatoka.common.capi.app.model.ActionVO;
 import de.hatoka.common.capi.app.model.SelectOptionVO;
@@ -76,6 +77,7 @@ public class TournamentAction extends GameAction<TournamentBO>
         TournamentVO tournamentVO = new TournamentVO(tournamentBO, tournamentUri);
         result.setTournament(tournamentVO);
         result.getTables().addAll(getTables(tournamentBO, uriBuilder));
+        result.setPlacedCompetitors(tournamentBO.getPlacedCompetitors().stream().map(bo -> new CompetitorVO(bo)).collect(Collectors.toList()));
         return result;
     }
 

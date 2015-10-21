@@ -25,9 +25,7 @@ public interface CompetitorBO
     PlayerBO getPlayer();
 
     /**
-     * (Current) tournament position of player.
-     *
-     * @return
+     * @return (Current) tournament position of player.
      */
     Integer getPosition();
 
@@ -66,4 +64,14 @@ public interface CompetitorBO
      * @param position at table (0 is dealer)
      */
     void takeSeat(int tableNo, int seatNo);
+
+    /**
+     * @return table number the player is sitting
+     */
+    Integer getTableNo();
+
+    /**
+     * @return seat number the player is sitting
+     */
+    Integer getSeatNo();
 }

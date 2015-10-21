@@ -161,6 +161,8 @@ public class CompetitorBOImpl implements ICompetitor
     public void setInactive()
     {
         competitorPO.setState(CompetitorState.OUT.name());
+        competitorPO.setTableNo(-1);
+        competitorPO.setSeatNo(-1);
     }
 
     @Override
@@ -168,5 +170,17 @@ public class CompetitorBOImpl implements ICompetitor
     {
         competitorPO.setTableNo(tableNo);
         competitorPO.setSeatNo(seatNo);
+    }
+
+    @Override
+    public Integer getTableNo()
+    {
+        return competitorPO.getTableNo() < 0 ? null : competitorPO.getTableNo();
+    }
+
+    @Override
+    public Integer getSeatNo()
+    {
+        return competitorPO.getSeatNo() < 0 ? null : competitorPO.getSeatNo();
     }
 }

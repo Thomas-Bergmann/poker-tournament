@@ -161,24 +161,74 @@ public class TournamentBOTest
         underTest.setMaximumNumberOfPlayersPerTable(10);
         for(int i = 0; i < 17; i++)
         {
-            createCompetitor("player testPlaceCompetitors" + i);
+            CompetitorBO competitor = createCompetitor("player testPlaceCompetitors" + i);
+            underTest.buyin(competitor);
         }
+        createCompetitor("inactive player testPlaceCompetitors");
         underTest.placePlayersAtTables();
+
+        // test tables
         Collection<TableBO> tables = underTest.getTables();
         assertEquals("numberOfTables", 2, tables.size());
+
+        // test active players
+        assertEquals("maxPlayer", 9, maxPlayersOnTable(tables));
+        assertEquals("sumPlayers", 17, sumPlayersOnTable(tables));
+
+        // remove one player (now 16 - 8 on each table)
+        assertTrue("no placed players at start", underTest.getPlacedCompetitors().isEmpty());
+        removeFirstPlayer(tables);
+        assertEquals("one placed players", 1, underTest.getPlacedCompetitors().size());
+        assertEquals("one placed players", 17, underTest.getPlacedCompetitors().get(0).getPosition().intValue());
+
+        tables = underTest.getTables();
+        assertEquals("maxPlayer", 8, maxPlayersOnTable(tables));
+        assertEquals("sumPlayers", 16, sumPlayersOnTable(tables));
+
+        assertTrue("no movedPlayer", underTest.levelOutTables().isEmpty());
+
+        // remove two player (now 14 - 6 on first and 8 on second table)
+        removeFirstPlayer(tables);
+        removeFirstPlayer(tables);
+        tables = underTest.getTables();
+        assertEquals("maxPlayer", 8, maxPlayersOnTable(tables));
+        assertEquals("sumPlayers", 14, sumPlayersOnTable(tables));
+        Collection<CompetitorBO> movedCompetitors = underTest.levelOutTables();
+        assertEquals("one player moved", 1, movedCompetitors.size());
+        tables = underTest.getTables();
+        assertEquals("maxPlayer", 7, maxPlayersOnTable(tables));
+        assertEquals("sumPlayers", 14, sumPlayersOnTable(tables));
+    }
+
+    private void removeFirstPlayer(Collection<TableBO> tables)
+    {
+        CompetitorBO firstCompetitor = tables.iterator().next().getCompetitors().stream().filter(c -> c.isActive()).findAny().get();
+        underTest.seatOpen(firstCompetitor);
+    }
+
+    private int maxPlayersOnTable(Collection<TableBO> tables)
+    {
         int maxPlayer = 0;
-        int sumPlayers = 0;
         for(TableBO table : tables)
         {
             final int playersOnTable = table.getCompetitors().size();
-            sumPlayers += playersOnTable;
             if (maxPlayer < playersOnTable)
             {
                 maxPlayer = playersOnTable;
             }
         }
-        assertEquals("maxPlayer", 9, maxPlayer);
-        assertEquals("sumPlayers", 17, sumPlayers);
+        return maxPlayer;
+    }
+
+    private int sumPlayersOnTable(Collection<TableBO> tables)
+    {
+        int sumPlayers = 0;
+        for(TableBO table : tables)
+        {
+            final int playersOnTable = table.getCompetitors().size();
+            sumPlayers += playersOnTable;
+        }
+        return sumPlayers;
     }
 
     private CompetitorBO createCompetitor(String name)

@@ -2,12 +2,13 @@ package de.hatoka.tournament.internal.business;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import de.hatoka.tournament.capi.business.CompetitorBO;
 import de.hatoka.tournament.capi.business.TableBO;
 
-public class TableBOImpl implements TableBO
+public class TableBOImpl implements TableBO, ITableBO
 {
     private final int number;
     private List<CompetitorBO> competitors = new ArrayList<>();
@@ -17,9 +18,18 @@ public class TableBOImpl implements TableBO
         this.number = number;
     }
 
-    public void addCompetitor(CompetitorBO competitor)
+    @Override
+    public void add(CompetitorBO competitor)
     {
         competitors.add(competitor);
+        competitors.sort(new Comparator<CompetitorBO>()
+        {
+            @Override
+            public int compare(CompetitorBO o1, CompetitorBO o2)
+            {
+                return o1.getSeatNo().compareTo(o2.getSeatNo());
+            }
+        });
     }
 
     @Override

@@ -204,6 +204,7 @@ public class TournamentTemplateTest
         TournamentVO tournamentVO = getTournamentVO("123456", "Test 1", parseDate("2011-11-25T18:00"));
         tournamentVO.setBuyIn(new MoneyVO(Money.valueOf("5", "USD")));
         model.getTables().addAll(getTables());
+        model.getPlacedCompetitors().add(getInActiveCompetitor("109", "Darth Mouth", "209", 9) );
         model.setTournament(tournamentVO);
         String content = RENDERER.render(model, RESOURCE_PREFIX + "tournament_tables.xslt", getParameter());
         // String content = new XMLRenderer().render(model);
@@ -217,25 +218,30 @@ public class TournamentTemplateTest
         List<TableVO> result = new ArrayList<>();
         TableVO table = new TableVO();
         table.setNumber(1);
-        table.getCompetitors().add(getCompetitorVOWithActions("100", "Obi-Wan", "200"));
-        table.getCompetitors().add(getCompetitorVOWithActions("101", "Trinity", "201"));
+        table.getCompetitors().add(getActiveCompetitor("100", "Obi-Wan", "200"));
+        table.getCompetitors().add(getActiveCompetitor("101", "Trinity", "201"));
         result.add(table);
         table = new TableVO();
         table.setNumber(2);
-        table.getCompetitors().add(getCompetitorVOWithActions("102", "Neo", "202"));
-        final CompetitorVO barni = getCompetitorVO("103", "Barni", "203");
-        barni.setActive(false);
-        barni.setPosition(4);
-        table.getCompetitors().add(barni);
+        table.getCompetitors().add(getActiveCompetitor("102", "Neo", "202"));
         result.add(table);
         return result;
     }
 
-    private CompetitorVO getCompetitorVOWithActions(String id, String name, String playerID)
+    private CompetitorVO getActiveCompetitor(String id, String name, String playerID)
     {
         CompetitorVO result = getCompetitorVO(id, name, playerID);
         result.getActions().add(new ActionVO("rebuy", URI.create("http://local/rebuy?competitor=" + id), "repeat"));
         result.getActions().add(new ActionVO("seatopen", URI.create("http://local/seatOpen?competitor=" + id),"remove-circle"));
+        return result;
+    }
+
+
+    private CompetitorVO getInActiveCompetitor(String id, String name, String playerID, Integer position)
+    {
+        CompetitorVO result = getCompetitorVO(id, name, playerID);
+        result.setPosition(position);
+        result.getActions().add(new ActionVO("rebuy", URI.create("http://local/rebuy?competitor=" + id), "repeat"));
         return result;
     }
 }

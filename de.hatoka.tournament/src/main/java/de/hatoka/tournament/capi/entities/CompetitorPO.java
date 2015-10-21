@@ -78,13 +78,13 @@ public class CompetitorPO implements Serializable, IdentifiableEntity
      * The player seats on table
      */
     @XmlAttribute
-    private int tableNo = 0;
+    private int tableNo = -1;
 
     /**
      * The player seats at seat on table
      */
     @XmlAttribute
-    private int seatNo = 0;
+    private int seatNo = -1;
 
 
     public CompetitorPO()

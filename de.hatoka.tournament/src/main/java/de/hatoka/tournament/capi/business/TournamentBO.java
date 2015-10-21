@@ -107,9 +107,26 @@ public interface TournamentBO extends GameBO
      */
     int getFinalStacksize();
 
+    /**
+     * assign all active competitors to tables
+     */
     void placePlayersAtTables();
 
+    /**
+     * @return tables with assigned competitors
+     */
     Collection<TableBO> getTables();
+
+    /**
+     * @return get players, which are inactive but take part of tournament (which are placed)
+     */
+    List<CompetitorBO> getPlacedCompetitors();
+
+    /**
+     * Moves players from tables with more players to smaller tables.
+     * @return moved competitors
+     */
+    Collection<CompetitorBO> levelOutTables();
 
     /**
      * Registration can be done without buyin, a preparation step for the

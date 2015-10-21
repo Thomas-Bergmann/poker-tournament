@@ -10,6 +10,7 @@ public class TournamentTableModel
 {
     private TournamentVO tournament;
     private List<TableVO> tables = new ArrayList<>();
+    private List<CompetitorVO> placedCompetitors = new ArrayList<>();
 
     public TournamentVO getTournament()
     {
@@ -31,4 +32,13 @@ public class TournamentTableModel
         this.tables = tables;
     }
 
+    public List<CompetitorVO> getPlacedCompetitors()
+    {
+        return placedCompetitors;
+    }
+
+    public void setPlacedCompetitors(List<CompetitorVO> placedCompetitors)
+    {
+        this.placedCompetitors = placedCompetitors;
+    }
 }

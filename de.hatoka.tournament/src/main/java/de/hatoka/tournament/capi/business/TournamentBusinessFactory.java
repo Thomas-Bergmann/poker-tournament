@@ -8,6 +8,7 @@ import de.hatoka.tournament.capi.entities.HistoryPO;
 import de.hatoka.tournament.capi.entities.PlayerPO;
 import de.hatoka.tournament.capi.entities.RankPO;
 import de.hatoka.tournament.capi.entities.TournamentPO;
+import de.hatoka.tournament.internal.business.ITableBO;
 
 public interface TournamentBusinessFactory
 {
@@ -33,5 +34,5 @@ public interface TournamentBusinessFactory
 
     RankBO getRankBO(RankPO rankPO, TournamentBO tournamentBO);
 
-    TableBO getTableBO(int tableNo);
+    ITableBO getTableBO(int tableNo);
 }

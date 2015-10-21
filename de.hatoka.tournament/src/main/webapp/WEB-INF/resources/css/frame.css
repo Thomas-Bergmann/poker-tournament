@@ -70,6 +70,10 @@ body {
   margin-left: 5px;
 }
 
+.table tr td form {
+  display : inline;
+}
+
 /* Hide for mobile, show later */
 @media (max-width: 768px) {
   .nav-sidebar {

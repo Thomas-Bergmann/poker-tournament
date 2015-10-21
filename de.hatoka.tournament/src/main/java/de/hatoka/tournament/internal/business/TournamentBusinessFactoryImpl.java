@@ -18,7 +18,6 @@ import de.hatoka.tournament.capi.business.HistoryEntryBO;
 import de.hatoka.tournament.capi.business.PlayerBO;
 import de.hatoka.tournament.capi.business.PlayerBORepository;
 import de.hatoka.tournament.capi.business.RankBO;
-import de.hatoka.tournament.capi.business.TableBO;
 import de.hatoka.tournament.capi.business.TournamentBO;
 import de.hatoka.tournament.capi.business.TournamentBORepository;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
@@ -135,7 +134,7 @@ public class TournamentBusinessFactoryImpl implements TournamentBusinessFactory
     }
 
     @Override
-    public TableBO getTableBO(int tableNo)
+    public ITableBO getTableBO(int tableNo)
     {
         return new TableBOImpl(tableNo);
     }
