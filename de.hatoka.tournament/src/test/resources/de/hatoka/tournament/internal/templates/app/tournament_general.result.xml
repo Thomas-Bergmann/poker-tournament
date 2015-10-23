@@ -2,11 +2,11 @@
 <label class="sr-only" for="inputname">Tournament Name</label>
 <input placeholder="Tournament Name" value="Test 1" name="name" type="text" id="inputname" class="form-control"/>
 <label class="sr-only" for="inputbuyIn">Buy-In</label>
-<input placeholder="Buy-In" value="5USD" name="buyIn" type="text" id="inputbuyIn" class="form-control"/>
+<input placeholder="Buy-In" value="5" name="buyIn" type="text" id="inputbuyIn" class="form-control"/>
 <label class="sr-only" for="inputinitialStack">Initial Stack</label>
 <input placeholder="Initial Stack" value="1000" name="initialStack" type="text" id="inputinitialStack" class="form-control"/>
 <label class="sr-only" for="inputdate">Start Date</label>
-<input placeholder="Start Date" value="25.11.11 18:00" name="date" type="text" id="inputdate" class="form-control" autocomplete="off"/>
+<input placeholder="Start Date" value="11/25/11 6:00 PM" name="date" type="text" id="inputdate" class="form-control" autocomplete="off"/>
 <label>Re-Buy Option</label>
 <div class="select-radio">
 <div class="select-option">

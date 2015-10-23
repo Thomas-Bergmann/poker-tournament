@@ -68,7 +68,7 @@ public class TournamentTemplateTest
     private Map<String, Object> getParameter()
     {
         Map<String, Object> result = new HashMap<>();
-        result.put(Lib.XSLT_LOCALIZER, new ResourceLocalizer(new LocalizationBundle(RESOURCE_PREFIX + "tournament", Locale.GERMANY, CountryHelper.TZ_BERLIN)));
+        result.put(Lib.XSLT_LOCALIZER, new ResourceLocalizer(new LocalizationBundle(RESOURCE_PREFIX + "tournament", Locale.US, CountryHelper.TZ_BERLIN)));
         return result;
     }
 
@@ -99,9 +99,9 @@ public class TournamentTemplateTest
         model.getCompetitors().add(competitorVO);
         model.getUnassignedPlayers().add(getPlayerVO("1234581", "Player 3"));
         String content = RENDERER.render(model, RESOURCE_PREFIX + "tournament_players.xslt", getParameter());
+        // String content = new XMLRenderer().render(model);
 
-        // Assert.assertEquals("players not listed correctly",
-        // getResource("tournament_players.result.xml"), content);
+        // Assert.assertEquals("players not listed correctly", getResource("tournament_players.result.xml"), content);
         XMLAssert.assertXMLEqual("players not listed correctly", getResource("tournament_players.result.xml"), content);
     }
 
@@ -159,15 +159,14 @@ public class TournamentTemplateTest
         model.setTournament(getTournamentVO("123456", "Test 1", parseDate("2011-11-25T18:00")));
         List<RankVO> blindLevels = model.getRanks();
         blindLevels.add(TournamentViewObjectHelper.getFixPriceRankVO("1", 1, 1, BigDecimal.valueOf(100)));
-        blindLevels.add(TournamentViewObjectHelper.getPercentageRankVO("2", 2, 2, BigDecimal.valueOf(50), BigDecimal.valueOf(50)));
-        blindLevels.add(TournamentViewObjectHelper.getPercentageCalcRankVO("3", 3, 5, BigDecimal.valueOf(25), BigDecimal.valueOf(25)));
-        blindLevels.add(TournamentViewObjectHelper.getPercentageCalcRankVO("4", 6, 10, BigDecimal.valueOf(25), BigDecimal.valueOf(25)));
+        blindLevels.add(TournamentViewObjectHelper.getPercentageRankVO("2", 2, 2, BigDecimal.valueOf(0.50), BigDecimal.valueOf(50)));
+        blindLevels.add(TournamentViewObjectHelper.getPercentageCalcRankVO("3", 3, 5, BigDecimal.valueOf(0.25), BigDecimal.valueOf(25)));
+        blindLevels.add(TournamentViewObjectHelper.getPercentageCalcRankVO("4", 6, 10, BigDecimal.valueOf(0.25), BigDecimal.valueOf(25)));
         model.getPrefilled().add(new RankVO("new"));
         String content = RENDERER.render(model, RESOURCE_PREFIX + "tournament_ranks.xslt", getParameter());
-        // String content1 = new XMLRenderer().render(model);
+        // String content = new XMLRenderer().render(model);
 
-        // Assert.assertEquals("content not correct rendered",
-        // getResource("tournament_ranks.result.xml"), content);
+        Assert.assertEquals("content not correct rendered", getResource("tournament_ranks.result.xml"), content);
         XMLAssert.assertXMLEqual("content not correct rendered", getResource("tournament_ranks.result.xml"), content);
     }
 
@@ -192,8 +191,7 @@ public class TournamentTemplateTest
         String content = RENDERER.render(model, RESOURCE_PREFIX + "tournament_general.xslt", getParameter());
         // String content = new XMLRenderer().render(model);
 
-        // Assert.assertEquals("overview not correct",
-        // getResource("tournament_general.result.xml"), content);
+        // Assert.assertEquals("overview not correct", getResource("tournament_general.result.xml"), content);
         XMLAssert.assertXMLEqual("overview not correct", getResource("tournament_general.result.xml"), content);
     }
 
@@ -209,7 +207,7 @@ public class TournamentTemplateTest
         String content = RENDERER.render(model, RESOURCE_PREFIX + "tournament_tables.xslt", getParameter());
         // String content = new XMLRenderer().render(model);
 
-        // Assert.assertEquals("overview not correct", getResource("tournament_tables.result.xml"), content);
+        Assert.assertEquals("overview not correct", getResource("tournament_tables.result.xml"), content);
         XMLAssert.assertXMLEqual("overview not correct", getResource("tournament_tables.result.xml"), content);
     }
 
@@ -241,6 +239,7 @@ public class TournamentTemplateTest
     {
         CompetitorVO result = getCompetitorVO(id, name, playerID);
         result.setPosition(position);
+        result.setResult(new MoneyVO(Money.valueOf("3", "USD")));
         result.getActions().add(new ActionVO("rebuy", URI.create("http://local/rebuy?competitor=" + id), "repeat"));
         return result;
     }

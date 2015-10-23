@@ -30,7 +30,12 @@ public class Money
 
     public static Money valueOf(String amount, Currency currency)
     {
-        return valueOf(new BigDecimal(amount), currency);
+        return new Money(new BigDecimal(amount), currency);
+    }
+
+    public static Money valueOf(BigDecimal amount, String currency)
+    {
+        return new Money(amount, Currency.getInstance(currency));
     }
 
     public static Money valueOf(BigDecimal amount, Currency currency)
@@ -40,7 +45,7 @@ public class Money
 
     public static Money valueOf(String amount, String currencyCode)
     {
-        return valueOf(new BigDecimal(amount), Currency.getInstance(currencyCode));
+        return new Money(new BigDecimal(amount), Currency.getInstance(currencyCode));
     }
 
     public static final Money NOTHING = new Money(BigDecimal.ZERO, CurrencyConstants.USD);

@@ -1,9 +1,12 @@
 package de.hatoka.common.capi.resource;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.MessageFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Currency;
 import java.util.Date;
 
 import org.slf4j.LoggerFactory;
@@ -112,4 +115,106 @@ public class ResourceLocalizer implements Localizer
         }
     }
 
+    @Override
+    public String formatMoney(String amount, String currencyCode)
+    {
+        if (amount == null || amount.isEmpty())
+        {
+            return "";
+        }
+        try
+        {
+            float value = Float.valueOf(amount);
+            if (value == 0)
+            {
+                return "-";
+            }
+            Currency currency = Currency.getInstance(currencyCode);
+            final NumberFormat formatter = DecimalFormat.getInstance(bundle.getLocal());
+            formatter.setCurrency(currency);
+            formatter.setMinimumFractionDigits(0);
+            formatter.setMaximumFractionDigits(currency.getDefaultFractionDigits());
+            return formatter.format(value) + " " + currency.getSymbol(bundle.getLocal());
+        }
+        catch(NumberFormatException e)
+        {
+            LoggerFactory.getLogger(getClass()).error("Can't convert to float '"+amount+"'.", e);
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    @Override
+    public String formatInteger(String integerString)
+    {
+        if (integerString == null || integerString.isEmpty())
+        {
+            return "";
+        }
+        try
+        {
+            int value = Integer.valueOf(integerString);
+            if (value == 0)
+            {
+                return "-";
+            }
+            return NumberFormat.getNumberInstance(bundle.getLocal()).format(value);
+        }
+        catch(NumberFormatException e)
+        {
+            LoggerFactory.getLogger(getClass()).error("Can't convert to integer '"+integerString+"'.", e);
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    @Override
+    public String formatFloat(String numberString, String numberOfDigits)
+    {
+        if (numberString == null || numberString.isEmpty())
+        {
+            return "";
+        }
+        try
+        {
+            float value = Float.valueOf(numberString);
+            if (value == 0)
+            {
+                return "-";
+            }
+            int digits = Integer.valueOf(numberOfDigits);
+            final NumberFormat formatter = DecimalFormat.getInstance(bundle.getLocal());
+            formatter.setMaximumFractionDigits(digits);
+            return formatter.format(value);
+        }
+        catch(NumberFormatException e)
+        {
+            LoggerFactory.getLogger(getClass()).error("Can't convert to float '"+numberString+"'.", e);
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    @Override
+    public String formatPercentage(String numberString, String numberOfDigits)
+    {
+        if (numberString == null || numberString.isEmpty())
+        {
+            return "";
+        }
+        try
+        {
+            float value = Float.valueOf(numberString);
+            if (value == 0)
+            {
+                return "-";
+            }
+            int digits = Integer.valueOf(numberOfDigits);
+            final NumberFormat formatter = DecimalFormat.getPercentInstance(bundle.getLocal());
+            formatter.setMaximumFractionDigits(digits);
+            return formatter.format(value);
+        }
+        catch(NumberFormatException e)
+        {
+            LoggerFactory.getLogger(getClass()).error("Can't convert to float '"+numberString+"'.", e);
+            throw new IllegalArgumentException(e);
+        }
+    }
 }

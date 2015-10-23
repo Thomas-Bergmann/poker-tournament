@@ -96,18 +96,17 @@
     <xsl:value-of select="hatoka:formatTime($localizer, $date)" />
   </xsl:template>
   <xsl:template name="formatMoney">
-    <xsl:param name="money" />
-    <xsl:if test="$money = '0USD'">-</xsl:if>
-    <xsl:if test="$money != '0USD'">
-      <xsl:value-of select="$money" />
-    </xsl:if>
+    <xsl:param name="amount" />
+    <xsl:param name="currency" />
+    <xsl:value-of select="hatoka:formatMoney($localizer, $amount, $currency)" />
   </xsl:template>
   <xsl:template name="formatInteger">
     <xsl:param name="amount" />
-    <xsl:if test="$amount = '0'">-</xsl:if>
-    <xsl:if test="$amount != '0'">
-      <xsl:value-of select="$amount" />
-    </xsl:if>
+    <xsl:value-of select="hatoka:formatInteger($localizer, $amount)" />
+  </xsl:template>
+  <xsl:template name="formatPercentage">
+    <xsl:param name="amount" />
+    <xsl:value-of select="hatoka:formatPercentage($localizer, $amount)" />
   </xsl:template>
 
 

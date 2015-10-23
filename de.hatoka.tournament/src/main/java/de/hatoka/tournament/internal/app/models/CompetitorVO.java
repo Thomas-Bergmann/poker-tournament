@@ -12,8 +12,10 @@ public class CompetitorVO
     private String id;
     private String playerId;
     private String playerName;
+
     private MoneyVO inPlay;
     private MoneyVO result;
+
     private boolean active = false;
     private Integer position;
     private List<ActionVO> actions = new ArrayList<>();

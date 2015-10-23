@@ -15,8 +15,8 @@
 <td>
 <a href="tournament/123457/players.html">Test 2</a>
 </td>
-<td>25.11.12</td>
-<td>1USD</td>
+<td>11/25/12</td>
+<td>1 $</td>
 </tr>
 <tr>
 <td>
@@ -27,8 +27,8 @@
 <td>
 <a href="tournament/123456/players.html">Test 1</a>
 </td>
-<td>25.11.11</td>
-<td>1USD</td>
+<td>11/25/11</td>
+<td>1 $</td>
 </tr>
 </table>
 <button name="delete" type="submit" class="btn btn-primary">Delete</button>

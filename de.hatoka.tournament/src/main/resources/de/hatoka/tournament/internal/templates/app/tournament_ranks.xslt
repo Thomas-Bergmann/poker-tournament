@@ -9,12 +9,12 @@
     <form method="POST" action="actionList">
       <table class="table table-striped">
         <tr>
-          <th>Select</th>
-          <th>First Position</th>
-          <th>Last Position</th>
-          <th>Percentage</th>
-          <th>Amount Per Player</th>
-          <th>Amount Sum</th>
+			<th><xsl:value-of select="hatoka:getText($localizer, 'table.ranks.select', 'Select')" /></th>
+			<th><xsl:value-of select="hatoka:getText($localizer, 'table.ranks.first', 'First Position')" /></th>
+			<th><xsl:value-of select="hatoka:getText($localizer, 'table.ranks.last', 'Last Position')" /></th>
+			<th><xsl:value-of select="hatoka:getText($localizer, 'table.ranks.percentage', 'Percentage')" /></th>
+			<th><xsl:value-of select="hatoka:getText($localizer, 'table.ranks.player', 'Amount Per Player')" /></th>
+			<th><xsl:value-of select="hatoka:getText($localizer, 'table.ranks.sum', 'Amount Sum')" /></th>
         </tr>
         <xsl:for-each select="tournamentRankModel/ranks" xmlns="http://www.w3.org/1999/xhtml">
           <tr>
@@ -37,18 +37,20 @@
             <td>
               <xsl:if test="@percentageFilled = 'false'">-</xsl:if>
               <xsl:if test="@percentageFilled = 'true'">
-                <xsl:call-template name="formatInteger">
+                <xsl:call-template name="formatPercentage">
                   <xsl:with-param name="amount"><xsl:value-of select="@percentage" /></xsl:with-param>
                 </xsl:call-template>
               </xsl:if>
             </td>
             <td>
-               <xsl:call-template name="formatInteger">
-                 <xsl:with-param name="amount"><xsl:value-of select="@amountPerPlayer" /></xsl:with-param>
+               <xsl:call-template name="formatMoney">
+                 <xsl:with-param name="amount"><xsl:value-of select="amountPerPlayer/@amount" /></xsl:with-param>
+                 <xsl:with-param name="currency"><xsl:value-of select="amountPerPlayer/@currencyCode" /></xsl:with-param>
                </xsl:call-template>
             </td>
-            <td><xsl:call-template name="formatInteger">
-                <xsl:with-param name="amount"><xsl:value-of select="@amount" /></xsl:with-param>
+            <td><xsl:call-template name="formatMoney">
+                 <xsl:with-param name="amount"><xsl:value-of select="amount/@amount" /></xsl:with-param>
+                 <xsl:with-param name="currency"><xsl:value-of select="amount/@currencyCode" /></xsl:with-param>
             </xsl:call-template></td>
           </tr>
         </xsl:for-each>

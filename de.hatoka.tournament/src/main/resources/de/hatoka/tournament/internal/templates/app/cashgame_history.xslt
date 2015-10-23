@@ -17,7 +17,8 @@
           <td><xsl:value-of select="playerName" /></td>
           <td><xsl:value-of select="hatoka:getText($localizer, ./@actionKey, ./@actionKey)" /></td>
           <td><xsl:call-template name="formatMoney">
-              <xsl:with-param name="money"><xsl:value-of select="amount" /></xsl:with-param>
+              <xsl:with-param name="amount"><xsl:value-of select="amount/@amount" /></xsl:with-param>
+              <xsl:with-param name="currency"><xsl:value-of select="amount/@currencyCode" /></xsl:with-param>
           </xsl:call-template></td>
 	      <td>
 	        <xsl:call-template name="formatDateTime">

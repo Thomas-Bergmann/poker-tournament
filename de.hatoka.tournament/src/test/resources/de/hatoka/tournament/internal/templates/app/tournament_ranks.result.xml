@@ -17,8 +17,8 @@
 <td>1</td>
 <td>1</td>
 <td>-</td>
-<td>100</td>
-<td>100</td>
+<td>100 $</td>
+<td>100 $</td>
 </tr>
 <tr>
 <td>
@@ -28,9 +28,9 @@
 </td>
 <td>2</td>
 <td>2</td>
-<td>50</td>
-<td>50</td>
-<td>50</td>
+<td>50%</td>
+<td>50 $</td>
+<td>50 $</td>
 </tr>
 <tr>
 <td>
@@ -40,9 +40,9 @@
 </td>
 <td>3</td>
 <td>5</td>
-<td>25</td>
-<td>8.33</td>
-<td>25</td>
+<td>25%</td>
+<td>8.33 $</td>
+<td>25 $</td>
 </tr>
 <tr>
 <td>
@@ -52,9 +52,9 @@
 </td>
 <td>6</td>
 <td>10</td>
-<td>25</td>
-<td>5</td>
-<td>25</td>
+<td>25%</td>
+<td>5 $</td>
+<td>25 $</td>
 </tr>
 <tr>
 <td/>

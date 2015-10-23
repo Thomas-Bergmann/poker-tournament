@@ -17,13 +17,13 @@ import de.hatoka.common.capi.app.servlet.AbstractService;
 import de.hatoka.tournament.capi.business.TournamentBO;
 import de.hatoka.tournament.capi.business.TournamentBORepository;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
-import de.hatoka.tournament.internal.app.actions.TournamentAction;
-import de.hatoka.tournament.internal.app.actions.TournamentAction.TournamentTableURIBuilder;
+import de.hatoka.tournament.internal.app.actions.TableAction;
+import de.hatoka.tournament.internal.app.actions.TableAction.TournamentTableURIBuilder;
 import de.hatoka.tournament.internal.app.filter.AccountRequestFilter;
 import de.hatoka.tournament.internal.app.menu.MenuFactory;
 import de.hatoka.tournament.internal.app.models.TournamentTableModel;
 
-@Path("/tournament/{id}/tables")
+@Path("/tournament/{tournamentID}/tables")
 public class TournamentTableService extends AbstractService
 {
     private static final String RESOURCE_PREFIX = "de/hatoka/tournament/internal/templates/app/";
@@ -31,7 +31,7 @@ public class TournamentTableService extends AbstractService
     protected static final String METHOD_NAME_SEATOPEN = "seatOpen";
     protected static final String METHOD_NAME_REBUY = "rebuy";
 
-    @PathParam("id")
+    @PathParam("tournamentID")
     private String tournamentID;
 
     @Context
@@ -51,18 +51,23 @@ public class TournamentTableService extends AbstractService
         return AccountRequestFilter.getAccountRef(servletRequest);
     }
 
-    private TournamentAction getTournamentAction()
+    private TableAction getTableAction()
     {
         String accountRef = getAccountRef();
         TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
-        return new TournamentAction(accountRef, tournamentID, factory);
+        return new TableAction(accountRef, tournamentID, factory);
+    }
+
+    private Response redirect()
+    {
+        return redirect(METHOD_NAME_LIST, tournamentID);
     }
 
     @GET
     @Path("/list.html")
     public Response list()
     {
-        TournamentAction action = getTournamentAction();
+        TableAction action = getTableAction();
         final TournamentTableModel model = action.getTournamentTableModel(getUriBuilder(TournamentListService.class, METHOD_NAME_LIST).build(), new TournamentTableURIBuilder()
         {
             @Override
@@ -100,14 +105,14 @@ public class TournamentTableService extends AbstractService
         {
             return seatOpen(competitorID);
         }
-        return redirect(METHOD_NAME_LIST);
+        return redirect();
     }
 
     @POST
     @Path("/{competitorID}/rebuy")
     public Response rebuy(@PathParam("competitorID") String competitorID)
     {
-        TournamentAction action = getTournamentAction();
+        TableAction action = getTableAction();
         runInTransaction(new Runnable()
         {
             @Override
@@ -116,14 +121,14 @@ public class TournamentTableService extends AbstractService
                 action.rebuyCompetitor(competitorID);
             }
         });
-        return redirect(METHOD_NAME_LIST, tournamentID);
+        return redirect();
     }
 
     @POST
     @Path("/{competitorID}/seatOpen")
     public Response seatOpen(@PathParam("competitorID") String competitorID)
     {
-        TournamentAction action = getTournamentAction();
+        TableAction action = getTableAction();
         runInTransaction(new Runnable()
         {
             @Override
@@ -132,11 +137,11 @@ public class TournamentTableService extends AbstractService
                 action.seatOpenCompetitor(competitorID);
             }
         });
-        return redirect(METHOD_NAME_LIST, tournamentID);
+        return redirect();
     }
 
     @POST
-    @Path("/actionTables")
+    @Path("/action")
     public Response assignTables()
     {
         runInTransaction(new Runnable()
@@ -150,7 +155,7 @@ public class TournamentTableService extends AbstractService
                 tournament.placePlayersAtTables();
             }
         });
-        return redirect(METHOD_NAME_LIST, tournamentID);
+        return redirect();
     }
 
     private String renderFrame(String content, String titleKey) throws IOException

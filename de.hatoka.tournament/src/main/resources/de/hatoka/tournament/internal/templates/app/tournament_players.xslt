@@ -31,10 +31,12 @@
               <xsl:if test="active != 'true'">inactive</xsl:if>
             </td>
             <td><xsl:call-template name="formatMoney">
-                <xsl:with-param name="money"><xsl:value-of select="inPlay" /></xsl:with-param>
+                <xsl:with-param name="amount"><xsl:value-of select="inPlay/@amount" /></xsl:with-param>
+                <xsl:with-param name="currency"><xsl:value-of select="inPlay/@currencyCode" /></xsl:with-param>
             </xsl:call-template></td>
             <td><xsl:call-template name="formatMoney">
-                <xsl:with-param name="money"><xsl:value-of select="result" /></xsl:with-param>
+                <xsl:with-param name="amount"><xsl:value-of select="result/@amount" /></xsl:with-param>
+                <xsl:with-param name="currency"><xsl:value-of select="result/@currencyCode" /></xsl:with-param>
             </xsl:call-template></td>
           </tr>
         </xsl:for-each>

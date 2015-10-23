@@ -12,6 +12,21 @@ public class Lib
 {
     public static final String XSLT_LOCALIZER = "localizer";
 
+    public static String formatPercentage(Localizer localizer, String floatString)
+    {
+        return localizer.formatPercentage(floatString);
+    }
+
+    public static String formatInteger(Localizer localizer, String integerString)
+    {
+        return localizer.formatInteger(integerString);
+    }
+
+    public static String formatMoney(Localizer localizer, String amountString, String currencyCode)
+    {
+        return localizer.formatMoney(amountString, currencyCode);
+    }
+
     public static String formatDate(Localizer localizer, String dateString)
     {
         return localizer.formatDate(dateString);

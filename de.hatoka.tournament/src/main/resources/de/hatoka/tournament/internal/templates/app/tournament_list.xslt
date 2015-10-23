@@ -46,9 +46,8 @@ xmlns:hatoka="xalan://de.hatoka.common.capi.app.xslt.Lib"
       </td>
       <td>
         <xsl:call-template name="formatMoney">
-          <xsl:with-param name="money">
-            <xsl:value-of select="buyIn" />
-          </xsl:with-param>
+          <xsl:with-param name="amount"><xsl:value-of select="buyIn/@amount" /></xsl:with-param>
+          <xsl:with-param name="currency"><xsl:value-of select="buyIn/@currencyCode" /></xsl:with-param>
         </xsl:call-template>
       </td>
     </tr>

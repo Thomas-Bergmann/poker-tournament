@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlTransient;
 
+import de.hatoka.common.capi.app.model.MoneyVO;
 import de.hatoka.tournament.capi.business.RankBO;
 
 public class RankVO
@@ -17,10 +18,8 @@ public class RankVO
     private Integer lastPosition;
     @XmlAttribute
     private BigDecimal percentage; // 0.5 for 50%
-    @XmlAttribute
-    private BigDecimal amountPerPlayer;
-    @XmlAttribute
-    private BigDecimal amount;
+    private MoneyVO amountPerPlayer;
+    private MoneyVO amount;
 
     public RankVO()
     {
@@ -33,8 +32,8 @@ public class RankVO
         firstPosition = rank.getFirstPosition();
         lastPosition = rank.getLastPosition();
         percentage = rank.getPercentage();
-        amountPerPlayer = rank.getAmountPerPlayer().getAmount();
-        amount = rank.getAmount().getAmount();
+        setAmountPerPlayer(new MoneyVO(rank.getAmountPerPlayer()));
+        setAmount(new MoneyVO(rank.getAmount()));
     }
 
     public RankVO(String id)
@@ -86,31 +85,29 @@ public class RankVO
         this.percentage = percentage;
     }
 
-    @XmlTransient
-    public BigDecimal getAmountPerPlayer()
-    {
-        return amountPerPlayer;
-    }
-
-    public void setAmountPerPlayer(BigDecimal amountPerPlayer)
-    {
-        this.amountPerPlayer = amountPerPlayer;
-    }
-
-    @XmlTransient
-    public BigDecimal getAmount()
-    {
-        return amount;
-    }
-
-    public void setAmount(BigDecimal amount)
-    {
-        this.amount = amount;
-    }
-
     @XmlAttribute
     public boolean isPercentageFilled()
     {
         return percentage != null && !percentage.equals(BigDecimal.ZERO);
+    }
+
+    public MoneyVO getAmountPerPlayer()
+    {
+        return amountPerPlayer;
+    }
+
+    public void setAmountPerPlayer(MoneyVO amountPerPlayer)
+    {
+        this.amountPerPlayer = amountPerPlayer;
+    }
+
+    public MoneyVO getAmount()
+    {
+        return amount;
+    }
+
+    public void setAmount(MoneyVO amount)
+    {
+        this.amount = amount;
     }
 }

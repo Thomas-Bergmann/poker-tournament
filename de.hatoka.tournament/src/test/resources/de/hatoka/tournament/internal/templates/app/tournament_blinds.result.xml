@@ -19,8 +19,8 @@
 <td>100</td>
 <td>-</td>
 <td>0:30</td>
-<td>18:00</td>
-<td>18:30</td>
+<td>6:00 PM</td>
+<td>6:30 PM</td>
 </tr>
 <tr>
 <td>
@@ -32,8 +32,8 @@
 <td>200</td>
 <td>-</td>
 <td>0:30</td>
-<td>18:30</td>
-<td>19:00</td>
+<td>6:30 PM</td>
+<td>7:00 PM</td>
 </tr>
 <tr>
 <td>
@@ -43,8 +43,8 @@
 </td>
 <td colspan="3">Pause</td>
 <td>0:15</td>
-<td>19:00</td>
-<td>19:15</td>
+<td>7:00 PM</td>
+<td>7:15 PM</td>
 </tr>
 <tr>
 <td>
@@ -56,8 +56,8 @@
 <td>500</td>
 <td>-</td>
 <td>0:30</td>
-<td>19:15</td>
-<td>19:45</td>
+<td>7:15 PM</td>
+<td>7:45 PM</td>
 </tr>
 <tr>
 <td/>
@@ -77,8 +77,8 @@
 <label class="sr-only" for="inputduration">Duration</label>
 <input placeholder="Duration" value="30" name="duration" type="text" id="inputduration" class="form-control"/>
 </td>
-<td>19:45</td>
-<td>20:15</td>
+<td>7:45 PM</td>
+<td>8:15 PM</td>
 </tr>
 </table>
 <button name="level" type="submit" class="btn btn-primary">Add Level</button>

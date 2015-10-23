@@ -12,7 +12,7 @@
 </td>
 <td>Player 1</td>
 <td>active</td>
-<td>1USD</td>
+<td>1 $</td>
 <td>-</td>
 </tr>
 <tr>
@@ -23,8 +23,8 @@
 </td>
 <td>Player 2</td>
 <td>inactive</td>
-<td>1USD</td>
-<td>-1USD</td>
+<td>1 $</td>
+<td>-1 $</td>
 </tr>
 </table>
 <button name="buyin" type="submit" class="btn btn-primary">Buy-In</button>

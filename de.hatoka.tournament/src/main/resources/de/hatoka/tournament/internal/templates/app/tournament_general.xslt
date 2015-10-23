@@ -14,7 +14,7 @@
       </xsl:call-template>
       <xsl:call-template name="input">
         <xsl:with-param name="name">buyIn</xsl:with-param>
-        <xsl:with-param name="value"><xsl:value-of select="tournamentConfigurationModel/tournament/buyIn" /></xsl:with-param>
+        <xsl:with-param name="value"><xsl:value-of select="tournamentConfigurationModel/tournament/buyIn/@amount" /></xsl:with-param>
       </xsl:call-template>
       <xsl:call-template name="input">
         <xsl:with-param name="name">initialStack</xsl:with-param>

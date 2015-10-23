@@ -32,17 +32,25 @@
               <xsl:if test="active != 'true'">inactive</xsl:if>
             </td>
             <td><xsl:call-template name="formatMoney">
-                <xsl:with-param name="money"><xsl:value-of select="inPlay" /></xsl:with-param>
-            </xsl:call-template></td>
+                <xsl:with-param name="amount"><xsl:value-of select="inPlay/@amount" /></xsl:with-param>
+                <xsl:with-param name="currency"><xsl:value-of select="inPlay/@currencyCode" /></xsl:with-param>
+              </xsl:call-template></td>
             <td><xsl:call-template name="formatMoney">
-                <xsl:with-param name="money"><xsl:value-of select="result" /></xsl:with-param>
+                <xsl:with-param name="amount"><xsl:value-of select="result/@amount" /></xsl:with-param>
+                <xsl:with-param name="currency"><xsl:value-of select="result/@currencyCode" /></xsl:with-param>
             </xsl:call-template></td>
           </tr>
         </xsl:for-each>
       </table>
       <p class="bg-info">
-        Average: <xsl:value-of select="tournamentPlayerListModel/tournament/average/amount" />
-        <br />Sum: <xsl:value-of select="tournamentPlayerListModel/tournament/sumInPlay/amount" />
+        Average: <xsl:call-template name="formatMoney">
+                <xsl:with-param name="amount"><xsl:value-of select="tournamentPlayerListModel/tournament/average/@amount" /></xsl:with-param>
+                <xsl:with-param name="currency"><xsl:value-of select="tournamentPlayerListModel/tournament/average/@currencyCode" /></xsl:with-param>
+              </xsl:call-template>
+        <br />Sum: <xsl:call-template name="formatMoney">
+                <xsl:with-param name="amount"><xsl:value-of select="tournamentPlayerListModel/tournament/sumInPlay/@amount" /></xsl:with-param>
+                <xsl:with-param name="currency"><xsl:value-of select="tournamentPlayerListModel/tournament/sumInPlay/@currencyCode" /></xsl:with-param>
+              </xsl:call-template>
       </p>
       <xsl:call-template name="input">
         <xsl:with-param name="name">amount</xsl:with-param>

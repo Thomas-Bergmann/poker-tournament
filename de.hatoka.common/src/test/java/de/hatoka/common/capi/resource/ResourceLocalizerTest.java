@@ -30,10 +30,22 @@ public class ResourceLocalizerTest
         assertNull("no fallback text", UNDER_TEST.getText("simple.text.nofallback", null));
     }
 
-
     @Test
     public void testFormatTime()
     {
         assertEquals("minutes converted to hours and minutes", "1:30", UNDER_TEST.formatDuration("90"));
+    }
+
+    @Test
+    public void testMoney()
+    {
+        assertEquals("1,234.57 $", UNDER_TEST.formatMoney("1234.567", "USD"));
+    }
+
+
+    @Test
+    public void testPercentage()
+    {
+        assertEquals("12.3%", UNDER_TEST.formatPercentage("0.1234", "1"));
     }
 }

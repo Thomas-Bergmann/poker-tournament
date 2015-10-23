@@ -24,21 +24,25 @@
         </xsl:for-each>
         <h2><xsl:value-of select="hatoka:getText($localizer, 'info.tournament.inactivePlayers', 'Inactive', @number)" /></h2>
         <table class="tournamentTable table table-striped">
+		  <tr>
+			<th><xsl:value-of select="hatoka:getText($localizer, 'table.inactive.player', 'Player')" /></th>
+			<th><xsl:value-of select="hatoka:getText($localizer, 'table.inactive.position', 'Position')" /></th>
+			<th><xsl:value-of select="hatoka:getText($localizer, 'table.inactive.result', 'Result')" /></th>
+		  </tr>
         <xsl:for-each select="tournamentTableModel/placedCompetitors" xmlns="http://www.w3.org/1999/xhtml">
             <tr>
                 <td class="player"><xsl:value-of select="playerName" /></td>
                 <td class="position"><xsl:value-of select="position" /></td>
-                <td class="actions">
-                    <xsl:for-each select="actions" xmlns="http://www.w3.org/1999/xhtml">
-                        <form method="POST" action="{@uri}"><button class="glyphicon glyphicon-{@glyphicon}"><xsl:value-of select="@name" /></button></form>
-                    </xsl:for-each>
-                </td>
+                <td class="result"><xsl:call-template name="formatMoney">
+                  <xsl:with-param name="amount"><xsl:value-of select="result/@amount" /></xsl:with-param>
+                  <xsl:with-param name="currency"><xsl:value-of select="result/@currencyCode" /></xsl:with-param>
+                </xsl:call-template></td>
             </tr>
         </xsl:for-each>
           </table>
-    <form method="POST" action="actionTables">
+    <form method="POST" action="action">
       <xsl:call-template name="button">
-        <xsl:with-param name="name">assignTables</xsl:with-param>
+        <xsl:with-param name="name">shufflePlayer</xsl:with-param>
       </xsl:call-template>
     </form>
     </div>

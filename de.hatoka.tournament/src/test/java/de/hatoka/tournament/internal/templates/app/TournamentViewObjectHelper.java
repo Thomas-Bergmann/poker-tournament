@@ -89,8 +89,8 @@ public final class TournamentViewObjectHelper
         result.setId(id);
         result.setFirstPosition(firstPosition);
         result.setLastPosition(lastPosition);
-        result.setAmountPerPlayer(amountPerPlayer);
-        result.setAmount(amountPerPlayer.multiply(BigDecimal.valueOf(lastPosition - firstPosition + 1)));
+        result.setAmountPerPlayer(new MoneyVO(Money.valueOf(amountPerPlayer, "USD")));
+        result.setAmount(new MoneyVO(Money.valueOf(amountPerPlayer.multiply(BigDecimal.valueOf(lastPosition - firstPosition + 1)), "USD")));
         return result;
     }
 
@@ -101,8 +101,8 @@ public final class TournamentViewObjectHelper
         result.setFirstPosition(firstPosition);
         result.setLastPosition(lastPosition);
         result.setPercentage(percentage);
-        result.setAmountPerPlayer(amount.divide(BigDecimal.valueOf(lastPosition - firstPosition + 1), 2, BigDecimal.ROUND_DOWN).stripTrailingZeros());
-        result.setAmount(amount);
+        result.setAmountPerPlayer(new MoneyVO(Money.valueOf(amount.divide(BigDecimal.valueOf(lastPosition - firstPosition + 1), 2, BigDecimal.ROUND_DOWN).stripTrailingZeros(), "USD")));
+        result.setAmount(new MoneyVO(Money.valueOf(amount, "USD")));
         return result;
     }
 
