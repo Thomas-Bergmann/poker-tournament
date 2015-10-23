@@ -55,6 +55,11 @@ public class TournamentRankService extends AbstractService
         return new RankAction(accountRef, tournamentID, factory);
     }
 
+    private Response redirect(String methodName)
+    {
+        return redirect(methodName, tournamentID);
+    }
+
     @POST
     @Path("/actionList")
     public Response actionPlayerList(@FormParam("rankID") List<String> identifiers, @FormParam("delete") String deleteButton, @FormParam("save") String saveButton,
