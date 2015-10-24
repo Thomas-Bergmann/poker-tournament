@@ -153,10 +153,6 @@ public class ResourceLocalizer implements Localizer
         try
         {
             int value = Integer.valueOf(integerString);
-            if (value == 0)
-            {
-                return "-";
-            }
             return NumberFormat.getNumberInstance(bundle.getLocal()).format(value);
         }
         catch(NumberFormatException e)
@@ -176,10 +172,6 @@ public class ResourceLocalizer implements Localizer
         try
         {
             float value = Float.valueOf(numberString);
-            if (value == 0)
-            {
-                return "-";
-            }
             int digits = Integer.valueOf(numberOfDigits);
             final NumberFormat formatter = DecimalFormat.getInstance(bundle.getLocal());
             formatter.setMaximumFractionDigits(digits);

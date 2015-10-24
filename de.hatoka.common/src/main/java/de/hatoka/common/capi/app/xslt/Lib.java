@@ -71,4 +71,12 @@ public class Lib
     {
         return localizer.getText(key, defaultText, firstParameter);
     }
+    public static String getText(Localizer localizer, String key, String defaultText, String firstParameter, String secondParameter)
+    {
+        return localizer.getText(key, defaultText, firstParameter, secondParameter);
+    }
+    public static String getText(Localizer localizer, String key, String defaultText, String firstParameter, String secondParameter, String thirdParameter)
+    {
+        return localizer.getText(key, defaultText, firstParameter,secondParameter, thirdParameter);
+    }
 }

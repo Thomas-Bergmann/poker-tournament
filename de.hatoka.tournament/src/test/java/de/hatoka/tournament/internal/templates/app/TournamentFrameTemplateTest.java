@@ -5,12 +5,13 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import de.hatoka.common.capi.app.model.MessageVO;
 import de.hatoka.common.capi.app.xslt.Lib;
 import de.hatoka.common.capi.app.xslt.XSLTRenderer;
 import de.hatoka.common.capi.business.CountryHelper;
@@ -61,11 +62,13 @@ public class TournamentFrameTemplateTest
         model.addSideMenu("menu.cashgame.players", URI.create("players.xml"), 3, URI.create("player_add.xml"), true);
         model.addSideMenu("menu.cashgame.history", URI.create("history.xml"), 4, null, false);
 
+        model.addMessage(new MessageVO("message.player.moved", "player 1", Integer.valueOf(100), Integer.valueOf(2)));
+        model.addMessage(new MessageVO("message.player.moved", "player 2", Integer.valueOf(100), Integer.valueOf(3)));
         String content = RENDERER.render(model, RESOURCE_PREFIX + "tournament_frame.xslt", getParameter());
         // String content = new XMLRenderer().render(model);
 
-        // Assert.assertEquals("players not listed correctly", RESOURCE_LOADER.getResourceAsString(RESOURCE_PREFIX + "tournament_frame.result.xml"), content);
-        XMLAssert.assertXMLEqual("players not listed correctly", RESOURCE_LOADER.getResourceAsString(RESOURCE_PREFIX + "tournament_frame.result.xml"), content);
+        Assert.assertEquals("players not listed correctly", RESOURCE_LOADER.getResourceAsString(RESOURCE_PREFIX + "tournament_frame.result.xml"), content);
+        // XMLAssert.assertXMLEqual("players not listed correctly", RESOURCE_LOADER.getResourceAsString(RESOURCE_PREFIX + "tournament_frame.result.xml"), content);
     }
 
 }

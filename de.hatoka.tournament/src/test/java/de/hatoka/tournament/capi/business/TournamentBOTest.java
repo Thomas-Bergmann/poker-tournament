@@ -200,6 +200,26 @@ public class TournamentBOTest
         assertEquals("sumPlayers", 14, sumPlayersOnTable(tables));
     }
 
+    @Test
+    public void testRemoveLastTable()
+    {
+        // 9 players at 4er tables -> 3 players at 3 tables ->
+        underTest.setMaximumNumberOfPlayersPerTable(4);
+        for(int i=0;i<9;i++)
+        {
+            underTest.buyin(createCompetitor("player " + i));
+        }
+        underTest.placePlayersAtTables();
+        // remove second of second table
+        List<TableBO> tables = underTest.getTables();
+        assertEquals("3 tables", 3, tables.size());
+        underTest.seatOpen(tables.get(1).getCompetitors().get(1));
+
+        // than 4 players at 2 tables and 3 moved players
+        Collection<CompetitorBO> movedCompetitors = underTest.levelOutTables();
+        assertEquals("3 from last table moved", 3, movedCompetitors.size());
+    }
+
     private void removeFirstPlayer(Collection<TableBO> tables)
     {
         CompetitorBO firstCompetitor = tables.iterator().next().getCompetitors().stream().filter(c -> c.isActive()).findAny().get();

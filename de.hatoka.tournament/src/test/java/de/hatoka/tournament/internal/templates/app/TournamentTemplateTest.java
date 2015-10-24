@@ -92,11 +92,14 @@ public class TournamentTemplateTest
     {
         TournamentPlayerListModel model = new TournamentPlayerListModel();
         model.setTournament(getTournamentVO("123456", "Test 1", parseDate("2011-11-25T08:42")));
-        model.getCompetitors().add(getCompetitorVO("1234578", "Player 1", "playerid-1"));
-        CompetitorVO competitorVO = getCompetitorVO("1234579", "Player 2", "playerid-2");
-        competitorVO.setResult(new MoneyVO(Money.valueOf("-1", "USD")));
-        competitorVO.setActive(false);
+        final CompetitorVO competitorVO = getCompetitorVO("1234578", "Player 1", "playerid-1");
+        competitorVO.setTableNo(1111);
+        competitorVO.setSeatNo(7);
         model.getCompetitors().add(competitorVO);
+        CompetitorVO competitor2VO = getCompetitorVO("1234579", "Player 2", "playerid-2");
+        competitor2VO.setResult(new MoneyVO(Money.valueOf("-1", "USD")));
+        competitor2VO.setActive(false);
+        model.getCompetitors().add(competitor2VO);
         model.getUnassignedPlayers().add(getPlayerVO("1234581", "Player 3"));
         String content = RENDERER.render(model, RESOURCE_PREFIX + "tournament_players.xslt", getParameter());
         // String content = new XMLRenderer().render(model);

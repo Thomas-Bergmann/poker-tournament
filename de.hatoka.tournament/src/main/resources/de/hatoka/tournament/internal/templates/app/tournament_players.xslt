@@ -12,6 +12,7 @@
           <th>Select</th>
           <th>Name</th>
           <th>Active</th>
+          <th>Table (Seat)</th>
           <th>In Play</th>
           <th>Result</th>
         </tr>
@@ -30,6 +31,10 @@
               <xsl:if test="active = 'true'">active</xsl:if>
               <xsl:if test="active != 'true'">inactive</xsl:if>
             </td>
+            <td><xsl:if test="tableNo != ''"><xsl:call-template name="formatInteger">
+                <xsl:with-param name="amount"><xsl:value-of select="tableNo" /></xsl:with-param>
+            </xsl:call-template> (<xsl:call-template name="formatInteger">
+                <xsl:with-param name="amount"><xsl:value-of select="seatNo" /></xsl:with-param></xsl:call-template>)</xsl:if></td>
             <td><xsl:call-template name="formatMoney">
                 <xsl:with-param name="amount"><xsl:value-of select="inPlay/@amount" /></xsl:with-param>
                 <xsl:with-param name="currency"><xsl:value-of select="inPlay/@currencyCode" /></xsl:with-param>

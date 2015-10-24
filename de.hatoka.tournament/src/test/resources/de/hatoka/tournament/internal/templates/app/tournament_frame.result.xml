@@ -51,7 +51,11 @@
 		</ul>
 	</div>
 	<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-	<h1 class="page-header">Title Content</h1><p>Content</p></div>
+		<h1 class="page-header">Title Content</h1>
+		<p class="bg-info">Player 'player 1' moved to table '100' at seat '2'.</p>
+		<p class="bg-info">Player 'player 2' moved to table '100' at seat '3'.</p>
+		<p>Content</p>
+	</div>
 </div>
 </body>
 </html>

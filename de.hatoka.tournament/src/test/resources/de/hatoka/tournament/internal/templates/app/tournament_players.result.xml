@@ -4,6 +4,7 @@
 <th>Select</th>
 <th>Name</th>
 <th>Active</th>
+<th>Table (Seat)</th>
 <th>In Play</th>
 <th>Result</th>
 </tr>
@@ -12,6 +13,7 @@
 </td>
 <td>Player 1</td>
 <td>active</td>
+<td>1,111 (7)</td>
 <td>1 $</td>
 <td>-</td>
 </tr>
@@ -23,6 +25,7 @@
 </td>
 <td>Player 2</td>
 <td>inactive</td>
+<td />
 <td>1 $</td>
 <td>-1 $</td>
 </tr>

@@ -35,9 +35,10 @@
               <td><xsl:call-template name="formatInteger">
                 <xsl:with-param name="amount"><xsl:value-of select="bigBlind" /></xsl:with-param>
               </xsl:call-template></td>
-              <td><xsl:call-template name="formatInteger">
+              <td><xsl:if test="ante = '0'">-</xsl:if>
+              <xsl:if test="ante != '0'"><xsl:call-template name="formatInteger">
                 <xsl:with-param name="amount"><xsl:value-of select="ante" /></xsl:with-param>
-              </xsl:call-template></td>
+              </xsl:call-template></xsl:if></td>
             </xsl:if>
             <td><xsl:call-template name="formatDuration">
                 <xsl:with-param name="minutes"><xsl:value-of select="duration" /></xsl:with-param>

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import de.hatoka.common.capi.app.model.ActionVO;
+import de.hatoka.common.capi.app.model.MessageVO;
 import de.hatoka.tournament.capi.business.CompetitorBO;
 import de.hatoka.tournament.capi.business.TableBO;
 import de.hatoka.tournament.capi.business.TournamentBO;
@@ -49,17 +50,18 @@ public class TableAction extends GameAction<TournamentBO>
         tournamentBO.rebuy(competitorBO);
     }
 
-    public void seatOpenCompetitor(String competitorID)
+    public List<MessageVO> seatOpenCompetitor(String competitorID)
     {
         TournamentBO tournamentBO = getGame();
         CompetitorBO competitorBO = tournamentBO.getCompetitorBO(competitorID);
         tournamentBO.seatOpen(competitorBO);
+        Collection<CompetitorBO> movedPlayers = tournamentBO.levelOutTables();
+        return movedPlayers.stream().map(c -> new MessageVO("message.player.moved", c.getPlayer().getName(), c.getTableNo() + 1, c.getSeatNo() + 1)).collect(Collectors.toList());
     }
 
     public static interface TournamentTableURIBuilder
     {
         URI getRebuyURI(String competitorID);
-
         URI getSeatOpenURI(String competitorID);
     }
 

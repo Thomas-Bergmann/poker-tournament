@@ -20,6 +20,9 @@ public class CompetitorVO
     private Integer position;
     private List<ActionVO> actions = new ArrayList<>();
 
+    private Integer tableNo;
+    private Integer seatNo;
+
     public CompetitorVO()
     {
     }
@@ -33,6 +36,8 @@ public class CompetitorVO
         playerId = competitor.getPlayer().getID();
         playerName = competitor.getPlayer().getName();
         active = competitor.isActive();
+        tableNo = competitor.getTableNo() == null ? null : competitor.getTableNo() + 1;
+        seatNo = competitor.getSeatNo() == null ? null : competitor.getSeatNo() + 1;
     }
 
     public String getId()
@@ -113,6 +118,26 @@ public class CompetitorVO
     public void setActions(List<ActionVO> actions)
     {
         this.actions = actions;
+    }
+
+    public Integer getTableNo()
+    {
+        return tableNo;
+    }
+
+    public void setTableNo(Integer tableNo)
+    {
+        this.tableNo = tableNo;
+    }
+
+    public Integer getSeatNo()
+    {
+        return seatNo;
+    }
+
+    public void setSeatNo(Integer seatNo)
+    {
+        this.seatNo = seatNo;
     }
 
 }

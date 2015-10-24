@@ -2,6 +2,7 @@ package de.hatoka.tournament.internal.app.models;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAttribute;
@@ -9,6 +10,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+
+import de.hatoka.common.capi.app.model.MessageVO;
 
 @XmlRootElement
 public class FrameModel
@@ -32,6 +35,10 @@ public class FrameModel
 
     @XmlAttribute
     private URI uriHome = null;
+
+    @XmlElementWrapper(name = "messages")
+    @XmlElement(name = "message")
+    private List<MessageVO> messages = new ArrayList<MessageVO>();
 
     public FrameModel()
     {
@@ -115,5 +122,26 @@ public class FrameModel
     public void setTitleKey(String titleKey)
     {
         this.titleKey = titleKey;
+    }
+
+    @XmlTransient
+    public List<MessageVO> getMessages()
+    {
+        return messages;
+    }
+
+    public void setMessages(List<MessageVO> messages)
+    {
+        this.messages = messages;
+    }
+
+    public void addMessages(Collection<MessageVO> messages)
+    {
+        this.messages.addAll(messages);
+    }
+
+    public void addMessage(MessageVO message)
+    {
+        this.messages.add(message);
     }
 }

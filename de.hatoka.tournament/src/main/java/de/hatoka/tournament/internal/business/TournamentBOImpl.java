@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Currency;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -122,7 +123,8 @@ public class TournamentBOImpl implements TournamentBO
 
     private Money getResultForPosition(int position)
     {
-        List<RankBO> assignedRanks = getRanks().stream().filter(rankBO -> rankBO.getFirstPosition() <= position && position <= rankBO.getLastPosition()).collect(Collectors.toList());
+        List<RankBO> assignedRanks = getRanks().stream().filter(rankBO -> rankBO.getFirstPosition() <= position && position <= rankBO.getLastPosition())
+                        .collect(Collectors.toList());
         if (assignedRanks.isEmpty())
         {
             return Money.NOTHING;
@@ -372,7 +374,7 @@ public class TournamentBOImpl implements TournamentBO
         Collections.shuffle(competitors, new Random(System.nanoTime()));
         int position = 0;
         int table = 0;
-        for(CompetitorBO competitorBO : competitors)
+        for (CompetitorBO competitorBO : competitors)
         {
             competitorBO.takeSeat(table, position);
             table++;
@@ -389,7 +391,6 @@ public class TournamentBOImpl implements TournamentBO
         return determineNumberTables(getActiveCompetitorBOStream().count());
     }
 
-
     private int determineNumberTables(long competitorSize)
     {
         return new BigDecimal(competitorSize).divide(new BigDecimal(getMaximumNumberOfPlayersPerTable()), 0, RoundingMode.CEILING).intValue();
@@ -404,7 +405,7 @@ public class TournamentBOImpl implements TournamentBO
     private List<ITableBO> getInternalTables()
     {
         List<ITableBO> result = new ArrayList<>();
-        for(CompetitorBO competitor : getActiveCompetitors())
+        for (CompetitorBO competitor : getActiveCompetitorBOStream().filter(c -> c.getTableNo() != null).collect(Collectors.toList()))
         {
             int tableNo = competitor.getTableNo();
             while(result.size() <= tableNo)
@@ -553,6 +554,10 @@ public class TournamentBOImpl implements TournamentBO
     {
         int minTableNo = determineNumberTables();
         List<CompetitorBO> result = new ArrayList<>();
+        if (minTableNo == 0)
+        {
+            return Collections.emptyList();
+        }
         while(minTableNo < getTables().size())
         {
             result.addAll(closeLastTable());
@@ -563,25 +568,39 @@ public class TournamentBOImpl implements TournamentBO
 
     private Collection<CompetitorBO> closeLastTable()
     {
-        List<TableBO> tables = getTables();
-        TableBO lastTable = tables.remove(tables.size() -1);
+        List<ITableBO> tables = getInternalTables();
+        TableBO lastTable = tables.remove(tables.size() - 1);
         List<CompetitorBO> result = lastTable.getCompetitors();
         int playerNo = 0;
         int maximumNumberOfPlayersPerTable = getMaximumNumberOfPlayersPerTable();
         while(playerNo < result.size())
         {
-            for(TableBO table : tables)
+            for (ITableBO table : tables)
             {
-                if(table.getCompetitors().size() < maximumNumberOfPlayersPerTable)
+                if (table.getCompetitors().size() < maximumNumberOfPlayersPerTable)
                 {
-                    result.get(playerNo).takeSeat(table.getTableNo(), table.getCompetitors().size());
+                    placeCompetitorAtFreePlace(result.get(playerNo), table);
                     playerNo++;
+                    break;
                 }
             }
-            // refresh tables
-            tables = getTables();
         }
         return result;
+    }
+
+    private void placeCompetitorAtFreePlace(CompetitorBO competitorBO, ITableBO table)
+    {
+        HashSet<Integer> seats = new HashSet<>(getMaximumNumberOfPlayersPerTable());
+        for(int i=0; i< getMaximumNumberOfPlayersPerTable();i++)
+        {
+            seats.add(Integer.valueOf(i));
+        }
+        for (CompetitorBO seat : table.getCompetitors())
+        {
+            seats.remove(seat.getSeatNo());
+        }
+        competitorBO.takeSeat(table.getTableNo(), seats.iterator().next());
+        table.add(competitorBO);
     }
 
     private Collection<CompetitorBO> movePlayerFromLargeToSmallTable()
@@ -593,7 +612,7 @@ public class TournamentBOImpl implements TournamentBO
         long maxPlayers = isEqual ? average : average + 1;
         List<CompetitorBO> result = new ArrayList<>();
         // collect players more than one
-        for(TableBO table : tables)
+        for (TableBO table : tables)
         {
             final List<CompetitorBO> competitors = new ArrayList<>(table.getCompetitors());
             while(competitors.size() > maxPlayers)
@@ -602,25 +621,21 @@ public class TournamentBOImpl implements TournamentBO
             }
         }
         int playerNo = 0;
-        for(ITableBO table : getInternalTables())
+        for (ITableBO table : getInternalTables())
         {
-            while (table.getCompetitors().size() < average)
+            while(table.getCompetitors().size() < average)
             {
-                final CompetitorBO competitorBO = result.get(playerNo);
-                competitorBO.takeSeat(table.getTableNo(), table.getCompetitors().size());
-                table.add(competitorBO);
+                placeCompetitorAtFreePlace(result.get(playerNo), table);
                 playerNo++;
             }
         }
-        if(playerNo < result.size())
+        if (playerNo < result.size())
         {
-            for(ITableBO table : getInternalTables())
+            for (ITableBO table : getInternalTables())
             {
-                while (table.getCompetitors().size() < maxPlayers)
+                while(table.getCompetitors().size() < maxPlayers)
                 {
-                    final CompetitorBO competitorBO = result.get(playerNo);
-                    competitorBO.takeSeat(table.getTableNo(), table.getCompetitors().size());
-                    table.add(competitorBO);
+                    placeCompetitorAtFreePlace(result.get(playerNo), table);
                     playerNo++;
                 }
             }

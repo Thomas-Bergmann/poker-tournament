@@ -72,11 +72,17 @@
 						<h1 class="page-header">no title</h1>
 					  </xsl:otherwise>
 					</xsl:choose>
-						<xsl:value-of select="frameModel/content" disable-output-escaping="yes" />
+					<xsl:apply-templates select="frameModel/messages" />
+					<xsl:value-of select="frameModel/content" disable-output-escaping="yes" />
 					</div>
 				</div>
 			</body>
 		</html>
+	</xsl:template>
+	<xsl:template match="message" xmlns="http://www.w3.org/1999/xhtml">
+      <p class="bg-info">
+        <xsl:value-of select="hatoka:getText($localizer, @messageKey, '', @parameter1, @parameter2, @parameter3)" />
+      </p>
 	</xsl:template>
 	<!-- MAIN MENU TEMPLATE -->
 	<xsl:template match="menuItem" xmlns="http://www.w3.org/1999/xhtml">

@@ -115,7 +115,7 @@ public interface TournamentBO extends GameBO
     /**
      * @return tables with assigned competitors
      */
-    Collection<TableBO> getTables();
+    List<TableBO> getTables();
 
     /**
      * @return get players, which are inactive but take part of tournament (which are placed)
