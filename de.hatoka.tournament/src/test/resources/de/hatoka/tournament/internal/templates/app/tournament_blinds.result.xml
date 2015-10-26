@@ -5,6 +5,7 @@
 <th>Small Blind</th>
 <th>Big Blind</th>
 <th>Ante</th>
+<th>Re-Buy</th>
 <th>Duration (min)</th>
 <th>est. Start</th>
 <th>est. End</th>
@@ -18,6 +19,7 @@
 <td>50</td>
 <td>100</td>
 <td>-</td>
+<td><input type="checkbox" value="1" name="reBuy" class="checkbox" checked="checked" disabled="disabled" /></td>
 <td>0:30</td>
 <td>6:00 PM</td>
 <td>6:30 PM</td>
@@ -31,6 +33,7 @@
 <td>100</td>
 <td>200</td>
 <td>-</td>
+<td><input type="checkbox" value="2" name="reBuy" class="checkbox" checked="checked" disabled="disabled" /></td>
 <td>0:30</td>
 <td>6:30 PM</td>
 <td>7:00 PM</td>
@@ -42,6 +45,7 @@
 </label>
 </td>
 <td colspan="3">Pause</td>
+<td><input type="checkbox" value="3" name="reBuy" class="checkbox" checked="checked" disabled="disabled" /></td>
 <td>0:15</td>
 <td>7:00 PM</td>
 <td>7:15 PM</td>
@@ -55,6 +59,7 @@
 <td>250</td>
 <td>500</td>
 <td>-</td>
+<td><input type="checkbox" value="4" name="reBuy" class="checkbox" disabled="disabled" /></td>
 <td>0:30</td>
 <td>7:15 PM</td>
 <td>7:45 PM</td>
@@ -73,6 +78,7 @@
 <label class="sr-only" for="inputante">Ante</label>
 <input placeholder="Ante" value="0" name="ante" type="text" id="inputante" class="form-control"/>
 </td>
+<td></td>
 <td>
 <label class="sr-only" for="inputduration">Duration</label>
 <input placeholder="Duration" value="30" name="duration" type="text" id="inputduration" class="form-control"/>
@@ -84,4 +90,6 @@
 <button name="level" type="submit" class="btn btn-primary">Add Level</button>
 <button name="delete" type="submit" class="btn">Delete</button>
 <button name="pause" type="submit" class="btn">Add Pause</button>
+<button name="enableReBuy" type="submit" class="btn">Enable Re-Buy</button>
+<button name="disableReBuy" type="submit" class="btn">Disable Re-Buy</button>
 </form>

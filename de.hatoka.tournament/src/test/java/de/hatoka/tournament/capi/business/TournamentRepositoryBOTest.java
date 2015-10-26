@@ -147,6 +147,7 @@ public class TournamentRepositoryBOTest
         PlayerPO player1 = playerDao.createAndInsert(accountRef, sequenceProvider.create(ACCOUNT_REF).generate(), "player1");
         TournamentPO tournamentPO = tournamentDao.createAndInsert(accountRef, sequenceProvider.create(ACCOUNT_REF).generate(), "tournament", CURRENT_DATE, false);
         tournamentPO.setBuyIn(Money.valueOf("5 EUR").toMoneyPO());
+        tournamentPO.setReBuy(Money.valueOf("3 EUR").toMoneyPO());
         CompetitorPO competitor1 = competitorDao.createAndInsert(tournamentPO, player1);
         competitor1.setMoneyInPlay(Money.valueOf("5 EUR").toMoneyPO());
         competitor1.setMoneyResult(Money.valueOf("-5 EUR").toMoneyPO());
@@ -158,16 +159,19 @@ public class TournamentRepositoryBOTest
         level1.setSmallBlind(2);
         level1.setBigBlind(4);
         level1.setAnte(1);
-        level1.setRebuyAmount(BigDecimal.ONE);
+        level1.setReBuy(true);
+        level1.setPosition(1);
 
         BlindLevelPO pause = blindLevelDao.createAndInsert(tournamentPO, 30);
         pause.setPause(true);
+        pause.setReBuy(true);
+        pause.setPosition(2);
 
         BlindLevelPO level2 = blindLevelDao.createAndInsert(tournamentPO, 30);
         level2.setSmallBlind(4);
         level2.setBigBlind(8);
         level2.setAnte(2);
-        level2.setRebuyAmount(BigDecimal.TEN);
+        level2.setPosition(3);
 
         RankPO rank1 = rankDao.createAndInsert(tournamentPO, 1);
         rank1.setPercentage(new BigDecimal("0.5"));

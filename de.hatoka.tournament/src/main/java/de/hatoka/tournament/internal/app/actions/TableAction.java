@@ -77,7 +77,10 @@ public class TableAction extends GameAction<TournamentBO>
             for (CompetitorBO competitorBO : tableBO.getCompetitors())
             {
                 final CompetitorVO competitorVO = new CompetitorVO(competitorBO);
-                competitorVO.getActions().add(new ActionVO("reBuy", uriBuilder.getRebuyURI(competitorBO.getID()),"repeat"));
+                if (tournamentBO.getCurrentRebuy() != null)
+                {
+                    competitorVO.getActions().add(new ActionVO("reBuy", uriBuilder.getRebuyURI(competitorBO.getID()),"repeat"));
+                }
                 competitorVO.getActions().add(new ActionVO("seatOpen", uriBuilder.getSeatOpenURI(competitorBO.getID()), "remove-circle"));
                 competitorVOs.add(competitorVO);
             }

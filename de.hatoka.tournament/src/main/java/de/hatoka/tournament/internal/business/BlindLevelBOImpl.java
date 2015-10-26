@@ -1,21 +1,16 @@
 package de.hatoka.tournament.internal.business;
 
-import java.math.BigDecimal;
-import java.util.Currency;
-
-import de.hatoka.common.capi.business.Money;
 import de.hatoka.tournament.capi.business.BlindLevelBO;
+import de.hatoka.tournament.capi.business.PauseBO;
 import de.hatoka.tournament.capi.entities.BlindLevelPO;
 
-public class BlindLevelBOImpl implements BlindLevelBO
+public class BlindLevelBOImpl implements BlindLevelBO, PauseBO
 {
     private final BlindLevelPO blindLevelPO;
-    private final Currency currency;
 
-    public BlindLevelBOImpl(BlindLevelPO blindLevelPO, Currency currency)
+    public BlindLevelBOImpl(BlindLevelPO blindLevelPO)
     {
         this.blindLevelPO = blindLevelPO;
-        this.currency = currency;
     }
 
     @Override
@@ -88,14 +83,15 @@ public class BlindLevelBOImpl implements BlindLevelBO
     }
 
     @Override
-    public Money getReBuy()
+    public boolean isRebuyAllowed()
     {
-        final BigDecimal rebuyAmount = blindLevelPO.getRebuyAmount();
-        if (rebuyAmount == null)
-        {
-            return null;
-        }
-        return Money.valueOf(rebuyAmount, currency);
+        return blindLevelPO.isReBuy();
+    }
+
+    @Override
+    public void allowRebuy(boolean allow)
+    {
+        blindLevelPO.setReBuy(allow);
     }
 
 }

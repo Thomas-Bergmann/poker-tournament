@@ -38,34 +38,20 @@ public interface TournamentBO extends GameBO
      * @param ante
      * @return
      */
-    default BlindLevelBO createBlindLevel(int duration, int smallBlind, int bigBlind, int ante)
-    {
-        return createBlindLevel(duration, smallBlind, bigBlind, ante, BigDecimal.ZERO);
-    }
+    BlindLevelBO createBlindLevel(int duration, int smallBlind, int bigBlind, int ante);
 
     /**
      * Creates a new blind level for the tournament
      *
      * @param duration
-     * @param smallBlind
-     * @param bigBlind
-     * @param ante
-     * @param rebuyAmount
      * @return
      */
-    BlindLevelBO createBlindLevel(int duration, int smallBlind, int bigBlind, int ante, BigDecimal rebuyAmount);
-    /**
-     * Creates a new blind level for the tournament
-     *
-     * @param duration
-     * @return
-     */
-    TournamentRoundBO createPause(int duration);
+    PauseBO createPause(int duration);
 
     /**
      * @return rounds of tournament
      */
-    List<TournamentRoundBO> getBlindLevels();
+    List<TournamentRoundBO> getTournamenRounds();
 
     /**
      * Removes a previously created pause or blind level
@@ -118,12 +104,14 @@ public interface TournamentBO extends GameBO
     List<TableBO> getTables();
 
     /**
-     * @return get players, which are inactive but take part of tournament (which are placed)
+     * @return get players, which are inactive but take part of tournament
+     *         (which are placed)
      */
     List<CompetitorBO> getPlacedCompetitors();
 
     /**
      * Moves players from tables with more players to smaller tables.
+     *
      * @return moved competitors
      */
     Collection<CompetitorBO> levelOutTables();
@@ -194,7 +182,8 @@ public interface TournamentBO extends GameBO
     void remove(RankBO rank);
 
     /**
-     * Starts the tournament (current round is set to 0), registration, modifications of ranks, blind levels is not longer possible.
+     * Starts the tournament (current round is set to 0), registration,
+     * modifications of ranks, blind levels is not longer possible.
      */
     void start();
 
@@ -203,4 +192,18 @@ public interface TournamentBO extends GameBO
      * @return competitor by given identifier
      */
     CompetitorBO getCompetitorBO(String competitorID);
+
+    /**
+     * Defines the amount of rebuy, the currency is defined by the buy in. The
+     * {@link TournamentRoundBO} defines that a rebuy is possible.
+     *
+     * @param rebuy
+     *            amount
+     */
+    void setReBuy(BigDecimal rebuy);
+
+    /**
+     * @return the defined rebuy
+     */
+    Money getReBuy();
 }

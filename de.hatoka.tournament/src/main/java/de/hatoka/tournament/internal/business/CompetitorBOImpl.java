@@ -118,7 +118,7 @@ public class CompetitorBOImpl implements ICompetitor
         }
         if (amount == null)
         {
-            return;
+            throw new IllegalStateException("Competitor can't rebuy at this blind level");
         }
         competitorPO.setMoneyInPlay(Money.valueOf(competitorPO.getMoneyInPlay()).add(amount).toMoneyPO());
         sortCompetitors();

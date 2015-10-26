@@ -5,19 +5,21 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Currency;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.OptionalInt;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import de.hatoka.common.capi.business.Money;
+import de.hatoka.common.capi.entities.MoneyPO;
 import de.hatoka.tournament.capi.business.BlindLevelBO;
 import de.hatoka.tournament.capi.business.CompetitorBO;
 import de.hatoka.tournament.capi.business.HistoryEntryBO;
+import de.hatoka.tournament.capi.business.PauseBO;
 import de.hatoka.tournament.capi.business.PlayerBO;
 import de.hatoka.tournament.capi.business.RankBO;
 import de.hatoka.tournament.capi.business.TableBO;
@@ -96,13 +98,17 @@ public class TournamentBOImpl implements TournamentBO
     @Override
     public Money getCurrentRebuy()
     {
-        final List<TournamentRoundBO> blindLevels = getBlindLevels();
+        final List<TournamentRoundBO> blindLevels = getTournamenRounds();
         int currentRound = tournamentPO.getCurrentRound();
         if (currentRound < 0 || blindLevels.size() <= currentRound)
         {
             return null;
         }
-        return blindLevels.get(currentRound).getReBuy();
+        if(blindLevels.get(currentRound).isRebuyAllowed())
+        {
+            return Money.valueOf(tournamentPO.getReBuy());
+        }
+        return null;
     }
 
     @Override
@@ -280,28 +286,30 @@ public class TournamentBOImpl implements TournamentBO
     }
 
     @Override
-    public BlindLevelBO createBlindLevel(int duration, int smallBlind, int bigBlind, int ante, BigDecimal rebuyAmount)
+    public BlindLevelBO createBlindLevel(int duration, int smallBlind, int bigBlind, int ante)
     {
         BlindLevelPO blindLevelPO = blindLevelDao.createAndInsert(tournamentPO, duration);
         blindLevelPO.setPause(false);
         blindLevelPO.setSmallBlind(smallBlind);
         blindLevelPO.setBigBlind(bigBlind);
         blindLevelPO.setAnte(ante);
-        blindLevelPO.setRebuyAmount(rebuyAmount);
-        return factory.getBlindLevelBO(blindLevelPO, getCurrency());
+        blindLevelPO.setPosition(getNextBlindLevelPositon());
+        return factory.getBlindLevelBO(blindLevelPO);
     }
 
-    private Currency getCurrency()
+    private Integer getNextBlindLevelPositon()
     {
-        return getBuyIn().getCurrency();
+        OptionalInt maxOpt = tournamentPO.getBlindLevels().stream().mapToInt(l -> l.getPosition()).max();
+        return maxOpt.isPresent() ? maxOpt.getAsInt() + 1 : 1;
     }
 
     @Override
-    public TournamentRoundBO createPause(int duration)
+    public PauseBO createPause(int duration)
     {
         BlindLevelPO blindLevelPO = blindLevelDao.createAndInsert(tournamentPO, duration);
         blindLevelPO.setPause(true);
-        return factory.getPauseBO(blindLevelPO, getCurrency());
+        blindLevelPO.setPosition(getNextBlindLevelPositon());
+        return factory.getPauseBO(blindLevelPO);
     }
 
     @Override
@@ -311,20 +319,19 @@ public class TournamentBOImpl implements TournamentBO
     }
 
     @Override
-    public List<TournamentRoundBO> getBlindLevels()
+    public List<TournamentRoundBO> getTournamenRounds()
     {
         List<BlindLevelPO> blindLevels = tournamentPO.getBlindLevels();
         List<TournamentRoundBO> result = new ArrayList<TournamentRoundBO>(blindLevels.size());
-        Currency currency = getCurrency();
         for (BlindLevelPO blindLevelPO : blindLevels)
         {
             if (blindLevelPO.isPause())
             {
-                result.add(factory.getPauseBO(blindLevelPO, currency));
+                result.add(factory.getPauseBO(blindLevelPO));
             }
             else
             {
-                result.add(factory.getBlindLevelBO(blindLevelPO, currency));
+                result.add(factory.getBlindLevelBO(blindLevelPO));
             }
         }
         return result;
@@ -620,27 +627,42 @@ public class TournamentBOImpl implements TournamentBO
                 result.add(competitors.remove(competitors.size() - 1));
             }
         }
-        int playerNo = 0;
-        for (ITableBO table : getInternalTables())
+        if (!result.isEmpty())
         {
-            while(table.getCompetitors().size() < average)
-            {
-                placeCompetitorAtFreePlace(result.get(playerNo), table);
-                playerNo++;
-            }
-        }
-        if (playerNo < result.size())
-        {
+            int playerNo = 0;
             for (ITableBO table : getInternalTables())
             {
-                while(table.getCompetitors().size() < maxPlayers)
+                while(table.getCompetitors().size() < average)
                 {
                     placeCompetitorAtFreePlace(result.get(playerNo), table);
                     playerNo++;
                 }
             }
+            if (playerNo < result.size())
+            {
+                for (ITableBO table : getInternalTables())
+                {
+                    while(table.getCompetitors().size() < maxPlayers)
+                    {
+                        placeCompetitorAtFreePlace(result.get(playerNo), table);
+                        playerNo++;
+                    }
+                }
+            }
         }
         return result;
+    }
+
+    @Override
+    public void setReBuy(BigDecimal rebuy)
+    {
+        tournamentPO.setReBuy(new MoneyPO(rebuy, getBuyIn().getCurrency().getCurrencyCode()));
+    }
+
+    @Override
+    public Money getReBuy()
+    {
+        return Money.valueOf(tournamentPO.getReBuy());
     }
 
 }

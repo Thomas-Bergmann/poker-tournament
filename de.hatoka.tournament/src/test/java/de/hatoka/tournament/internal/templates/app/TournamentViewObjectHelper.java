@@ -55,14 +55,14 @@ public final class TournamentViewObjectHelper
         return result;
     }
 
-    /* package */static BlindLevelVO getBlindLevelVO(String id, int small, int big, int ante, int duration)
+    /* package */static BlindLevelVO getBlindLevelVO(String id, int small, int big, int ante, int duration, boolean isRebuy)
     {
-        BlindLevelVO result = getBlindLevelVO(small, big, ante, duration);
+        BlindLevelVO result = getBlindLevelVO(small, big, ante, duration, isRebuy);
         result.setId(id);
         return result;
     }
 
-    /* package */static BlindLevelVO getBlindLevelVO(int small, int big, int ante, int duration)
+    /* package */static BlindLevelVO getBlindLevelVO(int small, int big, int ante, int duration, boolean isRebuy)
     {
         BlindLevelVO result = new BlindLevelVO();
         result.setPause(false);
@@ -70,15 +70,17 @@ public final class TournamentViewObjectHelper
         result.setBigBlind(big);
         result.setAnte(ante);
         result.setDuration(duration);
+        result.setRebuy(isRebuy);
         return result;
     }
 
-    /* package */static BlindLevelVO getPauseVO(String id, int duration)
+    /* package */static BlindLevelVO getPauseVO(String id, int duration, boolean isRebuy)
     {
         BlindLevelVO result = new BlindLevelVO();
         result.setId(id);
         result.setPause(true);
         result.setDuration(duration);
+        result.setRebuy(isRebuy);
         return result;
     }
 

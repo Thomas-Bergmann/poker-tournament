@@ -17,6 +17,10 @@
         <xsl:with-param name="value"><xsl:value-of select="tournamentConfigurationModel/tournament/buyIn/@amount" /></xsl:with-param>
       </xsl:call-template>
       <xsl:call-template name="input">
+        <xsl:with-param name="name">reBuy</xsl:with-param>
+        <xsl:with-param name="value"><xsl:value-of select="tournamentConfigurationModel/tournament/reBuy/@amount" /></xsl:with-param>
+      </xsl:call-template>
+      <xsl:call-template name="input">
         <xsl:with-param name="name">initialStack</xsl:with-param>
         <xsl:with-param name="value"><xsl:value-of select="tournamentConfigurationModel/tournament/initialStack" /></xsl:with-param>
         <xsl:with-param name="placeholderKey">placeholder.tournament.initialStack</xsl:with-param>

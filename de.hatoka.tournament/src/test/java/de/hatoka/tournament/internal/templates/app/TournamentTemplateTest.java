@@ -142,16 +142,16 @@ public class TournamentTemplateTest
         TournamentBlindLevelModel model = new TournamentBlindLevelModel();
         model.setTournament(getTournamentVO("123456", "Test 1", parseDate("2011-11-25T18:00")));
         List<BlindLevelVO> blindLevels = model.getBlindLevels();
-        blindLevels.add(TournamentViewObjectHelper.getBlindLevelVO("1", 50, 100, 0, 30));
-        blindLevels.add(TournamentViewObjectHelper.getBlindLevelVO("2", 100, 200, 0, 30));
-        blindLevels.add(TournamentViewObjectHelper.getPauseVO("3", 15));
-        blindLevels.add(TournamentViewObjectHelper.getBlindLevelVO("4", 250, 500, 0, 30));
-        model.getPrefilled().add(TournamentViewObjectHelper.getBlindLevelVO(500, 1000, 0, 30));
+        blindLevels.add(TournamentViewObjectHelper.getBlindLevelVO("1", 50, 100, 0, 30, true));
+        blindLevels.add(TournamentViewObjectHelper.getBlindLevelVO("2", 100, 200, 0, 30, true));
+        blindLevels.add(TournamentViewObjectHelper.getPauseVO("3", 15, true));
+        blindLevels.add(TournamentViewObjectHelper.getBlindLevelVO("4", 250, 500, 0, 30, false));
+        model.getPrefilled().add(TournamentViewObjectHelper.getBlindLevelVO(500, 1000, 0, 30, false));
         model.fillTime();
         String content = RENDERER.render(model, RESOURCE_PREFIX + "tournament_blinds.xslt", getParameter());
         // String content = new XMLRenderer().render(model);
 
-        Assert.assertEquals("players not listed correctly", getResource("tournament_blinds.result.xml"), content);
+        // Assert.assertEquals("players not listed correctly", getResource("tournament_blinds.result.xml"), content);
         XMLAssert.assertXMLEqual("players not listed correctly", getResource("tournament_blinds.result.xml"), content);
     }
 
@@ -186,6 +186,8 @@ public class TournamentTemplateTest
         TournamentConfigurationModel model = new TournamentConfigurationModel();
         TournamentVO tournamentVO = getTournamentVO("123456", "Test 1", parseDate("2011-11-25T18:00"));
         tournamentVO.setBuyIn(new MoneyVO(Money.valueOf("5", "USD")));
+        tournamentVO.setReBuy(new MoneyVO(Money.valueOf("3", "USD")));
+
         List<SelectOptionVO> options = model.getReBuyOption().getOptions();
         options.add(new SelectOptionVO("single", true));
         options.add(new SelectOptionVO("multi", false));
@@ -194,7 +196,7 @@ public class TournamentTemplateTest
         String content = RENDERER.render(model, RESOURCE_PREFIX + "tournament_general.xslt", getParameter());
         // String content = new XMLRenderer().render(model);
 
-        // Assert.assertEquals("overview not correct", getResource("tournament_general.result.xml"), content);
+        Assert.assertEquals("overview not correct", getResource("tournament_general.result.xml"), content);
         XMLAssert.assertXMLEqual("overview not correct", getResource("tournament_general.result.xml"), content);
     }
 

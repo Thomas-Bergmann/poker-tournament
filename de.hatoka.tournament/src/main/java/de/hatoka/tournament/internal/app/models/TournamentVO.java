@@ -17,6 +17,7 @@ public class TournamentVO
     private String name;
     private Date date;
     private MoneyVO buyIn;
+    private MoneyVO reBuy;
     private URI uri;
     private MoneyVO average;
     private MoneyVO sumInPlay;
@@ -35,6 +36,7 @@ public class TournamentVO
         date = tournamentBO.getStartTime();
         initialStack = tournamentBO.getInitialStacksize();
         largestTable = tournamentBO.getMaximumNumberOfPlayersPerTable();
+        reBuy = new MoneyVO(tournamentBO.getReBuy());
     }
 
     public TournamentVO(CashGameBO cashGameBO, URI uri)
@@ -152,5 +154,15 @@ public class TournamentVO
     public void setLargestTable(Integer largestTable)
     {
         this.largestTable = largestTable;
+    }
+
+    public MoneyVO getReBuy()
+    {
+        return reBuy;
+    }
+
+    public void setReBuy(MoneyVO reBuy)
+    {
+        this.reBuy = reBuy;
     }
 }

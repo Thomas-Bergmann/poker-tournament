@@ -53,6 +53,7 @@ public class TournamentBlindLevelService extends AbstractService
     @Path("/actionList")
     public Response actionPlayerList(@FormParam("levelID") List<String> identifiers,
                     @FormParam("pause") String createPauseButton, @FormParam("delete") String deleteButton,
+                    @FormParam("enableReBuy") String enableReBuy, @FormParam("disableReBuy") String disabledReBuy,
                     @FormParam("level") String createLevelButton, @FormParam("duration") Integer duration,
                     @FormParam("smallBlind") Integer smallBlind, @FormParam("bigBlind") Integer bigBlind,
                     @FormParam("ante") Integer ante)
@@ -68,6 +69,14 @@ public class TournamentBlindLevelService extends AbstractService
         if (isButtonPressed(deleteButton))
         {
             return deleteLevels(identifiers);
+        }
+        if (isButtonPressed(enableReBuy))
+        {
+            return enableReBuy(identifiers);
+        }
+        if (isButtonPressed(disabledReBuy))
+        {
+            return disableReBuy(identifiers);
         }
         return redirectLevels();
     }
@@ -116,6 +125,38 @@ public class TournamentBlindLevelService extends AbstractService
             public void run()
             {
                 action.deleteLevels(identifiers);
+            }
+        });
+        return redirectLevels();
+    }
+
+    @POST
+    @Path("/disableReBuy")
+    public Response disableReBuy(List<String> identifiers)
+    {
+        BlindLevelAction action = getBlindLevelAction();
+        runInTransaction(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                action.disableReBuy(identifiers);
+            }
+        });
+        return redirectLevels();
+    }
+
+    @POST
+    @Path("/enableReBuy")
+    public Response enableReBuy(List<String> identifiers)
+    {
+        BlindLevelAction action = getBlindLevelAction();
+        runInTransaction(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                action.enableReBuy(identifiers);
             }
         });
         return redirectLevels();

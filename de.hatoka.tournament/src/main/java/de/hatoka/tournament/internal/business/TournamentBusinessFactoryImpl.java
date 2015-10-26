@@ -1,6 +1,5 @@
 package de.hatoka.tournament.internal.business;
 
-import java.util.Currency;
 import java.util.Date;
 
 import javax.inject.Inject;
@@ -15,13 +14,13 @@ import de.hatoka.tournament.capi.business.CashGameBO;
 import de.hatoka.tournament.capi.business.CashGameCompetitorBO;
 import de.hatoka.tournament.capi.business.CompetitorBO;
 import de.hatoka.tournament.capi.business.HistoryEntryBO;
+import de.hatoka.tournament.capi.business.PauseBO;
 import de.hatoka.tournament.capi.business.PlayerBO;
 import de.hatoka.tournament.capi.business.PlayerBORepository;
 import de.hatoka.tournament.capi.business.RankBO;
 import de.hatoka.tournament.capi.business.TournamentBO;
 import de.hatoka.tournament.capi.business.TournamentBORepository;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
-import de.hatoka.tournament.capi.business.TournamentRoundBO;
 import de.hatoka.tournament.capi.dao.BlindLevelDao;
 import de.hatoka.tournament.capi.dao.CompetitorDao;
 import de.hatoka.tournament.capi.dao.HistoryDao;
@@ -116,15 +115,15 @@ public class TournamentBusinessFactoryImpl implements TournamentBusinessFactory
     }
 
     @Override
-    public BlindLevelBO getBlindLevelBO(BlindLevelPO blindLevelPO, Currency currency)
+    public BlindLevelBO getBlindLevelBO(BlindLevelPO blindLevelPO)
     {
-        return new BlindLevelBOImpl(blindLevelPO, currency);
+        return new BlindLevelBOImpl(blindLevelPO);
     }
 
     @Override
-    public TournamentRoundBO getPauseBO(BlindLevelPO blindLevelPO, Currency currency)
+    public PauseBO getPauseBO(BlindLevelPO blindLevelPO)
     {
-        return new BlindLevelBOImpl(blindLevelPO, currency);
+        return new BlindLevelBOImpl(blindLevelPO);
     }
 
     @Override

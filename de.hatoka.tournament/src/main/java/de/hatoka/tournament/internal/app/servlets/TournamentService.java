@@ -1,6 +1,7 @@
 package de.hatoka.tournament.internal.app.servlets;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.FormParam;
@@ -74,7 +75,7 @@ public class TournamentService extends AbstractService
     @POST
     @Path("/saveConfiguration")
     public Response saveConfiguration(@FormParam("name") String name, @FormParam("initialStack") Integer initialStack, @FormParam("smallestTable") Integer smallestTable,
-                    @FormParam("largestTable") Integer largestTable)
+                    @FormParam("largestTable") Integer largestTable, @FormParam("reBuy") BigDecimal reBuy)
     {
         runInTransaction(new Runnable()
         {
@@ -87,6 +88,7 @@ public class TournamentService extends AbstractService
                 tournament.setMaximumNumberOfPlayersPerTable(largestTable);
                 tournament.setInitialStacksize(initialStack);
                 tournament.setName(name);
+                tournament.setReBuy(reBuy);
             }
         });
         return redirect(METHOD_NAME_LIST, tournamentID);

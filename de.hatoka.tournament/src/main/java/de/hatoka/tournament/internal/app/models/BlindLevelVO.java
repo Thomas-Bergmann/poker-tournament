@@ -2,7 +2,6 @@ package de.hatoka.tournament.internal.app.models;
 
 import java.util.Date;
 
-import de.hatoka.common.capi.business.Money;
 import de.hatoka.tournament.capi.business.BlindLevelBO;
 import de.hatoka.tournament.capi.business.TournamentRoundBO;
 
@@ -13,6 +12,7 @@ public class BlindLevelVO
     private int bigBlind = 0;
     private int ante = 0;
     private boolean isPause = false;
+    private boolean isRebuy = false;
 
     /**
      * Duration in minutes
@@ -20,11 +20,6 @@ public class BlindLevelVO
     private int duration;
     private Date estStartDateTime;
     private Date estEndDateTime;
-
-    /**
-     * rebuy at this level
-     */
-    private Money rebuy;
 
     public BlindLevelVO()
     {
@@ -35,7 +30,7 @@ public class BlindLevelVO
         BlindLevelBO blindLevelBO = round.getBlindLevel();
         id = round.getID();
         duration = round.getDuration();
-        rebuy = round.getReBuy();
+        setRebuy(round.isRebuyAllowed());
         if (blindLevelBO == null)
         {
             isPause = true;
@@ -127,13 +122,13 @@ public class BlindLevelVO
         this.id = id;
     }
 
-    public Money getRebuy()
+    public boolean isRebuy()
     {
-        return rebuy;
+        return isRebuy;
     }
 
-    public void setRebuy(Money rebuy)
+    public void setRebuy(boolean isRebuy)
     {
-        this.rebuy = rebuy;
+        this.isRebuy = isRebuy;
     }
 }

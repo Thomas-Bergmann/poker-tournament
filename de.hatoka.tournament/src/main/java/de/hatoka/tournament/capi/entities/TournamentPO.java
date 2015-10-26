@@ -66,6 +66,11 @@ public class TournamentPO implements Serializable, IdentifiableEntity
                     @AttributeOverride(name = "amount", column = @Column(name = "buyInAmount")) })
     private MoneyPO buyIn;
 
+    @Embedded
+    @AttributeOverrides({ @AttributeOverride(name = "currencyCode", column = @Column(name = "reBuyCur")),
+                    @AttributeOverride(name = "amount", column = @Column(name = "reBuyAmount")) })
+    private MoneyPO reBuy;
+
     @OneToMany(mappedBy = "tournament", cascade=CascadeType.ALL)
     @XmlElement(name = "blindLevel")
     private List<BlindLevelPO> blindLevels = new ArrayList<>();
@@ -280,5 +285,15 @@ public class TournamentPO implements Serializable, IdentifiableEntity
     public void setInitialStacksize(int initialStacksize)
     {
         this.initialStacksize = initialStacksize;
+    }
+
+    public MoneyPO getReBuy()
+    {
+        return reBuy;
+    }
+
+    public void setReBuy(MoneyPO reBuy)
+    {
+        this.reBuy = reBuy;
     }
 }

@@ -1,9 +1,7 @@
 package de.hatoka.tournament.capi.entities;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -38,14 +36,14 @@ public class BlindLevelPO implements Serializable, IdentifiableEntity
     private Integer bigBlind;
 
     @XmlAttribute
-    private Integer position;
+    private int position;
 
     @XmlAttribute
     private Integer ante;
 
+    @NotNull
     @XmlAttribute
-    @Column(precision=10, scale=4)
-    private BigDecimal rebuyAmount;
+    private boolean isReBuy= false;
 
     @NotNull
     @XmlAttribute
@@ -193,14 +191,14 @@ public class BlindLevelPO implements Serializable, IdentifiableEntity
     }
 
     @XmlTransient
-    public BigDecimal getRebuyAmount()
+    public boolean isReBuy()
     {
-        return rebuyAmount;
+        return isReBuy;
     }
 
-    public void setRebuyAmount(BigDecimal rebuyAmount)
+    public void setReBuy(boolean isRebuy)
     {
-        this.rebuyAmount = rebuyAmount;
+        this.isReBuy = isRebuy;
     }
 
 }

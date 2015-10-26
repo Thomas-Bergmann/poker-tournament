@@ -5,9 +5,9 @@
     </players>
     <tournaments>
         <tournament id="101" isCashGame="false" date="2011-11-25T07:45:00Z" maxPlayerPerTable="10" initialStacksize="1000" currentRound="-1">
-            <blindLevel smallBlind="2" bigBlind="4" ante="1" rebuyAmount="1" isPause="false" duration="30" />
-            <blindLevel isPause="true" duration="30"/>
-            <blindLevel smallBlind="4" bigBlind="8" ante="2" rebuyAmount="10" isPause="false" duration="30" />
+            <blindLevel position="1" smallBlind="2" bigBlind="4" ante="1" isPause="false" duration="30" isReBuy="true" />
+            <blindLevel position="2" isPause="true" duration="30" isReBuy="true" />
+            <blindLevel position="3" smallBlind="4" bigBlind="8" ante="2" isPause="false" duration="30" isReBuy="false" />
             <rank firstPosition="1" lastPosition="1" percentage="0.5"/>
             <rank firstPosition="2" lastPosition="2" percentage="0.3"/>
             <competitor playerRef="100" state="REGISTERED" tableNo="-1" seatNo="-1">
@@ -16,6 +16,7 @@
             </competitor>
             <historyEntry playerRef="100" actionKey="BuyIn" date="2011-11-25T07:45:00Z"/>
             <buyIn code="EUR" amount="5"/>
+             <reBuy code="EUR" amount="3"/>
         </tournament>
     </tournaments>
 </ns2:tournamentPersistenceModel>

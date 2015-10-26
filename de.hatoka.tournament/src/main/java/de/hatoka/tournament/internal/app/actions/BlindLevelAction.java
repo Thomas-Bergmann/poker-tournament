@@ -26,7 +26,7 @@ public class BlindLevelAction
         TournamentBlindLevelModel model = new TournamentBlindLevelModel();
         model.setTournament(new TournamentVO(tournamentBO, tournamentURI));
         List<BlindLevelVO> blindLevels = model.getBlindLevels();
-        for(TournamentRoundBO roundBO : tournamentBO.getBlindLevels())
+        for(TournamentRoundBO roundBO : tournamentBO.getTournamenRounds())
         {
             blindLevels.add(new BlindLevelVO(roundBO));
         }
@@ -37,7 +37,7 @@ public class BlindLevelAction
 
     public void deleteLevels(List<String> identifiers)
     {
-        Iterator<TournamentRoundBO> itRounds = tournamentBO.getBlindLevels().iterator();
+        Iterator<TournamentRoundBO> itRounds = tournamentBO.getTournamenRounds().iterator();
         while(itRounds.hasNext())
         {
             TournamentRoundBO round = itRounds.next();
@@ -63,4 +63,29 @@ public class BlindLevelAction
         tournamentBO.createBlindLevel(duration, smallBlind, bigBlind, ante);
     }
 
+    public void disableReBuy(List<String> identifiers)
+    {
+        Iterator<TournamentRoundBO> itRounds = tournamentBO.getTournamenRounds().iterator();
+        while(itRounds.hasNext())
+        {
+            TournamentRoundBO round = itRounds.next();
+            if (identifiers.contains(round.getID()))
+            {
+                round.allowRebuy(false);
+            }
+        }
+    }
+
+    public void enableReBuy(List<String> identifiers)
+    {
+        Iterator<TournamentRoundBO> itRounds = tournamentBO.getTournamenRounds().iterator();
+        while(itRounds.hasNext())
+        {
+            TournamentRoundBO round = itRounds.next();
+            if (identifiers.contains(round.getID()))
+            {
+                round.allowRebuy(true);
+            }
+        }
+    }
 }

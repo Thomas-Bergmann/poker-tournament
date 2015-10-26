@@ -13,6 +13,7 @@
           <th>Small Blind</th>
           <th>Big Blind</th>
           <th>Ante</th>
+		  <th>Re-Buy</th>
           <th>Duration (min)</th>
           <th>est. Start</th>
           <th>est. End</th>
@@ -40,6 +41,12 @@
                 <xsl:with-param name="amount"><xsl:value-of select="ante" /></xsl:with-param>
               </xsl:call-template></xsl:if></td>
             </xsl:if>
+            <td><input type="checkbox" name="reBuy" class="checkbox" disabled="disabled">
+		        <xsl:attribute name="value"><xsl:value-of select="id" /></xsl:attribute>
+			      <xsl:if test="rebuy = 'true'">
+			        <xsl:attribute name="checked">checked</xsl:attribute>
+			      </xsl:if>
+            </input></td>
             <td><xsl:call-template name="formatDuration">
                 <xsl:with-param name="minutes"><xsl:value-of select="duration" /></xsl:with-param>
             </xsl:call-template></td>
@@ -66,6 +73,7 @@
               <xsl:with-param name="name">ante</xsl:with-param>
               <xsl:with-param name="value"><xsl:value-of select="ante" /></xsl:with-param>
             </xsl:call-template></td>
+            <td></td>
             <td><xsl:call-template name="input">
               <xsl:with-param name="name">duration</xsl:with-param>
               <xsl:with-param name="value"><xsl:value-of select="duration" /></xsl:with-param>
@@ -90,6 +98,16 @@
       <xsl:call-template name="button">
         <xsl:with-param name="name">pause</xsl:with-param>
         <xsl:with-param name="buttonKey">button.create.pause</xsl:with-param>
+        <xsl:with-param name="cssClass">btn</xsl:with-param>
+      </xsl:call-template>
+      <xsl:call-template name="button">
+        <xsl:with-param name="name">enableReBuy</xsl:with-param>
+        <xsl:with-param name="buttonKey">button.rebuy.enable</xsl:with-param>
+        <xsl:with-param name="cssClass">btn</xsl:with-param>
+      </xsl:call-template>
+      <xsl:call-template name="button">
+        <xsl:with-param name="name">disableReBuy</xsl:with-param>
+        <xsl:with-param name="buttonKey">button.rebuy.disable</xsl:with-param>
         <xsl:with-param name="cssClass">btn</xsl:with-param>
       </xsl:call-template>
     </form>

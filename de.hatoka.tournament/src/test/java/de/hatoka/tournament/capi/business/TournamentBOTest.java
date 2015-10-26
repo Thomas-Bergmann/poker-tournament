@@ -92,13 +92,13 @@ public class TournamentBOTest
         underTest.createPause(15);
         underTest.createBlindLevel(30, 500, 1000, 0);
         underTest.createBlindLevel(30, 500, 1000, 100);
-        List<TournamentRoundBO> rounds = underTest.getBlindLevels();
+        List<TournamentRoundBO> rounds = underTest.getTournamenRounds();
         assertEquals("five rounds added", 5, rounds.size());
         assertNull("third round is pause", rounds.get(2).getBlindLevel());
         assertEquals("second round is level with small blind", Integer.valueOf(200), rounds.get(1).getBlindLevel().getSmallBlind());
         // remove pause
         underTest.remove(rounds.get(2));
-        List<TournamentRoundBO> roundsAfterDelete = underTest.getBlindLevels();
+        List<TournamentRoundBO> roundsAfterDelete = underTest.getTournamenRounds();
         assertEquals("four rounds left", 4, roundsAfterDelete.size());
         for(TournamentRoundBO roundBO : roundsAfterDelete)
         {
@@ -111,7 +111,9 @@ public class TournamentBOTest
     {
         PlayerBO player1 = factory.getPlayerBORepository(ACCOUNT_REF).create("testPlayer1");
         CompetitorBO competitor = underTest.register(player1);
-        underTest.createBlindLevel(30, 100, 200, 0, BigDecimal.TEN);
+        underTest.setReBuy(BigDecimal.TEN);
+        BlindLevelBO blindLevel = underTest.createBlindLevel(30, 100, 200, 0);
+        blindLevel.allowRebuy(true);
         underTest.buyin(competitor);
         underTest.start();
         Money rebuy=  underTest.getCurrentRebuy();
