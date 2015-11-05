@@ -168,6 +168,10 @@ public class Money
         }
         else if (!amount.stripTrailingZeros().equals(other.amount.stripTrailingZeros()))
             return false;
+        if (isZero(this) && isZero(other))
+        {
+            return true;
+        }
         if (!currency.equals(other.currency))
             return false;
         return true;

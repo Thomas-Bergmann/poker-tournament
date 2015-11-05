@@ -2,6 +2,7 @@ package de.hatoka.common.capi.business;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
 import java.util.Currency;
@@ -39,6 +40,10 @@ public class MoneyTest
         assertEquals(MONEY_1_19_EUR.hashCode(), MONEY_1_19_EUR.hashCode());
         assertEquals(MONEY_1_19_EUR, MONEY_1_19_EUR);
         assertEquals(MONEY_1_19_EUR, Money.valueOf(new BigDecimal("1.190"), EUR));
+        Money nothing = Money.valueOf(BigDecimal.ZERO, USD);
+        assertTrue(nothing.equals(nothing));
+        Money nothingInEUR = Money.valueOf(BigDecimal.ZERO, EUR);
+        assertTrue(nothing.equals(nothingInEUR));
     }
 
     @Test
