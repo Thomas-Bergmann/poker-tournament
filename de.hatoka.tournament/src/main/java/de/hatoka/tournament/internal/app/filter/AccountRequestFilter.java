@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.HttpMethod;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.Application;
@@ -17,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Injector;
-import com.sun.research.ws.wadl.HTTPMethods;
 
 import de.hatoka.common.capi.app.servlet.ServletConstants;
 import de.hatoka.common.capi.dao.EncryptionUtils;
@@ -72,7 +72,7 @@ public class AccountRequestFilter implements ContainerRequestFilter
             return;
         }
         // account resolving not successful, on GET request redirect to login
-        if (requestContext.getMethod().equals(HTTPMethods.GET.name()))
+        if (requestContext.getMethod().equals(HttpMethod.GET))
         {
             requestContext.abortWith(Response.seeOther(
                             info.getBaseUriBuilder().uri(getInstance(TournamentConfiguration.class).getLoginURI()).queryParam("origin", info.getRequestUri()).build()).build());

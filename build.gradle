@@ -148,11 +148,13 @@ project('de.hatoka.common')
         compile 'javax.ejb:ejb-api:3.0'
         compile "org.slf4j:slf4j-api:$slf4jVersion"
         compile 'org.eclipse.persistence:eclipselink:2.5.2' // embeddable
-        compile "org.glassfish.jersey.core:jersey-common:$jerseyVersion"
+		compile 'javax.ws.rs:javax.ws.rs-api:2.0.1'
+		compile 'javax.servlet:javax.servlet-api:3.1.0' // HttpServletRequest
+
         compile 'com.google.inject:guice:3.0'
         compile 'commons-lang:commons-lang:2.+' // RandomUtils
         compile 'commons-io:commons-io:2.+'
-        provided "org.apache.tomcat:tomcat-catalina:$tomcatVersion"
+
 		runtime 'org.apache.commons:commons-dbcp2:2.0.1'
 		runtime 'org.postgresql:postgresql:9.3-1102-jdbc4'
         runtime 'xalan:xalan:2.7.2'
@@ -195,11 +197,6 @@ project('de.hatoka.tournament')
         compile project(":de.hatoka.common")
         compile project(":de.hatoka.jndi")
         compile project(":de.hatoka.address")
-        compile "org.glassfish.jersey.core:jersey-common:$jerseyVersion"
-        compile "org.glassfish.jersey.core:jersey-server:$jerseyVersion"
-        compile "org.glassfish.jersey.containers:jersey-container-servlet:$jerseyVersion"
-        provided "org.apache.tomcat:tomcat-catalina:$tomcatVersion"
-        testCompile "org.apache.tomcat:tomcat-catalina:$tomcatVersion"
         testCompile "junit:junit:$junitVersion"
         testCompile 'xmlunit:xmlunit:1.6'
         testCompile "org.mockito:mockito-all:$mockitoVersion"
@@ -216,16 +213,12 @@ project('de.hatoka.offlinepoker')
         compile project(":de.hatoka.jndi")
         compile project(":de.hatoka.address")
         compile project(":de.hatoka.account")
-        compile "org.glassfish.jersey.core:jersey-common:$jerseyVersion"
-        compile "org.glassfish.jersey.core:jersey-server:$jerseyVersion"
-        compile "org.glassfish.jersey.containers:jersey-container-servlet:$jerseyVersion"
-        provided "org.apache.tomcat:tomcat-catalina:$tomcatVersion"
-        testCompile "org.apache.tomcat:tomcat-catalina:$tomcatVersion"
+
+		compile 'org.eclipse.jetty:jetty-server:9.3.5.v20151012'
+		compile 'org.eclipse.jetty:jetty-servlet:9.3.5.v20151012'
+		compile 'org.eclipse.jetty:jetty-webapp:9.3.5.v20151012'
+
         testCompile "junit:junit:$junitVersion"
-        testCompile 'xmlunit:xmlunit:1.6'
-        testCompile "org.mockito:mockito-all:$mockitoVersion"
-        testCompile "org.apache.derby:derby:$apacheDerbyVersion"
-        testRuntime 'xalan:xalan:2.7.2'
     }
 }
 

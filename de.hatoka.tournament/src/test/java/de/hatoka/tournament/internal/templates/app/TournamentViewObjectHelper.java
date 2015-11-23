@@ -1,9 +1,8 @@
 package de.hatoka.tournament.internal.templates.app;
 
 import java.math.BigDecimal;
+import java.net.URI;
 import java.util.Date;
-
-import javax.ws.rs.core.UriBuilder;
 
 import de.hatoka.common.capi.app.model.MoneyVO;
 import de.hatoka.common.capi.business.Money;
@@ -26,7 +25,7 @@ public final class TournamentViewObjectHelper
         result.setName(name);
         result.setDate(date);
         result.setBuyIn(new MoneyVO(Money.ONE_USD));
-        result.setUri(UriBuilder.fromPath("tournament/{id}/players.html").build(id));
+        result.setUri(URI.create("tournament/"+id+"/players.html"));
         result.setAverage(new MoneyVO(Money.ONE_USD));
         result.setSumInPlay(new MoneyVO(Money.valueOf("200", "USD")));
         result.setCompetitorsSize(20);
