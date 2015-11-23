@@ -4,7 +4,6 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_1.xsd"
 	version="2.1">
 	<persistence-unit name="OfflinePokerPU" transaction-type="RESOURCE_LOCAL">
-		<non-jta-data-source>java:comp/env/jdbc/OfflinePokerDS</non-jta-data-source>
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 		<!-- Enables auto discovery of persistent classes, -->
 		<!-- otherwise they must be listed using <class> -->
