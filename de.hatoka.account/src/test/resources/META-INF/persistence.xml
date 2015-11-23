@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_1.xsd"
+	version="2.1">
+	<persistence-unit name="AccountTestPU" transaction-type="RESOURCE_LOCAL">
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<!-- Enables auto discovery of persistent classes, -->
+		<!-- otherwise they must be listed using <class> -->
+		<exclude-unlisted-classes>false</exclude-unlisted-classes>
+		<class>de.hatoka.account.capi.entities.UserPO</class>
+		<class>de.hatoka.account.capi.entities.AccountPO</class>
+		<properties>
+			<property name="javax.persistence.jdbc.url" value="jdbc:derby:build/testdb;create=true" />
+			<property name="javax.persistence.schema-generation.database.action" value="drop-and-create" />
+			<property name="javax.persistence.schema-generation.create-source" value="metadata" />
+			<property name="javax.persistence.schema-generation.drop-source" value="metadata" />
+		</properties>
+	</persistence-unit>
+</persistence>

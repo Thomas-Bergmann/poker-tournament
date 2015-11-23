@@ -108,8 +108,6 @@ subprojects {
 
 project('de.hatoka.account')
 {
-    apply plugin: "war"
-
     sourceSets {
         main {
           output.resourcesDir = "build/classes/main"
@@ -187,8 +185,6 @@ project('de.hatoka.mail')
 
 project('de.hatoka.tournament')
 {
-    apply plugin: "war"
-
     sourceSets {
         main {
           output.resourcesDir = "build/classes/main"
@@ -211,6 +207,28 @@ project('de.hatoka.tournament')
         testRuntime 'xalan:xalan:2.7.2'
     }
 }
+
+project('de.hatoka.offlinepoker')
+{
+    apply plugin: "war"
+    dependencies {
+        compile project(":de.hatoka.tournament")
+        compile project(":de.hatoka.jndi")
+        compile project(":de.hatoka.address")
+        compile project(":de.hatoka.account")
+        compile "org.glassfish.jersey.core:jersey-common:$jerseyVersion"
+        compile "org.glassfish.jersey.core:jersey-server:$jerseyVersion"
+        compile "org.glassfish.jersey.containers:jersey-container-servlet:$jerseyVersion"
+        provided "org.apache.tomcat:tomcat-catalina:$tomcatVersion"
+        testCompile "org.apache.tomcat:tomcat-catalina:$tomcatVersion"
+        testCompile "junit:junit:$junitVersion"
+        testCompile 'xmlunit:xmlunit:1.6'
+        testCompile "org.mockito:mockito-all:$mockitoVersion"
+        testCompile "org.apache.derby:derby:$apacheDerbyVersion"
+        testRuntime 'xalan:xalan:2.7.2'
+    }
+}
+
 // based on http://www.jroller.com/aalmiray/entry/gradle_glam_jacoco_coveralls
 task jacocoReport(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
     dependsOn = subprojects.test

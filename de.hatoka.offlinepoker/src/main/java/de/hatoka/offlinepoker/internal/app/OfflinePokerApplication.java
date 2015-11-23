@@ -1,22 +1,29 @@
-package de.hatoka.tournament.internal.app;
+package de.hatoka.offlinepoker.internal.app;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
+import de.hatoka.account.internal.app.servlets.AccountService;
+import de.hatoka.account.internal.app.servlets.LoginService;
+import de.hatoka.account.internal.modules.AccountBusinessModule;
+import de.hatoka.account.internal.modules.AccountConfigurationModule;
+import de.hatoka.account.internal.modules.AccountDaoJpaModule;
 import de.hatoka.address.internal.modules.AddressBusinessModule;
 import de.hatoka.address.internal.modules.AddressDaoModule;
 import de.hatoka.common.capi.app.servlet.ResourceService;
 import de.hatoka.common.capi.app.servlet.ServletConstants;
 import de.hatoka.common.capi.modules.CommonDaoModule;
 import de.hatoka.common.capi.modules.JpaDBModule;
+import de.hatoka.mail.internal.modules.MailDaoJpaModule;
+import de.hatoka.mail.internal.modules.MailServiceConfigurationModule;
+import de.hatoka.mail.internal.modules.MailServiceModule;
 import de.hatoka.tournament.internal.app.filter.AccountRequestFilter;
 import de.hatoka.tournament.internal.app.servlets.CashGameCompetitorService;
 import de.hatoka.tournament.internal.app.servlets.CashGameListService;
@@ -32,15 +39,17 @@ import de.hatoka.tournament.internal.modules.TournamentDaoJpaModule;
 /**
  * Registers all request resources
  */
-@ApplicationPath("/tournament")
-public class TournamentApplication extends Application
+public class OfflinePokerApplication extends Application
 {
     private Injector injector;
 
-    public TournamentApplication()
+    public OfflinePokerApplication()
     {
         injector = Guice.createInjector(new CommonDaoModule(), new AddressDaoModule(), new AddressBusinessModule(),
-                        new TournamentDaoJpaModule(), new TournamentBusinessModule(), new JpaDBModule("TournamentPU"));
+                        new AccountDaoJpaModule(), new AccountBusinessModule(),
+                        new TournamentDaoJpaModule(), new TournamentBusinessModule(),
+                        new MailDaoJpaModule(), new MailServiceModule(), new MailServiceConfigurationModule(), new AccountConfigurationModule(),
+                        new JpaDBModule("OfflinePokerPU"));
     }
 
     @Override
@@ -64,6 +73,8 @@ public class TournamentApplication extends Application
         result.add(CashGameListService.class);
         result.add(CashGameCompetitorService.class);
         result.add(AccountRequestFilter.class);
+        result.add(LoginService.class);
+        result.add(AccountService.class);
         return result;
     }
 

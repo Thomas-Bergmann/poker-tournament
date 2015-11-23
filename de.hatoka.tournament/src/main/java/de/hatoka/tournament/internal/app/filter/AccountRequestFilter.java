@@ -91,6 +91,10 @@ public class AccountRequestFilter implements ContainerRequestFilter
      */
     private boolean validateCookies(ContainerRequestContext requestContext)
     {
+        if (requestContext.getUriInfo().getPath().contains("login/"))
+        {
+            return true;
+        }
         Map<String, javax.ws.rs.core.Cookie> cookies = requestContext.getCookies();
         String accountID = getCookie(cookies, ServletConstants.ACCOUNT_ID_COOKIE_NAME);
         if (accountID == null)
