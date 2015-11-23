@@ -4,11 +4,6 @@
     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
     id="WebApp_ID" version="3.0">
     <description>HATOKA Offline Poker Application</description>
-	<resource-env-ref>
-	  <description>Account Client Configuration</description>
-	  <resource-env-ref-name>hatoka/ClientConfigurationBeanFactory</resource-env-ref-name>
-	  <resource-env-ref-type>de.hatoka.jndi.account.ClientConfigurationBean</resource-env-ref-type>
-	</resource-env-ref>
     <servlet>
         <servlet-name>Offline Poker Application</servlet-name>
         <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
