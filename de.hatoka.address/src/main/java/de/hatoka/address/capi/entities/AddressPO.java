@@ -4,16 +4,26 @@ import java.io.Serializable;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.validation.constraints.NotNull;
 
+import de.hatoka.common.capi.dao.IdentifiableEntity;
 import de.hatoka.common.capi.exceptions.CopyNotSupportException;
 
 @Entity
-public class AddressPO implements Cloneable, Serializable
+@NamedQueries(value = {
+                @NamedQuery(name = "AddressPO.findByOwnerID", query = "select a from AddressPO a where a.ownerID = :ownerID"),
+                @NamedQuery(name = "AddressPO.findByPredecessorRef", query = "select a from AddressPO a where a.predecessorRef = :predecessorRef")
+})
+public class AddressPO implements Cloneable, Serializable, IdentifiableEntity
 {
     private static final long serialVersionUID = 1L;
     @Id
     private String id;
+    @NotNull
+    private String ownerID;
+
     @NotNull
     private String name;
     private String carryOver;
@@ -90,6 +100,7 @@ public class AddressPO implements Cloneable, Serializable
         return county;
     }
 
+    @Override
     public String getId()
     {
         return id;
@@ -149,6 +160,7 @@ public class AddressPO implements Cloneable, Serializable
         this.county = county;
     }
 
+    @Override
     public void setId(String id)
     {
         this.id = id;
@@ -177,6 +189,16 @@ public class AddressPO implements Cloneable, Serializable
     public void setPredecessorRef(String predecessorRef)
     {
         this.predecessorRef = predecessorRef;
+    }
+
+    public String getOwnerID()
+    {
+        return ownerID;
+    }
+
+    public void setOwnerID(String ownerID)
+    {
+        this.ownerID = ownerID;
     }
 
 }

@@ -17,7 +17,7 @@ public class SmtpConfigurationSystemEnvImpl implements SmtpConfiguration
     @Override
     public Session getSession()
     {
-        Properties prop = System.getProperties();
+        final Properties prop = System.getProperties();
         prop.setProperty("mail.smtp.host", prop.getProperty(SMTP_HOST));
         prop.setProperty("mail.smtp.auth", "true");
         Authenticator auth = null;

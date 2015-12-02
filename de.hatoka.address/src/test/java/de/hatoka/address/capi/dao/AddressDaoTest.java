@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import javax.inject.Inject;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import com.google.inject.Guice;
@@ -23,10 +24,13 @@ public class AddressDaoTest
 
     @Inject
     private AddressDao underTest;
+
+    @Rule
+    public DerbyEntityManagerRule rule = new DerbyEntityManagerRule();
     @Before
     public void inject()
     {
-        Injector injector = Guice.createInjector(new CommonDaoModule(), new AddressDaoModule());
+        Injector injector = Guice.createInjector(new CommonDaoModule(), new AddressDaoModule(), rule.getModule());
         injector.injectMembers(this);
     }
 

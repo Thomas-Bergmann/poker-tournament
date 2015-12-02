@@ -43,7 +43,7 @@ public class AccountBOImpl implements AccountBO, AddressBOLifecycleListener
         {
             throw new IllegalStateException("Address of account exist.");
         }
-        AddressPO addressPO = addressDao.createAndInsert();
+        AddressPO addressPO = addressDao.createAndInsert(accountPO.getId());
         accountPO.setAddressRef(addressPO.getId());
         return businessFactory.getAddressBO(addressPO, this);
     }

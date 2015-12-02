@@ -18,7 +18,7 @@ public interface AddressDao extends Dao<AddressPO>
      * Creates a new address
      * @return
      */
-    AddressPO createAndInsert();
+    AddressPO createAndInsert(String ownerID);
 
     /**
      * @param addressPO

@@ -133,6 +133,7 @@ project('de.hatoka.address')
     dependencies {
         compile project(":de.hatoka.common")
         testCompile "junit:junit:$junitVersion"
+        testCompile "org.apache.derby:derby:$apacheDerbyVersion"
     }
 }
 

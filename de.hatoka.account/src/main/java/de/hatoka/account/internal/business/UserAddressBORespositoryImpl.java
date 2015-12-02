@@ -59,7 +59,7 @@ public class UserAddressBORespositoryImpl implements AddressBORepository
     @Override
     public AddressBO createAddressBO()
     {
-        AddressPO addressPO = addressDao.createAndInsert();
+        AddressPO addressPO = addressDao.createAndInsert(userPO.getId());
         userPO.getAddressRefs().add(addressPO.getId());
         return newBO(addressPO);
     }

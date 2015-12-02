@@ -7,11 +7,13 @@ import static org.junit.Assert.assertTrue;
 import javax.inject.Inject;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
+import de.hatoka.address.capi.dao.DerbyEntityManagerRule;
 import de.hatoka.address.capi.doa.AddressDao;
 import de.hatoka.address.capi.entities.AddressPO;
 import de.hatoka.address.internal.business.AddressBOImpl;
@@ -28,10 +30,13 @@ public class AddressBOImplTest
 
     private AddressBOImpl underTest;
 
+    @Rule
+    public DerbyEntityManagerRule rule = new DerbyEntityManagerRule();
+
     @Before
     public void init()
     {
-        Injector injector = Guice.createInjector(new CommonDaoModule(), new AddressDaoModule());
+        Injector injector = Guice.createInjector(new CommonDaoModule(), new AddressDaoModule(), rule.getModule());
         injector.injectMembers(this);
         underTest = new AddressBOImpl(ADDRESS_EMPTY, null, addressDao);
     }

@@ -57,6 +57,14 @@ public class GenericJPADao<T extends IdentifiableEntity> implements Dao<T>
     @Override
     public void insert(T element)
     {
+        if (element == null)
+        {
+            throw new IllegalArgumentException("Can't insert empty element to database.");
+        }
+        if (element.getId() == null)
+        {
+            throw new IllegalStateException("Can't insert element without identifier");
+        }
         getManager().persist(element);
     }
 
