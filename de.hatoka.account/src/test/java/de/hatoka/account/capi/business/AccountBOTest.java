@@ -9,8 +9,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import de.hatoka.account.internal.dao.DerbyEntityManagerRule;
 import de.hatoka.address.capi.business.AddressBO;
+import de.hatoka.test.DerbyEntityManagerRule;
 
 public class AccountBOTest
 {

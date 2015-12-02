@@ -20,6 +20,7 @@ import de.hatoka.account.capi.entities.UserPO;
 import de.hatoka.account.internal.modules.AccountDaoJpaModule;
 import de.hatoka.common.capi.dao.TransactionProvider;
 import de.hatoka.common.capi.modules.CommonDaoModule;
+import de.hatoka.test.DerbyEntityManagerRule;
 
 public class AccountDaoJpaTest
 {

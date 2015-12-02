@@ -31,6 +31,7 @@ import de.hatoka.common.capi.dao.TransactionProvider;
 import de.hatoka.common.capi.modules.CommonDaoModule;
 import de.hatoka.common.capi.resource.LocalizationConstants;
 import de.hatoka.common.capi.resource.ResourceLoader;
+import de.hatoka.test.DerbyEntityManagerRule;
 import de.hatoka.tournament.capi.dao.BlindLevelDao;
 import de.hatoka.tournament.capi.dao.CompetitorDao;
 import de.hatoka.tournament.capi.dao.HistoryDao;
@@ -44,7 +45,6 @@ import de.hatoka.tournament.capi.entities.PlayerPO;
 import de.hatoka.tournament.capi.entities.RankPO;
 import de.hatoka.tournament.capi.entities.TournamentPO;
 import de.hatoka.tournament.capi.types.HistoryEntryType;
-import de.hatoka.tournament.internal.dao.DerbyEntityManagerRule;
 import de.hatoka.tournament.internal.modules.TournamentBusinessModule;
 import de.hatoka.tournament.internal.modules.TournamentDaoJpaModule;
 

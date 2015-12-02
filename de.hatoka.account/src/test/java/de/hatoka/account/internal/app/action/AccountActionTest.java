@@ -18,7 +18,6 @@ import de.hatoka.account.capi.business.AccountBusinessFactory;
 import de.hatoka.account.capi.dao.UserDao;
 import de.hatoka.account.capi.entities.UserPO;
 import de.hatoka.account.internal.app.actions.AccountAction;
-import de.hatoka.account.internal.dao.DerbyEntityManagerRule;
 import de.hatoka.account.internal.modules.AccountBusinessModule;
 import de.hatoka.account.internal.modules.AccountConfigurationModule;
 import de.hatoka.account.internal.modules.AccountDaoJpaModule;
@@ -29,6 +28,7 @@ import de.hatoka.common.capi.modules.CommonDaoModule;
 import de.hatoka.mail.internal.modules.MailDaoJpaModule;
 import de.hatoka.mail.internal.modules.MailServiceConfigurationModule;
 import de.hatoka.mail.internal.modules.MailServiceModule;
+import de.hatoka.test.DerbyEntityManagerRule;
 
 public class AccountActionTest
 {

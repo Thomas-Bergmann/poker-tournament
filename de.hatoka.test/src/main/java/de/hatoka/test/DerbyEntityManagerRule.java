@@ -1,4 +1,4 @@
-package de.hatoka.tournament.internal.dao;
+package de.hatoka.test;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -22,7 +22,7 @@ public class DerbyEntityManagerRule extends ExternalResource implements EntityMa
     public void before() throws Throwable
     {
         super.before();
-        emf = Persistence.createEntityManagerFactory("TournamentTestPU");
+        emf = Persistence.createEntityManagerFactory("TestPU");
         em = emf.createEntityManager();
     }
 

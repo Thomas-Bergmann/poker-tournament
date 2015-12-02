@@ -19,6 +19,7 @@ import com.google.inject.Injector;
 import de.hatoka.common.capi.dao.SequenceProvider;
 import de.hatoka.common.capi.dao.TransactionProvider;
 import de.hatoka.common.capi.modules.CommonDaoModule;
+import de.hatoka.test.DerbyEntityManagerRule;
 import de.hatoka.tournament.capi.dao.CompetitorDao;
 import de.hatoka.tournament.capi.dao.PlayerDao;
 import de.hatoka.tournament.capi.dao.TournamentDao;

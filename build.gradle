@@ -120,11 +120,21 @@ project('de.hatoka.account')
         compile project(":de.hatoka.mail")
         runtime "javax.mail:mail:$mailVersion"
 
-        testCompile "junit:junit:$junitVersion"
-        testCompile "org.apache.derby:derby:$apacheDerbyVersion"
         testCompile 'xmlunit:xmlunit:1.6'
         testCompile "org.mockito:mockito-all:$mockitoVersion"
         testRuntime 'xalan:xalan:2.7.2'
+        testCompile project(":de.hatoka.test")
+    }
+}
+
+project('de.hatoka.test')
+{
+    dependencies {
+        compile project(":de.hatoka.common")
+        compile 'org.eclipse.persistence:eclipselink:2.5.2' // embeddable
+        compile "junit:junit:$junitVersion"
+        compile "org.apache.derby:derby:$apacheDerbyVersion"
+        compile 'com.google.inject:guice:3.0'
     }
 }
 
@@ -132,8 +142,7 @@ project('de.hatoka.address')
 {
     dependencies {
         compile project(":de.hatoka.common")
-        testCompile "junit:junit:$junitVersion"
-        testCompile "org.apache.derby:derby:$apacheDerbyVersion"
+        testCompile project(":de.hatoka.test")
     }
 }
 
@@ -163,9 +172,8 @@ project('de.hatoka.mail')
         compile project(":de.hatoka.common")
         compile "javax.mail:mail:$mailVersion"
         provided "org.apache.tomcat:tomcat-catalina:$tomcatVersion"
-        testCompile "junit:junit:$junitVersion"
+        testCompile project(":de.hatoka.test")
         testCompile "org.apache.tomcat:tomcat-catalina:$tomcatVersion"
-        testCompile "org.apache.derby:derby:$apacheDerbyVersion"
     }
     test {
         // https://javamail.java.net/nonav/docs/api/com/sun/mail/smtp/package-summary.html
@@ -188,10 +196,9 @@ project('de.hatoka.tournament')
     dependencies {
         compile project(":de.hatoka.common")
         compile project(":de.hatoka.address")
-        testCompile "junit:junit:$junitVersion"
+        testCompile project(":de.hatoka.test")
         testCompile 'xmlunit:xmlunit:1.6'
         testCompile "org.mockito:mockito-all:$mockitoVersion"
-        testCompile "org.apache.derby:derby:$apacheDerbyVersion"
         testRuntime 'xalan:xalan:2.7.2'
     }
 }

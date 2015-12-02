@@ -20,9 +20,9 @@ import de.hatoka.mail.capi.dao.MailDao;
 import de.hatoka.mail.capi.entities.MailPO;
 import de.hatoka.mail.capi.service.MailAddressType;
 import de.hatoka.mail.capi.service.MailService;
-import de.hatoka.mail.internal.dao.DerbyEntityManagerRule;
 import de.hatoka.mail.internal.modules.MailDaoJpaModule;
 import de.hatoka.mail.internal.modules.MailServiceModule;
+import de.hatoka.test.DerbyEntityManagerRule;
 
 public class MailServiceImplTest
 {

@@ -12,9 +12,9 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import de.hatoka.account.capi.entities.UserPO;
-import de.hatoka.account.internal.dao.DerbyEntityManagerRule;
 import de.hatoka.address.capi.business.AddressBO;
 import de.hatoka.address.capi.business.AddressBORepository;
+import de.hatoka.test.DerbyEntityManagerRule;
 
 public class UserBOTest
 {

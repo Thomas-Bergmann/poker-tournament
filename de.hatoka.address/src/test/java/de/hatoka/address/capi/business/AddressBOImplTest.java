@@ -13,13 +13,13 @@ import org.junit.Test;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
-import de.hatoka.address.capi.dao.DerbyEntityManagerRule;
 import de.hatoka.address.capi.doa.AddressDao;
 import de.hatoka.address.capi.entities.AddressPO;
 import de.hatoka.address.internal.business.AddressBOImpl;
 import de.hatoka.address.internal.modules.AddressDaoModule;
 import de.hatoka.common.capi.exceptions.CountryNotExistException;
 import de.hatoka.common.capi.modules.CommonDaoModule;
+import de.hatoka.test.DerbyEntityManagerRule;
 
 public class AddressBOImplTest
 {

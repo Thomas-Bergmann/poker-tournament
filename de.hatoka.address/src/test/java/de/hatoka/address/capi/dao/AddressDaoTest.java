@@ -15,6 +15,7 @@ import de.hatoka.address.capi.doa.AddressDao;
 import de.hatoka.address.capi.entities.AddressPO;
 import de.hatoka.address.internal.modules.AddressDaoModule;
 import de.hatoka.common.capi.modules.CommonDaoModule;
+import de.hatoka.test.DerbyEntityManagerRule;
 
 public class AddressDaoTest
 {

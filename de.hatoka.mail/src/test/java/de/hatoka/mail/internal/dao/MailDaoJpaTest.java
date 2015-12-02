@@ -21,6 +21,7 @@ import de.hatoka.mail.capi.entities.MailReceiverPO;
 import de.hatoka.mail.capi.service.MailAddressType;
 import de.hatoka.mail.capi.service.MailResultType;
 import de.hatoka.mail.internal.modules.MailDaoJpaModule;
+import de.hatoka.test.DerbyEntityManagerRule;
 
 public class MailDaoJpaTest
 {

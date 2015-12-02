@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import com.google.inject.Injector;
 
-import de.hatoka.account.internal.dao.DerbyEntityManagerRule;
+import de.hatoka.test.DerbyEntityManagerRule;
 
 public class UserBORepositoryTest
 {

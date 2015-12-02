@@ -17,8 +17,8 @@ import com.google.inject.Injector;
 
 import de.hatoka.common.capi.business.Money;
 import de.hatoka.common.capi.modules.CommonDaoModule;
+import de.hatoka.test.DerbyEntityManagerRule;
 import de.hatoka.tournament.capi.types.HistoryEntryType;
-import de.hatoka.tournament.internal.dao.DerbyEntityManagerRule;
 import de.hatoka.tournament.internal.modules.TournamentBusinessModule;
 import de.hatoka.tournament.internal.modules.TournamentDaoJpaModule;
 

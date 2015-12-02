@@ -19,7 +19,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import de.hatoka.common.capi.business.Money;
-import de.hatoka.tournament.internal.dao.DerbyEntityManagerRule;
+import de.hatoka.test.DerbyEntityManagerRule;
 
 public class TournamentBOTest
 {
