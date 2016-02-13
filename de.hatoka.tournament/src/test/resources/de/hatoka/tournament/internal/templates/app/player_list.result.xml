@@ -1,0 +1,28 @@
+<form xmlns="http://www.w3.org/1999/xhtml" action="action" method="POST">
+<table class="table table-striped">
+<tr>
+<th>Select</th>
+<th>Name</th>
+<th>EMail</th>
+</tr>
+<tr>
+<td>
+<label>
+<input type="checkbox" value="1234583" name="playerID" class="checkbox"/>
+</label>
+</td>
+<td>Player 3</td>
+<td>mail3@test.hatoka.de</td>
+</tr>
+<tr>
+<td>
+<label>
+<input type="checkbox" value="1234582" name="playerID" class="checkbox"/>
+</label>
+</td>
+<td>Player 2</td>
+<td>mail2@test.hatoka.de</td>
+</tr>
+</table>
+<button name="delete" type="submit" class="btn btn-primary">Delete</button>
+</form>

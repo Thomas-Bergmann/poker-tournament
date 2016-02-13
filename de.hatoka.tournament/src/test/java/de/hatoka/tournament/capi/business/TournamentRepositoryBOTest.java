@@ -152,7 +152,7 @@ public class TournamentRepositoryBOTest
         competitor1.setMoneyInPlay(Money.valueOf("5 EUR").toMoneyPO());
         competitor1.setMoneyResult(Money.valueOf("-5 EUR").toMoneyPO());
 
-        HistoryPO historyEntry = historyDao.createAndInsert(tournamentPO, player1, CURRENT_DATE);
+        HistoryPO historyEntry = historyDao.createAndInsert(tournamentPO, player1.getName(), CURRENT_DATE);
         historyEntry.setActionKey(HistoryEntryType.BuyIn.name());
 
         BlindLevelPO level1 = blindLevelDao.createAndInsert(tournamentPO, 30);

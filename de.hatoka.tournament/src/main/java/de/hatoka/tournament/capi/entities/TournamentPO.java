@@ -56,7 +56,7 @@ public class TournamentPO implements Serializable, IdentifiableEntity
     private String name;
 
     @NotNull
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @XmlAttribute
     @XmlJavaTypeAdapter(DateXmlAdapter.class)
     private Date date;

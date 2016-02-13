@@ -16,7 +16,6 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -41,11 +40,8 @@ public class HistoryPO implements Serializable, IdentifiableEntity
     private String accountRef;
 
     @NotNull
-    @ManyToOne
-    @JoinColumn(name = "player", updatable = false)
-    @XmlIDREF
-    @XmlAttribute(name="playerRef")
-    private PlayerPO player;
+    @XmlAttribute(name="player")
+    private String player;
 
     @NotNull
     @ManyToOne
@@ -119,7 +115,7 @@ public class HistoryPO implements Serializable, IdentifiableEntity
     }
 
     @XmlTransient
-    public PlayerPO getPlayerPO()
+    public String getPlayer()
     {
         return player;
     }
@@ -155,9 +151,9 @@ public class HistoryPO implements Serializable, IdentifiableEntity
         this.amount = moneyAmount;
     }
 
-    public void setPlayerPO(PlayerPO playerPO)
+    public void setPlayer(String player)
     {
-        player = playerPO;
+        this.player = player;
     }
 
     public void setTournamentPO(TournamentPO tournamentPO)

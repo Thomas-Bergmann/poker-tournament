@@ -23,7 +23,7 @@ public class HistoryEntryVO
 
     public HistoryEntryVO(HistoryPO historyPO)
     {
-        this.playerName = historyPO.getPlayerPO().getName();
+        this.playerName = historyPO.getPlayer();
         this.entryType = HistoryEntryType.valueOf(historyPO.getActionKey());
         this.date = historyPO.getDate();
         this.amount = new MoneyVO(Money.valueOf(historyPO.getAmount()));
@@ -31,7 +31,7 @@ public class HistoryEntryVO
 
     public HistoryEntryVO(HistoryEntryBO historyBO)
     {
-        this.playerName = historyBO.getPlayer().getName();
+        this.playerName = historyBO.getPlayer();
         this.entryType = historyBO.getType();
         this.date = historyBO.getDate();
         this.amount = new MoneyVO(historyBO.getAmount());

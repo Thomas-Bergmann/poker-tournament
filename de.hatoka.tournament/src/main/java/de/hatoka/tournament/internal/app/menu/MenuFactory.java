@@ -5,11 +5,13 @@ import java.net.URI;
 import javax.ws.rs.core.UriInfo;
 
 import de.hatoka.tournament.capi.business.CashGameBO;
+import de.hatoka.tournament.capi.business.PlayerBORepository;
 import de.hatoka.tournament.capi.business.TournamentBO;
 import de.hatoka.tournament.capi.business.TournamentBORepository;
 import de.hatoka.tournament.internal.app.models.FrameModel;
 import de.hatoka.tournament.internal.app.servlets.CashGameCompetitorService;
 import de.hatoka.tournament.internal.app.servlets.CashGameListService;
+import de.hatoka.tournament.internal.app.servlets.PlayerListService;
 import de.hatoka.tournament.internal.app.servlets.TournamentBlindLevelService;
 import de.hatoka.tournament.internal.app.servlets.TournamentCompetitorService;
 import de.hatoka.tournament.internal.app.servlets.TournamentListService;
@@ -25,27 +27,31 @@ public class MenuFactory
     }
 
     public FrameModel getMainFrameModel(String content, String titleKey, UriInfo info,
-                    TournamentBORepository tournamentBORepository, boolean isCashGame)
+                    TournamentBORepository tournamentBORepository, PlayerBORepository playerBORepository, String selected)
     {
         FrameModel model = new FrameModel();
         model.setTitleKey(titleKey);
         model.setContent(content);
-        model.setUriHome(getUri(info, isCashGame ? CashGameListService.class : TournamentListService.class, TournamentListService.METHOD_NAME_LIST));
-        defineMainMenu(info, isCashGame, model);
+        model.setUriHome(getUri(info, TournamentListService.class, TournamentListService.METHOD_NAME_LIST));
+        defineMainMenu(info, selected, model);
 
         model.addSideMenu("menu.list.tournaments", getUri(info, TournamentListService.class, TournamentListService.METHOD_NAME_LIST),
                         getTournamentsSize(tournamentBORepository), getUri(info, TournamentListService.class, TournamentListService.METHOD_NAME_ADD),
-                        !isCashGame);
+                        "tournaments".equals(selected));
         model.addSideMenu("menu.list.cashgames", getUri(info, CashGameListService.class, CashGameListService.METHOD_NAME_LIST),
                         getCashGamesSize(tournamentBORepository), getUri(info, CashGameListService.class, CashGameListService.METHOD_NAME_ADD),
-                        isCashGame);
+                        "cashgames".equals(selected));
+        model.addSideMenu("menu.list.players", getUri(info, PlayerListService.class, PlayerListService.METHOD_NAME_LIST),
+                        getPlayersSize(playerBORepository), null,
+                        "players".equals(selected));
         return model;
     }
 
-    private void defineMainMenu(UriInfo info, boolean isCashGame, FrameModel model)
+    private void defineMainMenu(UriInfo info, String main, FrameModel model)
     {
-        model.addMainMenu("menu.list.tournaments", getUri(info, TournamentListService.class, TournamentListService.METHOD_NAME_LIST), !isCashGame);
-        model.addMainMenu("menu.list.cashgames", getUri(info, CashGameListService.class, CashGameListService.METHOD_NAME_LIST), isCashGame);
+        model.addMainMenu("menu.list.tournaments", getUri(info, TournamentListService.class, TournamentListService.METHOD_NAME_LIST), "tournaments".equals(main));
+        model.addMainMenu("menu.list.cashgames", getUri(info, CashGameListService.class, CashGameListService.METHOD_NAME_LIST), "cashgames".equals(main));
+        model.addMainMenu("menu.list.players", getUri(info, PlayerListService.class, CashGameListService.METHOD_NAME_LIST), "players".equals(main));
     }
 
     private Integer getTournamentsSize(TournamentBORepository tournamentBORepository)
@@ -58,6 +64,11 @@ public class MenuFactory
         return tournamentBORepository.getCashGames().size();
     }
 
+    private Integer getPlayersSize(PlayerBORepository playerBORepository)
+    {
+        return playerBORepository.getPlayers().size();
+    }
+
     public FrameModel getCashGameFrameModel(String content, String titleKey, UriInfo info,
                     TournamentBORepository tournamentBORepository, String tournamentID)
     {
@@ -65,7 +76,7 @@ public class MenuFactory
         model.setTitleKey(titleKey);
         model.setContent(content);
         model.setUriHome(getUri(info, CashGameListService.class, CashGameListService.METHOD_NAME_LIST));
-        defineMainMenu(info, true, model);
+        defineMainMenu(info, "cashgames", model);
 
         CashGameBO cashGameBO = tournamentBORepository.getCashGameByID(tournamentID);
         model.addSideMenu("menu.cashgame.players",
@@ -84,7 +95,7 @@ public class MenuFactory
         model.setTitleKey(titleKey);
         model.setContent(content);
         model.setUriHome(getUri(info, TournamentListService.class, TournamentListService.METHOD_NAME_LIST));
-        defineMainMenu(info, false, model);
+        defineMainMenu(info, "tournaments", model);
 
         TournamentBO tournamentBO = tournamentBORepository.getTournamentByID(tournamentID);
         model.addSideMenu("menu.tournament.general",
@@ -101,6 +112,16 @@ public class MenuFactory
                                         .getRanks().size(), null, titleKey.equals("title.list.ranks"));
         model.addSideMenu("menu.tournament.tables",
                         getUri(info, TournamentTableService.class, TournamentTableService.METHOD_NAME_LIST, tournamentBO.getID()), null, null, titleKey.equals("title.tournament.tables"));
+        return model;
+    }
+
+    public FrameModel getPlayerFrameModel(String content, String titleKey, UriInfo info)
+    {
+        FrameModel model = new FrameModel();
+        model.setTitleKey(titleKey);
+        model.setContent(content);
+        model.setUriHome(getUri(info, TournamentListService.class, TournamentListService.METHOD_NAME_LIST));
+        defineMainMenu(info, "players", model);
         return model;
     }
 

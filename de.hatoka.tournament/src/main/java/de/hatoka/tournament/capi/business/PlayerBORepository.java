@@ -20,7 +20,7 @@ public interface PlayerBORepository
      */
     PlayerBO create(String externalRef, String name);
 
-    PlayerBO findByID(String id);
+    PlayerBO getPlayerByID(String id);
 
     PlayerBO findByName(String name);
 

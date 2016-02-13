@@ -63,4 +63,16 @@ public class PlayerBOImpl implements PlayerBO
         playerPO = null;
     }
 
+    @Override
+    public String getEMail()
+    {
+        return playerPO.getEMail();
+    }
+
+    @Override
+    public void seetEMail(String eMail)
+    {
+        playerPO.setEMail(eMail);
+    }
+
 }

@@ -20,4 +20,14 @@ public interface PlayerBO
     * @return name of player (semantic key)
     */
    String getName();
+
+   /**
+    * @return email address used to find players of an user.
+    */
+   String getEMail();
+
+   /**
+    * Sets email address of a player
+    */
+   void seetEMail(String email);
 }

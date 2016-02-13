@@ -134,7 +134,7 @@ public class CompetitorBOImpl implements ICompetitor
     @Override
     public void createEntry(HistoryEntryType type, Money amount)
     {
-        HistoryPO entry = historyDao.createAndInsert(competitorPO.getTournamentPO(), competitorPO.getPlayerPO(), dateProvider.get());
+        HistoryPO entry = historyDao.createAndInsert(competitorPO.getTournamentPO(), competitorPO.getPlayerPO().getName(), dateProvider.get());
         entry.setActionKey(type.name());
         entry.setAmount(amount.toMoneyPO());
     }

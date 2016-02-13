@@ -8,7 +8,6 @@ import de.hatoka.common.capi.dao.GenericJPADao;
 import de.hatoka.common.capi.dao.UUIDGenerator;
 import de.hatoka.tournament.capi.dao.HistoryDao;
 import de.hatoka.tournament.capi.entities.HistoryPO;
-import de.hatoka.tournament.capi.entities.PlayerPO;
 import de.hatoka.tournament.capi.entities.TournamentPO;
 
 public class HistoryDaoJpa extends GenericJPADao<HistoryPO> implements HistoryDao
@@ -22,14 +21,14 @@ public class HistoryDaoJpa extends GenericJPADao<HistoryPO> implements HistoryDa
     }
 
     @Override
-    public HistoryPO createAndInsert(TournamentPO tournamentPO, PlayerPO playerPO, Date date)
+    public HistoryPO createAndInsert(TournamentPO tournamentPO, String player, Date date)
     {
         HistoryPO result = create();
         result.setId(uuidGenerator.generate());
         result.setAccountRef(tournamentPO.getAccountRef());
         result.setDate(date);
+        result.setPlayer(player);
         // set relations
-        result.setPlayerPO(playerPO);
         result.setTournamentPO(tournamentPO);
         tournamentPO.getHistoryEntries().add(result);
         insert(result);

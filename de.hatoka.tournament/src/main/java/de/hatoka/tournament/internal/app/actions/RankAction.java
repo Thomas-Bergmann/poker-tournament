@@ -70,7 +70,7 @@ public class RankAction
     public PlayerBO getPlayer(String playerId)
     {
         PlayerBORepository playerBORepository = factory.getPlayerBORepository(accountRef);
-        return playerBORepository.findByID(playerId);
+        return playerBORepository.getPlayerByID(playerId);
     }
 
     public TournamentRankModel getTournamentRankModel(URI tournamentURI)

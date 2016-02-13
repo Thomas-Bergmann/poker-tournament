@@ -15,6 +15,7 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import de.hatoka.common.capi.app.servlet.AbstractService;
+import de.hatoka.tournament.capi.business.PlayerBORepository;
 import de.hatoka.tournament.capi.business.TournamentBORepository;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
 import de.hatoka.tournament.internal.app.actions.TournamentListAction;
@@ -143,7 +144,9 @@ public class CashGameListService extends AbstractService
     private String renderFrame(String content, String titleKey) throws IOException
     {
         TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
-        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(AccountRequestFilter.getAccountRef(servletRequest));
-        return renderStyleSheet(menuFactory.getMainFrameModel(content, titleKey, info, tournamentBORepository, true), "tournament_frame.xslt", getXsltProcessorParameter("tournament"));
+        final String accountRef = AccountRequestFilter.getAccountRef(servletRequest);
+        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountRef);
+        PlayerBORepository playerBORepository = factory.getPlayerBORepository(accountRef);
+        return renderStyleSheet(menuFactory.getMainFrameModel(content, titleKey, info, tournamentBORepository, playerBORepository, "cashgames"), "tournament_frame.xslt", getXsltProcessorParameter("tournament"));
     }
 }

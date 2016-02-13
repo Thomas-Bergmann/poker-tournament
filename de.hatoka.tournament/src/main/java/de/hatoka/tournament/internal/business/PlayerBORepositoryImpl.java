@@ -68,7 +68,7 @@ public class PlayerBORepositoryImpl implements PlayerBORepository
     }
 
     @Override
-    public PlayerBO findByID(String id)
+    public PlayerBO getPlayerByID(String id)
     {
         PlayerPO playerPO = playerDao.getById(id);
         if (playerPO == null)

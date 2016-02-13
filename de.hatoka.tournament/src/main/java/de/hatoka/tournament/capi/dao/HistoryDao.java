@@ -4,7 +4,6 @@ import java.util.Date;
 
 import de.hatoka.common.capi.dao.Dao;
 import de.hatoka.tournament.capi.entities.HistoryPO;
-import de.hatoka.tournament.capi.entities.PlayerPO;
 import de.hatoka.tournament.capi.entities.TournamentPO;
 
 public interface HistoryDao extends Dao<HistoryPO>
@@ -16,5 +15,5 @@ public interface HistoryDao extends Dao<HistoryPO>
      * @param date
      * @return
      */
-    HistoryPO createAndInsert(TournamentPO tournamentPO, PlayerPO playerPO, Date date);
+    HistoryPO createAndInsert(TournamentPO tournamentPO, String player, Date date);
 }

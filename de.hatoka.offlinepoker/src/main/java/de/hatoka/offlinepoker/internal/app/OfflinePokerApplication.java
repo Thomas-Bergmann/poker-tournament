@@ -27,6 +27,7 @@ import de.hatoka.mail.internal.modules.MailServiceModule;
 import de.hatoka.tournament.internal.app.filter.AccountRequestFilter;
 import de.hatoka.tournament.internal.app.servlets.CashGameCompetitorService;
 import de.hatoka.tournament.internal.app.servlets.CashGameListService;
+import de.hatoka.tournament.internal.app.servlets.PlayerListService;
 import de.hatoka.tournament.internal.app.servlets.TournamentBlindLevelService;
 import de.hatoka.tournament.internal.app.servlets.TournamentCompetitorService;
 import de.hatoka.tournament.internal.app.servlets.TournamentListService;
@@ -72,6 +73,7 @@ public class OfflinePokerApplication extends Application
         result.add(TournamentTableService.class);
         result.add(CashGameListService.class);
         result.add(CashGameCompetitorService.class);
+        result.add(PlayerListService.class);
         result.add(AccountRequestFilter.class);
         result.add(LoginService.class);
         result.add(AccountService.class);

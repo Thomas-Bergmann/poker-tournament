@@ -29,5 +29,5 @@ public interface HistoryEntryBO
     /**
      * @return player who does the action
      */
-    PlayerBO getPlayer();
+    String getPlayer();
 }

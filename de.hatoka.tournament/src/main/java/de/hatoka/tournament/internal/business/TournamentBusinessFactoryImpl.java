@@ -111,7 +111,7 @@ public class TournamentBusinessFactoryImpl implements TournamentBusinessFactory
     @Override
     public HistoryEntryBO getHistoryBO(HistoryPO historyPO)
     {
-        return new HistoryEntryBOImpl(historyPO, this);
+        return new HistoryEntryBOImpl(historyPO);
     }
 
     @Override
