@@ -86,8 +86,8 @@ public class PlayerPO implements Serializable, IdentifiableEntity
         return true;
     }
 
-    @OneToMany(mappedBy = "player")
-    @XmlInverseReference(mappedBy="player")
+    @OneToMany(mappedBy = "playerRef")
+    @XmlInverseReference(mappedBy="playerRef")
     private Set<CompetitorPO> competitors = new HashSet<>();
 
     public PlayerPO()

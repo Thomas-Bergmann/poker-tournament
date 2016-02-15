@@ -36,12 +36,15 @@ public class CompetitorPO implements Serializable, IdentifiableEntity
     @XmlTransient
     private String accountRef;
 
-    @NotNull
     @ManyToOne
-    @JoinColumn(name = "player", updatable = false)
+    @JoinColumn(name = "playerRef", updatable = true)
     @XmlIDREF
     @XmlAttribute(name="playerRef")
-    private PlayerPO player;
+    private PlayerPO playerRef;
+
+    @NotNull
+    @XmlAttribute(name="player")
+    private String player;
 
     @NotNull
     @ManyToOne
@@ -140,7 +143,7 @@ public class CompetitorPO implements Serializable, IdentifiableEntity
     @XmlTransient
     public PlayerPO getPlayerPO()
     {
-        return player;
+        return playerRef;
     }
 
     @XmlTransient
@@ -187,7 +190,7 @@ public class CompetitorPO implements Serializable, IdentifiableEntity
 
     public void setPlayerPO(PlayerPO playerPO)
     {
-        player = playerPO;
+        this.playerRef = playerPO;
     }
 
     public void setPosition(Integer position)
@@ -231,5 +234,16 @@ public class CompetitorPO implements Serializable, IdentifiableEntity
     public void setSeatNo(int seatNo)
     {
         this.seatNo = seatNo;
+    }
+
+    @XmlTransient
+    public String getPlayer()
+    {
+        return player;
+    }
+
+    public void setPlayer(String player)
+    {
+        this.player = player;
     }
 }

@@ -10,11 +10,11 @@
             <blindLevel position="3" smallBlind="4" bigBlind="8" ante="2" isPause="false" duration="30" isReBuy="false" />
             <rank firstPosition="1" lastPosition="1" percentage="0.5"/>
             <rank firstPosition="2" lastPosition="2" percentage="0.3"/>
-            <competitor playerRef="100" state="REGISTERED" tableNo="-1" seatNo="-1">
+            <competitor player="player1" playerRef="100" state="REGISTERED" tableNo="-1" seatNo="-1">
                 <inplay code="EUR" amount="5"/>
                 <result code="EUR" amount="-5"/>
             </competitor>
-            <historyEntry playerRef="100" actionKey="BuyIn" date="2011-11-25T07:45:00Z"/>
+            <historyEntry player="player1" actionKey="BuyIn" date="2011-11-25T07:45:00Z"/>
             <buyIn code="EUR" amount="5"/>
              <reBuy code="EUR" amount="3"/>
         </tournament>
