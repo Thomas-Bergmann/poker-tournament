@@ -1,5 +1,9 @@
 package de.hatoka.tournament.internal.business;
 
+import java.util.Date;
+
+import javax.inject.Provider;
+
 import de.hatoka.tournament.capi.business.BlindLevelBO;
 import de.hatoka.tournament.capi.business.PauseBO;
 import de.hatoka.tournament.capi.entities.BlindLevelPO;
@@ -7,10 +11,17 @@ import de.hatoka.tournament.capi.entities.BlindLevelPO;
 public class BlindLevelBOImpl implements BlindLevelBO, PauseBO
 {
     private final BlindLevelPO blindLevelPO;
+    private final Provider<Date> dateProvider;
 
-    public BlindLevelBOImpl(BlindLevelPO blindLevelPO)
+    /**
+     * Creates a blind level BO
+     * @param blindLevelPO persistent object of blind level
+     * @param dateProvider provides current date for activation of blind level
+     */
+    public BlindLevelBOImpl(BlindLevelPO blindLevelPO, Provider<Date> dateProvider)
     {
         this.blindLevelPO = blindLevelPO;
+        this.dateProvider = dateProvider;
     }
 
     @Override
@@ -92,6 +103,26 @@ public class BlindLevelBOImpl implements BlindLevelBO, PauseBO
     public void allowRebuy(boolean allow)
     {
         blindLevelPO.setReBuy(allow);
+    }
+
+    @Override
+    public void start()
+    {
+        blindLevelPO.getTournamentPO().getBlindLevels().stream().filter(bl -> bl.isActive()).forEach(bl -> bl.setActive(false));
+        blindLevelPO.setActive(true);
+        blindLevelPO.setStartDate(dateProvider.get());
+    }
+
+    @Override
+    public Date getStartTime()
+    {
+        return blindLevelPO.getStartDate();
+    }
+
+    @Override
+    public boolean isActive()
+    {
+        return blindLevelPO.isActive();
     }
 
 }

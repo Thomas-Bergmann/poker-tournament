@@ -142,9 +142,12 @@ public class TournamentTemplateTest
         TournamentBlindLevelModel model = new TournamentBlindLevelModel();
         model.setTournament(getTournamentVO("123456", "Test 1", parseDate("2011-11-25T18:00")));
         List<BlindLevelVO> blindLevels = model.getBlindLevels();
-        blindLevels.add(TournamentViewObjectHelper.getBlindLevelVO("1", 50, 100, 0, 30, true));
+        BlindLevelVO level1 = TournamentViewObjectHelper.getBlindLevelVO("1", 50, 100, 0, 30, true);
+        level1.setEstStartDateTime(parseDate("2011-11-25T18:05")); // start 5 min later
+        level1.setActive(true);
+        blindLevels.add(level1);
         blindLevels.add(TournamentViewObjectHelper.getBlindLevelVO("2", 100, 200, 0, 30, true));
-        blindLevels.add(TournamentViewObjectHelper.getPauseVO("3", 15, true));
+        blindLevels.add(TournamentViewObjectHelper.getPauseVO("3", 10, true));
         blindLevels.add(TournamentViewObjectHelper.getBlindLevelVO("4", 250, 500, 0, 30, false));
         model.getPrefilled().add(TournamentViewObjectHelper.getBlindLevelVO(500, 1000, 0, 30, false));
         model.fillTime();

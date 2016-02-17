@@ -7,6 +7,7 @@
 <th>Ante</th>
 <th>Re-Buy</th>
 <th>Duration (min)</th>
+<th>IsActive</th>
 <th>est. Start</th>
 <th>est. End</th>
 </tr>
@@ -21,8 +22,9 @@
 <td>-</td>
 <td><input type="checkbox" value="1" name="reBuy" class="checkbox" checked="checked" disabled="disabled" /></td>
 <td>0:30</td>
-<td>6:00 PM</td>
-<td>6:30 PM</td>
+<td><input type="checkbox" value="1" name="isActive" class="checkbox" checked="checked" disabled="disabled" /></td>
+<td>6:05 PM</td>
+<td>6:35 PM</td>
 </tr>
 <tr>
 <td>
@@ -35,8 +37,9 @@
 <td>-</td>
 <td><input type="checkbox" value="2" name="reBuy" class="checkbox" checked="checked" disabled="disabled" /></td>
 <td>0:30</td>
-<td>6:30 PM</td>
-<td>7:00 PM</td>
+<td><input type="checkbox" value="2" name="isActive" class="checkbox" disabled="disabled" /></td>
+<td>6:35 PM</td>
+<td>7:05 PM</td>
 </tr>
 <tr>
 <td>
@@ -46,8 +49,9 @@
 </td>
 <td colspan="3">Pause</td>
 <td><input type="checkbox" value="3" name="reBuy" class="checkbox" checked="checked" disabled="disabled" /></td>
-<td>0:15</td>
-<td>7:00 PM</td>
+<td>0:10</td>
+<td><input type="checkbox" value="3" name="isActive" class="checkbox" disabled="disabled" /></td>
+<td>7:05 PM</td>
 <td>7:15 PM</td>
 </tr>
 <tr>
@@ -61,6 +65,7 @@
 <td>-</td>
 <td><input type="checkbox" value="4" name="reBuy" class="checkbox" disabled="disabled" /></td>
 <td>0:30</td>
+<td><input type="checkbox" value="4" name="isActive" class="checkbox" disabled="disabled" /></td>
 <td>7:15 PM</td>
 <td>7:45 PM</td>
 </tr>

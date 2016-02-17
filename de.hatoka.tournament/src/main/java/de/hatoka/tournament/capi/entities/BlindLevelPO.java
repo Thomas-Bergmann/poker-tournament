@@ -1,17 +1,22 @@
 package de.hatoka.tournament.capi.entities;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.eclipse.persistence.oxm.annotations.XmlInverseReference;
 
+import de.hatoka.common.capi.app.xslt.DateXmlAdapter;
 import de.hatoka.common.capi.dao.IdentifiableEntity;
 
 @Entity
@@ -55,6 +60,15 @@ public class BlindLevelPO implements Serializable, IdentifiableEntity
     @NotNull
     @XmlAttribute
     private Integer duration;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @XmlAttribute
+    @XmlJavaTypeAdapter(DateXmlAdapter.class)
+    private Date startDate;
+
+    @NotNull
+    @XmlAttribute
+    private boolean isActive = false;
 
     public BlindLevelPO()
     {
@@ -199,6 +213,26 @@ public class BlindLevelPO implements Serializable, IdentifiableEntity
     public void setReBuy(boolean isRebuy)
     {
         this.isReBuy = isRebuy;
+    }
+
+    public Date getStartDate()
+    {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate)
+    {
+        this.startDate = startDate;
+    }
+
+    public boolean isActive()
+    {
+        return isActive;
+    }
+
+    public void setActive(boolean isActive)
+    {
+        this.isActive = isActive;
     }
 
 }

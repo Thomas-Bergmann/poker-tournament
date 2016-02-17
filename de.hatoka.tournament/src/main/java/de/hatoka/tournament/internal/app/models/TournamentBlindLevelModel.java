@@ -69,9 +69,17 @@ public class TournamentBlindLevelModel
         int maxSmallBlind = 0;
         int maxAnte = 0;
         int maxDurationLevel = 15;
-        for(BlindLevelVO blindLevel : blindLevels)
+        for (BlindLevelVO blindLevel : blindLevels)
         {
-            blindLevel.setEstStartDateTime(nextStart);
+            final Date levelStartDate = blindLevel.getEstStartDateTime();
+            if (levelStartDate == null)
+            {
+                blindLevel.setEstStartDateTime(nextStart);
+            }
+            else
+            {
+                nextStart = levelStartDate;
+            }
             nextStart = new Date(nextStart.getTime() + (blindLevel.getDuration() * 60_000));
             blindLevel.setEstEndDateTime(nextStart);
             maxSmallBlind = Math.max(blindLevel.getSmallBlind(), maxSmallBlind);
@@ -81,7 +89,7 @@ public class TournamentBlindLevelModel
                 maxDurationLevel = Math.max(blindLevel.getDuration(), maxDurationLevel);
             }
         }
-        for(BlindLevelVO blindLevel : prefilled)
+        for (BlindLevelVO blindLevel : prefilled)
         {
             if (blindLevel.getSmallBlind() == 0)
             {

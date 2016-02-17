@@ -13,6 +13,7 @@ public class BlindLevelVO
     private int ante = 0;
     private boolean isPause = false;
     private boolean isRebuy = false;
+    private boolean isActive = false;
 
     /**
      * Duration in minutes
@@ -30,6 +31,8 @@ public class BlindLevelVO
         BlindLevelBO blindLevelBO = round.getBlindLevel();
         id = round.getID();
         duration = round.getDuration();
+        estStartDateTime = round.getStartTime();
+        isActive = round.isActive();
         setRebuy(round.isRebuyAllowed());
         if (blindLevelBO == null)
         {
@@ -130,5 +133,15 @@ public class BlindLevelVO
     public void setRebuy(boolean isRebuy)
     {
         this.isRebuy = isRebuy;
+    }
+
+    public boolean isActive()
+    {
+        return isActive;
+    }
+
+    public void setActive(boolean isActive)
+    {
+        this.isActive = isActive;
     }
 }

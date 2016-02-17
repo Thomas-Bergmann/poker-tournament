@@ -93,7 +93,7 @@ public class AbstractService
     protected TimeZone getTimeZone()
     {
         String cookieValue = getCookieValue("tz");
-        return cookieValue == null ? CountryHelper.UTC : COUNTRY_HELPER.getTimeZone(cookieValue);
+        return cookieValue == null ? CountryHelper.TZ_BERLIN : COUNTRY_HELPER.getTimeZone(cookieValue);
     }
 
     private TransactionProvider getTransactionProvider()

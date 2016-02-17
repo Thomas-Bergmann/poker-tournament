@@ -15,6 +15,7 @@
           <th>Ante</th>
 		  <th>Re-Buy</th>
           <th>Duration (min)</th>
+          <th>IsActive</th>
           <th>est. Start</th>
           <th>est. End</th>
         </tr>
@@ -50,6 +51,12 @@
             <td><xsl:call-template name="formatDuration">
                 <xsl:with-param name="minutes"><xsl:value-of select="duration" /></xsl:with-param>
             </xsl:call-template></td>
+            <td><input type="checkbox" name="isActive" class="checkbox" disabled="disabled">
+		        <xsl:attribute name="value"><xsl:value-of select="id" /></xsl:attribute>
+			      <xsl:if test="active = 'true'">
+			        <xsl:attribute name="checked">checked</xsl:attribute>
+			      </xsl:if>
+            </input></td>
             <td><xsl:call-template name="formatTime">
                 <xsl:with-param name="date"><xsl:value-of select="estStartDateTime" /></xsl:with-param>
             </xsl:call-template></td>

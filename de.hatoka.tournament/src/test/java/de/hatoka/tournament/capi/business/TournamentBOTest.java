@@ -7,6 +7,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Currency;
 import java.util.Date;
@@ -18,14 +20,19 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import de.hatoka.common.capi.business.CountryHelper;
 import de.hatoka.common.capi.business.Money;
+import de.hatoka.common.capi.resource.LocalizationConstants;
 import de.hatoka.test.DerbyEntityManagerRule;
 
 public class TournamentBOTest
 {
-    private static final Date NOW = new Date();
+    private static final Date CURRENT_DATE = parseDate("2011-11-25T08:45");
+    private static final Date START_DATE = parseDate("2011-11-25T08:50");
+
     private static final String ACCOUNT_REF = TournamentBOTest.class.getSimpleName();
     private static final Money BUY_IN = Money.valueOf("5 EUR");
+
     @Rule
     public DerbyEntityManagerRule rule = new DerbyEntityManagerRule();
 
@@ -39,7 +46,7 @@ public class TournamentBOTest
     {
         TestBusinessInjectorProvider.get(rule.getModule()).injectMembers(this);
         tournamentBORepository = factory.getTournamentBORepository(ACCOUNT_REF);
-        underTest = tournamentBORepository.createTournament("test", NOW);
+        underTest = tournamentBORepository.createTournament("test", CURRENT_DATE);
     }
 
     @Test
@@ -80,14 +87,14 @@ public class TournamentBOTest
     @Test
     public void testSimpleAttributes()
     {
-        assertEquals(NOW, underTest.getStartTime());
-        assertFalse("tournament.equals", underTest.equals(tournamentBORepository.createTournament("later", NOW)));
+        assertEquals(CURRENT_DATE, underTest.getStartTime());
+        assertFalse("tournament.equals", underTest.equals(tournamentBORepository.createTournament("later", CURRENT_DATE)));
     }
 
     @Test
     public void testBlindLevels()
     {
-        underTest.createBlindLevel(30, 100, 200, 0);
+        BlindLevelBO level1 = underTest.createBlindLevel(30, 100, 200, 0);
         underTest.createBlindLevel(30, 200, 400, 0);
         underTest.createPause(15);
         underTest.createBlindLevel(30, 500, 1000, 0);
@@ -104,6 +111,10 @@ public class TournamentBOTest
         {
             assertNotNull("only levels left", roundBO.getBlindLevel());
         }
+        level1.start();
+        assertTrue(level1.isActive());
+        assertEquals(START_DATE, level1.getStartTime());
+
     }
 
     @Test
@@ -256,5 +267,19 @@ public class TournamentBOTest
     private CompetitorBO createCompetitor(String name)
     {
         return underTest.register(factory.getPlayerBORepository(ACCOUNT_REF).create(name));
+    }
+
+    private static Date parseDate(String dateString)
+    {
+        SimpleDateFormat result = new SimpleDateFormat(LocalizationConstants.XML_DATEFORMAT_MINUTES);
+        result.setTimeZone(CountryHelper.TZ_BERLIN);
+        try
+        {
+            return result.parse(dateString);
+        }
+        catch(ParseException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 }
