@@ -54,13 +54,18 @@ public class TournamentBlindLevelService extends AbstractService
     public Response actionPlayerList(@FormParam("levelID") List<String> identifiers,
                     @FormParam("pause") String createPauseButton, @FormParam("delete") String deleteButton,
                     @FormParam("enableReBuy") String enableReBuy, @FormParam("disableReBuy") String disabledReBuy,
-                    @FormParam("level") String createLevelButton, @FormParam("duration") Integer duration,
+                    @FormParam("create") String createLevelButton, @FormParam("start") String startLevelButton,
+                    @FormParam("duration") Integer duration,
                     @FormParam("smallBlind") Integer smallBlind, @FormParam("bigBlind") Integer bigBlind,
                     @FormParam("ante") Integer ante)
     {
         if (isButtonPressed(createPauseButton))
         {
             return createPause(duration);
+        }
+        if (isButtonPressed(startLevelButton))
+        {
+            return startLevel(identifiers);
         }
         if (isButtonPressed(createLevelButton))
         {
@@ -125,6 +130,22 @@ public class TournamentBlindLevelService extends AbstractService
             public void run()
             {
                 action.deleteLevels(identifiers);
+            }
+        });
+        return redirectLevels();
+    }
+
+    @POST
+    @Path("/start")
+    public Response startLevel(List<String> identifiers)
+    {
+        BlindLevelAction action = getBlindLevelAction();
+        runInTransaction(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                action.startLevel(identifiers.get(0));
             }
         });
         return redirectLevels();

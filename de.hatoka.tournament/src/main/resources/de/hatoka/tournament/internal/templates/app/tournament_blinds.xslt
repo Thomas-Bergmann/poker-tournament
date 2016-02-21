@@ -85,6 +85,7 @@
               <xsl:with-param name="name">duration</xsl:with-param>
               <xsl:with-param name="value"><xsl:value-of select="duration" /></xsl:with-param>
             </xsl:call-template></td>
+           <td></td>
            <td><xsl:call-template name="formatTime">
                 <xsl:with-param name="date"><xsl:value-of select="estStartDateTime" /></xsl:with-param>
             </xsl:call-template></td>
@@ -95,8 +96,12 @@
         </xsl:for-each>
       </table>
       <xsl:call-template name="button">
-        <xsl:with-param name="name">level</xsl:with-param>
+        <xsl:with-param name="name">create</xsl:with-param>
         <xsl:with-param name="buttonKey">button.create.level</xsl:with-param>
+      </xsl:call-template>
+      <xsl:call-template name="button">
+        <xsl:with-param name="name">start</xsl:with-param>
+        <xsl:with-param name="buttonKey">button.start.level</xsl:with-param>
       </xsl:call-template>
       <xsl:call-template name="button">
         <xsl:with-param name="name">delete</xsl:with-param>

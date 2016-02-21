@@ -12,7 +12,7 @@ public class CommonDateModule implements Module
     @Override
     public void configure(Binder binder)
     {
-        binder.bind(Date.class).toProvider(CurrentDateProviderImpl.class).asEagerSingleton();
+        binder.bind(Date.class).toProvider(CurrentDateProviderImpl.class);
     }
 
 }

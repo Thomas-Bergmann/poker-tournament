@@ -159,7 +159,7 @@ public class TournamentBOTest
     public void testBlindLevels()
     {
         BlindLevelBO level1 = underTest.createBlindLevel(30, 100, 200, 0);
-        underTest.createBlindLevel(30, 200, 400, 0);
+        BlindLevelBO level2 = underTest.createBlindLevel(30, 200, 400, 0);
         underTest.createPause(15);
         underTest.createBlindLevel(30, 500, 1000, 0);
         underTest.createBlindLevel(30, 500, 1000, 100);
@@ -179,7 +179,9 @@ public class TournamentBOTest
         level1.start();
         assertTrue(level1.isActive());
         assertEquals(START_DATE, level1.getStartTime());
-
+        level2.start();
+        assertFalse(level1.isActive());
+        assertTrue(level2.isActive());
     }
 
     @Test

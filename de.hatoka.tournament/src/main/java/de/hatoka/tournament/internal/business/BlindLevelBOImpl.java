@@ -108,7 +108,10 @@ public class BlindLevelBOImpl implements BlindLevelBO, PauseBO
     @Override
     public void start()
     {
-        blindLevelPO.getTournamentPO().getBlindLevels().stream().filter(bl -> bl.isActive()).forEach(bl -> bl.setActive(false));
+        for (BlindLevelPO bl : blindLevelPO.getTournamentPO().getBlindLevels())
+        {
+            bl.setActive(false);
+        }
         blindLevelPO.setActive(true);
         blindLevelPO.setStartDate(dateProvider.get());
     }

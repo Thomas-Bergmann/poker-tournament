@@ -88,11 +88,13 @@
 <label class="sr-only" for="inputduration">Duration</label>
 <input placeholder="Duration" value="30" name="duration" type="text" id="inputduration" class="form-control"/>
 </td>
+<td></td>
 <td>7:45 PM</td>
 <td>8:15 PM</td>
 </tr>
 </table>
-<button name="level" type="submit" class="btn btn-primary">Add Level</button>
+<button name="create" type="submit" class="btn btn-primary">Add Level</button>
+<button name="start" type="submit" class="btn btn-primary">Start Level</button>
 <button name="delete" type="submit" class="btn">Delete</button>
 <button name="pause" type="submit" class="btn">Add Pause</button>
 <button name="enableReBuy" type="submit" class="btn">Enable Re-Buy</button>

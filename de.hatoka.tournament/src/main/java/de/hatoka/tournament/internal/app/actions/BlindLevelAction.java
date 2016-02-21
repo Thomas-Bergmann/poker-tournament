@@ -88,4 +88,18 @@ public class BlindLevelAction
             }
         }
     }
+
+    public void startLevel(String identifier)
+    {
+        Iterator<TournamentRoundBO> itRounds = tournamentBO.getTournamenRounds().iterator();
+        while(itRounds.hasNext())
+        {
+            TournamentRoundBO round = itRounds.next();
+            if (identifier.equals(round.getID()))
+            {
+                round.start();
+                break;
+            }
+        }
+    }
 }
