@@ -26,6 +26,13 @@ public class DerbyEntityManagerRule extends ExternalResource implements EntityMa
         em = emf.createEntityManager();
     }
 
+    @Override
+    public void after()
+    {
+        close();
+        super.after();
+    }
+
     public void close()
     {
         if (emf.isOpen())

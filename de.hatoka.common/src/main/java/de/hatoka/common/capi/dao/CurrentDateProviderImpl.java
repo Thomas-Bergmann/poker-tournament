@@ -6,7 +6,6 @@ import com.google.inject.Provider;
 
 public class CurrentDateProviderImpl implements Provider<Date>
 {
-
     @Override
     public Date get()
     {

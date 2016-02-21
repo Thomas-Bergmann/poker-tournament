@@ -18,7 +18,7 @@ ext {
     // Testing
     junitVersion = '4.12'
     mockitoVersion = '1.9.5'
-    apacheDerbyVersion = '10.11.1.1'
+    apacheDerbyVersion = '10.12.1.1'
     jacocoVersion = '0.7.1.201405082137'
 
     // libraries
@@ -131,7 +131,7 @@ project('de.hatoka.test')
 {
     dependencies {
         compile project(":de.hatoka.common")
-        compile 'org.eclipse.persistence:eclipselink:2.5.2' // embeddable
+        compile 'org.eclipse.persistence:eclipselink:2.6.2' // embeddable
         compile "junit:junit:$junitVersion"
         compile "org.apache.derby:derby:$apacheDerbyVersion"
         compile 'com.google.inject:guice:3.0'

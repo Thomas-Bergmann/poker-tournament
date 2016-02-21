@@ -15,13 +15,23 @@ import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.persistence.EntityTransaction;
 
+import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.Rule;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
+
+import com.google.inject.Binder;
+import com.google.inject.Injector;
+import com.google.inject.Module;
+import com.google.inject.Provider;
 
 import de.hatoka.common.capi.business.CountryHelper;
 import de.hatoka.common.capi.business.Money;
+import de.hatoka.common.capi.dao.TransactionProvider;
 import de.hatoka.common.capi.resource.LocalizationConstants;
 import de.hatoka.test.DerbyEntityManagerRule;
 
@@ -33,20 +43,73 @@ public class TournamentBOTest
     private static final String ACCOUNT_REF = TournamentBOTest.class.getSimpleName();
     private static final Money BUY_IN = Money.valueOf("5 EUR");
 
-    @Rule
-    public DerbyEntityManagerRule rule = new DerbyEntityManagerRule();
+    @ClassRule
+    public static DerbyEntityManagerRule rule = new DerbyEntityManagerRule();
+    private static Injector injector = null;
 
     @Inject
     private TournamentBusinessFactory factory;
+
+    @Inject
+    private TransactionProvider transactionProvider;
+
     private TournamentBORepository tournamentBORepository;
     private TournamentBO underTest;
+
+    @BeforeClass
+    public static void createInjector()
+    {
+        injector = TestBusinessInjectorProvider.get(rule.getModule(), new Module()
+        {
+            @Override
+            public void configure(Binder binder)
+            {
+                binder.bind(Date.class).toProvider(new Provider<Date>()
+                {
+                    @Override
+                    public Date get()
+                    {
+                        return START_DATE;
+                    }
+                }).asEagerSingleton();
+            }
+        });
+    }
+
+    @AfterClass
+    public static void deleteInjector()
+    {
+        injector = null;
+    }
 
     @Before
     public void createTestObject()
     {
-        TestBusinessInjectorProvider.get(rule.getModule()).injectMembers(this);
+        injector.injectMembers(this);
         tournamentBORepository = factory.getTournamentBORepository(ACCOUNT_REF);
+        transactionProvider.get().begin();
         underTest = tournamentBORepository.createTournament("test", CURRENT_DATE);
+        transactionProvider.get().commit();
+    }
+
+    @After
+    public void destroyCreatedObjects()
+    {
+        if (transactionProvider == null)
+        {
+            return;
+        }
+        EntityTransaction transaction = transactionProvider.get();
+        if (transaction.isActive())
+        {
+            transaction.rollback();
+        }
+        transaction.begin();
+        if (underTest != null)
+        {
+            underTest.remove();
+        }
+        transaction.commit();
     }
 
     @Test
@@ -88,7 +151,8 @@ public class TournamentBOTest
     public void testSimpleAttributes()
     {
         assertEquals(CURRENT_DATE, underTest.getStartTime());
-        assertFalse("tournament.equals", underTest.equals(tournamentBORepository.createTournament("later", CURRENT_DATE)));
+        assertFalse("tournament.equals",
+                        underTest.equals(tournamentBORepository.createTournament("later", CURRENT_DATE)));
     }
 
     @Test
@@ -102,12 +166,13 @@ public class TournamentBOTest
         List<TournamentRoundBO> rounds = underTest.getTournamenRounds();
         assertEquals("five rounds added", 5, rounds.size());
         assertNull("third round is pause", rounds.get(2).getBlindLevel());
-        assertEquals("second round is level with small blind", Integer.valueOf(200), rounds.get(1).getBlindLevel().getSmallBlind());
+        assertEquals("second round is level with small blind", Integer.valueOf(200),
+                        rounds.get(1).getBlindLevel().getSmallBlind());
         // remove pause
         underTest.remove(rounds.get(2));
         List<TournamentRoundBO> roundsAfterDelete = underTest.getTournamenRounds();
         assertEquals("four rounds left", 4, roundsAfterDelete.size());
-        for(TournamentRoundBO roundBO : roundsAfterDelete)
+        for (TournamentRoundBO roundBO : roundsAfterDelete)
         {
             assertNotNull("only levels left", roundBO.getBlindLevel());
         }
@@ -127,10 +192,10 @@ public class TournamentBOTest
         blindLevel.allowRebuy(true);
         underTest.buyin(competitor);
         underTest.start();
-        Money rebuy=  underTest.getCurrentRebuy();
+        Money rebuy = underTest.getCurrentRebuy();
         assertNotNull("rebuy was defined at createBlindLevel", rebuy);
         underTest.rebuy(competitor);
-        assertEquals("player one payed buyin and rebuy",rebuy.add(underTest.getBuyIn()), competitor.getInPlay());
+        assertEquals("player one payed buyin and rebuy", rebuy.add(underTest.getBuyIn()), competitor.getInPlay());
         underTest.seatOpen(competitor);
         assertFalse("player is not longer active", competitor.isActive());
     }
@@ -144,13 +209,17 @@ public class TournamentBOTest
         underTest.createRank(1, 1, new BigDecimal("0.5")); // (50-20) * 0.5 = 15
         underTest.createRank(2, 2, new BigDecimal("0.3")); // (50-20) * 0.5 = 15
         underTest.createRank(3, 3, new BigDecimal("0.2")); // means 25% = 7.5
-        underTest.createFixRank(4, 9, BigDecimal.TEN);// means 25%  = 3.75
+        underTest.createFixRank(4, 9, BigDecimal.TEN);// means 25% = 3.75
         List<RankBO> ranks = underTest.getRanks();
         assertEquals("five rounds added", 4, ranks.size());
-        assertEquals("first rank", Money.valueOf(BigDecimal.valueOf(20), getCurrency()), ranks.get(0).getAmountPerPlayer());
-        assertEquals("second rank", Money.valueOf(BigDecimal.valueOf(12), getCurrency()), ranks.get(1).getAmountPerPlayer());
-        assertEquals("third rank", Money.valueOf(BigDecimal.valueOf(8), getCurrency()), ranks.get(2).getAmountPerPlayer());
-        assertEquals("fourth rank", Money.valueOf(BigDecimal.valueOf(1.66), getCurrency()), ranks.get(3).getAmountPerPlayer());
+        assertEquals("first rank", Money.valueOf(BigDecimal.valueOf(20), getCurrency()),
+                        ranks.get(0).getAmountPerPlayer());
+        assertEquals("second rank", Money.valueOf(BigDecimal.valueOf(12), getCurrency()),
+                        ranks.get(1).getAmountPerPlayer());
+        assertEquals("third rank", Money.valueOf(BigDecimal.valueOf(8), getCurrency()),
+                        ranks.get(2).getAmountPerPlayer());
+        assertEquals("fourth rank", Money.valueOf(BigDecimal.valueOf(1.66), getCurrency()),
+                        ranks.get(3).getAmountPerPlayer());
     }
 
     private Currency getCurrency()
@@ -160,7 +229,7 @@ public class TournamentBOTest
 
     private void buyInPlayers(Integer numberOfPlayers)
     {
-        for(int i=1; i<=numberOfPlayers;i++)
+        for (int i = 1; i <= numberOfPlayers; i++)
         {
             PlayerBO player = factory.getPlayerBORepository(ACCOUNT_REF).create("testPlayer_iterator_" + i);
             CompetitorBO competitorBO = underTest.register(player);
@@ -172,7 +241,7 @@ public class TournamentBOTest
     public void testPlaceCompetitors()
     {
         underTest.setMaximumNumberOfPlayersPerTable(10);
-        for(int i = 0; i < 17; i++)
+        for (int i = 0; i < 17; i++)
         {
             CompetitorBO competitor = createCompetitor("player testPlaceCompetitors" + i);
             underTest.buyin(competitor);
@@ -218,7 +287,7 @@ public class TournamentBOTest
     {
         // 9 players at 4er tables -> 3 players at 3 tables ->
         underTest.setMaximumNumberOfPlayersPerTable(4);
-        for(int i=0;i<9;i++)
+        for (int i = 0; i < 9; i++)
         {
             underTest.buyin(createCompetitor("player " + i));
         }
@@ -235,14 +304,15 @@ public class TournamentBOTest
 
     private void removeFirstPlayer(Collection<TableBO> tables)
     {
-        CompetitorBO firstCompetitor = tables.iterator().next().getCompetitors().stream().filter(c -> c.isActive()).findAny().get();
+        CompetitorBO firstCompetitor = tables.iterator().next().getCompetitors().stream().filter(c -> c.isActive())
+                        .findAny().get();
         underTest.seatOpen(firstCompetitor);
     }
 
     private int maxPlayersOnTable(Collection<TableBO> tables)
     {
         int maxPlayer = 0;
-        for(TableBO table : tables)
+        for (TableBO table : tables)
         {
             final int playersOnTable = table.getCompetitors().size();
             if (maxPlayer < playersOnTable)
@@ -256,7 +326,7 @@ public class TournamentBOTest
     private int sumPlayersOnTable(Collection<TableBO> tables)
     {
         int sumPlayers = 0;
-        for(TableBO table : tables)
+        for (TableBO table : tables)
         {
             final int playersOnTable = table.getCompetitors().size();
             sumPlayers += playersOnTable;
