@@ -19,7 +19,7 @@ public final class TestBusinessInjectorProvider
     public static Injector get(Module... modules)
     {
         List<Module> list = new ArrayList<>(Arrays.asList(modules));
-        list.addAll(Arrays.asList(new CommonDaoModule(), new AddressDaoModule(), new TournamentDaoJpaModule(),
+        list.addAll(Arrays.asList(new CommonDaoModule(100), new AddressDaoModule(), new TournamentDaoJpaModule(),
                         new TournamentBusinessModule(), new AddressBusinessModule()));
         return Guice.createInjector(list);
     }

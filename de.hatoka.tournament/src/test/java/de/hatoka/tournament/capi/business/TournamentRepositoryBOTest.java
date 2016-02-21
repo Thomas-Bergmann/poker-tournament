@@ -10,17 +10,18 @@ import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.persistence.EntityTransaction;
 
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Rule;
+import org.junit.ClassRule;
 import org.junit.Test;
 
-import com.google.inject.Guice;
 import com.google.inject.Injector;
 
 import de.hatoka.common.capi.business.CountryHelper;
@@ -28,7 +29,6 @@ import de.hatoka.common.capi.business.Money;
 import de.hatoka.common.capi.business.Warning;
 import de.hatoka.common.capi.dao.SequenceProvider;
 import de.hatoka.common.capi.dao.TransactionProvider;
-import de.hatoka.common.capi.modules.CommonDaoModule;
 import de.hatoka.common.capi.resource.LocalizationConstants;
 import de.hatoka.common.capi.resource.ResourceLoader;
 import de.hatoka.test.DerbyEntityManagerRule;
@@ -45,8 +45,6 @@ import de.hatoka.tournament.capi.entities.PlayerPO;
 import de.hatoka.tournament.capi.entities.RankPO;
 import de.hatoka.tournament.capi.entities.TournamentPO;
 import de.hatoka.tournament.capi.types.HistoryEntryType;
-import de.hatoka.tournament.internal.modules.TournamentBusinessModule;
-import de.hatoka.tournament.internal.modules.TournamentDaoJpaModule;
 
 public class TournamentRepositoryBOTest
 {
@@ -55,8 +53,10 @@ public class TournamentRepositoryBOTest
     private static final Date CURRENT_DATE = parseDate("2011-11-25T08:45");
     private static final ResourceLoader RESOURCE_LOADER = new ResourceLoader();
 
-    @Rule
-    public DerbyEntityManagerRule rule = new DerbyEntityManagerRule();
+    @ClassRule
+    public static DerbyEntityManagerRule rule = new DerbyEntityManagerRule();
+    private static Injector injector = null;
+
     @Inject
     private TournamentDao tournamentDao;
     @Inject
@@ -78,21 +78,37 @@ public class TournamentRepositoryBOTest
     @Inject
     private SequenceProvider sequenceProvider;
 
+    @BeforeClass
+    public static void createInjector()
+    {
+        injector = TestBusinessInjectorProvider.get(rule.getModule());
+    }
+
+    @AfterClass
+    public static void deleteInjector()
+    {
+        injector = null;
+    }
+
     @Before
     public void createTestObject()
     {
-        Injector injector = Guice.createInjector(new CommonDaoModule(100), new TournamentDaoJpaModule(), new TournamentBusinessModule(), rule.getModule());
         injector.injectMembers(this);
     }
 
     @After
     public void removeTestObjects()
     {
-        transactionProvider.get().begin();
+        EntityTransaction entityTransaction = transactionProvider.get();
+        if (entityTransaction.isActive())
+        {
+            entityTransaction.rollback();
+        }
+        entityTransaction.begin();
         getTournamentRepository().getTournaments().iterator().forEachRemaining(bo -> bo.remove());
         getTournamentRepository().getCashGames().iterator().forEachRemaining(bo -> bo.remove());
         factory.getPlayerBORepository(ACCOUNT_REF).getPlayers().forEach(bo -> bo.remove());
-        transactionProvider.get().commit();
+        entityTransaction.commit();
     }
 
     @BeforeClass
@@ -161,6 +177,8 @@ public class TournamentRepositoryBOTest
         level1.setAnte(1);
         level1.setReBuy(true);
         level1.setPosition(1);
+        level1.setActive(true);
+        level1.setStartDate(CURRENT_DATE);
 
         BlindLevelPO pause = blindLevelDao.createAndInsert(tournamentPO, 30);
         pause.setPause(true);

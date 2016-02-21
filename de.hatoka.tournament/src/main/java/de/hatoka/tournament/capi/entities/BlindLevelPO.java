@@ -215,6 +215,7 @@ public class BlindLevelPO implements Serializable, IdentifiableEntity
         this.isReBuy = isRebuy;
     }
 
+    @XmlTransient
     public Date getStartDate()
     {
         return startDate;
@@ -225,6 +226,7 @@ public class BlindLevelPO implements Serializable, IdentifiableEntity
         this.startDate = startDate;
     }
 
+    @XmlTransient
     public boolean isActive()
     {
         return isActive;
