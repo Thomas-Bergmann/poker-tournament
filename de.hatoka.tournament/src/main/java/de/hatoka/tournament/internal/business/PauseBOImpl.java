@@ -5,9 +5,10 @@ import java.util.Date;
 import javax.inject.Provider;
 
 import de.hatoka.tournament.capi.business.BlindLevelBO;
+import de.hatoka.tournament.capi.business.PauseBO;
 import de.hatoka.tournament.capi.entities.BlindLevelPO;
 
-public class BlindLevelBOImpl implements BlindLevelBO
+public class PauseBOImpl implements PauseBO
 {
     private final BlindLevelPO blindLevelPO;
     private final Provider<Date> dateProvider;
@@ -17,7 +18,7 @@ public class BlindLevelBOImpl implements BlindLevelBO
      * @param blindLevelPO persistent object of blind level
      * @param dateProvider provides current date for activation of blind level
      */
-    public BlindLevelBOImpl(BlindLevelPO blindLevelPO, Provider<Date> dateProvider)
+    public PauseBOImpl(BlindLevelPO blindLevelPO, Provider<Date> dateProvider)
     {
         this.blindLevelPO = blindLevelPO;
         this.dateProvider = dateProvider;
@@ -41,7 +42,7 @@ public class BlindLevelBOImpl implements BlindLevelBO
             return false;
         if (getClass() != obj.getClass())
             return false;
-        BlindLevelBOImpl other = (BlindLevelBOImpl)obj;
+        PauseBOImpl other = (PauseBOImpl)obj;
         if (blindLevelPO == null)
         {
             if (other.blindLevelPO != null)
@@ -59,37 +60,9 @@ public class BlindLevelBOImpl implements BlindLevelBO
     }
 
     @Override
-    public Integer getSmallBlind()
-    {
-        return blindLevelPO.getSmallBlind();
-    }
-
-    @Override
-    public Integer getBigBlind()
-    {
-        return blindLevelPO.getBigBlind();
-    }
-
-    @Override
-    public Integer getAnte()
-    {
-        return blindLevelPO.getAnte();
-    }
-
-    @Override
     public String getID()
     {
         return blindLevelPO.getId();
-    }
-
-    @Override
-    public BlindLevelBO getBlindLevel()
-    {
-        if (blindLevelPO.isPause())
-        {
-            return null;
-        }
-        return this;
     }
 
     @Override
@@ -121,6 +94,12 @@ public class BlindLevelBOImpl implements BlindLevelBO
     public boolean isActive()
     {
         return blindLevelPO.getPosition() == blindLevelPO.getTournamentPO().getCurrentRound();
+    }
+
+    @Override
+    public BlindLevelBO getBlindLevel()
+    {
+        return null;
     }
 
 }

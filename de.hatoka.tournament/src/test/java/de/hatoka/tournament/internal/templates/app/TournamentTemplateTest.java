@@ -35,6 +35,7 @@ import de.hatoka.tournament.internal.app.models.CompetitorVO;
 import de.hatoka.tournament.internal.app.models.PlayerVO;
 import de.hatoka.tournament.internal.app.models.RankVO;
 import de.hatoka.tournament.internal.app.models.TableVO;
+import de.hatoka.tournament.internal.app.models.TournamentBigScreenModel;
 import de.hatoka.tournament.internal.app.models.TournamentBlindLevelModel;
 import de.hatoka.tournament.internal.app.models.TournamentConfigurationModel;
 import de.hatoka.tournament.internal.app.models.TournamentListModel;
@@ -68,7 +69,8 @@ public class TournamentTemplateTest
     private Map<String, Object> getParameter()
     {
         Map<String, Object> result = new HashMap<>();
-        result.put(Lib.XSLT_LOCALIZER, new ResourceLocalizer(new LocalizationBundle(RESOURCE_PREFIX + "tournament", Locale.US, CountryHelper.TZ_BERLIN)));
+        result.put(Lib.XSLT_LOCALIZER, new ResourceLocalizer(
+                        new LocalizationBundle(RESOURCE_PREFIX + "tournament", Locale.US, CountryHelper.TZ_BERLIN)));
         return result;
     }
 
@@ -122,7 +124,8 @@ public class TournamentTemplateTest
 
         // Assert.assertEquals("players not listed correctly",getResource("tournament_no_unassigned.result.xml"),
         // content);
-        XMLAssert.assertXMLEqual("players unassigned incorrectly", wrapXMLRoot(getResource("tournament_no_unassigned.result.xml")), wrapXMLRoot(content));
+        XMLAssert.assertXMLEqual("players unassigned incorrectly",
+                        wrapXMLRoot(getResource("tournament_no_unassigned.result.xml")), wrapXMLRoot(content));
     }
 
     @Test
@@ -133,7 +136,8 @@ public class TournamentTemplateTest
         model.getTournaments().add(getTournamentVO("123457", "Test 2", parseDate("2012-11-25T08:45")));
         String content = RENDERER.render(model, RESOURCE_PREFIX + "tournament_list.xslt", getParameter());
         Assert.assertEquals("tournaments not listed correctly", getResource("tournament_list.result.xml"), content);
-        XMLAssert.assertXMLEqual("tournaments not listed correctly", getResource("tournament_list.result.xml"), content);
+        XMLAssert.assertXMLEqual("tournaments not listed correctly", getResource("tournament_list.result.xml"),
+                        content);
     }
 
     @Test
@@ -165,9 +169,12 @@ public class TournamentTemplateTest
         model.setTournament(getTournamentVO("123456", "Test 1", parseDate("2011-11-25T18:00")));
         List<RankVO> blindLevels = model.getRanks();
         blindLevels.add(TournamentViewObjectHelper.getFixPriceRankVO("1", 1, 1, BigDecimal.valueOf(100)));
-        blindLevels.add(TournamentViewObjectHelper.getPercentageRankVO("2", 2, 2, BigDecimal.valueOf(0.50), BigDecimal.valueOf(50)));
-        blindLevels.add(TournamentViewObjectHelper.getPercentageCalcRankVO("3", 3, 5, BigDecimal.valueOf(0.25), BigDecimal.valueOf(25)));
-        blindLevels.add(TournamentViewObjectHelper.getPercentageCalcRankVO("4", 6, 10, BigDecimal.valueOf(0.25), BigDecimal.valueOf(25)));
+        blindLevels.add(TournamentViewObjectHelper.getPercentageRankVO("2", 2, 2, BigDecimal.valueOf(0.50),
+                        BigDecimal.valueOf(50)));
+        blindLevels.add(TournamentViewObjectHelper.getPercentageCalcRankVO("3", 3, 5, BigDecimal.valueOf(0.25),
+                        BigDecimal.valueOf(25)));
+        blindLevels.add(TournamentViewObjectHelper.getPercentageCalcRankVO("4", 6, 10, BigDecimal.valueOf(0.25),
+                        BigDecimal.valueOf(25)));
         model.getPrefilled().add(new RankVO("new"));
         String content = RENDERER.render(model, RESOURCE_PREFIX + "tournament_ranks.xslt", getParameter());
         // String content = new XMLRenderer().render(model);
@@ -210,13 +217,32 @@ public class TournamentTemplateTest
         TournamentVO tournamentVO = getTournamentVO("123456", "Test 1", parseDate("2011-11-25T18:00"));
         tournamentVO.setBuyIn(new MoneyVO(Money.valueOf("5", "USD")));
         model.getTables().addAll(getTables());
-        model.getPlacedCompetitors().add(getInActiveCompetitor("109", "Darth Mouth", "209", 9) );
+        model.getPlacedCompetitors().add(getInActiveCompetitor("109", "Darth Mouth", "209", 9));
         model.setTournament(tournamentVO);
         String content = RENDERER.render(model, RESOURCE_PREFIX + "tournament_tables.xslt", getParameter());
         // String content = new XMLRenderer().render(model);
 
         Assert.assertEquals("overview not correct", getResource("tournament_tables.result.xml"), content);
         XMLAssert.assertXMLEqual("overview not correct", getResource("tournament_tables.result.xml"), content);
+    }
+
+    @Test
+    public void testTournamentBigScreen() throws Exception
+    {
+        TournamentBigScreenModel model = new TournamentBigScreenModel();
+        TournamentVO tournamentVO = getTournamentVO("123456", "Test 1", parseDate("2011-11-25T18:00"));
+        tournamentVO.setBuyIn(new MoneyVO(Money.valueOf("5", "USD")));
+        model.setCurrentAmountPlayer(15);
+        model.setMaxAmountPlayers(20);
+        model.setAverageStackSize(2500);
+        model.setCurrentBlindLevel(TournamentViewObjectHelper.getBlindLevelVO("2", 200, 400, 0, 30, true));
+        model.setNextBlindLevel(TournamentViewObjectHelper.getBlindLevelVO("3", 250, 500, 0, 30, true));
+
+        String content = RENDERER.render(model, RESOURCE_PREFIX + "tournament_bigscreen.xslt", getParameter());
+        // String content = new XMLRenderer().render(model);
+
+        Assert.assertEquals("overview not correct", getResource("tournament_bigscreen.result.xml"), content);
+        XMLAssert.assertXMLEqual("overview not correct", getResource("tournament_bigscreen.result.xml"), content);
     }
 
     private Collection<TableVO> getTables()
@@ -238,10 +264,10 @@ public class TournamentTemplateTest
     {
         CompetitorVO result = getCompetitorVO(id, name, playerID);
         result.getActions().add(new ActionVO("rebuy", URI.create("http://local/rebuy?competitor=" + id), "repeat"));
-        result.getActions().add(new ActionVO("seatopen", URI.create("http://local/seatOpen?competitor=" + id),"remove-circle"));
+        result.getActions().add(new ActionVO("seatopen", URI.create("http://local/seatOpen?competitor=" + id),
+                        "remove-circle"));
         return result;
     }
-
 
     private CompetitorVO getInActiveCompetitor(String id, String name, String playerID, Integer position)
     {

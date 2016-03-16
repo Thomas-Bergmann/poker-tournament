@@ -27,7 +27,7 @@ public class AddressDaoTest
     private AddressDao underTest;
 
     @Rule
-    public DerbyEntityManagerRule rule = new DerbyEntityManagerRule();
+    public DerbyEntityManagerRule rule = new DerbyEntityManagerRule("AddressTestPU");
     @Before
     public void inject()
     {

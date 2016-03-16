@@ -226,9 +226,11 @@ public class TournamentBORepositoryImpl implements TournamentBORepository
 
     private void importBindLevels(TournamentPO tournamentXML)
     {
+        int position = 0;
         for (BlindLevelPO blindLevelXML : tournamentXML.getBlindLevels())
         {
             blindLevelXML.setId(uuidGenerator.generate());
+            blindLevelXML.setPosition(position++);
             blindLevelDao.insert(blindLevelXML);
         }
     }

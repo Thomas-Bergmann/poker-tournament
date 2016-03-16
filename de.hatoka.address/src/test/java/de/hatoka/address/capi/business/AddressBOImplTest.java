@@ -31,7 +31,7 @@ public class AddressBOImplTest
     private AddressBOImpl underTest;
 
     @Rule
-    public DerbyEntityManagerRule rule = new DerbyEntityManagerRule();
+    public DerbyEntityManagerRule rule = new DerbyEntityManagerRule("AddressTestPU");
 
     @Before
     public void init()

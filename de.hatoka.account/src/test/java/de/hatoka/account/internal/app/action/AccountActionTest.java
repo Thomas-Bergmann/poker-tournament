@@ -44,7 +44,7 @@ public class AccountActionTest
     private UserDao userDao;
 
     @Rule
-    public DerbyEntityManagerRule rule = new DerbyEntityManagerRule();
+    public DerbyEntityManagerRule rule = new DerbyEntityManagerRule("AccountTestPU");
 
     private AccountAction UNDER_TEST;
     private UserPO userPO;

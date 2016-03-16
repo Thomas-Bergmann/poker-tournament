@@ -27,7 +27,7 @@ public class AccountDaoJpaTest
     private static final String ROOT_EMAIL = "root";
 
     @Rule
-    public DerbyEntityManagerRule rule = new DerbyEntityManagerRule();
+    public DerbyEntityManagerRule rule = new DerbyEntityManagerRule("AccountTestPU");
     @Inject
     private UserDao userDao;
 

@@ -51,7 +51,7 @@ public interface TournamentBO extends GameBO
     /**
      * @return rounds of tournament
      */
-    List<TournamentRoundBO> getTournamenRounds();
+    List<TournamentRoundBO> getTournamentRounds();
 
     /**
      * Removes a previously created pause or blind level
@@ -66,8 +66,7 @@ public interface TournamentBO extends GameBO
     Money getCurrentRebuy();
 
     /**
-     * Defines the upper limit of players per table. This limit has an higher
-     * priority than the lower limit.
+     * Defines the upper limit of players per table. This limit has an higher priority than the lower limit.
      *
      * @return maximum amount of player at one table
      */
@@ -76,8 +75,7 @@ public interface TournamentBO extends GameBO
     void setMaximumNumberOfPlayersPerTable(int number);
 
     /**
-     * The initial stack size is used to convert the buy in value to chip
-     * amount. The ratio is used for re-buy, also.
+     * The initial stack size is used to convert the buy in value to chip amount. The ratio is used for re-buy, also.
      *
      * @return initial stack size per player
      */
@@ -86,8 +84,7 @@ public interface TournamentBO extends GameBO
     void setInitialStacksize(int initialStacksize);
 
     /**
-     * Calculate the stack size of the winner. This includes all initial stacks
-     * plus re-buy stacks.
+     * Calculate the stack size of the winner. This includes all initial stacks plus re-buy stacks.
      *
      * @return stack size of the winner
      */
@@ -104,8 +101,7 @@ public interface TournamentBO extends GameBO
     List<TableBO> getTables();
 
     /**
-     * @return get players, which are inactive but take part of tournament
-     *         (which are placed)
+     * @return get players, which are inactive but take part of tournament (which are placed)
      */
     List<CompetitorBO> getPlacedCompetitors();
 
@@ -117,8 +113,7 @@ public interface TournamentBO extends GameBO
     Collection<CompetitorBO> levelOutTables();
 
     /**
-     * Registration can be done without buyin, a preparation step for the
-     * tournament
+     * Registration can be done without buyin, a preparation step for the tournament
      *
      * @param playerBO
      * @return
@@ -133,16 +128,14 @@ public interface TournamentBO extends GameBO
     void buyin(CompetitorBO competitorBO);
 
     /**
-     * Competitor pays additional re-buy and is allowed to play (is still
-     * active)
+     * Competitor pays additional re-buy and is allowed to play (is still active)
      *
      * @param competitorBO
      */
     void rebuy(CompetitorBO competitorBO);
 
     /**
-     * Player leaves the table and the tournament pays depends on rank (is
-     * inactive afterwards).
+     * Player leaves the table and the tournament pays depends on rank (is inactive afterwards).
      *
      * @param competitorBO
      */
@@ -182,8 +175,8 @@ public interface TournamentBO extends GameBO
     void remove(RankBO rank);
 
     /**
-     * Starts the tournament (current round is set to 0), registration,
-     * modifications of ranks, blind levels is not longer possible.
+     * Starts the tournament (current round is set to 0), registration, modifications of ranks, blind levels is not
+     * longer possible.
      */
     void start();
 
@@ -194,8 +187,8 @@ public interface TournamentBO extends GameBO
     CompetitorBO getCompetitorBO(String competitorID);
 
     /**
-     * Defines the amount of rebuy, the currency is defined by the buy in. The
-     * {@link TournamentRoundBO} defines that a rebuy is possible.
+     * Defines the amount of rebuy, the currency is defined by the buy in. The {@link TournamentRoundBO} defines that a
+     * rebuy is possible.
      *
      * @param rebuy
      *            amount
@@ -206,4 +199,21 @@ public interface TournamentBO extends GameBO
      * @return the defined rebuy
      */
     Money getReBuy();
+
+    /**
+     * @return the current blind level
+     *         <li>in case the current level is a pause it will return null
+     *         <li>in case the tournament wasn't started yet, it returns the first blind level
+     *         <li>in case the tournament is over, it return null
+     */
+    BlindLevelBO getCurrentBlindLevel();
+
+    /**
+     * @return the next blind level
+     *         <li>in case the next level is a pause, it will return null
+     *         <li>in case the tournament wasn't started yet, it returns the second blind level (in case it's pause then
+     *         null)
+     *         <li>in case the tournament is over, it return null
+     */
+    BlindLevelBO getNextBlindLevel();
 }

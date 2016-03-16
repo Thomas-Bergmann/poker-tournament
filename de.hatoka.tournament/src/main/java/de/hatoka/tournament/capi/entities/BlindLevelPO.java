@@ -40,7 +40,7 @@ public class BlindLevelPO implements Serializable, IdentifiableEntity
     @XmlAttribute
     private Integer bigBlind;
 
-    @XmlAttribute
+    @XmlTransient
     private int position;
 
     @XmlAttribute
@@ -65,10 +65,6 @@ public class BlindLevelPO implements Serializable, IdentifiableEntity
     @XmlAttribute
     @XmlJavaTypeAdapter(DateXmlAdapter.class)
     private Date startDate;
-
-    @NotNull
-    @XmlAttribute
-    private boolean isActive = false;
 
     public BlindLevelPO()
     {
@@ -225,16 +221,4 @@ public class BlindLevelPO implements Serializable, IdentifiableEntity
     {
         this.startDate = startDate;
     }
-
-    @XmlTransient
-    public boolean isActive()
-    {
-        return isActive;
-    }
-
-    public void setActive(boolean isActive)
-    {
-        this.isActive = isActive;
-    }
-
 }

@@ -5,11 +5,11 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.OptionalInt;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -98,7 +98,7 @@ public class TournamentBOImpl implements TournamentBO
     @Override
     public Money getCurrentRebuy()
     {
-        final List<TournamentRoundBO> blindLevels = getTournamenRounds();
+        final List<TournamentRoundBO> blindLevels = getTournamentRounds();
         int currentRound = tournamentPO.getCurrentRound();
         if (currentRound < 0 || blindLevels.size() <= currentRound)
         {
@@ -288,27 +288,36 @@ public class TournamentBOImpl implements TournamentBO
     @Override
     public BlindLevelBO createBlindLevel(int duration, int smallBlind, int bigBlind, int ante)
     {
+        int nextLevel = getNextBlindLevelPositon();
         BlindLevelPO blindLevelPO = blindLevelDao.createAndInsert(tournamentPO, duration);
         blindLevelPO.setPause(false);
         blindLevelPO.setSmallBlind(smallBlind);
         blindLevelPO.setBigBlind(bigBlind);
         blindLevelPO.setAnte(ante);
-        blindLevelPO.setPosition(getNextBlindLevelPositon());
+        blindLevelPO.setPosition(nextLevel);
         return factory.getBlindLevelBO(blindLevelPO);
     }
 
-    private Integer getNextBlindLevelPositon()
+    private int getNextBlindLevelPositon()
     {
-        OptionalInt maxOpt = tournamentPO.getBlindLevels().stream().mapToInt(l -> l.getPosition()).max();
-        return maxOpt.isPresent() ? maxOpt.getAsInt() + 1 : 1;
+        int result = -1;
+        for(BlindLevelPO bl : tournamentPO.getBlindLevels())
+        {
+            if (bl.getPosition() > result)
+            {
+                result = bl.getPosition();
+            }
+        }
+        return result + 1;
     }
 
     @Override
     public PauseBO createPause(int duration)
     {
+        int nextLevel = getNextBlindLevelPositon();
         BlindLevelPO blindLevelPO = blindLevelDao.createAndInsert(tournamentPO, duration);
         blindLevelPO.setPause(true);
-        blindLevelPO.setPosition(getNextBlindLevelPositon());
+        blindLevelPO.setPosition(nextLevel);
         return factory.getPauseBO(blindLevelPO);
     }
 
@@ -319,9 +328,17 @@ public class TournamentBOImpl implements TournamentBO
     }
 
     @Override
-    public List<TournamentRoundBO> getTournamenRounds()
+    public List<TournamentRoundBO> getTournamentRounds()
     {
-        List<BlindLevelPO> blindLevels = tournamentPO.getBlindLevels();
+        List<BlindLevelPO> blindLevels = new ArrayList<>(tournamentPO.getBlindLevels());
+        blindLevels.sort(new Comparator<BlindLevelPO>()
+        {
+            @Override
+            public int compare(BlindLevelPO o1, BlindLevelPO o2)
+            {
+                return o1.getPosition().compareTo(o2.getPosition());
+            }
+        });
         List<TournamentRoundBO> result = new ArrayList<TournamentRoundBO>(blindLevels.size());
         for (BlindLevelPO blindLevelPO : blindLevels)
         {
@@ -663,6 +680,44 @@ public class TournamentBOImpl implements TournamentBO
     public Money getReBuy()
     {
         return Money.valueOf(tournamentPO.getReBuy());
+    }
+
+    @Override
+    public BlindLevelBO getCurrentBlindLevel()
+    {
+        final List<TournamentRoundBO> blindLevels = getTournamentRounds();
+        TournamentRoundBO currentRound = blindLevels.get(tournamentPO.getCurrentRound() == -1 ? 0 : tournamentPO.getCurrentRound());
+        if (currentRound instanceof BlindLevelBO)
+        {
+            return (BlindLevelBO) currentRound;
+        }
+        return null;
+    }
+
+    @Override
+    public BlindLevelBO getNextBlindLevel()
+    {
+        final List<TournamentRoundBO> blindLevels = getTournamentRounds();
+        if (blindLevels.size() < 2)
+        {
+            return null;
+        }
+        int currentRoundIdx = tournamentPO.getCurrentRound();
+        if (currentRoundIdx == -1)
+        {
+            currentRoundIdx = 0;
+        }
+        currentRoundIdx++; // next level requested
+        if (currentRoundIdx >= blindLevels.size())
+        {
+            return null;
+        }
+        TournamentRoundBO nextRound = blindLevels.get(currentRoundIdx);
+        if (nextRound instanceof BlindLevelBO)
+        {
+            return (BlindLevelBO) nextRound;
+        }
+        return null;
     }
 
 }

@@ -123,7 +123,7 @@ public class TournamentBusinessFactoryImpl implements TournamentBusinessFactory
     @Override
     public PauseBO getPauseBO(BlindLevelPO blindLevelPO)
     {
-        return new BlindLevelBOImpl(blindLevelPO, dateProvider);
+        return new PauseBOImpl(blindLevelPO, dateProvider);
     }
 
     @Override

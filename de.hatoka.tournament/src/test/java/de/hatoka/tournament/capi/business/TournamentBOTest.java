@@ -44,7 +44,7 @@ public class TournamentBOTest
     private static final Money BUY_IN = Money.valueOf("5 EUR");
 
     @ClassRule
-    public static DerbyEntityManagerRule rule = new DerbyEntityManagerRule();
+    public static DerbyEntityManagerRule rule = new DerbyEntityManagerRule("TestTournamentPU");
     private static Injector injector = null;
 
     @Inject
@@ -163,14 +163,14 @@ public class TournamentBOTest
         underTest.createPause(15);
         underTest.createBlindLevel(30, 500, 1000, 0);
         underTest.createBlindLevel(30, 500, 1000, 100);
-        List<TournamentRoundBO> rounds = underTest.getTournamenRounds();
+        List<TournamentRoundBO> rounds = underTest.getTournamentRounds();
         assertEquals("five rounds added", 5, rounds.size());
         assertNull("third round is pause", rounds.get(2).getBlindLevel());
         assertEquals("second round is level with small blind", Integer.valueOf(200),
                         rounds.get(1).getBlindLevel().getSmallBlind());
         // remove pause
         underTest.remove(rounds.get(2));
-        List<TournamentRoundBO> roundsAfterDelete = underTest.getTournamenRounds();
+        List<TournamentRoundBO> roundsAfterDelete = underTest.getTournamentRounds();
         assertEquals("four rounds left", 4, roundsAfterDelete.size());
         for (TournamentRoundBO roundBO : roundsAfterDelete)
         {
@@ -182,6 +182,33 @@ public class TournamentBOTest
         level2.start();
         assertFalse(level1.isActive());
         assertTrue(level2.isActive());
+    }
+
+    @Test
+    public void testCurrentAndNextBlindLevels()
+    {
+        BlindLevelBO level1 = underTest.createBlindLevel(30, 100, 200, 0);
+        BlindLevelBO level2 = underTest.createBlindLevel(30, 200, 400, 0);
+        PauseBO pause = underTest.createPause(15);
+        BlindLevelBO level3 = underTest.createBlindLevel(30, 500, 1000, 0);
+        BlindLevelBO level4 = underTest.createBlindLevel(30, 500, 1000, 100);
+        assertEquals("current level in case tournament not started", level1,underTest.getCurrentBlindLevel());
+        assertEquals("next level in case tournament not started", level2,underTest.getNextBlindLevel());
+        level1.start();
+        assertEquals("current level (1 started)", level1,underTest.getCurrentBlindLevel());
+        assertEquals("next level (1 started)", level2,underTest.getNextBlindLevel());
+        level2.start();
+        assertEquals("current level (2 started)", level2,underTest.getCurrentBlindLevel());
+        assertNull("next level (2 started)", underTest.getNextBlindLevel());
+        pause.start();
+        assertNull("current level (pause)", underTest.getCurrentBlindLevel());
+        assertEquals("next level (pause", level3,underTest.getNextBlindLevel());
+        level3.start();
+        assertEquals("current level (3 started)", level3,underTest.getCurrentBlindLevel());
+        assertEquals("next level (3 started)", level4,underTest.getNextBlindLevel());
+        level4.start();
+        assertEquals("current level (4 started)", level4,underTest.getCurrentBlindLevel());
+        assertNull("last level so next is null", underTest.getNextBlindLevel());
     }
 
     @Test

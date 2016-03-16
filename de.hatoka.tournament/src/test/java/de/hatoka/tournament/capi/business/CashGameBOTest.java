@@ -38,7 +38,7 @@ public class CashGameBOTest
     private CashGameBO cashGameBO;
 
     @Rule
-    public DerbyEntityManagerRule rule = new DerbyEntityManagerRule();
+    public DerbyEntityManagerRule rule = new DerbyEntityManagerRule("TestTournamentPU");
 
     @Inject
     private TournamentBusinessFactory factory;

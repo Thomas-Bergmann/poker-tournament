@@ -17,12 +17,18 @@ public class DerbyEntityManagerRule extends ExternalResource implements EntityMa
 {
     private EntityManagerFactory emf;
     private EntityManager em;
+    private final String persistentUnitName;
+
+    public DerbyEntityManagerRule(String persistentUnitName)
+    {
+        this.persistentUnitName = persistentUnitName;
+    }
 
     @Override
     public void before() throws Throwable
     {
         super.before();
-        emf = Persistence.createEntityManagerFactory("TestPU");
+        emf = Persistence.createEntityManagerFactory(persistentUnitName);
         em = emf.createEntityManager();
     }
 

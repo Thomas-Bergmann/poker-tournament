@@ -218,7 +218,7 @@ project('de.hatoka.offlinepoker')
         runtime 'org.apache.commons:commons-dbcp2:2.0.1'
         runtime 'org.postgresql:postgresql:9.3-1102-jdbc4'
         runtime 'xalan:xalan:2.7.2'
-        runtime "org.glassfish.jersey.containers:jersey-container-servlet:$jerseyVersion"
+        runtime 'org.glassfish.jersey.containers:jersey-container-servlet:2.14'
 
         testCompile "junit:junit:$junitVersion"
     }

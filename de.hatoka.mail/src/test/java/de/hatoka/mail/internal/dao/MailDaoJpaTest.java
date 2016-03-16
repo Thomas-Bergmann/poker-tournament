@@ -26,7 +26,7 @@ import de.hatoka.test.DerbyEntityManagerRule;
 public class MailDaoJpaTest
 {
     @Rule
-    public DerbyEntityManagerRule rule = new DerbyEntityManagerRule();
+    public DerbyEntityManagerRule rule = new DerbyEntityManagerRule("MailTestPU");
 
     @Inject
     private MailDao mailDao;

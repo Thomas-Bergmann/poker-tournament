@@ -18,7 +18,7 @@ public class AccountBOTest
     private static AccountBO UNDER_TEST;
 
     @Rule
-    public DerbyEntityManagerRule rule = new DerbyEntityManagerRule();
+    public DerbyEntityManagerRule rule = new DerbyEntityManagerRule("AccountTestPU");
 
     @Inject
     AccountBusinessFactory factory;

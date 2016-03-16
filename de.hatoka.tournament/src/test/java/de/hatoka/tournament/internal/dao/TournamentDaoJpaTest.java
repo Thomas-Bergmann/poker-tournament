@@ -33,7 +33,7 @@ public class TournamentDaoJpaTest
     private static final String TEST_ACCOUNT_REF = "test_account_ref";
 
     @Rule
-    public DerbyEntityManagerRule rule = new DerbyEntityManagerRule();
+    public DerbyEntityManagerRule rule = new DerbyEntityManagerRule("TestTournamentPU");
     @Inject
     private TournamentDao tournamentDao;
     @Inject

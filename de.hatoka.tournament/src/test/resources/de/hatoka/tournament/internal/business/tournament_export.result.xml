@@ -4,10 +4,10 @@
         <player id="100" name="player1"/>
     </players>
     <tournaments>
-        <tournament id="101" isCashGame="false" date="2011-11-25T07:45:00Z" maxPlayerPerTable="10" initialStacksize="1000" currentRound="-1">
-            <blindLevel position="1" smallBlind="2" bigBlind="4" ante="1" isPause="false" duration="30" isReBuy="true" isActive="true" startDate="2011-11-25T07:45:00Z" />
-            <blindLevel position="2" isPause="true" duration="30" isReBuy="true" isActive="false" />
-            <blindLevel position="3" smallBlind="4" bigBlind="8" ante="2" isPause="false" duration="30" isReBuy="false" isActive="false" />
+        <tournament id="101" isCashGame="false" date="2011-11-25T07:45:00Z" maxPlayerPerTable="10" initialStacksize="1000" currentRound="1">
+            <blindLevel smallBlind="2" bigBlind="4" ante="1" isPause="false" duration="30" isReBuy="true" startDate="2011-11-25T07:45:00Z" />
+            <blindLevel isPause="true" duration="30" isReBuy="true" />
+            <blindLevel smallBlind="4" bigBlind="8" ante="2" isPause="false" duration="30" isReBuy="false" />
             <rank firstPosition="1" lastPosition="1" percentage="0.5"/>
             <rank firstPosition="2" lastPosition="2" percentage="0.3"/>
             <competitor player="player1" playerRef="100" state="REGISTERED" tableNo="-1" seatNo="-1">

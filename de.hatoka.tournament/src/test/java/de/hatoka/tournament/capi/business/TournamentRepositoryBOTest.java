@@ -54,7 +54,7 @@ public class TournamentRepositoryBOTest
     private static final ResourceLoader RESOURCE_LOADER = new ResourceLoader();
 
     @ClassRule
-    public static DerbyEntityManagerRule rule = new DerbyEntityManagerRule();
+    public static DerbyEntityManagerRule rule = new DerbyEntityManagerRule("TestTournamentPU");
     private static Injector injector = null;
 
     @Inject
@@ -72,7 +72,6 @@ public class TournamentRepositoryBOTest
 
     @Inject
     private TransactionProvider transactionProvider;
-
     @Inject
     private TournamentBusinessFactory factory;
     @Inject
@@ -176,20 +175,20 @@ public class TournamentRepositoryBOTest
         level1.setBigBlind(4);
         level1.setAnte(1);
         level1.setReBuy(true);
-        level1.setPosition(1);
-        level1.setActive(true);
+        level1.setPosition(0);
+        tournamentPO.setCurrentRound(1);
         level1.setStartDate(CURRENT_DATE);
 
         BlindLevelPO pause = blindLevelDao.createAndInsert(tournamentPO, 30);
         pause.setPause(true);
         pause.setReBuy(true);
-        pause.setPosition(2);
+        pause.setPosition(1);
 
         BlindLevelPO level2 = blindLevelDao.createAndInsert(tournamentPO, 30);
         level2.setSmallBlind(4);
         level2.setBigBlind(8);
         level2.setAnte(2);
-        level2.setPosition(3);
+        level2.setPosition(2);
 
         RankPO rank1 = rankDao.createAndInsert(tournamentPO, 1);
         rank1.setPercentage(new BigDecimal("0.5"));

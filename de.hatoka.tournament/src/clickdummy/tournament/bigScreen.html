@@ -1,0 +1,89 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet"/>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css" rel="stylesheet"/>
+<link href="../../main/webapp/WEB-INF/resources/css/frame.css" rel="stylesheet" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js">//</script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js">//</script>
+<title>Main Event</title>
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+	<div class="container-fluid">
+		<!-- Brand and toggle get grouped for better mobile display -->
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed"
+				data-toggle="collapse" data-target="#bs-example-navbar-collapse-9">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="../home.html">Poker Planer</a>
+		</div>
+
+		<!-- Collect the nav links, forms, and other content for toggling -->
+		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-9">
+			<ul class="nav navbar-nav">
+				<li class="active">
+					<a href="../tournaments.html">Tournaments</a>
+				</li>
+				<li>
+					<a href="../cash_games.html">Cash Games</a>
+				</li>
+				<li>
+					<a href="../players.html">Players</a>
+				</li>
+			</ul>
+		</div><!-- /.navbar-collapse -->
+	</div>
+</nav>
+<div class="row">
+	<div class="col-sm-3 col-md-2 sidebar">
+		<ul class="nav-sidebar">
+			<li>
+				<a href="general.html">General</a>
+			</li>
+			<li>
+				<a href="players.html">Players <span class="badge">13</span></a>
+				<a class="glyphicon glyphicon-plus" href="player_add.html"></a>
+			</li>
+			<li class="active">
+				<a href="tables.html">Tables <span class="badge">2</span></a>
+			</li>
+			<li>
+				<a href="blind_levels.html">Blind Levels <span class="badge">5</span></a>
+			</li>
+			<li>
+				<a href="ranks.html">Ranks <span class="badge">3</span></a>
+			</li>
+		</ul>
+	</div>
+	<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+		<h1 class="page-header">Main Event</h1>
+		<table class="bigscreen" border="1">
+			<tr>
+				<td>Current Time<br/>16:01:10</td>
+				<td rowspan="2">Current Level<br/>09:68</td>
+				<td>Players left<br/>15/20</td>
+			</tr>
+			<tr>
+				<td>Next Pause<br/>17:50</td>
+				<td>Stack Average<br/>2500</td>
+			</tr>
+			<tr class="currentLevel">
+				<td>Small Blind<br/>200</td>
+				<td>Big Blind<br/>400</td>
+				<td>Ante<br/>0</td>
+			</tr>
+			<tr class="nextLevel">
+				<td colspan="3">(Next Level 250/500/0)</td>
+			</tr>
+		</table>
+	</div>
+</div>
+</body>
+</html>

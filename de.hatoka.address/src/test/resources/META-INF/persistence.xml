@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_1.xsd"
 	version="2.1">
-	<persistence-unit name="TestPU" transaction-type="RESOURCE_LOCAL">
+	<persistence-unit name="AddressTestPU" transaction-type="RESOURCE_LOCAL">
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 		<!-- Enables auto discovery of persistent classes, -->
 		<!-- otherwise they must be listed using <class> -->

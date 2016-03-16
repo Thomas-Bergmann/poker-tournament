@@ -27,7 +27,7 @@ public class UserBOTest
     private AccountBusinessFactory factory;
 
     @Rule
-    public DerbyEntityManagerRule rule = new DerbyEntityManagerRule();
+    public DerbyEntityManagerRule rule = new DerbyEntityManagerRule("AccountTestPU");
 
     @Before
     public void createTestObject()

@@ -20,7 +20,7 @@ public class AccountBORepositoryTest
     private AccountBORepository UNDER_TEST;
 
     @Rule
-    public DerbyEntityManagerRule rule = new DerbyEntityManagerRule();
+    public DerbyEntityManagerRule rule = new DerbyEntityManagerRule("AccountTestPU");
 
     @After
     public void cleanUp()

@@ -8,6 +8,7 @@ import de.hatoka.tournament.capi.business.CompetitorBO;
 import de.hatoka.tournament.capi.business.PlayerBO;
 import de.hatoka.tournament.capi.business.TournamentBO;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
+import de.hatoka.tournament.internal.app.models.TournamentBigScreenModel;
 import de.hatoka.tournament.internal.app.models.TournamentConfigurationModel;
 import de.hatoka.tournament.internal.app.models.TournamentVO;
 
@@ -46,6 +47,11 @@ public class TournamentAction extends GameAction<TournamentBO>
         result.getReBuyOption().getOptions().add(new SelectOptionVO("single", true));
         result.getReBuyOption().getOptions().add(new SelectOptionVO("no", false));
         return result;
+    }
+
+    public TournamentBigScreenModel getTournamentBigScreenModel()
+    {
+        return new TournamentBigScreenModel(getGame());
     }
 
 }

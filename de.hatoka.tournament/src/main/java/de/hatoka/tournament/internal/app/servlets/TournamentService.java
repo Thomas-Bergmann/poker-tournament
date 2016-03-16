@@ -20,6 +20,7 @@ import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
 import de.hatoka.tournament.internal.app.actions.TournamentAction;
 import de.hatoka.tournament.internal.app.filter.AccountRequestFilter;
 import de.hatoka.tournament.internal.app.menu.MenuFactory;
+import de.hatoka.tournament.internal.app.models.TournamentBigScreenModel;
 import de.hatoka.tournament.internal.app.models.TournamentConfigurationModel;
 
 @Path("/tournament/{id}")
@@ -27,6 +28,7 @@ public class TournamentService extends AbstractService
 {
     private static final String RESOURCE_PREFIX = "de/hatoka/tournament/internal/templates/app/";
     public static final String METHOD_NAME_LIST = "list";
+    public static final String METHOD_NAME_SCREEN = "screen";
 
     @PathParam("id")
     private String tournamentID;
@@ -65,6 +67,23 @@ public class TournamentService extends AbstractService
         {
             String content = renderStyleSheet(model, "tournament_general.xslt", getXsltProcessorParameter("tournament"));
             return Response.status(200).entity(renderFrame(content, "title.tournament.general")).build();
+        }
+        catch(IOException e)
+        {
+            return render(500, e);
+        }
+    }
+
+    @GET
+    @Path("/screen.html")
+    public Response screen()
+    {
+        TournamentAction action = getTournamentAction();
+        final TournamentBigScreenModel model = action.getTournamentBigScreenModel();
+        try
+        {
+            String content = renderStyleSheet(model, "tournament_bigscreen.xslt", getXsltProcessorParameter("tournament"));
+            return Response.status(200).entity(renderFrame(content, "title.tournament.screen")).build();
         }
         catch(IOException e)
         {

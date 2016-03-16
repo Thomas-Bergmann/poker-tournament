@@ -26,7 +26,7 @@ public class JpaDB
             }
         }
 
-        emf = Persistence.createEntityManagerFactory(persistenceUnitName);
+        emf = Persistence.createEntityManagerFactory(persistenceUnitName, addedOrOverridenProperties);
         em = emf.createEntityManager();
     }
 

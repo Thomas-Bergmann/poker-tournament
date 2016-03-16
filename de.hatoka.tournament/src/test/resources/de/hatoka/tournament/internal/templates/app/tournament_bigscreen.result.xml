@@ -1,0 +1,21 @@
+<div xmlns="http://www.w3.org/1999/xhtml">
+<table border="1" class="bigscreen">
+<tr>
+<td>Current Time<br/>16:01</td>
+<td rowspan="2">Current Level<br/>09:10</td>
+<td>Players left<br/>15/20</td>
+</tr>
+<tr>
+<td>Next Pause<br/>17:50</td>
+<td>Stack Average<br/>2500</td>
+</tr>
+<tr class="currentLevel">
+<td>Small Blind<br/>200</td>
+<td>Big Blind<br/>400</td>
+<td>Ante<br/>0</td>
+</tr>
+<tr class="nextLevel">
+<td colspan="3">(Next Level 250 / 500 / 0)</td>
+</tr>
+</table>
+</div>

@@ -20,7 +20,7 @@ public interface TournamentRoundBO
    void allowRebuy(boolean allow);
 
    /**
-    * @return BlindLevel in case it's not a pause
+    * @return BlindLevel in case it's a blind level and not a pause
     */
    BlindLevelBO getBlindLevel();
 

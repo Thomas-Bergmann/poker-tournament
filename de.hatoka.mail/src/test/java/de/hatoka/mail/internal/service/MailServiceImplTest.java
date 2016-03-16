@@ -28,7 +28,7 @@ public class MailServiceImplTest
 {
     private static final String RESOURCE_PREFIX = "de/hatoka/mail/internal/service/";
     @Rule
-    public DerbyEntityManagerRule rule = new DerbyEntityManagerRule();
+    public DerbyEntityManagerRule rule = new DerbyEntityManagerRule("MailTestPU");
 
     @Inject
     private MailDao mailDao;

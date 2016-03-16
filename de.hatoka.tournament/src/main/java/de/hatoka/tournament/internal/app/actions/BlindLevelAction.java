@@ -26,7 +26,7 @@ public class BlindLevelAction
         TournamentBlindLevelModel model = new TournamentBlindLevelModel();
         model.setTournament(new TournamentVO(tournamentBO, tournamentURI));
         List<BlindLevelVO> blindLevels = model.getBlindLevels();
-        for(TournamentRoundBO roundBO : tournamentBO.getTournamenRounds())
+        for(TournamentRoundBO roundBO : tournamentBO.getTournamentRounds())
         {
             blindLevels.add(new BlindLevelVO(roundBO));
         }
@@ -37,7 +37,7 @@ public class BlindLevelAction
 
     public void deleteLevels(List<String> identifiers)
     {
-        Iterator<TournamentRoundBO> itRounds = tournamentBO.getTournamenRounds().iterator();
+        Iterator<TournamentRoundBO> itRounds = tournamentBO.getTournamentRounds().iterator();
         while(itRounds.hasNext())
         {
             TournamentRoundBO round = itRounds.next();
@@ -65,7 +65,7 @@ public class BlindLevelAction
 
     public void disableReBuy(List<String> identifiers)
     {
-        Iterator<TournamentRoundBO> itRounds = tournamentBO.getTournamenRounds().iterator();
+        Iterator<TournamentRoundBO> itRounds = tournamentBO.getTournamentRounds().iterator();
         while(itRounds.hasNext())
         {
             TournamentRoundBO round = itRounds.next();
@@ -78,7 +78,7 @@ public class BlindLevelAction
 
     public void enableReBuy(List<String> identifiers)
     {
-        Iterator<TournamentRoundBO> itRounds = tournamentBO.getTournamenRounds().iterator();
+        Iterator<TournamentRoundBO> itRounds = tournamentBO.getTournamentRounds().iterator();
         while(itRounds.hasNext())
         {
             TournamentRoundBO round = itRounds.next();
@@ -91,7 +91,7 @@ public class BlindLevelAction
 
     public void startLevel(String identifier)
     {
-        Iterator<TournamentRoundBO> itRounds = tournamentBO.getTournamenRounds().iterator();
+        Iterator<TournamentRoundBO> itRounds = tournamentBO.getTournamentRounds().iterator();
         while(itRounds.hasNext())
         {
             TournamentRoundBO round = itRounds.next();
