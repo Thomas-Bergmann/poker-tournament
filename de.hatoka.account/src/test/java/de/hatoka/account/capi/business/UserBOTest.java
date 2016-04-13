@@ -1,6 +1,6 @@
 package de.hatoka.account.capi.business;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import javax.inject.Inject;
 
@@ -12,8 +12,6 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import de.hatoka.account.capi.entities.UserPO;
-import de.hatoka.address.capi.business.AddressBO;
-import de.hatoka.address.capi.business.AddressBORepository;
 import de.hatoka.test.DerbyEntityManagerRule;
 
 public class UserBOTest
@@ -41,13 +39,8 @@ public class UserBOTest
     }
 
     @Test
-    public void testAddressHandling()
+    public void testCreation()
     {
-        AddressBORepository addressRepository = UNDER_TEST.getAddressBORepository();
-        AddressBO addressBO = addressRepository.createAddressBO();
-        addressBO.setCity("GitHub");
-        UNDER_TEST.setPrivateAddressBO(addressBO);
-        UNDER_TEST.setBusinessAddressBO(addressBO);
-        assertEquals("address was not set", "GitHub", UNDER_TEST.getBusinessAddressBO().getCity());
+        assertNotNull("user exists", UNDER_TEST);
     }
 }

@@ -94,7 +94,6 @@ project('de.hatoka.account')
 
     dependencies {
         compile project(":de.hatoka.common")
-        compile project(":de.hatoka.address")
         compile project(":de.hatoka.mail")
         runtime 'javax.mail:mail:1.4.7'
 
@@ -113,14 +112,6 @@ project('de.hatoka.test')
         compile 'junit:junit:4.12'
         compile 'org.apache.derby:derby:10.12.1.1'
         compile 'com.google.inject:guice:3.0'
-    }
-}
-
-project('de.hatoka.address')
-{
-    dependencies {
-        compile project(":de.hatoka.common")
-        testCompile project(":de.hatoka.test")
     }
 }
 
@@ -173,7 +164,6 @@ project('de.hatoka.tournament')
 
     dependencies {
         compile project(":de.hatoka.common")
-        compile project(":de.hatoka.address")
         testCompile project(":de.hatoka.test")
         testCompile 'xmlunit:xmlunit:1.6'
         testCompile 'org.mockito:mockito-all:1.9.5'
@@ -186,7 +176,6 @@ project('de.hatoka.offlinepoker')
     apply plugin: "war"
     dependencies {
         compile project(":de.hatoka.tournament")
-        compile project(":de.hatoka.address")
         compile project(":de.hatoka.account")
 
         compile 'org.eclipse.jetty:jetty-server:9.3.5.v20151012'

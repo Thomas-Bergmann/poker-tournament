@@ -21,8 +21,6 @@ import de.hatoka.account.internal.app.actions.AccountAction;
 import de.hatoka.account.internal.modules.AccountBusinessModule;
 import de.hatoka.account.internal.modules.AccountConfigurationModule;
 import de.hatoka.account.internal.modules.AccountDaoJpaModule;
-import de.hatoka.address.internal.modules.AddressBusinessModule;
-import de.hatoka.address.internal.modules.AddressDaoModule;
 import de.hatoka.common.capi.dao.TransactionProvider;
 import de.hatoka.common.capi.modules.CommonDaoModule;
 import de.hatoka.mail.internal.modules.MailDaoJpaModule;
@@ -52,8 +50,9 @@ public class AccountActionTest
     @Before
     public void createTestObject()
     {
-        Injector injector = Guice.createInjector(new AccountBusinessModule(), new AddressBusinessModule(),new CommonDaoModule(), new AccountDaoJpaModule(), new AddressDaoModule(),
-                        new MailDaoJpaModule(), new MailServiceModule(), new MailServiceConfigurationModule(), new AccountConfigurationModule(), rule.getModule());
+        Injector injector = Guice.createInjector(new AccountBusinessModule(), new CommonDaoModule(),
+                        new AccountDaoJpaModule(), new MailDaoJpaModule(), new MailServiceModule(),
+                        new MailServiceConfigurationModule(), new AccountConfigurationModule(), rule.getModule());
         injector.injectMembers(this);
         EntityTransaction transaction = transactionProvider.get();
         transaction.begin();
@@ -76,7 +75,7 @@ public class AccountActionTest
     {
         List<String> accountIDs = new ArrayList<>();
         // create 1
-        EntityTransaction transaction =  transactionProvider.get();
+        EntityTransaction transaction = transactionProvider.get();
         transaction.begin();
         accountIDs.add(UNDER_TEST.createAccountBO("Test1").getID());
         accountIDs.add(UNDER_TEST.createAccountBO("Test2").getID());

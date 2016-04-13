@@ -1,7 +1,5 @@
 package de.hatoka.account.capi.business;
 
-import de.hatoka.address.capi.business.AddressBO;
-
 /**
  * An account represents a billable customer of the system.
  */
@@ -16,20 +14,6 @@ public interface AccountBO
      * Removes that object
      */
     void remove();
-
-    /**
-     * Creates an address for the account
-     *
-     * @return
-     */
-    AddressBO createAddressBO();
-
-    /**
-     * Get the address of account
-     *
-     * @return
-     */
-    AddressBO getAddressBO();
 
     /**
      * @return name of account (there is no need to make it unique)

@@ -15,8 +15,6 @@ import de.hatoka.account.internal.app.servlets.LoginService;
 import de.hatoka.account.internal.modules.AccountBusinessModule;
 import de.hatoka.account.internal.modules.AccountConfigurationModule;
 import de.hatoka.account.internal.modules.AccountDaoJpaModule;
-import de.hatoka.address.internal.modules.AddressBusinessModule;
-import de.hatoka.address.internal.modules.AddressDaoModule;
 import de.hatoka.common.capi.app.servlet.ResourceService;
 import de.hatoka.common.capi.app.servlet.ServletConstants;
 import de.hatoka.common.capi.modules.CommonDaoModule;
@@ -48,7 +46,6 @@ public class OfflinePokerApplication extends Application
     public OfflinePokerApplication()
     {
         injector = Guice.createInjector(new CommonDaoModule(), new CommonDateModule(),
-                        new AddressDaoModule(), new AddressBusinessModule(),
                         new AccountDaoJpaModule(), new AccountBusinessModule(),
                         new TournamentDaoJpaModule(), new TournamentBusinessModule(),
                         new MailDaoJpaModule(), new MailServiceModule(), new MailServiceConfigurationModule(), new AccountConfigurationModule(),

@@ -19,13 +19,10 @@ import de.hatoka.account.capi.config.AccountConfiguration;
 import de.hatoka.account.capi.dao.UserDao;
 import de.hatoka.account.capi.entities.UserPO;
 import de.hatoka.account.internal.app.models.SignUpVerifyMailModel;
-import de.hatoka.address.capi.business.AddressBO;
-import de.hatoka.address.capi.business.AddressBORepository;
 import de.hatoka.common.capi.app.xslt.XSLTRenderer;
 import de.hatoka.common.capi.business.CountryHelper;
 import de.hatoka.common.capi.dao.EncryptionUtils;
 import de.hatoka.common.capi.dao.UUIDGenerator;
-import de.hatoka.common.capi.exceptions.IllegalObjectAccessException;
 import de.hatoka.common.capi.resource.LocalizationBundle;
 import de.hatoka.common.capi.resource.ResourceLocalizer;
 import de.hatoka.mail.capi.dao.MailDao;
@@ -136,23 +133,6 @@ public class UserBOImpl implements UserBO
     }
 
     @Override
-    public AddressBORepository getAddressBORepository()
-    {
-        return businessFactory.getAddressBORepository(userPO);
-    }
-
-    @Override
-    public AddressBO getBusinessAddressBO()
-    {
-        String addressRef = userPO.getBusinessAddressRef();
-        if (addressRef == null)
-        {
-            return null;
-        }
-        return getAddressBORepository().getByID(addressRef);
-    }
-
-    @Override
     public String getEmail()
     {
         return userPO.getEmail();
@@ -193,17 +173,6 @@ public class UserBOImpl implements UserBO
     public String getNickName()
     {
         return userPO.getNickName();
-    }
-
-    @Override
-    public AddressBO getPrivateAddressBO()
-    {
-        String addressRef = userPO.getPrivateAddressRef();
-        if (addressRef == null)
-        {
-            return null;
-        }
-        return getAddressBORepository().getByID(addressRef);
     }
 
     @Override
@@ -254,19 +223,6 @@ public class UserBOImpl implements UserBO
     }
 
     @Override
-    public void setBusinessAddressBO(AddressBO addressBO)
-    {
-        if (getAddressBORepository().contains(addressBO))
-        {
-            userPO.setBusinessAddressRef(addressBO.getID());
-        }
-        else
-        {
-            throw new IllegalObjectAccessException("Address is not owned by user.");
-        }
-    }
-
-    @Override
     public void setLocale(Locale locale)
     {
         userPO.setLocale(locale.toString());
@@ -276,19 +232,6 @@ public class UserBOImpl implements UserBO
     public void setNickName(String nickName)
     {
         userPO.setNickName(nickName);
-    }
-
-    @Override
-    public void setPrivateAddressBO(AddressBO addressBO)
-    {
-        if (getAddressBORepository().contains(addressBO))
-        {
-            userPO.setPrivateAddressRef(addressBO.getID());
-        }
-        else
-        {
-            throw new IllegalObjectAccessException("Address is not owned by user.");
-        }
     }
 
     @Override

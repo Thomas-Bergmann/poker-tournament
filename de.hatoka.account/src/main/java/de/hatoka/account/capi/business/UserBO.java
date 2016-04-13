@@ -3,9 +3,6 @@ package de.hatoka.account.capi.business;
 import java.net.URI;
 import java.util.Locale;
 
-import de.hatoka.address.capi.business.AddressBO;
-import de.hatoka.address.capi.business.AddressBORepository;
-
 public interface UserBO
 {
     /**
@@ -32,18 +29,6 @@ public interface UserBO
     AccountBORepository getAccountBORepository();
 
     /**
-     * @return address repository of user, so addresses can be created, removed
-     */
-    AddressBORepository getAddressBORepository();
-
-    /**
-     * Retrieves the business address of the user.
-     *
-     * @return business address of user (null if there is no business address)
-     */
-    AddressBO getBusinessAddressBO();
-
-    /**
      * @return email of user
      */
     String getEmail();
@@ -52,14 +37,6 @@ public interface UserBO
      * @return name for salutation
      */
     String getNickName();
-
-    /**
-     * Retrieves the address of the user, if there is no address, an empty
-     * address will be created.
-     *
-     * @return private address of user
-     */
-    AddressBO getPrivateAddressBO();
 
     /**
      * @return true if user can login
@@ -84,12 +61,6 @@ public interface UserBO
     void sendEmailVerificationMail(URI uri);
 
     /**
-     * Sets the business address of the user, the address must be an element of
-     * the users address repository.
-     */
-    void setBusinessAddressBO(AddressBO addressBO);
-
-    /**
      * Set user preferred locale.
      *
      * @param locale
@@ -102,12 +73,6 @@ public interface UserBO
      * @param nickName
      */
     void setNickName(String nickName);
-
-    /**
-     * Sets the private address of the user, the address must be an element of
-     * the users address repository.
-     */
-    void setPrivateAddressBO(AddressBO addressBO);
 
     /**
      * Verifies the given password

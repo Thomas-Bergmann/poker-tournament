@@ -1,7 +1,6 @@
 package de.hatoka.account.capi.business;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
 
 import javax.inject.Inject;
 
@@ -9,7 +8,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import de.hatoka.address.capi.business.AddressBO;
 import de.hatoka.test.DerbyEntityManagerRule;
 
 public class AccountBOTest
@@ -33,13 +31,9 @@ public class AccountBOTest
     }
 
     @Test
-    public void testCreateAddress()
+    public void testCreation()
     {
-        AddressBO addressBO = UNDER_TEST.getAddressBO();
-        assertNull("address is set without need.", addressBO);
-        addressBO = UNDER_TEST.createAddressBO();
-        addressBO.setCity("GitHub");
-        assertEquals("city of account address wasn't set", "GitHub", UNDER_TEST.getAddressBO().getCity());
+        assertNotNull("account exists", UNDER_TEST);
     }
 
 }

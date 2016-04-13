@@ -1,5 +1,4 @@
 include 'de.hatoka.account'
-include 'de.hatoka.address'
 include 'de.hatoka.common'
 include 'de.hatoka.mail'
 include 'de.hatoka.offlinepoker'

@@ -11,8 +11,6 @@ import com.google.inject.Module;
 import de.hatoka.account.internal.modules.AccountBusinessModule;
 import de.hatoka.account.internal.modules.AccountConfigurationModule;
 import de.hatoka.account.internal.modules.AccountDaoJpaModule;
-import de.hatoka.address.internal.modules.AddressBusinessModule;
-import de.hatoka.address.internal.modules.AddressDaoModule;
 import de.hatoka.common.capi.modules.CommonDaoModule;
 import de.hatoka.mail.internal.modules.MailDaoJpaModule;
 import de.hatoka.mail.internal.modules.MailServiceConfigurationModule;
@@ -23,8 +21,8 @@ public final class TestBusinessInjectorProvider
     public static Injector get(Module... modules)
     {
         List<Module> list = new ArrayList<>(Arrays.asList(modules));
-        list.addAll(Arrays.asList(new CommonDaoModule(), new AddressDaoModule(), new AccountDaoJpaModule(),
-                        new AccountBusinessModule(), new AddressBusinessModule(), new MailDaoJpaModule(),
+        list.addAll(Arrays.asList(new CommonDaoModule(), new AccountDaoJpaModule(),
+                        new AccountBusinessModule(), new MailDaoJpaModule(),
                         new MailServiceModule(), new MailServiceConfigurationModule(), new AccountConfigurationModule()));
         return Guice.createInjector(list);
     }
