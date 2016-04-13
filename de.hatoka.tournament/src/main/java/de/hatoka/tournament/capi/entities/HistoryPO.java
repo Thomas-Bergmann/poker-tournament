@@ -35,11 +35,6 @@ public class HistoryPO implements Serializable, IdentifiableEntity
     private String id;
 
     @NotNull
-    @Column(updatable = false)
-    @XmlTransient
-    private String accountRef;
-
-    @NotNull
     @XmlAttribute(name="player")
     private String player;
 
@@ -95,12 +90,6 @@ public class HistoryPO implements Serializable, IdentifiableEntity
         return true;
     }
 
-    @XmlTransient
-    public String getAccountRef()
-    {
-        return accountRef;
-    }
-
     @Override
     @XmlTransient
     public String getId()
@@ -133,11 +122,6 @@ public class HistoryPO implements Serializable, IdentifiableEntity
         int result = 1;
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         return result;
-    }
-
-    public void setAccountRef(String accountRef)
-    {
-        this.accountRef = accountRef;
     }
 
     @Override

@@ -31,11 +31,6 @@ public class CompetitorPO implements Serializable, IdentifiableEntity
     @XmlTransient
     private String id;
 
-    @NotNull
-    @Column(updatable = false)
-    @XmlTransient
-    private String accountRef;
-
     @ManyToOne
     @JoinColumn(name = "playerRef", updatable = true)
     @XmlIDREF
@@ -115,12 +110,6 @@ public class CompetitorPO implements Serializable, IdentifiableEntity
         return true;
     }
 
-    @XmlTransient
-    public String getAccountRef()
-    {
-        return accountRef;
-    }
-
     @Override
     @XmlTransient
     public String getId()
@@ -165,11 +154,6 @@ public class CompetitorPO implements Serializable, IdentifiableEntity
         int result = 1;
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         return result;
-    }
-
-    public void setAccountRef(String accountRef)
-    {
-        this.accountRef = accountRef;
     }
 
     @Override

@@ -32,8 +32,8 @@ import de.hatoka.tournament.capi.entities.CompetitorPO;
 import de.hatoka.tournament.capi.entities.HistoryPO;
 import de.hatoka.tournament.capi.entities.PlayerPO;
 import de.hatoka.tournament.capi.entities.RankPO;
-import de.hatoka.tournament.capi.entities.TournamentPersistenceModel;
 import de.hatoka.tournament.capi.entities.TournamentPO;
+import de.hatoka.tournament.capi.entities.TournamentPersistenceModel;
 
 public class TournamentBORepositoryImpl implements TournamentBORepository
 {
@@ -216,7 +216,6 @@ public class TournamentBORepositoryImpl implements TournamentBORepository
         for (CompetitorPO competitorXML : tournamentXML.getCompetitors())
         {
             competitorXML.setId(uuidGenerator.generate());
-            competitorXML.setAccountRef(accountRef);
             competitorXML.setTournamentPO(tournamentXML);
             //PlayerPO playerPO = playerDao.findByExternalRef(accountRef, competitorXML.getPlayerRef());
             //competitorXML.setPlayerPO(playerPO);

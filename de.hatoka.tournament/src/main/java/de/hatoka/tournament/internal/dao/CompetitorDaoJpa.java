@@ -27,7 +27,6 @@ public class CompetitorDaoJpa extends GenericJPADao<CompetitorPO> implements Com
         competitorPO.setId(uuidGenerator.generate());
         competitorPO.setPlayerPO(playerPO);
         competitorPO.setTournamentPO(tournamentPO);
-        competitorPO.setAccountRef(tournamentPO.getAccountRef());
         competitorPO.setState(CompetitorState.REGISTERED.name());
         competitorPO.setPlayer(playerPO.getName());
         // add relations

@@ -1,7 +1,6 @@
 package de.hatoka.account.internal.app.servlets;
 
 import java.net.URI;
-import java.util.concurrent.Callable;
 
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -12,8 +11,8 @@ import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
-import de.hatoka.account.capi.business.AccountBusinessFactory;
 import de.hatoka.account.capi.business.UserBO;
+import de.hatoka.account.capi.business.UserBusinessFactory;
 import de.hatoka.account.capi.config.AccountConfiguration;
 import de.hatoka.account.internal.app.actions.LoginAction;
 import de.hatoka.account.internal.app.actions.RegisterAccountAction;
@@ -21,6 +20,7 @@ import de.hatoka.account.internal.app.forms.LoginForm;
 import de.hatoka.account.internal.app.forms.SignUpForm;
 import de.hatoka.account.internal.app.models.LoginPageModel;
 import de.hatoka.common.capi.app.servlet.AbstractService;
+import de.hatoka.common.capi.app.servlet.ServletConstants;
 import de.hatoka.common.capi.dao.EncryptionUtils;
 
 @Path("/login")
@@ -48,18 +48,16 @@ public class LoginService extends AbstractService
             action.accept(form);
             if (!form.isLoginFailed())
             {
-                NewCookie userCookie = createCookie(CookieConstants.USER_COOKIE_NAME, form.getUserID(),
-                                "hatoka user cookie");
-                NewCookie accountCookie = createCookie(CookieConstants.ACCOUNT_COOKIE_NAME, form.getAccountID(),
-                                "hatoka account cookie");
+                NewCookie userCookie = createCookie(ServletConstants.USER_ID_COOKIE_NAME, form.getUserID(), "hatoka user cookie");
+                String sign = getInstance(EncryptionUtils.class).sign(getSecret(), form.getUserID());
+                NewCookie signCookie = createCookie(ServletConstants.USER_SIGN_COOKIE_NAME, sign, "hatoka sign cookie");
                 if (origin != null)
                 {
-                    EncryptionUtils utils = getInstance(EncryptionUtils.class);
-                    URI uri = UriBuilder.fromUri(URI.create(origin)).queryParam("accountID", form.getAccountID())
-                                    .queryParam("accountSign", utils.sign(getSecret(), form.getAccountID())).build();
-                    return Response.seeOther(uri).cookie(userCookie, accountCookie).build();
+                    URI uri = UriBuilder.fromUri(URI.create(origin)).queryParam("accountID", form.getUserID())
+                                    .queryParam("accountSign", sign).build();
+                    return Response.seeOther(uri).cookie(userCookie, signCookie).build();
                 }
-                return render(form, null, userCookie, accountCookie);
+                return render(form, null, userCookie, signCookie);
             }
         }
         return render(form, null);
@@ -101,14 +99,9 @@ public class LoginService extends AbstractService
             RegisterAccountAction action = new RegisterAccountAction(getUriBuilder(LoginService.class, "verifySignUp")
                             .build());
             injectMembers(action);
-            runInTransaction(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    action.accept(form);
-                    form.setSuccessfullyRegistered(true);
-                }
+            runInTransaction(() -> {
+                action.accept(form);
+                form.setSuccessfullyRegistered(true);
             });
         }
         return render(null, form);
@@ -121,15 +114,10 @@ public class LoginService extends AbstractService
         Boolean applySignInToken;
         try
         {
-            applySignInToken = runInTransaction(new Callable<Boolean>()
-            {
-                @Override
-                public Boolean call()
-                {
-                    UserBO userBO = getInstance(AccountBusinessFactory.class).getUserBORepository().getUserBOByLogin(
-                                    email);
-                    return userBO.applySignInToken(token);
-                }
+            applySignInToken = runInTransaction(() -> {
+                UserBO userBO = getInstance(UserBusinessFactory.class).getUserBORepository().getUserBOByLogin(
+                                email);
+                return userBO.applySignInToken(token);
             });
         }
         catch(Exception exception)

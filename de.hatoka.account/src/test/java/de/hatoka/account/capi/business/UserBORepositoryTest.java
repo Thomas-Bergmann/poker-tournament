@@ -25,7 +25,7 @@ public class UserBORepositoryTest
     public void createTestObject()
     {
         Injector injector = TestBusinessInjectorProvider.get(rule.getModule());
-        AccountBusinessFactory factory = injector.getInstance(AccountBusinessFactory.class);
+        UserBusinessFactory factory = injector.getInstance(UserBusinessFactory.class);
         UNDER_TEST = factory.getUserBORepository();
     }
 
@@ -36,8 +36,6 @@ public class UserBORepositoryTest
         transaction.begin();
         UserBO user = UNDER_TEST.createUserBO(USER_LOGIN_TEST);
         assertNotNull("user not created", user);
-        assertEquals("no accounts created for user", 1, user.getAccountBORepository().getAccountBOs().size());
-        assertEquals("user not assigned to account", user, user.getAccountBORepository().getAccountBOs().get(0).getOwner());
         UserBO storedUser = UNDER_TEST.getUserBOByLogin(USER_LOGIN_TEST);
         assertNotNull("user not found", storedUser);
         assertEquals("user not equal", user, storedUser);

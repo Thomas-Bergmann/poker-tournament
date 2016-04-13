@@ -25,7 +25,6 @@ public class HistoryDaoJpa extends GenericJPADao<HistoryPO> implements HistoryDa
     {
         HistoryPO result = create();
         result.setId(uuidGenerator.generate());
-        result.setAccountRef(tournamentPO.getAccountRef());
         result.setDate(date);
         result.setPlayer(player);
         // set relations

@@ -48,8 +48,8 @@ public class AccountRequestFilter implements ContainerRequestFilter
     private NewCookie[] createCookies(String accountID, String accountSign)
     {
         NewCookie[] result = new NewCookie[2];
-        result[0] = createCookie(ServletConstants.ACCOUNT_ID_COOKIE_NAME, accountID, "hatoka account cookie");
-        result[1] = createCookie(ServletConstants.ACCOUNT_SIGN_COOKIE_NAME, accountSign, "hatoka account cookie");
+        result[0] = createCookie(ServletConstants.USER_ID_COOKIE_NAME, accountID, "hatoka account cookie");
+        result[1] = createCookie(ServletConstants.USER_SIGN_COOKIE_NAME, accountSign, "hatoka account cookie");
         return result;
     }
 
@@ -96,12 +96,12 @@ public class AccountRequestFilter implements ContainerRequestFilter
             return true;
         }
         Map<String, javax.ws.rs.core.Cookie> cookies = requestContext.getCookies();
-        String accountID = getCookie(cookies, ServletConstants.ACCOUNT_ID_COOKIE_NAME);
+        String accountID = getCookie(cookies, ServletConstants.USER_ID_COOKIE_NAME);
         if (accountID == null)
         {
             return false;
         }
-        String accountSign = getCookie(cookies, ServletConstants.ACCOUNT_SIGN_COOKIE_NAME);
+        String accountSign = getCookie(cookies, ServletConstants.USER_SIGN_COOKIE_NAME);
         if (validateAccount(accountID, accountSign))
         {
             LOGGER.trace("Access granted to account '" + accountID + "'");

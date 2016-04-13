@@ -1,9 +1,5 @@
 package de.hatoka.account.internal.dao;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import javax.inject.Inject;
 
 import org.junit.Before;
@@ -13,9 +9,7 @@ import org.junit.Test;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
-import de.hatoka.account.capi.dao.AccountDao;
 import de.hatoka.account.capi.dao.UserDao;
-import de.hatoka.account.capi.entities.AccountPO;
 import de.hatoka.account.capi.entities.UserPO;
 import de.hatoka.account.internal.modules.AccountDaoJpaModule;
 import de.hatoka.common.capi.modules.CommonDaoModule;
@@ -28,9 +22,6 @@ public class UserDaoJpaTest
     public DerbyEntityManagerRule rule = new DerbyEntityManagerRule("AccountTestPU");
 
     @Inject
-    private AccountDao accountDao;
-
-    @Inject
     private UserDao userDao;
 
     @Before
@@ -41,15 +32,9 @@ public class UserDaoJpaTest
     }
 
     @Test
-    public void testAccountUserAssignmentSideAccount()
+    public void testUserCreation()
     {
         UserPO userPO = userDao.createAndInsert(ROOT_EMAIL);
-        AccountPO accountPO = accountDao.createAndInsert(userPO);
-        assertTrue("user should be assigned to account", userPO.getAccountPOs().contains(accountPO));
-        assertEquals("account should be assigned to user", userPO, accountPO.getOwner());
-
-        accountDao.remove(accountPO);
-        assertFalse("user should not be assigned at account", userPO.getAccountPOs().contains(accountPO));
         userDao.remove(userPO);
     }
 

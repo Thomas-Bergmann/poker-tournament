@@ -29,16 +29,6 @@ public class LoginForm
      */
     private String userID;
 
-    /**
-     * account id after successful login
-     */
-    private String accountID;
-
-    public String getAccountID()
-    {
-        return accountID;
-    }
-
     public String getOrigin()
     {
         return origin;
@@ -67,11 +57,6 @@ public class LoginForm
     public boolean isNowActive()
     {
         return isNowActive;
-    }
-
-    public void setAccountID(String accountID)
-    {
-        this.accountID = accountID;
     }
 
     public void setFillMandatoryFields(boolean fillMandatoryFields)

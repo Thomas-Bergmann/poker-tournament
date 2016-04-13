@@ -1,8 +1,8 @@
 package de.hatoka.account.internal.business;
 
-import de.hatoka.account.capi.business.AccountBusinessFactory;
 import de.hatoka.account.capi.business.UserBO;
 import de.hatoka.account.capi.business.UserBORepository;
+import de.hatoka.account.capi.business.UserBusinessFactory;
 import de.hatoka.account.capi.dao.UserDao;
 import de.hatoka.account.capi.entities.UserPO;
 import de.hatoka.common.capi.exceptions.DuplicateObjectException;
@@ -10,17 +10,12 @@ import de.hatoka.common.capi.exceptions.DuplicateObjectException;
 public class UserBORepositoryImpl implements UserBORepository
 {
     private final UserDao userDao;
-    private final AccountBusinessFactory businessFactory;
+    private final UserBusinessFactory businessFactory;
 
-    public UserBORepositoryImpl(UserDao userDao, AccountBusinessFactory businessFactory)
+    public UserBORepositoryImpl(UserDao userDao, UserBusinessFactory businessFactory)
     {
         this.userDao = userDao;
         this.businessFactory = businessFactory;
-    }
-
-    private UserBO createBO(UserPO userPO)
-    {
-        return businessFactory.getUserBO(userPO);
     }
 
     @Override
@@ -32,9 +27,7 @@ public class UserBORepositoryImpl implements UserBORepository
             throw new DuplicateObjectException("User with login exists: " + login);
         }
         userPO = userDao.createAndInsert(login);
-        UserBO userBO = createBO(userPO);
-        userBO.getAccountBORepository().createAccountBO();
-        return userBO;
+        return businessFactory.getUserBO(userPO);
     }
 
     @Override
@@ -45,7 +38,7 @@ public class UserBORepositoryImpl implements UserBORepository
         {
             return null;
         }
-        return createBO(userPO);
+        return businessFactory.getUserBO(userPO);
     }
 
     @Override
@@ -56,6 +49,6 @@ public class UserBORepositoryImpl implements UserBORepository
         {
             return null;
         }
-        return createBO(userPO);
+        return businessFactory.getUserBO(userPO);
     }
 }

@@ -44,11 +44,4 @@ public class UserDaoJpa extends GenericJPADao<UserPO> implements UserDao
         return result.get(0);
     }
 
-    @Override
-    public void remove(UserPO userPO)
-    {
-        userPO.getAccountPOs().stream().forEach(accountPO->accountPO.setOwner(null));
-        super.remove(userPO);
-    }
-
 }

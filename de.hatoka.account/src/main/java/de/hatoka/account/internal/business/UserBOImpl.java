@@ -12,8 +12,6 @@ import javax.inject.Inject;
 
 import org.slf4j.LoggerFactory;
 
-import de.hatoka.account.capi.business.AccountBORepository;
-import de.hatoka.account.capi.business.AccountBusinessFactory;
 import de.hatoka.account.capi.business.UserBO;
 import de.hatoka.account.capi.config.AccountConfiguration;
 import de.hatoka.account.capi.dao.UserDao;
@@ -36,8 +34,6 @@ public class UserBOImpl implements UserBO
     private static final String RESOURCE_PREFIX = "de/hatoka/account/internal/templates/mail/";
     private static final CountryHelper COUNTRY_HELPER = new CountryHelper();
 
-    @Inject
-    private AccountBusinessFactory businessFactory;
     @Inject
     private UserDao userDao;
     @Inject
@@ -127,12 +123,6 @@ public class UserBOImpl implements UserBO
     }
 
     @Override
-    public AccountBORepository getAccountBORepository()
-    {
-        return businessFactory.getAccountBORepository(userPO);
-    }
-
-    @Override
     public String getEmail()
     {
         return userPO.getEmail();
@@ -218,7 +208,7 @@ public class UserBOImpl implements UserBO
             throw new RuntimeException("User has no email address.");
         }
         userPO.setSignInToken(uuidGenerator.generate());
-        MailPO mail = createSignUpVerifyMail(uri, userPO.getAccountPOs().iterator().next().getId());
+        MailPO mail = createSignUpVerifyMail(uri, userPO.getId());
         mailService.sendMail(mail);
     }
 

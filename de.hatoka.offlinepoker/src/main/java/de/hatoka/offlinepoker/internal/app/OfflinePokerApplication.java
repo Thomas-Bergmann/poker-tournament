@@ -10,7 +10,6 @@ import javax.ws.rs.core.Application;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
-import de.hatoka.account.internal.app.servlets.AccountService;
 import de.hatoka.account.internal.app.servlets.LoginService;
 import de.hatoka.account.internal.modules.AccountBusinessModule;
 import de.hatoka.account.internal.modules.AccountConfigurationModule;
@@ -75,7 +74,6 @@ public class OfflinePokerApplication extends Application
         result.add(PlayerListService.class);
         result.add(AccountRequestFilter.class);
         result.add(LoginService.class);
-        result.add(AccountService.class);
         return result;
     }
 

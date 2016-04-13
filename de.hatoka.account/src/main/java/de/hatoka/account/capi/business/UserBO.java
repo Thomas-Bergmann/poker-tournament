@@ -24,11 +24,6 @@ public interface UserBO
     boolean applySignInToken(String token);
 
     /**
-     * @return accounts of owner
-     */
-    AccountBORepository getAccountBORepository();
-
-    /**
      * @return email of user
      */
     String getEmail();
