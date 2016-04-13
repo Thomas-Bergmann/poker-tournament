@@ -1,6 +1,6 @@
 Offline Poker Tournament and Cash Game Organizer
 
-![Travis CI](https://travis-ci.org/OfflinePoker/Tournament.svg?branch=master) ![Coverall.IO](https://coveralls.io/repos/OfflinePoker/Tournament/badge.png)
+[![Build Status](https://travis-ci.org/Thomas-Bergmann/Tournament.svg?branch=master)](https://travis-ci.org/Thomas-Bergmann/Tournament)
 
 # Introduction
 
