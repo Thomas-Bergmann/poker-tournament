@@ -10,10 +10,6 @@ import javax.ws.rs.core.Application;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
-import de.hatoka.account.internal.app.servlets.LoginService;
-import de.hatoka.account.internal.modules.AccountBusinessModule;
-import de.hatoka.account.internal.modules.AccountConfigurationModule;
-import de.hatoka.account.internal.modules.AccountDaoJpaModule;
 import de.hatoka.common.capi.app.servlet.ResourceService;
 import de.hatoka.common.capi.app.servlet.ServletConstants;
 import de.hatoka.common.capi.modules.CommonDaoModule;
@@ -34,6 +30,10 @@ import de.hatoka.tournament.internal.app.servlets.TournamentService;
 import de.hatoka.tournament.internal.app.servlets.TournamentTableService;
 import de.hatoka.tournament.internal.modules.TournamentBusinessModule;
 import de.hatoka.tournament.internal.modules.TournamentDaoJpaModule;
+import de.hatoka.user.internal.app.servlets.LoginService;
+import de.hatoka.user.internal.modules.UserBusinessModule;
+import de.hatoka.user.internal.modules.UserConfigurationModule;
+import de.hatoka.user.internal.modules.UserDaoJpaModule;
 
 /**
  * Registers all request resources
@@ -45,9 +45,9 @@ public class OfflinePokerApplication extends Application
     public OfflinePokerApplication()
     {
         injector = Guice.createInjector(new CommonDaoModule(), new CommonDateModule(),
-                        new AccountDaoJpaModule(), new AccountBusinessModule(),
+                        new UserDaoJpaModule(), new UserBusinessModule(),
                         new TournamentDaoJpaModule(), new TournamentBusinessModule(),
-                        new MailDaoJpaModule(), new MailServiceModule(), new MailServiceConfigurationModule(), new AccountConfigurationModule(),
+                        new MailDaoJpaModule(), new MailServiceModule(), new MailServiceConfigurationModule(), new UserConfigurationModule(),
                         new JpaDBModule("OfflinePokerPU"));
     }
 
