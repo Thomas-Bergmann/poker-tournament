@@ -84,7 +84,7 @@ subprojects {
     }
 }
 
-project('de.hatoka.account')
+project('de.hatoka.user')
 {
     sourceSets {
         main {
@@ -176,7 +176,7 @@ project('de.hatoka.offlinepoker')
     apply plugin: "war"
     dependencies {
         compile project(":de.hatoka.tournament")
-        compile project(":de.hatoka.account")
+        compile project(":de.hatoka.user")
 
         compile 'org.eclipse.jetty:jetty-server:9.3.5.v20151012'
         compile 'org.eclipse.jetty:jetty-servlet:9.3.5.v20151012'
