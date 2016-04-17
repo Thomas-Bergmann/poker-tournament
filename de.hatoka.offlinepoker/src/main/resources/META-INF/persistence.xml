@@ -13,8 +13,7 @@
         <class>de.hatoka.mail.capi.entities.MailReceiverPO</class>
         <class>de.hatoka.mail.capi.entities.MailResultReceiverPO</class>
 
-		<class>de.hatoka.account.capi.entities.UserPO</class>
-		<class>de.hatoka.account.capi.entities.AccountPO</class>
+		<class>de.hatoka.user.capi.entities.UserPO</class>
 
 		<class>de.hatoka.tournament.capi.entities.TournamentPO</class>
 		<class>de.hatoka.tournament.capi.entities.BlindLevelPO</class>

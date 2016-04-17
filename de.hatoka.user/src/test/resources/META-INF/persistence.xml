@@ -9,7 +9,6 @@
 		<!-- otherwise they must be listed using <class> -->
 		<exclude-unlisted-classes>false</exclude-unlisted-classes>
 		<class>de.hatoka.user.capi.entities.UserPO</class>
-		<class>de.hatoka.user.capi.entities.AccountPO</class>
 		<properties>
 			<property name="javax.persistence.jdbc.url" value="jdbc:derby:build/testdb;create=true" />
 			<property name="javax.persistence.schema-generation.database.action" value="drop-and-create" />
