@@ -2,6 +2,7 @@ package de.hatoka.tournament.internal.app.servlets;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.FormParam;
@@ -79,7 +80,7 @@ public class TournamentService extends AbstractService
     public Response screen()
     {
         TournamentAction action = getTournamentAction();
-        final TournamentBigScreenModel model = action.getTournamentBigScreenModel();
+        final TournamentBigScreenModel model = action.getTournamentBigScreenModel(getInjector().getProvider(Date.class).get());
         try
         {
             String content = renderStyleSheet(model, "tournament_bigscreen.xslt", getXsltProcessorParameter("tournament"));
@@ -96,19 +97,14 @@ public class TournamentService extends AbstractService
     public Response saveConfiguration(@FormParam("name") String name, @FormParam("initialStack") Integer initialStack, @FormParam("smallestTable") Integer smallestTable,
                     @FormParam("largestTable") Integer largestTable, @FormParam("reBuy") BigDecimal reBuy)
     {
-        runInTransaction(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
-                TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(getAccountRef());
-                TournamentBO tournament = tournamentBORepository.getTournamentByID(tournamentID);
-                tournament.setMaximumNumberOfPlayersPerTable(largestTable);
-                tournament.setInitialStacksize(initialStack);
-                tournament.setName(name);
-                tournament.setReBuy(reBuy);
-            }
+        runInTransaction(() -> {
+            TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
+            TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(getAccountRef());
+            TournamentBO tournament = tournamentBORepository.getTournamentByID(tournamentID);
+            tournament.setMaximumNumberOfPlayersPerTable(largestTable);
+            tournament.setInitialStacksize(initialStack);
+            tournament.setName(name);
+            tournament.setReBuy(reBuy);
         });
         return redirect(METHOD_NAME_LIST, tournamentID);
     }

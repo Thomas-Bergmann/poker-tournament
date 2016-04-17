@@ -1,6 +1,7 @@
 package de.hatoka.tournament.internal.app.actions;
 
 import java.net.URI;
+import java.util.Date;
 import java.util.List;
 
 import de.hatoka.common.capi.app.model.SelectOptionVO;
@@ -49,9 +50,9 @@ public class TournamentAction extends GameAction<TournamentBO>
         return result;
     }
 
-    public TournamentBigScreenModel getTournamentBigScreenModel()
+    public TournamentBigScreenModel getTournamentBigScreenModel(Date currentTime)
     {
-        return new TournamentBigScreenModel(getGame());
+        return new TournamentBigScreenModel(getGame(), currentTime);
     }
 
 }

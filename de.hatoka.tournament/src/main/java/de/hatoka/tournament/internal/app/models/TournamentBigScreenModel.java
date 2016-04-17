@@ -23,7 +23,7 @@ public class TournamentBigScreenModel
     {
     }
 
-    public TournamentBigScreenModel(TournamentBO tournamentBO)
+    public TournamentBigScreenModel(TournamentBO tournamentBO, Date currentTime)
     {
         this.currentAmountPlayer = tournamentBO.getActiveCompetitors().size();
         this.maxAmountPlayers = tournamentBO.getCompetitors().size();
@@ -33,6 +33,7 @@ public class TournamentBigScreenModel
         this.nextBlindLevel = nextBlindLevelBO == null ? null : new BlindLevelVO(nextBlindLevelBO);
         PauseBO pause = tournamentBO.getNextPause();
         this.nextPauseTime = pause == null ? null : pause.getStartTime();
+        this.currentTime = currentTime;
     }
 
     public BlindLevelVO getCurrentBlindLevel()
