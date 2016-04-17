@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.net.URI;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -232,6 +233,7 @@ public class TournamentTemplateTest
         TournamentBigScreenModel model = new TournamentBigScreenModel();
         model.setCurrentTime(parseDate("2011-11-25T18:35"));
         model.setNextPauseTime(parseDate("2011-11-25T19:15"));
+        model.setDuration(Duration.ofMillis(parseDate("2011-11-25T18:50").getTime() - parseDate("2011-11-25T18:43").getTime()));
         TournamentVO tournamentVO = getTournamentVO("123456", "Test 1", parseDate("2011-11-25T18:00"));
         tournamentVO.setBuyIn(new MoneyVO(Money.valueOf("5", "USD")));
         model.setCurrentAmountPlayer(15);
@@ -243,7 +245,7 @@ public class TournamentTemplateTest
         String content = RENDERER.render(model, RESOURCE_PREFIX + "tournament_bigscreen.xslt", getParameter());
         // String content = new XMLRenderer().render(model);
 
-        Assert.assertEquals("overview not correct", getResource("tournament_bigscreen.result.xml"), content);
+        // Assert.assertEquals("overview not correct", getResource("tournament_bigscreen.result.xml"), content);
         XMLAssert.assertXMLEqual("overview not correct", getResource("tournament_bigscreen.result.xml"), content);
     }
 

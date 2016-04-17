@@ -16,7 +16,13 @@
 			          </xsl:with-param>
 			        </xsl:call-template>
 				</td>
-				<td rowspan="2">Current Level<br/>09:10</td>
+				<td rowspan="2">Current Level<br/>
+			        <xsl:call-template name="formatMinutes">
+			          <xsl:with-param name="duration">
+			            <xsl:value-of select="tournamentBigScreenModel/@duration" />
+			          </xsl:with-param>
+			        </xsl:call-template>
+				</td>
 				<td>Players left<br/><xsl:value-of select="tournamentBigScreenModel/currentAmountPlayer" />/<xsl:value-of select="tournamentBigScreenModel/maxAmountPlayers" /></td>
 			</tr>
 			<tr>

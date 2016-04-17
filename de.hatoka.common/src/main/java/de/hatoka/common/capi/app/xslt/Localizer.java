@@ -84,4 +84,11 @@ public interface Localizer
     {
         return formatPercentage(floatString, "0");
     }
+
+    /**
+     * Format duration object to mm:ss
+     * @param duration
+     * @return formatted duration
+     */
+    String formatMinutes(String durationString);
 }

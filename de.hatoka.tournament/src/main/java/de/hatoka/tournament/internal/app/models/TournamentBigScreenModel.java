@@ -1,9 +1,14 @@
 package de.hatoka.tournament.internal.app.models;
 
+import java.time.Duration;
 import java.util.Date;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import de.hatoka.common.capi.app.xslt.DurationXmlAdapter;
 import de.hatoka.tournament.capi.business.BlindLevelBO;
 import de.hatoka.tournament.capi.business.PauseBO;
 import de.hatoka.tournament.capi.business.TournamentBO;
@@ -18,6 +23,10 @@ public class TournamentBigScreenModel
     private int maxAmountPlayers = 0;
     private Date currentTime;
     private Date nextPauseTime;
+
+    @XmlAttribute
+    @XmlJavaTypeAdapter(DurationXmlAdapter.class)
+    private Duration duration;
 
     public TournamentBigScreenModel()
     {
@@ -34,6 +43,7 @@ public class TournamentBigScreenModel
         PauseBO pause = tournamentBO.getNextPause();
         this.nextPauseTime = pause == null ? null : pause.getStartTime();
         this.currentTime = currentTime;
+        this.duration = Duration.ofMillis(currentBlindLevelBO.getEndTime().getTime() - currentTime.getTime());
     }
 
     public BlindLevelVO getCurrentBlindLevel()
@@ -104,5 +114,16 @@ public class TournamentBigScreenModel
     public void setNextPauseTime(Date nextPauseTime)
     {
         this.nextPauseTime = nextPauseTime;
+    }
+
+    @XmlTransient
+    public Duration getDuration()
+    {
+        return duration;
+    }
+
+    public void setDuration(Duration duration)
+    {
+        this.duration = duration;
     }
 }

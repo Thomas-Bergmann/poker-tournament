@@ -105,4 +105,10 @@ public class PauseBOImpl implements PauseBO
         return null;
     }
 
+    @Override
+    public Date getEndTime()
+    {
+        return new Date(getStartTime().getTime() + getDuration() * 60_000);
+    }
+
 }

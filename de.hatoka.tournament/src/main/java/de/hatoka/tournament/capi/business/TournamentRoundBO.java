@@ -35,6 +35,11 @@ public interface TournamentRoundBO
    Date getStartTime();
 
    /**
+    * @return the start date (time) of the round
+    */
+   Date getEndTime();
+
+   /**
     * @return true in case this round is active
     */
    boolean isActive();

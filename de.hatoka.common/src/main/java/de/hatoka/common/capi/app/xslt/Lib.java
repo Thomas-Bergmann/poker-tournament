@@ -12,6 +12,11 @@ public class Lib
 {
     public static final String XSLT_LOCALIZER = "localizer";
 
+    public static String formatMinutes(Localizer localizer, String durationString)
+    {
+        return localizer.formatMinutes(durationString);
+    }
+
     public static String formatPercentage(Localizer localizer, String floatString)
     {
         return localizer.formatPercentage(floatString);

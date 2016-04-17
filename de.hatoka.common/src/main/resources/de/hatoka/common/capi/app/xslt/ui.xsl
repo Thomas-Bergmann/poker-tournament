@@ -108,6 +108,10 @@
     <xsl:param name="amount" />
     <xsl:value-of select="hatoka:formatPercentage($localizer, $amount)" />
   </xsl:template>
+  <xsl:template name="formatMinutes">
+    <xsl:param name="duration" />
+    <xsl:value-of select="hatoka:formatMinutes($localizer, $duration)" />
+  </xsl:template>
 
 
   <xsl:template name="head">

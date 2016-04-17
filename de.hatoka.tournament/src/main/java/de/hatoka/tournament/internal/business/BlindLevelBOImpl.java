@@ -126,4 +126,9 @@ public class BlindLevelBOImpl implements BlindLevelBO
         return blindLevelPO.getPosition() == blindLevelPO.getTournamentPO().getCurrentRound();
     }
 
+    @Override
+    public Date getEndTime()
+    {
+        return new Date(getStartTime().getTime() + getDuration() * 60_000);
+    }
 }

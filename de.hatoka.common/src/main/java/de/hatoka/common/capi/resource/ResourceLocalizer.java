@@ -209,4 +209,11 @@ public class ResourceLocalizer implements Localizer
             throw new IllegalArgumentException(e);
         }
     }
+
+    @Override
+    public String formatMinutes(String durationString)
+    {
+        // use "mm:ss" format
+        return durationString;
+    }
 }
