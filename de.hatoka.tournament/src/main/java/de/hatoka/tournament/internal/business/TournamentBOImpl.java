@@ -5,7 +5,6 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -331,14 +330,7 @@ public class TournamentBOImpl implements TournamentBO
     public List<TournamentRoundBO> getTournamentRounds()
     {
         List<BlindLevelPO> blindLevels = new ArrayList<>(tournamentPO.getBlindLevels());
-        blindLevels.sort(new Comparator<BlindLevelPO>()
-        {
-            @Override
-            public int compare(BlindLevelPO o1, BlindLevelPO o2)
-            {
-                return o1.getPosition().compareTo(o2.getPosition());
-            }
-        });
+        blindLevels.sort((o1, o2) -> o1.getPosition().compareTo(o2.getPosition()));
         List<TournamentRoundBO> result = new ArrayList<TournamentRoundBO>(blindLevels.size());
         for (BlindLevelPO blindLevelPO : blindLevels)
         {
@@ -718,6 +710,23 @@ public class TournamentBOImpl implements TournamentBO
             return (BlindLevelBO) nextRound;
         }
         return null;
+    }
+
+    @Override
+    public PauseBO getNextPause()
+    {
+        int currentRoundIdx = tournamentPO.getCurrentRound();
+        if (currentRoundIdx == -1)
+        {
+            currentRoundIdx = 0;
+        }
+        final List<TournamentRoundBO> blindLevels = getTournamentRounds();
+        TournamentRoundBO nextRound = blindLevels.get(currentRoundIdx++);
+        while(nextRound != null && !(nextRound instanceof PauseBO))
+        {
+            nextRound = blindLevels.get(currentRoundIdx++);
+        }
+        return (PauseBO) nextRound;
     }
 
 }

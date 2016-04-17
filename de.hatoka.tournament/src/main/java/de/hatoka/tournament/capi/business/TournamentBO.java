@@ -216,4 +216,9 @@ public interface TournamentBO extends GameBO
      *         <li>in case the tournament is over, it return null
      */
     BlindLevelBO getNextBlindLevel();
+
+    /**
+     * @return next pause or null in case there is no pause
+     */
+    PauseBO getNextPause();
 }

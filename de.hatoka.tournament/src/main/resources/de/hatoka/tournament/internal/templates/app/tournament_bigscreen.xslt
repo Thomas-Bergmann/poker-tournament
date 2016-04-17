@@ -9,12 +9,24 @@
     <div>
 		<table class="bigscreen" border="1">
 			<tr>
-				<td>Current Time<br/>16:01</td>
+				<td>Current Time<br/>
+			        <xsl:call-template name="formatTime">
+			          <xsl:with-param name="date">
+			            <xsl:value-of select="tournamentBigScreenModel/currentTime" />
+			          </xsl:with-param>
+			        </xsl:call-template>
+				</td>
 				<td rowspan="2">Current Level<br/>09:10</td>
 				<td>Players left<br/><xsl:value-of select="tournamentBigScreenModel/currentAmountPlayer" />/<xsl:value-of select="tournamentBigScreenModel/maxAmountPlayers" /></td>
 			</tr>
 			<tr>
-				<td>Next Pause<br/>17:50</td>
+				<td>Next Pause<br/>
+			        <xsl:call-template name="formatTime">
+			          <xsl:with-param name="date">
+			            <xsl:value-of select="tournamentBigScreenModel/nextPauseTime" />
+			          </xsl:with-param>
+			        </xsl:call-template>
+				</td>
 				<td>Stack Average<br/><xsl:value-of select="tournamentBigScreenModel/averageStackSize" /></td>
 			</tr>
 			<tr class="currentLevel">

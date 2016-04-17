@@ -1,6 +1,12 @@
 package de.hatoka.tournament.internal.business;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import de.hatoka.tournament.capi.business.CashGameBO;
 import de.hatoka.tournament.capi.business.PlayerBO;
+import de.hatoka.tournament.capi.business.TournamentBO;
+import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
 import de.hatoka.tournament.capi.dao.PlayerDao;
 import de.hatoka.tournament.capi.entities.PlayerPO;
 
@@ -8,11 +14,13 @@ public class PlayerBOImpl implements PlayerBO
 {
     private PlayerPO playerPO;
     private final PlayerDao playerDao;
+    private final TournamentBusinessFactory tournamentFactory;
 
-    public PlayerBOImpl(PlayerPO playerPO, PlayerDao playerDao)
+    public PlayerBOImpl(PlayerPO playerPO, PlayerDao playerDao, TournamentBusinessFactory tournamentFactory)
     {
         this.playerPO = playerPO;
         this.playerDao = playerDao;
+        this.tournamentFactory = tournamentFactory;
     }
 
     @Override
@@ -73,6 +81,18 @@ public class PlayerBOImpl implements PlayerBO
     public void seetEMail(String eMail)
     {
         playerPO.setEMail(eMail);
+    }
+
+    @Override
+    public List<TournamentBO> getTournaments()
+    {
+        return playerPO.getCompetitors().stream().map(c -> c.getTournamentPO()).filter(t -> !t.isCashGame()).map(t -> tournamentFactory.getTournamentBO(t)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CashGameBO> getCashGames()
+    {
+        return playerPO.getCompetitors().stream().map(c -> c.getTournamentPO()).filter(t -> t.isCashGame()).map(t -> tournamentFactory.getCashGameBO(t)).collect(Collectors.toList());
     }
 
 }

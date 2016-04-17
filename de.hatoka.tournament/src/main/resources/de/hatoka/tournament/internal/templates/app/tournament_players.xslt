@@ -12,6 +12,7 @@
           <th>Select</th>
           <th>Name</th>
           <th>Active</th>
+          <th>Status</th>
           <th>Table (Seat)</th>
           <th>In Play</th>
           <th>Result</th>
@@ -31,6 +32,9 @@
               <xsl:if test="active = 'true'">active</xsl:if>
               <xsl:if test="active != 'true'">inactive</xsl:if>
             </td>
+            <td>
+              <xsl:value-of select="status" />
+            </td>
             <td><xsl:if test="tableNo != ''"><xsl:call-template name="formatInteger">
                 <xsl:with-param name="amount"><xsl:value-of select="tableNo" /></xsl:with-param>
             </xsl:call-template> (<xsl:call-template name="formatInteger">
@@ -48,6 +52,10 @@
       </table>
       <xsl:call-template name="button">
         <xsl:with-param name="name">buyin</xsl:with-param>
+      </xsl:call-template>
+      <xsl:call-template name="button">
+        <xsl:with-param name="name">delete</xsl:with-param>
+        <xsl:with-param name="cssClass">btn</xsl:with-param>
       </xsl:call-template>
     </form>
   </xsl:template>

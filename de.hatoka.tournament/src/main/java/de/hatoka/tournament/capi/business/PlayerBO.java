@@ -1,5 +1,7 @@
 package de.hatoka.tournament.capi.business;
 
+import java.util.List;
+
 /**
  * A player can attend at multiple tournaments as competitor
  */
@@ -30,4 +32,14 @@ public interface PlayerBO
     * Sets email address of a player
     */
    void seetEMail(String email);
+
+   /**
+    * @return list of attended tournaments
+    */
+   List<TournamentBO> getTournaments();
+
+   /**
+    * @return list of attended cashgames
+    */
+   List<CashGameBO> getCashGames();
 }

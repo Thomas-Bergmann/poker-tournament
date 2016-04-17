@@ -81,7 +81,7 @@ public class TournamentBusinessFactoryImpl implements TournamentBusinessFactory
     @Override
     public PlayerBO getPlayerBO(PlayerPO playerPO)
     {
-        return new PlayerBOImpl(playerPO, playerDao);
+        return new PlayerBOImpl(playerPO, playerDao, this);
     }
 
     @Override

@@ -4,6 +4,8 @@
 <th>Select</th>
 <th>Name</th>
 <th>EMail</th>
+<th>Tournaments</th>
+<th>CashGames</th>
 </tr>
 <tr>
 <td>
@@ -13,6 +15,8 @@
 </td>
 <td>Player 3</td>
 <td>mail3@test.hatoka.de</td>
+<td>1</td>
+<td>2</td>
 </tr>
 <tr>
 <td>
@@ -22,6 +26,8 @@
 </td>
 <td>Player 2</td>
 <td>mail2@test.hatoka.de</td>
+<td>1</td>
+<td>2</td>
 </tr>
 </table>
 <button name="delete" type="submit" class="btn btn-primary">Delete</button>

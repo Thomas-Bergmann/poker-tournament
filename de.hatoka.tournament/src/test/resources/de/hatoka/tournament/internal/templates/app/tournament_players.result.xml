@@ -4,6 +4,7 @@
 <th>Select</th>
 <th>Name</th>
 <th>Active</th>
+<th>Status</th>
 <th>Table (Seat)</th>
 <th>In Play</th>
 <th>Result</th>
@@ -13,6 +14,7 @@
 </td>
 <td>Player 1</td>
 <td>active</td>
+<td />
 <td>1,111 (7)</td>
 <td>1 $</td>
 <td>-</td>
@@ -26,9 +28,11 @@
 <td>Player 2</td>
 <td>inactive</td>
 <td />
+<td />
 <td>1 $</td>
 <td>-1 $</td>
 </tr>
 </table>
 <button name="buyin" type="submit" class="btn btn-primary">Buy-In</button>
+<button name="delete" type="submit" class="btn">Delete</button>
 </form>

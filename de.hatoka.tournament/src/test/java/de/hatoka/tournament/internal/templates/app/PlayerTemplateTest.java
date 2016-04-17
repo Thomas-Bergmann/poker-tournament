@@ -1,5 +1,7 @@
 package de.hatoka.tournament.internal.templates.app;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Locale;
@@ -47,6 +49,8 @@ public class PlayerTemplateTest
     {
         PlayerVO result = TournamentViewObjectHelper.getPlayerVO(id, name);
         result.seteMail(eMail);
+        result.setCountTournaments(1);
+        result.setCountCashGames(2);
         return result;
     }
 
@@ -59,7 +63,7 @@ public class PlayerTemplateTest
         String content = RENDERER.render(model, RESOURCE_PREFIX + "player_list.xslt", getParameter());
         // String content = new XMLRenderer().render(model);
 
-        // Assert.assertEquals("players not listed correctly", getResource("player_list.result.xml"), content);
+        assertEquals("players not listed correctly", getResource("player_list.result.xml"), content);
         XMLAssert.assertXMLEqual("players not listed correctly", getResource("player_list.result.xml"), content);
     }
 

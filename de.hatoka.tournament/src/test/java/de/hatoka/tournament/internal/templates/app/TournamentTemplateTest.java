@@ -230,6 +230,8 @@ public class TournamentTemplateTest
     public void testTournamentBigScreen() throws Exception
     {
         TournamentBigScreenModel model = new TournamentBigScreenModel();
+        model.setCurrentTime(parseDate("2011-11-25T18:35"));
+        model.setNextPauseTime(parseDate("2011-11-25T19:15"));
         TournamentVO tournamentVO = getTournamentVO("123456", "Test 1", parseDate("2011-11-25T18:00"));
         tournamentVO.setBuyIn(new MoneyVO(Money.valueOf("5", "USD")));
         model.setCurrentAmountPlayer(15);

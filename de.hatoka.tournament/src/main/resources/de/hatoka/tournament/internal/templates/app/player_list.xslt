@@ -14,6 +14,8 @@ xmlns:hatoka="xalan://de.hatoka.common.capi.app.xslt.Lib"
            <th>Select</th>
            <th>Name</th>
            <th>EMail</th>
+           <th>Tournaments</th>
+           <th>CashGames</th>
          </tr>
          <xsl:apply-templates />
        </table>
@@ -35,6 +37,12 @@ xmlns:hatoka="xalan://de.hatoka.common.capi.app.xslt.Lib"
       </td>
       <td>
         <xsl:value-of select="eMail" />
+      </td>
+      <td>
+        <xsl:value-of select="countTournaments" />
+      </td>
+      <td>
+        <xsl:value-of select="countCashGames" />
       </td>
     </tr>
   </xsl:template>

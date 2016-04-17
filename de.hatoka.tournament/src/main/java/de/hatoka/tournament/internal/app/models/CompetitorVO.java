@@ -12,6 +12,7 @@ public class CompetitorVO
     private String id;
     private String playerId;
     private String playerName;
+    private String status;
 
     private MoneyVO inPlay;
     private MoneyVO result;
@@ -38,6 +39,7 @@ public class CompetitorVO
         active = competitor.isActive();
         tableNo = competitor.getTableNo() == null ? null : competitor.getTableNo() + 1;
         seatNo = competitor.getSeatNo() == null ? null : competitor.getSeatNo() + 1;
+        status = competitor.getState().name();
     }
 
     public String getId()
@@ -138,6 +140,16 @@ public class CompetitorVO
     public void setSeatNo(Integer seatNo)
     {
         this.seatNo = seatNo;
+    }
+
+    public String getStatus()
+    {
+        return status;
+    }
+
+    public void setStatus(String status)
+    {
+        this.status = status;
     }
 
 }
