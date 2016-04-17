@@ -13,6 +13,8 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.inject.Provider;
+
 import de.hatoka.common.capi.business.Money;
 import de.hatoka.common.capi.entities.MoneyPO;
 import de.hatoka.tournament.capi.business.BlindLevelBO;
@@ -39,7 +41,7 @@ import de.hatoka.tournament.capi.entities.TournamentPO;
 import de.hatoka.tournament.capi.types.CompetitorState;
 import de.hatoka.tournament.capi.types.HistoryEntryType;
 
-public class TournamentBOImpl implements TournamentBO
+public class TournamentBOImpl implements TournamentBO, ITournamentBO
 {
     private TournamentPO tournamentPO;
     private final TournamentDao tournamentDao;
@@ -47,10 +49,12 @@ public class TournamentBOImpl implements TournamentBO
     private final PlayerDao playerDao;
     private final BlindLevelDao blindLevelDao;
     private final RankDao rankDao;
+    private final Provider<Date> currentDateProvider;
     private final TournamentBusinessFactory factory;
 
-    public TournamentBOImpl(TournamentPO tournamentPO, TournamentDao tournamentDao, CompetitorDao competitorDao, PlayerDao playerDao, BlindLevelDao blindLevelDao, RankDao rankDao,
-                    TournamentBusinessFactory factory)
+    public TournamentBOImpl(TournamentPO tournamentPO, TournamentDao tournamentDao, CompetitorDao competitorDao,
+                    PlayerDao playerDao, BlindLevelDao blindLevelDao, RankDao rankDao,
+                    Provider<Date> currentDateProvider, TournamentBusinessFactory factory)
     {
         this.tournamentPO = tournamentPO;
         this.tournamentDao = tournamentDao;
@@ -58,6 +62,7 @@ public class TournamentBOImpl implements TournamentBO
         this.playerDao = playerDao;
         this.blindLevelDao = blindLevelDao;
         this.rankDao = rankDao;
+        this.currentDateProvider = currentDateProvider;
         this.factory = factory;
     }
 
@@ -103,7 +108,7 @@ public class TournamentBOImpl implements TournamentBO
         {
             return null;
         }
-        if(blindLevels.get(currentRound).isRebuyAllowed())
+        if (blindLevels.get(currentRound).isRebuyAllowed())
         {
             return Money.valueOf(tournamentPO.getReBuy());
         }
@@ -128,7 +133,8 @@ public class TournamentBOImpl implements TournamentBO
 
     private Money getResultForPosition(int position)
     {
-        List<RankBO> assignedRanks = getRanks().stream().filter(rankBO -> rankBO.getFirstPosition() <= position && position <= rankBO.getLastPosition())
+        List<RankBO> assignedRanks = getRanks().stream()
+                        .filter(rankBO -> rankBO.getFirstPosition() <= position && position <= rankBO.getLastPosition())
                         .collect(Collectors.toList());
         if (assignedRanks.isEmpty())
         {
@@ -203,7 +209,8 @@ public class TournamentBOImpl implements TournamentBO
     public boolean isCompetitor(PlayerBO player)
     {
         String playerID = player.getID();
-        return tournamentPO.getCompetitors().stream().anyMatch(competitorPO -> competitorPO.getPlayerPO().getId().equals(playerID));
+        return tournamentPO.getCompetitors().stream()
+                        .anyMatch(competitorPO -> competitorPO.getPlayerPO().getId().equals(playerID));
     }
 
     @Override
@@ -294,13 +301,13 @@ public class TournamentBOImpl implements TournamentBO
         blindLevelPO.setBigBlind(bigBlind);
         blindLevelPO.setAnte(ante);
         blindLevelPO.setPosition(nextLevel);
-        return factory.getBlindLevelBO(blindLevelPO);
+        return factory.getBlindLevelBO(blindLevelPO, this);
     }
 
     private int getNextBlindLevelPositon()
     {
         int result = -1;
-        for(BlindLevelPO bl : tournamentPO.getBlindLevels())
+        for (BlindLevelPO bl : tournamentPO.getBlindLevels())
         {
             if (bl.getPosition() > result)
             {
@@ -317,7 +324,7 @@ public class TournamentBOImpl implements TournamentBO
         BlindLevelPO blindLevelPO = blindLevelDao.createAndInsert(tournamentPO, duration);
         blindLevelPO.setPause(true);
         blindLevelPO.setPosition(nextLevel);
-        return factory.getPauseBO(blindLevelPO);
+        return factory.getPauseBO(blindLevelPO, this);
     }
 
     @Override
@@ -329,18 +336,17 @@ public class TournamentBOImpl implements TournamentBO
     @Override
     public List<TournamentRoundBO> getTournamentRounds()
     {
-        List<BlindLevelPO> blindLevels = new ArrayList<>(tournamentPO.getBlindLevels());
-        blindLevels.sort((o1, o2) -> o1.getPosition().compareTo(o2.getPosition()));
+        List<BlindLevelPO> blindLevels = getBlindLevelPOs();
         List<TournamentRoundBO> result = new ArrayList<TournamentRoundBO>(blindLevels.size());
         for (BlindLevelPO blindLevelPO : blindLevels)
         {
             if (blindLevelPO.isPause())
             {
-                result.add(factory.getPauseBO(blindLevelPO));
+                result.add(factory.getPauseBO(blindLevelPO, this));
             }
             else
             {
-                result.add(factory.getBlindLevelBO(blindLevelPO));
+                result.add(factory.getBlindLevelBO(blindLevelPO, this));
             }
         }
         return result;
@@ -409,7 +415,9 @@ public class TournamentBOImpl implements TournamentBO
 
     private int determineNumberTables(long competitorSize)
     {
-        return new BigDecimal(competitorSize).divide(new BigDecimal(getMaximumNumberOfPlayersPerTable()), 0, RoundingMode.CEILING).intValue();
+        return new BigDecimal(competitorSize)
+                        .divide(new BigDecimal(getMaximumNumberOfPlayersPerTable()), 0, RoundingMode.CEILING)
+                        .intValue();
     }
 
     @Override
@@ -421,7 +429,8 @@ public class TournamentBOImpl implements TournamentBO
     private List<ITableBO> getInternalTables()
     {
         List<ITableBO> result = new ArrayList<>();
-        for (CompetitorBO competitor : getActiveCompetitorBOStream().filter(c -> c.getTableNo() != null).collect(Collectors.toList()))
+        for (CompetitorBO competitor : getActiveCompetitorBOStream().filter(c -> c.getTableNo() != null)
+                        .collect(Collectors.toList()))
         {
             int tableNo = competitor.getTableNo();
             while(result.size() <= tableNo)
@@ -545,6 +554,8 @@ public class TournamentBOImpl implements TournamentBO
     @Override
     public void start()
     {
+        tournamentPO.setDate(currentDateProvider.get());
+        defineBlindLevelStartTimes();
         tournamentPO.setCurrentRound(0);
     }
 
@@ -562,7 +573,8 @@ public class TournamentBOImpl implements TournamentBO
     @Override
     public List<CompetitorBO> getPlacedCompetitors()
     {
-        return getCompetitorBOStream().filter(c -> CompetitorState.OUT.equals(c.getState())).collect(Collectors.toList());
+        return getCompetitorBOStream().filter(c -> CompetitorState.OUT.equals(c.getState()))
+                        .collect(Collectors.toList());
     }
 
     @Override
@@ -607,7 +619,7 @@ public class TournamentBOImpl implements TournamentBO
     private void placeCompetitorAtFreePlace(CompetitorBO competitorBO, ITableBO table)
     {
         HashSet<Integer> seats = new HashSet<>(getMaximumNumberOfPlayersPerTable());
-        for(int i=0; i< getMaximumNumberOfPlayersPerTable();i++)
+        for (int i = 0; i < getMaximumNumberOfPlayersPerTable(); i++)
         {
             seats.add(Integer.valueOf(i));
         }
@@ -678,10 +690,11 @@ public class TournamentBOImpl implements TournamentBO
     public BlindLevelBO getCurrentBlindLevel()
     {
         final List<TournamentRoundBO> blindLevels = getTournamentRounds();
-        TournamentRoundBO currentRound = blindLevels.get(tournamentPO.getCurrentRound() == -1 ? 0 : tournamentPO.getCurrentRound());
+        TournamentRoundBO currentRound = blindLevels
+                        .get(tournamentPO.getCurrentRound() == -1 ? 0 : tournamentPO.getCurrentRound());
         if (currentRound instanceof BlindLevelBO)
         {
-            return (BlindLevelBO) currentRound;
+            return (BlindLevelBO)currentRound;
         }
         return null;
     }
@@ -707,7 +720,7 @@ public class TournamentBOImpl implements TournamentBO
         TournamentRoundBO nextRound = blindLevels.get(currentRoundIdx);
         if (nextRound instanceof BlindLevelBO)
         {
-            return (BlindLevelBO) nextRound;
+            return (BlindLevelBO)nextRound;
         }
         return null;
     }
@@ -726,7 +739,39 @@ public class TournamentBOImpl implements TournamentBO
         {
             nextRound = blindLevels.get(currentRoundIdx++);
         }
-        return (PauseBO) nextRound;
+        return (PauseBO)nextRound;
     }
 
+    @Override
+    public void defineBlindLevelStartTimes()
+    {
+        Date nextStart = tournamentPO.getDate();
+        if (nextStart == null)
+        {
+            nextStart = currentDateProvider.get();
+        }
+        int currentRound = 0;
+        List<BlindLevelPO> blindLevels = getBlindLevelPOs();
+        for (currentRound = 0; currentRound < blindLevels.size(); currentRound++)
+        {
+            BlindLevelPO blindLevel = blindLevels.get(currentRound);
+            final Date levelStartDate = blindLevel.getStartDate();
+            if (currentRound <= tournamentPO.getCurrentRound() && levelStartDate != null)
+            {
+                nextStart = levelStartDate;
+            }
+            else
+            {
+                blindLevel.setStartDate(nextStart);
+            }
+            nextStart = new Date(nextStart.getTime() + (blindLevel.getDuration() * 60_000));
+        }
+    }
+
+    private List<BlindLevelPO> getBlindLevelPOs()
+    {
+        List<BlindLevelPO> blindLevels = new ArrayList<>(tournamentPO.getBlindLevels());
+        blindLevels.sort((o1, o2) -> o1.getPosition().compareTo(o2.getPosition()));
+        return blindLevels;
+    }
 }

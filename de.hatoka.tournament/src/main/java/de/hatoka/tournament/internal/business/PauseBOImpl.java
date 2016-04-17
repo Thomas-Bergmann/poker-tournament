@@ -11,6 +11,7 @@ import de.hatoka.tournament.capi.entities.BlindLevelPO;
 public class PauseBOImpl implements PauseBO
 {
     private final BlindLevelPO blindLevelPO;
+    private final ITournamentBO tournament;
     private final Provider<Date> dateProvider;
 
     /**
@@ -18,9 +19,10 @@ public class PauseBOImpl implements PauseBO
      * @param blindLevelPO persistent object of blind level
      * @param dateProvider provides current date for activation of blind level
      */
-    public PauseBOImpl(BlindLevelPO blindLevelPO, Provider<Date> dateProvider)
+    public PauseBOImpl(BlindLevelPO blindLevelPO, ITournamentBO tournament, Provider<Date> dateProvider)
     {
         this.blindLevelPO = blindLevelPO;
+        this.tournament = tournament;
         this.dateProvider = dateProvider;
     }
 
@@ -82,6 +84,7 @@ public class PauseBOImpl implements PauseBO
     {
         blindLevelPO.getTournamentPO().setCurrentRound(blindLevelPO.getPosition());
         blindLevelPO.setStartDate(dateProvider.get());
+        tournament.defineBlindLevelStartTimes();
     }
 
     @Override

@@ -99,7 +99,7 @@ public class TournamentBusinessFactoryImpl implements TournamentBusinessFactory
     @Override
     public TournamentBO getTournamentBO(TournamentPO tournamentPO)
     {
-        return new TournamentBOImpl(tournamentPO, tournamentDao, competitorDao, playerDao, blindLevelDao, rankDao, this);
+        return new TournamentBOImpl(tournamentPO, tournamentDao, competitorDao, playerDao, blindLevelDao, rankDao, dateProvider, this);
     }
 
     @Override
@@ -115,15 +115,15 @@ public class TournamentBusinessFactoryImpl implements TournamentBusinessFactory
     }
 
     @Override
-    public BlindLevelBO getBlindLevelBO(BlindLevelPO blindLevelPO)
+    public BlindLevelBO getBlindLevelBO(BlindLevelPO blindLevelPO, ITournamentBO tournament)
     {
-        return new BlindLevelBOImpl(blindLevelPO, dateProvider);
+        return new BlindLevelBOImpl(blindLevelPO, tournament, dateProvider);
     }
 
     @Override
-    public PauseBO getPauseBO(BlindLevelPO blindLevelPO)
+    public PauseBO getPauseBO(BlindLevelPO blindLevelPO, ITournamentBO tournament)
     {
-        return new PauseBOImpl(blindLevelPO, dateProvider);
+        return new PauseBOImpl(blindLevelPO, tournament, dateProvider);
     }
 
     @Override

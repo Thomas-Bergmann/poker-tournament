@@ -7,6 +7,7 @@ import de.hatoka.tournament.capi.entities.PlayerPO;
 import de.hatoka.tournament.capi.entities.RankPO;
 import de.hatoka.tournament.capi.entities.TournamentPO;
 import de.hatoka.tournament.internal.business.ITableBO;
+import de.hatoka.tournament.internal.business.ITournamentBO;
 
 public interface TournamentBusinessFactory
 {
@@ -26,9 +27,9 @@ public interface TournamentBusinessFactory
 
     HistoryEntryBO getHistoryBO(HistoryPO historyPO);
 
-    BlindLevelBO getBlindLevelBO(BlindLevelPO blindLevelPO);
+    BlindLevelBO getBlindLevelBO(BlindLevelPO blindLevelPO, ITournamentBO tournament);
 
-    PauseBO getPauseBO(BlindLevelPO blindLevelPO);
+    PauseBO getPauseBO(BlindLevelPO blindLevelPO, ITournamentBO tournament);
 
     RankBO getRankBO(RankPO rankPO, TournamentBO tournamentBO);
 
