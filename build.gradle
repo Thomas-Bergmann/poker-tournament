@@ -202,9 +202,13 @@ project('de.hatoka.offlinepoker')
 
         testCompile 'junit:junit:4.12'
     }
-
+    task copyWebApp(type: Copy) {
+        from 'src/main/webapp/WEB-INF'
+        into 'build/resources/main'
+    }
     task stage {
       dependsOn installDist
+      dependsOn copyWebApp
     }
 }
 
