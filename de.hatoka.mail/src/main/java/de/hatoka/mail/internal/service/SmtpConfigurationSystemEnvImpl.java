@@ -18,17 +18,17 @@ public class SmtpConfigurationSystemEnvImpl implements SmtpConfiguration
     public Session getSession()
     {
         final Properties prop = System.getProperties();
-        prop.setProperty("mail.smtp.host", prop.getProperty(SMTP_HOST));
+        prop.setProperty("mail.smtp.host", System.getenv(SMTP_HOST));
         prop.setProperty("mail.smtp.auth", "true");
         Authenticator auth = null;
-        if (prop.getProperty(SMTP_USER) != null)
+        if (System.getenv(SMTP_USER) != null)
         {
             auth = new Authenticator()
             {
                 @Override
                 protected PasswordAuthentication getPasswordAuthentication()
                 {
-                    return new PasswordAuthentication(prop.getProperty(SMTP_USER), prop.getProperty(SMTP_PASSWORD));
+                    return new PasswordAuthentication(System.getenv(SMTP_USER), System.getenv(SMTP_PASSWORD));
                 }
             };
         }

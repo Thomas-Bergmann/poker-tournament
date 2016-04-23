@@ -1,7 +1,8 @@
 package de.hatoka.tournament.internal.config;
 
 import java.net.URI;
-import java.util.Properties;
+
+import org.slf4j.LoggerFactory;
 
 import de.hatoka.tournament.capi.config.TournamentConfiguration;
 
@@ -17,22 +18,28 @@ public class TournamentConfigurationSystemEnvImpl implements TournamentConfigura
     @Override
     public String getDateFormat()
     {
-        Properties prop = System.getProperties();
-        String dateFormat = prop.getProperty(DATEFORMAT);
+        String dateFormat = System.getenv(DATEFORMAT);
         return dateFormat == null ? "dd.mm.yyyy hh:MM" : dateFormat;
     }
 
     @Override
     public URI getLoginURI()
     {
-        Properties prop = System.getProperties();
-        return URI.create(prop.getProperty(ACCOUNT_LOGIN));
+        String loginURI = System.getenv(ACCOUNT_LOGIN);
+        try
+        {
+            return new URI(loginURI);
+        }
+        catch(Exception e)
+        {
+            LoggerFactory.getLogger(getClass()).error("Can't convert string '"+loginURI+"' to URI.", e);
+            return null;
+        }
     }
 
     @Override
     public String getSecret()
     {
-        Properties prop = System.getProperties();
-        return prop.getProperty(ACCOUNT_SECRET);
+        return System.getenv(ACCOUNT_SECRET);
     }
 }

@@ -1,7 +1,5 @@
 package de.hatoka.user.internal.config;
 
-import java.util.Properties;
-
 import de.hatoka.user.capi.config.UserConfiguration;
 
 /**
@@ -15,14 +13,12 @@ public class UserConfigurationSystemEnvImpl implements UserConfiguration
     @Override
     public String getFromAddressForAccountRegistration()
     {
-        Properties prop = System.getProperties();
-        return prop.getProperty(ACCOUNT_FROM_EMAIL);
+        return System.getenv(ACCOUNT_FROM_EMAIL);
     }
 
     @Override
     public String getSecret()
     {
-        Properties prop = System.getProperties();
-        return prop.getProperty(ACCOUNT_SECRET);
+        return System.getenv(ACCOUNT_SECRET);
     }
 }
