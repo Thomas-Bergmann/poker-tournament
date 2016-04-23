@@ -2,10 +2,9 @@ package de.hatoka.offlinepoker.internal.app;
 
 public class OfflinePokerMain
 {
-    private static int servicePort = 80;
-
     public static final void main(String...args) throws Exception
     {
+        int servicePort = new Integer(System.getenv("PORT"));
         JettyApplication application = new JettyApplication(servicePort, OfflinePokerApplication.class);
         application.start();
     }

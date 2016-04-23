@@ -28,6 +28,7 @@
   <root>
     <level value="WARN" />
     <appender-ref ref="ERROR_LOG" />
+    <appender-ref ref="STDOUT" />
   </root>
   <logger name="org.apache.catalina.startup.Catalina">
     <level value="INFO" />
