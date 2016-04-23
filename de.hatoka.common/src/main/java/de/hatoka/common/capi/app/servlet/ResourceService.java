@@ -34,21 +34,29 @@ public class ResourceService
     public Response getResource(@Context ServletContext context, @Context Application application,
                     @PathParam("filename") String filename)
     {
-        java.nio.file.Path path = Paths.get(context.getRealPath("/WEB-INF/resources/" + filename));
-        if (!path.toFile().exists())
-        {
-            LOGGER.info("Resource '{}' not found. Resource translated to '{}'.", filename, path);
-            return Response.status(404).entity("404 - resource not found: " + filename).build();
-        }
         try
         {
+            String relative = "WEB-INF/resources/" + filename;
+            String realPath = context.getRealPath("/" + relative);
+            if (realPath == null)
+            {
+                // web application without context
+                realPath = relative;
+            }
+            LOGGER.warn("Resource '{}' translated to '{}'.", filename, realPath);
+            java.nio.file.Path path = Paths.get(realPath);
+            if (!path.toFile().exists())
+            {
+                LOGGER.warn("Resource '{}' not found. Resource translated to '{}'.", filename, path);
+                return Response.status(404).entity("404 - resource not found: " + filename).build();
+            }
             return Response.status(200).type(Files.probeContentType(path)).entity(Files.readAllBytes(path)).build();
         }
-        catch(IOException e)
+        catch(IOException | NullPointerException e)
         {
             String errorID = getUUID(application);
-            LOGGER.error("Error-Identifier: '" + errorID + "' - Load resource failed", e);
-            return Response.status(500).entity("Load resource failed: " + errorID).build();
+            LOGGER.error("Error-Identifier: '" + errorID + "' - Load resource '"+filename+"' failed.", e);
+            return Response.status(404).entity("Load resource failed: " + errorID).build();
         }
     }
 
