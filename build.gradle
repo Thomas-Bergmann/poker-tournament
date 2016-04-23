@@ -3,10 +3,12 @@ apply plugin: 'com.github.kt3k.coveralls'
 buildscript {
     repositories {
         mavenCentral()
+        jcenter()
     }
 
     dependencies {
         classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.1.0'
+        classpath 'io.ratpack:ratpack-gradle:1.0.0'
     }
 }
 
@@ -173,7 +175,8 @@ project('de.hatoka.tournament')
 
 project('de.hatoka.offlinepoker')
 {
-    apply plugin: "war"
+    apply plugin: 'war'
+    apply plugin: 'io.ratpack.ratpack-groovy'
     dependencies {
         compile project(":de.hatoka.tournament")
         compile project(":de.hatoka.user")
@@ -188,6 +191,10 @@ project('de.hatoka.offlinepoker')
         runtime 'org.glassfish.jersey.containers:jersey-container-servlet:2.14'
 
         testCompile 'junit:junit:4.12'
+    }
+
+    task stage {
+      dependsOn installDist
     }
 }
 
