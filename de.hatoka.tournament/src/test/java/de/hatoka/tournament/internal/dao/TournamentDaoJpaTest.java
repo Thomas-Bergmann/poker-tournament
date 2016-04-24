@@ -26,7 +26,7 @@ import de.hatoka.tournament.capi.dao.TournamentDao;
 import de.hatoka.tournament.capi.entities.CompetitorPO;
 import de.hatoka.tournament.capi.entities.PlayerPO;
 import de.hatoka.tournament.capi.entities.TournamentPO;
-import de.hatoka.tournament.internal.modules.TournamentDaoJpaModule;
+import de.hatoka.tournament.modules.TournamentDaoJpaModule;
 
 public class TournamentDaoJpaTest
 {

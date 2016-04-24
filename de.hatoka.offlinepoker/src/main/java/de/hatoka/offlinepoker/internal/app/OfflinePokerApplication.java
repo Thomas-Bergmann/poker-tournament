@@ -12,11 +12,12 @@ import com.google.inject.Injector;
 
 import de.hatoka.common.capi.app.servlet.ResourceService;
 import de.hatoka.common.capi.app.servlet.ServletConstants;
+import de.hatoka.common.capi.modules.CommonConfigurationModule;
 import de.hatoka.common.capi.modules.CommonDaoModule;
 import de.hatoka.common.capi.modules.CommonDateModule;
 import de.hatoka.common.capi.modules.JpaDBModule;
+import de.hatoka.mail.internal.modules.MailConfigurationModule;
 import de.hatoka.mail.internal.modules.MailDaoJpaModule;
-import de.hatoka.mail.internal.modules.MailServiceConfigurationModule;
 import de.hatoka.mail.internal.modules.MailServiceModule;
 import de.hatoka.tournament.internal.app.filter.AccountRequestFilter;
 import de.hatoka.tournament.internal.app.servlets.CashGameCompetitorService;
@@ -28,8 +29,9 @@ import de.hatoka.tournament.internal.app.servlets.TournamentListService;
 import de.hatoka.tournament.internal.app.servlets.TournamentRankService;
 import de.hatoka.tournament.internal.app.servlets.TournamentService;
 import de.hatoka.tournament.internal.app.servlets.TournamentTableService;
-import de.hatoka.tournament.internal.modules.TournamentBusinessModule;
-import de.hatoka.tournament.internal.modules.TournamentDaoJpaModule;
+import de.hatoka.tournament.modules.TournamentBusinessModule;
+import de.hatoka.tournament.modules.TournamentConfigurationModule;
+import de.hatoka.tournament.modules.TournamentDaoJpaModule;
 import de.hatoka.user.internal.app.servlets.LoginService;
 import de.hatoka.user.internal.modules.UserBusinessModule;
 import de.hatoka.user.internal.modules.UserConfigurationModule;
@@ -44,10 +46,10 @@ public class OfflinePokerApplication extends Application
 
     public OfflinePokerApplication()
     {
-        injector = Guice.createInjector(new CommonDaoModule(), new CommonDateModule(),
+        injector = Guice.createInjector(new CommonDaoModule(), new CommonDateModule(), new CommonConfigurationModule(),
                         new UserDaoJpaModule(), new UserBusinessModule(),
-                        new TournamentDaoJpaModule(), new TournamentBusinessModule(),
-                        new MailDaoJpaModule(), new MailServiceModule(), new MailServiceConfigurationModule(), new UserConfigurationModule(),
+                        new TournamentDaoJpaModule(), new TournamentBusinessModule(), new TournamentConfigurationModule(),
+                        new MailDaoJpaModule(), new MailServiceModule(), new MailConfigurationModule(), new UserConfigurationModule(),
                         new JpaDBModule("OfflinePokerPU"));
     }
 

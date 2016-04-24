@@ -6,7 +6,7 @@ import com.google.inject.Module;
 import de.hatoka.mail.capi.config.SmtpConfiguration;
 import de.hatoka.mail.internal.service.SmtpConfigurationSystemEnvImpl;
 
-public class MailServiceConfigurationModule implements Module
+public class MailConfigurationModule implements Module
 {
     @Override
     public void configure(Binder binder)

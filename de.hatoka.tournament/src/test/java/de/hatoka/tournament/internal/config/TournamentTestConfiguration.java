@@ -1,4 +1,4 @@
-package de.hatoka.tournament.internal.app;
+package de.hatoka.tournament.internal.config;
 
 import java.net.URI;
 

@@ -1,4 +1,4 @@
-package de.hatoka.tournament.internal.modules;
+package de.hatoka.tournament.modules;
 
 import com.google.inject.Binder;
 import com.google.inject.Module;

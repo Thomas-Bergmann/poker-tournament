@@ -9,8 +9,8 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 
 import de.hatoka.common.capi.modules.CommonDaoModule;
-import de.hatoka.tournament.internal.modules.TournamentBusinessModule;
-import de.hatoka.tournament.internal.modules.TournamentDaoJpaModule;
+import de.hatoka.tournament.modules.TournamentBusinessModule;
+import de.hatoka.tournament.modules.TournamentDaoJpaModule;
 
 public final class TestBusinessInjectorProvider
 {

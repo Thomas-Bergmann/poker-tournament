@@ -2,8 +2,11 @@ package de.hatoka.tournament.internal.config;
 
 import java.net.URI;
 
+import javax.inject.Inject;
+
 import org.slf4j.LoggerFactory;
 
+import de.hatoka.common.capi.configuration.SystemPropertyProvider;
 import de.hatoka.tournament.capi.config.TournamentConfiguration;
 
 /**
@@ -15,17 +18,20 @@ public class TournamentConfigurationSystemEnvImpl implements TournamentConfigura
     private static final String DATEFORMAT = "DATE_FORMAT";
     private static final String ACCOUNT_SECRET = "ACCOUNT_SECRET";
 
+    @Inject
+    private SystemPropertyProvider system;
+
     @Override
     public String getDateFormat()
     {
-        String dateFormat = System.getenv(DATEFORMAT);
+        String dateFormat = system.get(DATEFORMAT);
         return dateFormat == null ? "dd.mm.yyyy hh:MM" : dateFormat;
     }
 
     @Override
     public URI getLoginURI()
     {
-        String loginURI = System.getenv(ACCOUNT_LOGIN);
+        String loginURI = system.get(ACCOUNT_LOGIN);
         try
         {
             return new URI(loginURI);
@@ -40,6 +46,6 @@ public class TournamentConfigurationSystemEnvImpl implements TournamentConfigura
     @Override
     public String getSecret()
     {
-        return System.getenv(ACCOUNT_SECRET);
+        return system.get(ACCOUNT_SECRET);
     }
 }
