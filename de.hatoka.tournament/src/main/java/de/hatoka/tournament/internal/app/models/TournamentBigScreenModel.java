@@ -43,7 +43,8 @@ public class TournamentBigScreenModel
         PauseBO pause = tournamentBO.getNextPause();
         this.nextPauseTime = pause == null ? null : pause.getStartTime();
         this.currentTime = currentTime;
-        this.duration = Duration.ofMillis(currentBlindLevelBO.getEndTime().getTime() - currentTime.getTime());
+        Date endTime = currentBlindLevelBO.getEndTime();
+        this.duration = endTime == null ? null : Duration.ofMillis(endTime.getTime() - currentTime.getTime());
     }
 
     public BlindLevelVO getCurrentBlindLevel()

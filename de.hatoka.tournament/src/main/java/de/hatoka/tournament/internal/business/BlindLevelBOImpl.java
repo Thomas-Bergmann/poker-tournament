@@ -129,6 +129,16 @@ public class BlindLevelBOImpl implements BlindLevelBO
     @Override
     public Date getEndTime()
     {
-        return new Date(getStartTime().getTime() + getDuration() * 60_000);
+        Date startTime = getStartTime();
+        if (startTime == null)
+        {
+            return null;
+        }
+        Integer duration = getDuration();
+        if (duration == null)
+        {
+            return null;
+        }
+        return new Date(startTime.getTime() + duration * 60_000);
     }
 }
