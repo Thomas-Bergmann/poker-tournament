@@ -100,7 +100,7 @@ project('de.hatoka.user')
         runtime 'javax.mail:mail:1.4.7'
 
         testCompile 'xmlunit:xmlunit:1.6'
-        testCompile 'org.mockito:mockito-all:1.9.5'
+        testCompile 'org.mockito:mockito-all:1.10.19'
         testRuntime 'xalan:xalan:2.7.2'
         testCompile project(":de.hatoka.test")
     }
@@ -113,7 +113,7 @@ project('de.hatoka.test')
         compile 'org.eclipse.persistence:eclipselink:2.6.2' // embeddable
         compile 'junit:junit:4.12'
         compile 'org.apache.derby:derby:10.12.1.1'
-        compile 'com.google.inject:guice:3.0'
+        compile 'com.google.inject:guice:4.0'
     }
 }
 
@@ -122,17 +122,17 @@ project('de.hatoka.common')
     dependencies {
         compile 'javax.validation:validation-api:1.1.0.Final'
         compile 'javax.ejb:ejb-api:3.0'
-        compile 'org.slf4j:slf4j-api:1.7.9'
-        compile 'org.eclipse.persistence:eclipselink:2.5.2' // embeddable
+        compile 'org.slf4j:slf4j-api:1.7.21'
+        compile 'org.eclipse.persistence:eclipselink:2.6.2' // embeddable
         compile 'javax.ws.rs:javax.ws.rs-api:2.0.1'
         compile 'javax.servlet:javax.servlet-api:3.1.0' // HttpServletRequest
 
-        compile 'com.google.inject:guice:3.0'
+        compile 'com.google.inject:guice:4.0'
         compile 'commons-lang:commons-lang:2.+' // RandomUtils
         compile 'commons-io:commons-io:2.+'
 
         testCompile 'junit:junit:4.12'
-        testCompile 'org.apache.tomcat:tomcat-catalina:8.0.20'
+        testCompile 'org.apache.tomcat:tomcat-catalina:8.5.0'
         testRuntime 'xalan:xalan:2.7.2'
     }
 }
@@ -142,9 +142,9 @@ project('de.hatoka.mail')
     dependencies {
         compile project(":de.hatoka.common")
         compile 'javax.mail:mail:1.4.7'
-        provided 'org.apache.tomcat:tomcat-catalina:8.0.20'
+        provided 'org.apache.tomcat:tomcat-catalina:8.5.0'
         testCompile project(":de.hatoka.test")
-        testCompile 'org.apache.tomcat:tomcat-catalina:8.0.20'
+        testCompile 'org.apache.tomcat:tomcat-catalina:8.5.0'
     }
     test {
         // https://javamail.java.net/nonav/docs/api/com/sun/mail/smtp/package-summary.html
@@ -168,7 +168,7 @@ project('de.hatoka.tournament')
         compile project(":de.hatoka.common")
         testCompile project(":de.hatoka.test")
         testCompile 'xmlunit:xmlunit:1.6'
-        testCompile 'org.mockito:mockito-all:1.9.5'
+        testCompile 'org.mockito:mockito-all:1.10.19'
         testRuntime 'xalan:xalan:2.7.2'
     }
 }

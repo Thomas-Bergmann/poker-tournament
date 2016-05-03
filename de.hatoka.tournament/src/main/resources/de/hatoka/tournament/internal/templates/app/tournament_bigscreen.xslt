@@ -44,6 +44,11 @@
 				<td colspan="3">(Next Level <xsl:value-of select="tournamentBigScreenModel/nextBlindLevel/smallBlind" /> / <xsl:value-of select="tournamentBigScreenModel/nextBlindLevel/bigBlind" /> / <xsl:value-of select="tournamentBigScreenModel/nextBlindLevel/ante" />)</td>
 			</tr>
 		</table>
+		<form method="POST" action="action">
+		  <xsl:call-template name="button">
+		    <xsl:with-param name="name">back.to.blinds</xsl:with-param>
+		  </xsl:call-template>
+		</form>
     </div>
   </xsl:template>
 </xsl:stylesheet>

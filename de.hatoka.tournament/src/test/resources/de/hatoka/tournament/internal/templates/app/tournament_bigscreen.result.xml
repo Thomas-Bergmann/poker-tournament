@@ -18,4 +18,7 @@
 <td colspan="3">(Next Level 250 / 500 / 0)</td>
 </tr>
 </table>
+<form action="action" method="POST">
+<button name="back.to.blinds" type="submit" class="btn btn-primary">Back to blind levels</button>
+</form>
 </div>

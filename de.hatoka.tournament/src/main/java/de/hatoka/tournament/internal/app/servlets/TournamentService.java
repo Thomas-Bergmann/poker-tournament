@@ -28,7 +28,7 @@ import de.hatoka.tournament.internal.app.models.TournamentConfigurationModel;
 public class TournamentService extends AbstractService
 {
     private static final String RESOURCE_PREFIX = "de/hatoka/tournament/internal/templates/app/";
-    public static final String METHOD_NAME_LIST = "list";
+    public static final String METHOD_NAME_OVERVIEW = "list";
     public static final String METHOD_NAME_SCREEN = "screen";
 
     @PathParam("id")
@@ -63,7 +63,7 @@ public class TournamentService extends AbstractService
     public Response list()
     {
         TournamentAction action = getTournamentAction();
-        final TournamentConfigurationModel model = action.getTournamentConfigurationModel(getUriBuilder(TournamentListService.class, METHOD_NAME_LIST).build());
+        final TournamentConfigurationModel model = action.getTournamentConfigurationModel(getUriBuilder(TournamentListService.class, METHOD_NAME_OVERVIEW).build());
         try
         {
             String content = renderStyleSheet(model, "tournament_general.xslt", getXsltProcessorParameter("tournament"));
@@ -84,12 +84,23 @@ public class TournamentService extends AbstractService
         try
         {
             String content = renderStyleSheet(model, "tournament_bigscreen.xslt", getXsltProcessorParameter("tournament"));
-            return Response.status(200).entity(renderFrame(content, "title.tournament.screen")).build();
+            return Response.status(200).entity(renderBigScreenFrame(content, "title.tournament.screen")).build();
         }
         catch(IOException e)
         {
             return render(500, e);
         }
+    }
+
+    @POST
+    @Path("/action")
+    public Response action(@FormParam("back.to.blinds") String blindsButton)
+    {
+        if (isButtonPressed(blindsButton))
+        {
+            return Response.seeOther(getUriBuilder(TournamentBlindLevelService.class, TournamentBlindLevelService.METHOD_NAME_LIST).build(tournamentID)).build();
+        }
+        return redirect(METHOD_NAME_OVERVIEW);
     }
 
     @POST
@@ -106,7 +117,7 @@ public class TournamentService extends AbstractService
             tournament.setName(name);
             tournament.setReBuy(reBuy);
         });
-        return redirect(METHOD_NAME_LIST, tournamentID);
+        return redirect(METHOD_NAME_OVERVIEW, tournamentID);
     }
 
     private String renderFrame(String content, String titleKey) throws IOException
@@ -114,6 +125,14 @@ public class TournamentService extends AbstractService
         TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
         TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(getAccountRef());
         return renderStyleSheet(menuFactory.getTournamentFrameModel(content, titleKey, info, tournamentBORepository, tournamentID), "tournament_frame.xslt",
+                        getXsltProcessorParameter("tournament"));
+    }
+
+    private String renderBigScreenFrame(String content, String titleKey) throws IOException
+    {
+        TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
+        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(getAccountRef());
+        return renderStyleSheet(menuFactory.getTournamentFrameModel(content, titleKey, info, tournamentBORepository, tournamentID), "tournament_bigscreen_frame.xslt",
                         getXsltProcessorParameter("tournament"));
     }
 }

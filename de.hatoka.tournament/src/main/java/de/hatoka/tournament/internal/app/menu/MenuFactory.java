@@ -99,7 +99,7 @@ public class MenuFactory
 
         TournamentBO tournamentBO = tournamentBORepository.getTournamentByID(tournamentID);
         model.addSideMenu("menu.tournament.general",
-                        getUri(info, TournamentService.class, TournamentService.METHOD_NAME_LIST, tournamentBO.getID()), null, null, titleKey.equals("title.tournament.general"));
+                        getUri(info, TournamentService.class, TournamentService.METHOD_NAME_OVERVIEW, tournamentBO.getID()), null, null, titleKey.equals("title.tournament.general"));
         model.addSideMenu("menu.tournament.players",
                         getUri(info, TournamentCompetitorService.class, TournamentCompetitorService.METHOD_NAME_LIST, tournamentBO.getID()), tournamentBO
                                         .getCompetitors().size(),
