@@ -114,7 +114,10 @@ project('de.hatoka.test')
         compile 'junit:junit:4.12'
         compile 'org.apache.derby:derby:10.12.1.1'
         compile 'com.google.inject:guice:4.0'
-    }
+        compile 'xmlunit:xmlunit:1.6'
+        compile 'org.mockito:mockito-all:1.10.19'
+        runtime 'xalan:xalan:2.7.2'
+   }
 }
 
 project('de.hatoka.common')
@@ -155,7 +158,6 @@ project('de.hatoka.mail')
         exclude 'de/hatoka/mail/internal/service/**'
     }
 }
-
 project('de.hatoka.tournament')
 {
     sourceSets {
@@ -167,9 +169,14 @@ project('de.hatoka.tournament')
     dependencies {
         compile project(":de.hatoka.common")
         testCompile project(":de.hatoka.test")
-        testCompile 'xmlunit:xmlunit:1.6'
-        testCompile 'org.mockito:mockito-all:1.10.19'
-        testRuntime 'xalan:xalan:2.7.2'
+    }
+}
+
+project('de.hatoka.group')
+{
+    dependencies {
+        compile project(":de.hatoka.common")
+        testCompile project(":de.hatoka.test")
     }
 }
 
