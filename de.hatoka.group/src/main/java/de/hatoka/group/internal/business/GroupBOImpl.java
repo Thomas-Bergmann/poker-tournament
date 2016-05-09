@@ -56,4 +56,10 @@ public class GroupBOImpl implements GroupBO
     {
         return groupPO.getMembers().stream().map(po -> factory.getMemberBO(po)).collect(Collectors.toList());
     }
+
+    @Override
+    public String getID()
+    {
+        return groupPO.getId();
+    }
 }

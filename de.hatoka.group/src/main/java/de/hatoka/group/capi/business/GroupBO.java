@@ -31,4 +31,9 @@ public interface GroupBO
      * @return members of the group (owner is one member)
      */
     Collection<MemberBO> getMembers();
+
+    /**
+     * @return identifier of group
+     */
+    String getID();
 }

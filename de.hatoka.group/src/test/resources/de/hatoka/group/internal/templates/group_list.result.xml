@@ -1,0 +1,28 @@
+<form xmlns="http://www.w3.org/1999/xhtml" action="actionList" method="POST">
+<table class="table table-striped">
+<tr>
+<th>Select</th>
+<th>Name</th>
+<th>Count Members</th>
+</tr>
+<tr>
+<td>
+<label>
+<input type="checkbox" value="12345678" name="groupID" class="checkbox"/>
+</label>
+</td>
+<td>Test Group 1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>
+<label>
+<input type="checkbox" value="12345679" name="groupID" class="checkbox"/>
+</label>
+</td>
+<td>Test Group 2</td>
+<td>2</td>
+</tr>
+</table>
+<button name="delete" type="submit" class="btn btn-primary">Delete</button>
+</form>

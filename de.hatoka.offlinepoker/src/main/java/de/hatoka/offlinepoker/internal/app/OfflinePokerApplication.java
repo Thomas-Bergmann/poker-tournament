@@ -16,6 +16,10 @@ import de.hatoka.common.capi.modules.CommonConfigurationModule;
 import de.hatoka.common.capi.modules.CommonDaoModule;
 import de.hatoka.common.capi.modules.CommonDateModule;
 import de.hatoka.common.capi.modules.JpaDBModule;
+import de.hatoka.group.internal.app.servlets.GroupListService;
+import de.hatoka.group.modules.GroupBusinessModule;
+import de.hatoka.group.modules.GroupConfigurationModule;
+import de.hatoka.group.modules.GroupDaoJpaModule;
 import de.hatoka.mail.internal.modules.MailConfigurationModule;
 import de.hatoka.mail.internal.modules.MailDaoJpaModule;
 import de.hatoka.mail.internal.modules.MailServiceModule;
@@ -46,10 +50,12 @@ public class OfflinePokerApplication extends Application
 
     public OfflinePokerApplication()
     {
-        injector = Guice.createInjector(new CommonDaoModule(), new CommonDateModule(), new CommonConfigurationModule(),
-                        new UserDaoJpaModule(), new UserBusinessModule(),
+        injector = Guice.createInjector(
+                        new CommonDaoModule(), new CommonDateModule(), new CommonConfigurationModule(),
+                        new UserDaoJpaModule(), new UserBusinessModule(), new UserConfigurationModule(),
                         new TournamentDaoJpaModule(), new TournamentBusinessModule(), new TournamentConfigurationModule(),
-                        new MailDaoJpaModule(), new MailServiceModule(), new MailConfigurationModule(), new UserConfigurationModule(),
+                        new GroupDaoJpaModule(), new GroupBusinessModule(), new GroupConfigurationModule(),
+                        new MailDaoJpaModule(), new MailServiceModule(), new MailConfigurationModule(),
                         new JpaDBModule("OfflinePokerPU"));
     }
 
@@ -76,6 +82,7 @@ public class OfflinePokerApplication extends Application
         result.add(PlayerListService.class);
         result.add(AccountRequestFilter.class);
         result.add(LoginService.class);
+        result.add(GroupListService.class);
         return result;
     }
 

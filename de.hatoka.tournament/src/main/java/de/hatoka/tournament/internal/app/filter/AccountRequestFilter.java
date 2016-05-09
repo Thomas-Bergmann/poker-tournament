@@ -19,8 +19,10 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Injector;
 
+import de.hatoka.common.capi.app.servlet.RequestUserRefProvider;
 import de.hatoka.common.capi.app.servlet.ServletConstants;
 import de.hatoka.common.capi.dao.EncryptionUtils;
+import de.hatoka.common.capi.modules.CommonRequestModule;
 import de.hatoka.tournament.capi.config.TournamentConfiguration;
 
 /**
@@ -45,7 +47,7 @@ public class AccountRequestFilter implements ContainerRequestFilter
         return cookie == null ? null : cookie.getValue();
     }
 
-    private NewCookie[] createCookies(String accountID, String accountSign)
+    private static NewCookie[] createCookies(String accountID, String accountSign)
     {
         NewCookie[] result = new NewCookie[2];
         result[0] = createCookie(ServletConstants.USER_ID_COOKIE_NAME, accountID, "hatoka account cookie");
@@ -105,7 +107,7 @@ public class AccountRequestFilter implements ContainerRequestFilter
         if (validateAccount(accountID, accountSign))
         {
             LOGGER.trace("Access granted to account '" + accountID + "'");
-            servletRequest.setAttribute(ServletConstants.SERVLET_ATTRIBUTE_ACCOUNT_REF, accountID);
+            getInstance(RequestUserRefProvider.class).setUserRef(accountID);
         }
         else
         {
@@ -133,7 +135,7 @@ public class AccountRequestFilter implements ContainerRequestFilter
 
     private <T> T getInstance(Class<T> classOfT)
     {
-        return getInjector().getInstance(classOfT);
+        return getInjector().createChildInjector(new CommonRequestModule(application, servletRequest)).getInstance(classOfT);
     }
 
     private boolean validateAccount(String accountID, String accountSign)
@@ -143,6 +145,7 @@ public class AccountRequestFilter implements ContainerRequestFilter
         return expected.equals(accountSign);
     }
 
+    @Deprecated
     public static String getAccountRef(HttpServletRequest servletRequest)
     {
         String result = (String) servletRequest.getAttribute(ServletConstants.SERVLET_ATTRIBUTE_ACCOUNT_REF);

@@ -1,4 +1,4 @@
-package de.hatoka.tournament.capi.business;
+package de.hatoka.group.capi.business;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

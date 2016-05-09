@@ -2,12 +2,14 @@ package de.hatoka.common.capi.app.servlet;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 import java.util.concurrent.Callable;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Cookie;
@@ -21,11 +23,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Injector;
+import com.google.inject.Module;
 
 import de.hatoka.common.capi.app.xslt.XSLTRenderer;
 import de.hatoka.common.capi.business.CountryHelper;
 import de.hatoka.common.capi.dao.TransactionProvider;
 import de.hatoka.common.capi.dao.UUIDGenerator;
+import de.hatoka.common.capi.modules.CommonRequestModule;
 import de.hatoka.common.capi.resource.LocalizationBundle;
 import de.hatoka.common.capi.resource.ResourceLocalizer;
 import de.hatoka.common.internal.app.models.ErrorModel;
@@ -47,15 +51,25 @@ public class AbstractService
     @Context
     private HttpHeaders headers;
 
+    @Context
+    private HttpServletRequest servletRequest;
+
+    private Injector injector = null;
+
     public AbstractService(String resourcePrefix)
     {
         this.resourcePrefix = resourcePrefix;
     }
 
+    protected String getUserRef()
+    {
+        return getInstance(RequestUserRefProvider.class).getUserRef();
+    }
+
     public NewCookie createCookie(String key, String value, String comment)
     {
-        return new NewCookie(key, value, "/", null, NewCookie.DEFAULT_VERSION, comment, NewCookie.DEFAULT_MAX_AGE,
-                        null, false, true);
+        return new NewCookie(key, value, "/", null, NewCookie.DEFAULT_VERSION, comment, NewCookie.DEFAULT_MAX_AGE, null,
+                        false, true);
     }
 
     public String getCookieValue(String key)
@@ -73,10 +87,19 @@ public class AbstractService
         return result;
     }
 
-    protected Injector getInjector()
+    protected synchronized Injector getInjector()
     {
-        Injector injector = (Injector)application.getProperties().get(ServletConstants.PROPERTY_INJECTOR);
+        if (injector == null)
+        {
+            Injector globalInject = (Injector)application.getProperties().get(ServletConstants.PROPERTY_INJECTOR);
+            injector = globalInject.createChildInjector(getRequestModules());
+        }
         return injector;
+    }
+
+    protected Iterable<? extends Module> getRequestModules()
+    {
+        return Arrays.asList(new CommonRequestModule(application, servletRequest));
     }
 
     public <T> T getInstance(Class<T> classOfT)
@@ -87,7 +110,7 @@ public class AbstractService
     protected Locale getLocale()
     {
         String cookieValue = getCookieValue("locale");
-        return cookieValue == null ? Locale.US: COUNTRY_HELPER.getLocale(cookieValue);
+        return cookieValue == null ? Locale.US : COUNTRY_HELPER.getLocale(cookieValue);
     }
 
     protected TimeZone getTimeZone()
@@ -136,16 +159,20 @@ public class AbstractService
     /**
      *
      * @param jaxbModel
-     * @param stylesheet xslt file without resourcePrefix
+     * @param stylesheet
+     *            xslt file without resourcePrefix
      * @param resourceName
      *            for localization without resourcePrefix
      * @return
      */
-    protected Response renderResponseWithStylesheet(Object jaxbModel, String stylesheet, String resourceName, NewCookie... cookies)
+    protected Response renderResponseWithStylesheet(Object jaxbModel, String stylesheet, String resourceName,
+                    NewCookie... cookies)
     {
         try
         {
-            return Response.status(200).cookie(cookies).entity(renderStyleSheet(jaxbModel, stylesheet, getXsltProcessorParameter(resourceName))).build();
+            return Response.status(200).cookie(cookies)
+                            .entity(renderStyleSheet(jaxbModel, stylesheet, getXsltProcessorParameter(resourceName)))
+                            .build();
         }
         catch(IOException e)
         {
@@ -153,14 +180,15 @@ public class AbstractService
         }
     }
 
-    protected String renderStyleSheet(Object jaxbModel, String stylesheet, Map<String, Object> xsltProcessorParameter) throws IOException
+    protected String renderStyleSheet(Object jaxbModel, String stylesheet, Map<String, Object> xsltProcessorParameter)
+                    throws IOException
     {
         return RENDERER.render(jaxbModel, resourcePrefix + stylesheet, xsltProcessorParameter);
     }
 
-
     /**
-     * @param localizationResource without resourcePrefix
+     * @param localizationResource
+     *            without resourcePrefix
      * @return parameter for xslt processor
      */
     protected Map<String, Object> getXsltProcessorParameter(String localizationResource)
@@ -169,8 +197,8 @@ public class AbstractService
         result.put("uriInfo", info);
         if (localizationResource != null)
         {
-            result.put("localizer", new ResourceLocalizer(new LocalizationBundle(resourcePrefix
-                            + localizationResource, getLocale(), getTimeZone())));
+            result.put("localizer", new ResourceLocalizer(
+                            new LocalizationBundle(resourcePrefix + localizationResource, getLocale(), getTimeZone())));
         }
         return result;
     }

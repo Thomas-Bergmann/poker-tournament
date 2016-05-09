@@ -8,7 +8,6 @@ import de.hatoka.group.internal.business.GroupBusinessFactoryImpl;
 
 public class GroupBusinessModule implements Module
 {
-
     @Override
     public void configure(Binder binder)
     {
