@@ -9,6 +9,7 @@ buildscript {
     dependencies {
         classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.1.0'
         classpath 'io.ratpack:ratpack-gradle:1.0.0'
+        classpath 'com.intershop.gradle.dependencyanalysis:dependencyanalysis-gradle-plugin:1.0.1'
     }
 }
 
@@ -30,6 +31,7 @@ subprojects {
     apply plugin: 'sonar-runner'
     apply plugin: 'jacoco'
     apply plugin: 'osgi'
+    apply plugin: 'com.intershop.gradle.dependencyanalysis'
 
     group = 'de.hatoka.offlinepoker'
     version = '0.1.15'
@@ -38,13 +40,9 @@ subprojects {
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
 
-    configurations {
-        provided
+    dependencyAnalysis {
+        failOnErrors = false
     }
-    sourceSets {
-        main { compileClasspath += configurations.provided }
-    }
-
     sonarRunner {
         sonarProperties {
             property "sonar.dynamicAnalysis", "reuseReports"
@@ -99,9 +97,6 @@ project('de.hatoka.user')
         compile project(":de.hatoka.mail")
         runtime 'javax.mail:mail:1.4.7'
 
-        testCompile 'xmlunit:xmlunit:1.6'
-        testCompile 'org.mockito:mockito-all:1.10.19'
-        testRuntime 'xalan:xalan:2.7.2'
         testCompile project(":de.hatoka.test")
     }
 }
@@ -115,7 +110,7 @@ project('de.hatoka.test')
         compile 'org.apache.derby:derby:10.12.1.1'
         compile 'com.google.inject:guice:4.0'
         compile 'xmlunit:xmlunit:1.6'
-        compile 'org.mockito:mockito-all:1.10.19'
+        compile 'org.mockito:mockito-core:1.10.19'
         runtime 'xalan:xalan:2.7.2'
         runtime 'org.eclipse.persistence:eclipselink:2.6.3'
    }
@@ -124,16 +119,14 @@ project('de.hatoka.test')
 project('de.hatoka.common')
 {
     dependencies {
-        compile 'javax.validation:validation-api:1.1.0.Final'
-        compile 'javax.ejb:ejb-api:3.0'
-        compile 'org.slf4j:slf4j-api:1.7.21'
-        compile 'org.eclipse.persistence:javax.persistence:2.1.1'
-        compile 'javax.ws.rs:javax.ws.rs-api:2.0.1'
-        compile 'javax.servlet:javax.servlet-api:3.1.0' // HttpServletRequest
-
         compile 'com.google.inject:guice:4.0'
+        compile 'commons-io:commons-io:2.+' // IOUtils
         compile 'commons-lang:commons-lang:2.+' // RandomUtils
-        compile 'commons-io:commons-io:2.+'
+        compile 'javax.servlet:javax.servlet-api:3.1.0' // HttpServletRequest
+        compile 'javax.validation:validation-api:1.1.0.Final'
+        compile 'javax.ws.rs:javax.ws.rs-api:2.0.1'
+        compile 'org.eclipse.persistence:javax.persistence:2.1.1'
+        compile 'org.slf4j:slf4j-api:1.7.21'
 
         testCompile 'junit:junit:4.12'
         testRuntime 'xalan:xalan:2.7.2'
