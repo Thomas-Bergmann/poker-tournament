@@ -55,34 +55,36 @@ public class FrameRendererImpl implements FrameRenderer
     private static final String tournamentID = "FALSE";
 
     @Override
-    public String renderFame(String content, String titleKey, String selectedMainMenu)
+    public String renderFame(String content, String... selectedItems)
     {
         TournamentBORepository tournamentBORepository = tournamentFactory .getTournamentBORepository(userRefProvider.getUserRef());
         FrameModel frameModel = null;
-        if ("cashgame".equals(selectedMainMenu))
+        String mainItem = selectedItems[0];
+        String level1Item = selectedItems[1];
+        if ("cashgame".equals(mainItem) && !"list".equals(level1Item))
         {
-            frameModel = getCashGameFrameModel(content, titleKey, uriInfoProvider.get(), tournamentBORepository,
+            frameModel = getCashGameFrameModel(content, getTitle(selectedItems), uriInfoProvider.get(), tournamentBORepository,
                             tournamentID);
         }
-        else if ("tournament".equals(selectedMainMenu))
+        else if ("tournament".equals(mainItem) && !"list".equals(level1Item))
         {
-            frameModel = getTournamentFrameModel(content, titleKey, uriInfoProvider.get(), tournamentBORepository,
+            frameModel = getTournamentFrameModel(content, getTitle(selectedItems), uriInfoProvider.get(), tournamentBORepository,
                             tournamentID);
         }
-        else if ("players".equals(selectedMainMenu))
+        else if ("players".equals(mainItem) && !"list".equals(level1Item))
         {
-            frameModel = getPlayerFrameModel(content, titleKey, uriInfoProvider.get());
+            frameModel = getPlayerFrameModel(content, getTitle(selectedItems), uriInfoProvider.get());
         }
-        else if ("groups".equals(selectedMainMenu))
+        else if ("groups".equals(mainItem) && !"list".equals(level1Item))
         {
-            frameModel = getGroupFrameModel(content, titleKey, uriInfoProvider.get());
+            frameModel = getGroupFrameModel(content, getTitle(selectedItems), uriInfoProvider.get());
         }
         else
         {
             PlayerBORepository playerBORepository = tournamentFactory.getPlayerBORepository(userRefProvider.getUserRef());
             GroupBORepository groupBORepository = groupFactory.getGroupBORepository(userRefProvider.getUserRef());
-            frameModel = getMainFrameModel(content, titleKey, uriInfoProvider.get(), tournamentBORepository,
-                            playerBORepository, groupBORepository, selectedMainMenu);
+            frameModel = getMainFrameModel(content, getTitle(selectedItems), uriInfoProvider.get(), tournamentBORepository,
+                            playerBORepository, groupBORepository, mainItem);
         }
         try
         {
@@ -92,6 +94,16 @@ public class FrameRendererImpl implements FrameRenderer
         {
             throw new RuntimeException(e);
         }
+    }
+
+    private static String getTitle(String[] selectedItems)
+    {
+        StringBuilder builder = new StringBuilder("title");
+        for(String item : selectedItems)
+        {
+            builder.append(".").append(item);
+        }
+        return builder.toString();
     }
 
     /**

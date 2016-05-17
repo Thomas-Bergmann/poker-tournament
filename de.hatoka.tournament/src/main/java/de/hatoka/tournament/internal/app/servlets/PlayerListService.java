@@ -43,7 +43,7 @@ public class PlayerListService extends AbstractService
         try
         {
             String content = renderStyleSheet(model, "player_list.xslt", getXsltProcessorParameter("tournament"));
-            return Response.status(200).entity(renderFrame(content, "title.list.players")).build();
+            return Response.status(200).entity(renderFrame(content, "list")).build();
         }
         catch(IOException e)
         {
@@ -70,8 +70,8 @@ public class PlayerListService extends AbstractService
         return redirect(METHOD_NAME_LIST);
     }
 
-    private String renderFrame(String content, String titleKey) throws IOException
+    private String renderFrame(String content, String subItem) throws IOException
     {
-        return getInstance(FrameRenderer.class).renderFame(content, titleKey, "players");
+        return getInstance(FrameRenderer.class).renderFame(content, "players", subItem);
     }
 }

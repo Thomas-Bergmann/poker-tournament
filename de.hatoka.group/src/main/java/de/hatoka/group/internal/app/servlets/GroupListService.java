@@ -79,7 +79,7 @@ public class GroupListService extends AbstractService
         try
         {
             String content = renderStyleSheet(model, "group_list.xslt", getXsltProcessorParameter("group"));
-            return Response.status(200).entity(renderFrame(content, "title.list.group")).build();
+            return Response.status(200).entity(renderFrame(content, "list")).build();
         }
         catch(IOException e)
         {
@@ -100,7 +100,7 @@ public class GroupListService extends AbstractService
         try
         {
             String content = renderStyleSheet(model, "group_add.xslt", getXsltProcessorParameter("group"));
-            return Response.status(200).entity(renderFrame(content, "title.create.group")).build();
+            return Response.status(200).entity(renderFrame(content, "create")).build();
         }
         catch(IOException e)
         {
@@ -108,8 +108,8 @@ public class GroupListService extends AbstractService
         }
     }
 
-    private String renderFrame(String content, String titleKey)
+    private String renderFrame(String content, String subItem)
     {
-        return getInstance(FrameRenderer.class).renderFame(content, titleKey, "groups");
+        return getInstance(FrameRenderer.class).renderFame(content, "groups", subItem);
     }
 }
