@@ -118,7 +118,6 @@ public class CashGameListService extends AbstractService
         }
     }
 
-
     private String renderFrame(String content, String subItem)
     {
         return getInstance(FrameRenderer.class).renderFame(content, "cashgames", subItem);

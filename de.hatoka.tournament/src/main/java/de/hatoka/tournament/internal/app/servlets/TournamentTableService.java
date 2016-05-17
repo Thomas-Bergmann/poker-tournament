@@ -11,10 +11,9 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 
+import de.hatoka.common.capi.app.FrameRenderer;
 import de.hatoka.common.capi.app.model.MessageVO;
 import de.hatoka.common.capi.app.servlet.AbstractService;
 import de.hatoka.tournament.capi.business.TournamentBO;
@@ -22,8 +21,6 @@ import de.hatoka.tournament.capi.business.TournamentBORepository;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
 import de.hatoka.tournament.internal.app.actions.TableAction;
 import de.hatoka.tournament.internal.app.actions.TableAction.TournamentTableURIBuilder;
-import de.hatoka.tournament.internal.app.menu.MenuFactory;
-import de.hatoka.tournament.internal.app.models.FrameModel;
 import de.hatoka.tournament.internal.app.models.TournamentTableModel;
 
 @Path("/tournament/{tournamentID}/tables")
@@ -36,11 +33,6 @@ public class TournamentTableService extends AbstractService
 
     @PathParam("tournamentID")
     private String tournamentID;
-
-    @Context
-    private UriInfo info;
-
-    private final MenuFactory menuFactory = new MenuFactory();
 
     public TournamentTableService()
     {
@@ -86,7 +78,7 @@ public class TournamentTableService extends AbstractService
         try
         {
             String content = renderStyleSheet(model, "tournament_tables.xslt", getXsltProcessorParameter("tournament"));
-            return Response.status(200).entity(renderFrame(content, "title.tournament.tables", messages)).build();
+            return Response.status(200).entity(renderFrame(content, "tables", messages)).build();
         }
         catch(IOException e)
         {
@@ -148,12 +140,8 @@ public class TournamentTableService extends AbstractService
         return redirect();
     }
 
-    private String renderFrame(String content, String titleKey, List<MessageVO> messages) throws IOException
+    private String renderFrame(String content, String subItem, List<MessageVO> messages)
     {
-        TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
-        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(getUserRef());
-        FrameModel tournamentFrameModel = menuFactory.getTournamentFrameModel(content, titleKey, info, tournamentBORepository, tournamentID);
-        tournamentFrameModel.addMessages(messages);
-        return renderStyleSheet(tournamentFrameModel, "tournament_frame.xslt", getXsltProcessorParameter("tournament"));
+        return getInstance(FrameRenderer.class).renderFame(content, messages, "tournament", tournamentID, subItem);
     }
 }

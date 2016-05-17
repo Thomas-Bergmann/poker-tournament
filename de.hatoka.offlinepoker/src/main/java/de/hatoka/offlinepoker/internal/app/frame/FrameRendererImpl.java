@@ -2,7 +2,9 @@ package de.hatoka.offlinepoker.internal.app.frame;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
@@ -12,6 +14,7 @@ import javax.inject.Provider;
 import javax.ws.rs.core.UriInfo;
 
 import de.hatoka.common.capi.app.FrameRenderer;
+import de.hatoka.common.capi.app.model.MessageVO;
 import de.hatoka.common.capi.app.servlet.RequestUserRefProvider;
 import de.hatoka.common.capi.app.xslt.XSLTRenderer;
 import de.hatoka.common.capi.resource.LocalizationBundle;
@@ -54,7 +57,24 @@ public class FrameRendererImpl implements FrameRenderer
     private static final XSLTRenderer RENDERER = new XSLTRenderer();
 
     @Override
+    public String renderNoFame(String content, String... selectedItems)
+    {
+        return renderFame(content, "no_frame.xslt", Collections.emptyList(), selectedItems);
+    }
+
+    @Override
     public String renderFame(String content, String... selectedItems)
+    {
+        return renderFame(content, Collections.emptyList(), selectedItems);
+    }
+
+    @Override
+    public String renderFame(String content, List<MessageVO> messages, String... selectedItems)
+    {
+        return renderFame(content, "frame.xslt", messages, selectedItems);
+    }
+
+    private String renderFame(String content, String style, List<MessageVO> messages, String... selectedItems)
     {
         TournamentBORepository tournamentBORepository = tournamentFactory .getTournamentBORepository(userRefProvider.getUserRef());
         FrameModel frameModel = null;
@@ -79,7 +99,8 @@ public class FrameRendererImpl implements FrameRenderer
         }
         try
         {
-            return RENDERER.render(frameModel, RESOURCE_PREFIX + "frame.xslt", getXsltProcessorParameter("frame"));
+            frameModel.setMessages(messages);
+            return RENDERER.render(frameModel, RESOURCE_PREFIX + style, getXsltProcessorParameter("frame"));
         }
         catch(IOException e)
         {
@@ -250,26 +271,6 @@ public class FrameRendererImpl implements FrameRenderer
                         "menu.tournament.screen", getUri(info, TournamentService.class,
                                         TournamentService.METHOD_NAME_SCREEN, tournamentBO.getID()),
                         null, null, titleKey.equals("title.tournament.screen"));
-        return model;
-    }
-
-    private static FrameModel getPlayerFrameModel(String content, String titleKey, UriInfo info)
-    {
-        FrameModel model = new FrameModel();
-        model.setTitleKey(titleKey);
-        model.setContent(content);
-        model.setUriHome(getUri(info, PlayerListService.class, PlayerListService.METHOD_NAME_LIST));
-        defineMainMenu(info, "players", model);
-        return model;
-    }
-
-    private static FrameModel getGroupFrameModel(String content, String titleKey, UriInfo info)
-    {
-        FrameModel model = new FrameModel();
-        model.setTitleKey(titleKey);
-        model.setContent(content);
-        model.setUriHome(getUri(info, TournamentListService.class, TournamentListService.METHOD_NAME_LIST));
-        defineMainMenu(info, "groups", model);
         return model;
     }
 

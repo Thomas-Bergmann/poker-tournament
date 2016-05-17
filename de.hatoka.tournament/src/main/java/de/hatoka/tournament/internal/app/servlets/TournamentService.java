@@ -9,16 +9,14 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 
+import de.hatoka.common.capi.app.FrameRenderer;
 import de.hatoka.common.capi.app.servlet.AbstractService;
 import de.hatoka.tournament.capi.business.TournamentBO;
 import de.hatoka.tournament.capi.business.TournamentBORepository;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
 import de.hatoka.tournament.internal.app.actions.TournamentAction;
-import de.hatoka.tournament.internal.app.menu.MenuFactory;
 import de.hatoka.tournament.internal.app.models.TournamentBigScreenModel;
 import de.hatoka.tournament.internal.app.models.TournamentConfigurationModel;
 
@@ -31,11 +29,6 @@ public class TournamentService extends AbstractService
 
     @PathParam("id")
     private String tournamentID;
-
-    @Context
-    private UriInfo info;
-
-    private final MenuFactory menuFactory = new MenuFactory();
 
     public TournamentService()
     {
@@ -58,7 +51,7 @@ public class TournamentService extends AbstractService
         try
         {
             String content = renderStyleSheet(model, "tournament_general.xslt", getXsltProcessorParameter("tournament"));
-            return Response.status(200).entity(renderFrame(content, "title.tournament.general")).build();
+            return Response.status(200).entity(renderFrame(content, "general")).build();
         }
         catch(IOException e)
         {
@@ -75,7 +68,7 @@ public class TournamentService extends AbstractService
         try
         {
             String content = renderStyleSheet(model, "tournament_bigscreen.xslt", getXsltProcessorParameter("tournament"));
-            return Response.status(200).entity(renderBigScreenFrame(content, "title.tournament.screen")).build();
+            return Response.status(200).entity(renderBigScreenFrame(content, "screen")).build();
         }
         catch(IOException e)
         {
@@ -111,19 +104,13 @@ public class TournamentService extends AbstractService
         return redirect(METHOD_NAME_OVERVIEW, tournamentID);
     }
 
-    private String renderFrame(String content, String titleKey) throws IOException
+    private String renderFrame(String content, String subItem)
     {
-        TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
-        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(getUserRef());
-        return renderStyleSheet(menuFactory.getTournamentFrameModel(content, titleKey, info, tournamentBORepository, tournamentID), "tournament_frame.xslt",
-                        getXsltProcessorParameter("tournament"));
+        return getInstance(FrameRenderer.class).renderFame(content, "tournament", tournamentID, subItem);
     }
 
-    private String renderBigScreenFrame(String content, String titleKey) throws IOException
+    private String renderBigScreenFrame(String content, String subItem)
     {
-        TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
-        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(getUserRef());
-        return renderStyleSheet(menuFactory.getTournamentFrameModel(content, titleKey, info, tournamentBORepository, tournamentID), "tournament_bigscreen_frame.xslt",
-                        getXsltProcessorParameter("tournament"));
+        return getInstance(FrameRenderer.class).renderNoFame(content, "tournament", tournamentID, subItem);
     }
 }

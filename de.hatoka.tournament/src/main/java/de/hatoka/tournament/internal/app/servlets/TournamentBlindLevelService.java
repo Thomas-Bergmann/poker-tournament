@@ -8,15 +8,12 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 
+import de.hatoka.common.capi.app.FrameRenderer;
 import de.hatoka.common.capi.app.servlet.AbstractService;
-import de.hatoka.tournament.capi.business.TournamentBORepository;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
 import de.hatoka.tournament.internal.app.actions.BlindLevelAction;
-import de.hatoka.tournament.internal.app.menu.MenuFactory;
 import de.hatoka.tournament.internal.app.models.TournamentBlindLevelModel;
 
 @Path("/tournament/{id}/levels")
@@ -27,11 +24,6 @@ public class TournamentBlindLevelService extends AbstractService
 
     @PathParam("id")
     private String tournamentID;
-
-    @Context
-    private UriInfo info;
-
-    private final MenuFactory menuFactory = new MenuFactory();
 
     public TournamentBlindLevelService()
     {
@@ -145,7 +137,7 @@ public class TournamentBlindLevelService extends AbstractService
         try
         {
             String content = renderStyleSheet(model, "tournament_blinds.xslt", getXsltProcessorParameter("tournament"));
-            return Response.status(200).entity(renderFrame(content, "title.list.levels")).build();
+            return Response.status(200).entity(renderFrame(content, "levels")).build();
         }
         catch(IOException e)
         {
@@ -159,17 +151,8 @@ public class TournamentBlindLevelService extends AbstractService
                         .build();
     }
 
-    private String renderFrame(String content, String titleKey) throws IOException
+    private String renderFrame(String content, String subItem)
     {
-        TournamentBORepository tournamentBORepository = getTournamentBORepository();
-        return renderStyleSheet(menuFactory.getTournamentFrameModel(content, titleKey, info,
-                        tournamentBORepository, tournamentID), "tournament_frame.xslt",
-                        getXsltProcessorParameter("tournament"));
-    }
-
-    private TournamentBORepository getTournamentBORepository()
-    {
-        TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
-        return factory.getTournamentBORepository(getUserRef());
+        return getInstance(FrameRenderer.class).renderFame(content, "tournament", tournamentID, subItem);
     }
 }

@@ -9,18 +9,15 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 
+import de.hatoka.common.capi.app.FrameRenderer;
 import de.hatoka.common.capi.app.servlet.AbstractService;
 import de.hatoka.tournament.capi.business.CompetitorBO;
 import de.hatoka.tournament.capi.business.PlayerBO;
-import de.hatoka.tournament.capi.business.TournamentBORepository;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
 import de.hatoka.tournament.internal.app.actions.PlayerAction;
 import de.hatoka.tournament.internal.app.actions.TournamentAction;
-import de.hatoka.tournament.internal.app.menu.MenuFactory;
 import de.hatoka.tournament.internal.app.models.TournamentPlayerListModel;
 
 @Path("/tournament/{id}/competitors")
@@ -31,11 +28,6 @@ public class TournamentCompetitorService extends AbstractService
 
     @PathParam("id")
     private String tournamentID;
-
-    @Context
-    private UriInfo info;
-
-    private final MenuFactory menuFactory = new MenuFactory();
 
     public TournamentCompetitorService()
     {
@@ -108,7 +100,7 @@ public class TournamentCompetitorService extends AbstractService
         try
         {
             String content = renderStyleSheet(model, "tournament_players.xslt", getXsltProcessorParameter("tournament"));
-            return Response.status(200).entity(renderFrame(content, "title.list.players")).build();
+            return Response.status(200).entity(renderFrame(content, "players")).build();
         }
         catch(IOException e)
         {
@@ -128,7 +120,7 @@ public class TournamentCompetitorService extends AbstractService
         {
             String content = renderStyleSheet(model, "tournament_player_add.xslt",
                             getXsltProcessorParameter("tournament"));
-            return Response.status(200).entity(renderFrame(content, "title.list.players")).build();
+            return Response.status(200).entity(renderFrame(content, "players")).build();
         }
         catch(IOException e)
         {
@@ -160,12 +152,8 @@ public class TournamentCompetitorService extends AbstractService
         return redirect(METHOD_NAME_LIST, tournamentID);
     }
 
-    private String renderFrame(String content, String titleKey) throws IOException
+    private String renderFrame(String content, String subItem)
     {
-        TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
-        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(getUserRef());
-        return renderStyleSheet(menuFactory.getTournamentFrameModel(content, titleKey, info,
-                        tournamentBORepository, tournamentID), "tournament_frame.xslt",
-                        getXsltProcessorParameter("tournament"));
+        return getInstance(FrameRenderer.class).renderFame(content, "tournament", tournamentID, subItem);
     }
 }

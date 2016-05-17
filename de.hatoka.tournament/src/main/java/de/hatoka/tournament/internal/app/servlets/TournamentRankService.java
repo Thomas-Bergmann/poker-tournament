@@ -8,15 +8,12 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 
+import de.hatoka.common.capi.app.FrameRenderer;
 import de.hatoka.common.capi.app.servlet.AbstractService;
-import de.hatoka.tournament.capi.business.TournamentBORepository;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
 import de.hatoka.tournament.internal.app.actions.RankAction;
-import de.hatoka.tournament.internal.app.menu.MenuFactory;
 import de.hatoka.tournament.internal.app.models.RankVO;
 import de.hatoka.tournament.internal.app.models.TournamentRankModel;
 
@@ -28,11 +25,6 @@ public class TournamentRankService extends AbstractService
 
     @PathParam("id")
     private String tournamentID;
-
-    @Context
-    private UriInfo info;
-
-    private final MenuFactory menuFactory = new MenuFactory();
 
     public TournamentRankService()
     {
@@ -94,7 +86,7 @@ public class TournamentRankService extends AbstractService
         try
         {
             String content = renderStyleSheet(model, "tournament_ranks.xslt", getXsltProcessorParameter("tournament"));
-            return Response.status(200).entity(renderFrame(content, "title.list.ranks")).build();
+            return Response.status(200).entity(renderFrame(content, "ranks")).build();
         }
         catch(IOException e)
         {
@@ -111,11 +103,8 @@ public class TournamentRankService extends AbstractService
         return redirect(METHOD_NAME_LIST);
     }
 
-    private String renderFrame(String content, String titleKey) throws IOException
+    private String renderFrame(String content, String subItem)
     {
-        TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
-        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(getUserRef());
-        return renderStyleSheet(menuFactory.getTournamentFrameModel(content, titleKey, info, tournamentBORepository, tournamentID), "tournament_frame.xslt",
-                        getXsltProcessorParameter("tournament"));
+        return getInstance(FrameRenderer.class).renderFame(content, "tournament", tournamentID, subItem);
     }
 }
