@@ -12,8 +12,6 @@ import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.eclipse.persistence.oxm.annotations.XmlInverseReference;
-
 import de.hatoka.common.capi.dao.IdentifiableEntity;
 
 @Entity
@@ -28,7 +26,7 @@ public class RankPO implements Serializable, IdentifiableEntity
     @NotNull
     @ManyToOne
     @JoinColumn(name = "tournament", updatable = false)
-    @XmlInverseReference(mappedBy = "tournament")
+    @XmlTransient
     private TournamentPO tournament;
 
     @XmlAttribute

@@ -14,8 +14,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.eclipse.persistence.oxm.annotations.XmlInverseReference;
-
 import de.hatoka.common.capi.app.xslt.DateXmlAdapter;
 import de.hatoka.common.capi.dao.IdentifiableEntity;
 
@@ -31,7 +29,7 @@ public class BlindLevelPO implements Serializable, IdentifiableEntity
     @NotNull
     @ManyToOne
     @JoinColumn(name = "tournament", updatable = false)
-    @XmlInverseReference(mappedBy = "tournament")
+    @XmlTransient
     private TournamentPO tournament;
 
     @XmlAttribute

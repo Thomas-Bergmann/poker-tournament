@@ -16,8 +16,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.eclipse.persistence.oxm.annotations.XmlInverseReference;
-
 import de.hatoka.common.capi.dao.IdentifiableEntity;
 import de.hatoka.common.capi.entities.MoneyPO;
 import de.hatoka.tournament.capi.types.CompetitorState;
@@ -44,7 +42,7 @@ public class CompetitorPO implements Serializable, IdentifiableEntity
     @NotNull
     @ManyToOne
     @JoinColumn(name = "tournament", updatable = false)
-    @XmlInverseReference(mappedBy="tournament")
+    @XmlTransient
     private TournamentPO tournament;
 
     /**

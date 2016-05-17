@@ -15,8 +15,6 @@ import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.eclipse.persistence.oxm.annotations.XmlInverseReference;
-
 import de.hatoka.common.capi.dao.IdentifiableEntity;
 
 @Entity
@@ -87,7 +85,7 @@ public class PlayerPO implements Serializable, IdentifiableEntity
     }
 
     @OneToMany(mappedBy = "playerRef")
-    @XmlInverseReference(mappedBy="playerRef")
+    @XmlTransient
     private Set<CompetitorPO> competitors = new HashSet<>();
 
     public PlayerPO()

@@ -110,13 +110,14 @@ project('de.hatoka.test')
 {
     dependencies {
         compile project(":de.hatoka.common")
-        compile 'org.eclipse.persistence:eclipselink:2.6.3' // embeddable
+        compile 'org.eclipse.persistence:javax.persistence:2.1.1'
         compile 'junit:junit:4.12'
         compile 'org.apache.derby:derby:10.12.1.1'
         compile 'com.google.inject:guice:4.0'
         compile 'xmlunit:xmlunit:1.6'
         compile 'org.mockito:mockito-all:1.10.19'
         runtime 'xalan:xalan:2.7.2'
+        runtime 'org.eclipse.persistence:eclipselink:2.6.3'
    }
 }
 
@@ -126,7 +127,7 @@ project('de.hatoka.common')
         compile 'javax.validation:validation-api:1.1.0.Final'
         compile 'javax.ejb:ejb-api:3.0'
         compile 'org.slf4j:slf4j-api:1.7.21'
-        compile 'org.eclipse.persistence:eclipselink:2.6.3' // embeddable
+        compile 'org.eclipse.persistence:javax.persistence:2.1.1'
         compile 'javax.ws.rs:javax.ws.rs-api:2.0.1'
         compile 'javax.servlet:javax.servlet-api:3.1.0' // HttpServletRequest
 
@@ -135,7 +136,6 @@ project('de.hatoka.common')
         compile 'commons-io:commons-io:2.+'
 
         testCompile 'junit:junit:4.12'
-        testCompile 'org.apache.tomcat:tomcat-catalina:8.5.0'
         testRuntime 'xalan:xalan:2.7.2'
     }
 }
@@ -145,9 +145,7 @@ project('de.hatoka.mail')
     dependencies {
         compile project(":de.hatoka.common")
         compile 'javax.mail:mail:1.4.7'
-        provided 'org.apache.tomcat:tomcat-catalina:8.5.0'
         testCompile project(":de.hatoka.test")
-        testCompile 'org.apache.tomcat:tomcat-catalina:8.5.0'
     }
     test {
         // https://javamail.java.net/nonav/docs/api/com/sun/mail/smtp/package-summary.html
@@ -207,6 +205,7 @@ project('de.hatoka.offlinepoker')
         runtime 'org.apache.commons:commons-dbcp2:2.0.1'
         runtime 'org.postgresql:postgresql:9.3-1102-jdbc4'
         runtime 'xalan:xalan:2.7.2'
+        runtime 'org.eclipse.persistence:eclipselink:2.6.3'
 
         testCompile 'junit:junit:4.12'
     }
