@@ -8,14 +8,12 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 
+import de.hatoka.common.capi.app.FrameRenderer;
 import de.hatoka.common.capi.app.servlet.AbstractService;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
 import de.hatoka.tournament.internal.app.actions.PlayerAction;
-import de.hatoka.tournament.internal.app.menu.MenuFactory;
 import de.hatoka.tournament.internal.app.models.PlayerListModel;
 
 @Path("/players")
@@ -23,11 +21,6 @@ public class PlayerListService extends AbstractService
 {
     private static final String RESOURCE_PREFIX = "de/hatoka/tournament/internal/templates/app/";
     public static final String METHOD_NAME_LIST = "list";
-
-    @Context
-    private UriInfo info;
-
-    private final MenuFactory menuFactory = new MenuFactory();
 
     public PlayerListService()
     {
@@ -79,7 +72,6 @@ public class PlayerListService extends AbstractService
 
     private String renderFrame(String content, String titleKey) throws IOException
     {
-        return renderStyleSheet(menuFactory.getPlayerFrameModel(content, titleKey, info), "tournament_frame.xslt",
-                        getXsltProcessorParameter("tournament"));
+        return getInstance(FrameRenderer.class).renderFame(content, titleKey, "players");
     }
 }

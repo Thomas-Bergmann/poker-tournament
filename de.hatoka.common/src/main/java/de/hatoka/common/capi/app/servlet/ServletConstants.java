@@ -3,6 +3,8 @@ package de.hatoka.common.capi.app.servlet;
 public final class ServletConstants
 {
     public static final String PROPERTY_INJECTOR = "Injector";
+    public static final String PROPERTY_REQUESTMODULES = "RequestModules";
+
     public static final String USER_ID_COOKIE_NAME = "user_id";
     public static final String USER_SIGN_COOKIE_NAME = "user_sign";
 

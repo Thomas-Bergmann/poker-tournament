@@ -1,6 +1,7 @@
 package de.hatoka.tournament.internal.app.filter;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,7 +23,7 @@ import com.google.inject.Injector;
 import de.hatoka.common.capi.app.servlet.RequestUserRefProvider;
 import de.hatoka.common.capi.app.servlet.ServletConstants;
 import de.hatoka.common.capi.dao.EncryptionUtils;
-import de.hatoka.common.capi.modules.CommonRequestModule;
+import de.hatoka.common.capi.modules.ServletRequestModule;
 import de.hatoka.tournament.capi.config.TournamentConfiguration;
 
 /**
@@ -59,7 +60,8 @@ public class AccountRequestFilter implements ContainerRequestFilter
 
     private static NewCookie createCookie(String key, String value, String comment)
     {
-        return new NewCookie(key, value, "/", null, NewCookie.DEFAULT_VERSION, comment, NewCookie.DEFAULT_MAX_AGE, null, false, true);
+        return new NewCookie(key, value, "/", null, NewCookie.DEFAULT_VERSION, comment, NewCookie.DEFAULT_MAX_AGE, null,
+                        false, true);
     }
 
     @Override
@@ -70,7 +72,7 @@ public class AccountRequestFilter implements ContainerRequestFilter
             return;
         }
         NewCookie[] cookies = validateQueryParams(requestContext);
-        if(cookies.length != 0)
+        if (cookies.length != 0)
         {
             requestContext.abortWith(Response.seeOther(info.getRequestUri()).cookie(cookies).build());
             return;
@@ -78,12 +80,17 @@ public class AccountRequestFilter implements ContainerRequestFilter
         // account resolving not successful, on GET request redirect to login
         if (requestContext.getMethod().equals(HttpMethod.GET))
         {
-            requestContext.abortWith(Response.seeOther(
-                            info.getBaseUriBuilder().uri(getInstance(TournamentConfiguration.class).getLoginURI()).queryParam("origin", info.getRequestUri()).build()).build());
+            requestContext.abortWith(
+                            Response.seeOther(
+                                            info.getBaseUriBuilder()
+                                                            .uri(getInstance(TournamentConfiguration.class)
+                                                                            .getLoginURI())
+                                            .queryParam("origin", info.getRequestUri()).build()).build());
         }
         else
         {
-            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("User cannot access the resource.").build());
+            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
+                            .entity("User cannot access the resource.").build());
         }
     }
 
@@ -114,7 +121,8 @@ public class AccountRequestFilter implements ContainerRequestFilter
         else
         {
             LOGGER.warn("Wrong access to account '" + accountID + "': with wrong signature '" + accountSign + "'");
-            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("User cannot access the resource.").build());
+            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
+                            .entity("User cannot access the resource.").build());
         }
         return true;
     }
@@ -134,7 +142,9 @@ public class AccountRequestFilter implements ContainerRequestFilter
     {
         if (injector == null)
         {
-            injector = ((Injector)application.getProperties().get(ServletConstants.PROPERTY_INJECTOR)).createChildInjector(new CommonRequestModule(application, servletRequest));
+            injector = ((Injector)application.getProperties().get(ServletConstants.PROPERTY_INJECTOR))
+                            .createChildInjector(
+                                            Arrays.asList(new ServletRequestModule(application, servletRequest, info)));
         }
         return injector;
     }

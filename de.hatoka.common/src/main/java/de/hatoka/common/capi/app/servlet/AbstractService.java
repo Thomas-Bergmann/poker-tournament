@@ -2,8 +2,9 @@ package de.hatoka.common.capi.app.servlet;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
@@ -29,7 +30,8 @@ import de.hatoka.common.capi.app.xslt.XSLTRenderer;
 import de.hatoka.common.capi.business.CountryHelper;
 import de.hatoka.common.capi.dao.TransactionProvider;
 import de.hatoka.common.capi.dao.UUIDGenerator;
-import de.hatoka.common.capi.modules.CommonRequestModule;
+import de.hatoka.common.capi.modules.LocalizationRequestModule;
+import de.hatoka.common.capi.modules.ServletRequestModule;
 import de.hatoka.common.capi.resource.LocalizationBundle;
 import de.hatoka.common.capi.resource.ResourceLocalizer;
 import de.hatoka.common.internal.app.models.ErrorModel;
@@ -46,7 +48,7 @@ public class AbstractService
     private Application application;
 
     @Context
-    private UriInfo info;
+    private UriInfo uriInfo;
 
     @Context
     private HttpHeaders headers;
@@ -99,7 +101,16 @@ public class AbstractService
 
     protected Iterable<? extends Module> getRequestModules()
     {
-        return Arrays.asList(new CommonRequestModule(application, servletRequest));
+        @SuppressWarnings("unchecked")
+        List<Module> requestModules = (List<Module>) application.getProperties().get(ServletConstants.PROPERTY_REQUESTMODULES);
+        List<Module> result = new ArrayList<>();
+        result.add(new ServletRequestModule(application, servletRequest, uriInfo));
+        result.add(new LocalizationRequestModule(getLocale(), getTimeZone()));
+        if (requestModules != null)
+        {
+            result.addAll(requestModules);
+        }
+        return result;
     }
 
     public <T> T getInstance(Class<T> classOfT)
@@ -126,7 +137,7 @@ public class AbstractService
 
     public UriBuilder getUriBuilder(Class<?> resource, String methodName)
     {
-        return info.getBaseUriBuilder().path(resource).path(resource, methodName);
+        return uriInfo.getBaseUriBuilder().path(resource).path(resource, methodName);
     }
 
     protected String getUUID()
@@ -205,7 +216,7 @@ public class AbstractService
     protected Map<String, Object> getXsltProcessorParameter(String localizationResource)
     {
         Map<String, Object> result = new HashMap<String, Object>();
-        result.put("uriInfo", info);
+        result.put("uriInfo", uriInfo);
         if (localizationResource != null)
         {
             result.put("localizer", new ResourceLocalizer(

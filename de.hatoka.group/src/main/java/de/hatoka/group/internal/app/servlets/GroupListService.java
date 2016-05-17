@@ -11,6 +11,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import de.hatoka.common.capi.app.FrameRenderer;
 import de.hatoka.common.capi.app.servlet.AbstractService;
 import de.hatoka.group.internal.app.models.GroupListModel;
 
@@ -109,6 +110,6 @@ public class GroupListService extends AbstractService
 
     private String renderFrame(String content, String titleKey)
     {
-        return content;
+        return getInstance(FrameRenderer.class).renderFame(content, titleKey, "groups");
     }
 }

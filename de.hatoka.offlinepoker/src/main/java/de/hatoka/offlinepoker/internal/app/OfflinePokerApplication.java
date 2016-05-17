@@ -1,5 +1,6 @@
 package de.hatoka.offlinepoker.internal.app;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -23,6 +24,7 @@ import de.hatoka.group.modules.GroupDaoJpaModule;
 import de.hatoka.mail.internal.modules.MailConfigurationModule;
 import de.hatoka.mail.internal.modules.MailDaoJpaModule;
 import de.hatoka.mail.internal.modules.MailServiceModule;
+import de.hatoka.offlinepoker.internal.modules.FrameModule;
 import de.hatoka.tournament.internal.app.filter.AccountRequestFilter;
 import de.hatoka.tournament.internal.app.servlets.CashGameCompetitorService;
 import de.hatoka.tournament.internal.app.servlets.CashGameListService;
@@ -91,6 +93,7 @@ public class OfflinePokerApplication extends Application
     {
         Map<String, Object> result = new HashMap<>();
         result.put(ServletConstants.PROPERTY_INJECTOR, injector);
+        result.put(ServletConstants.PROPERTY_REQUESTMODULES, Arrays.asList(new FrameModule()));
         return result;
     }
 }
