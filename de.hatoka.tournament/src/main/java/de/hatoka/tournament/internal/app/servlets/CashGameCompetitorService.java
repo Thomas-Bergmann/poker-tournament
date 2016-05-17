@@ -10,18 +10,15 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 
+import de.hatoka.common.capi.app.FrameRenderer;
 import de.hatoka.common.capi.app.servlet.AbstractService;
 import de.hatoka.tournament.capi.business.PlayerBO;
 import de.hatoka.tournament.capi.business.TournamentBORepository;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
 import de.hatoka.tournament.internal.app.actions.CashGameAction;
 import de.hatoka.tournament.internal.app.actions.PlayerAction;
-import de.hatoka.tournament.internal.app.menu.MenuFactory;
-import de.hatoka.tournament.internal.app.models.FrameModel;
 import de.hatoka.tournament.internal.app.models.HistoryModel;
 import de.hatoka.tournament.internal.app.models.TournamentPlayerListModel;
 
@@ -33,11 +30,6 @@ public class CashGameCompetitorService extends AbstractService
 
     @PathParam("id")
     private String tournamentID;
-
-    @Context
-    private UriInfo info;
-
-    private final MenuFactory menuFactory = new MenuFactory();
 
     public CashGameCompetitorService()
     {
@@ -234,12 +226,8 @@ public class CashGameCompetitorService extends AbstractService
         return redirectPlayers();
     }
 
-    private String renderFrame(String content, String actionName) throws IOException
+    private String renderFrame(String content, String subItem)
     {
-        TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
-        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(getUserRef());
-        FrameModel frameModel = menuFactory.getCashGameFrameModel(content, "title.list." + actionName, info,
-                        tournamentBORepository, tournamentID);
-        return renderStyleSheet(frameModel, "tournament_frame.xslt", getXsltProcessorParameter("tournament"));
+        return getInstance(FrameRenderer.class).renderFame(content, "cashgame", tournamentID, subItem);
     }
 }

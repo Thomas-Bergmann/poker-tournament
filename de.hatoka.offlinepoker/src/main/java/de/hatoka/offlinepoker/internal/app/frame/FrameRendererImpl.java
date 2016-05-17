@@ -52,7 +52,6 @@ public class FrameRendererImpl implements FrameRenderer
 
     private static final String RESOURCE_PREFIX = "de/hatoka/offlinepoker/internal/templates/app/";
     private static final XSLTRenderer RENDERER = new XSLTRenderer();
-    private static final String tournamentID = "FALSE";
 
     @Override
     public String renderFame(String content, String... selectedItems)
@@ -61,23 +60,15 @@ public class FrameRendererImpl implements FrameRenderer
         FrameModel frameModel = null;
         String mainItem = selectedItems[0];
         String level1Item = selectedItems[1];
-        if ("cashgame".equals(mainItem) && !"list".equals(level1Item))
+        if ("cashgame".equals(mainItem))
         {
-            frameModel = getCashGameFrameModel(content, getTitle(selectedItems), uriInfoProvider.get(), tournamentBORepository,
-                            tournamentID);
+            frameModel = getCashGameFrameModel(content, getSingleTitle(selectedItems), uriInfoProvider.get(), tournamentBORepository,
+                            level1Item);
         }
-        else if ("tournament".equals(mainItem) && !"list".equals(level1Item))
+        else if ("tournament".equals(mainItem))
         {
-            frameModel = getTournamentFrameModel(content, getTitle(selectedItems), uriInfoProvider.get(), tournamentBORepository,
-                            tournamentID);
-        }
-        else if ("players".equals(mainItem) && !"list".equals(level1Item))
-        {
-            frameModel = getPlayerFrameModel(content, getTitle(selectedItems), uriInfoProvider.get());
-        }
-        else if ("groups".equals(mainItem) && !"list".equals(level1Item))
-        {
-            frameModel = getGroupFrameModel(content, getTitle(selectedItems), uriInfoProvider.get());
+            frameModel = getTournamentFrameModel(content, getSingleTitle(selectedItems), uriInfoProvider.get(), tournamentBORepository,
+                            level1Item);
         }
         else
         {
@@ -103,6 +94,14 @@ public class FrameRendererImpl implements FrameRenderer
         {
             builder.append(".").append(item);
         }
+        return builder.toString();
+    }
+
+    private static String getSingleTitle(String[] selectedItems)
+    {
+        StringBuilder builder = new StringBuilder("title");
+        builder.append(".").append(selectedItems[0]);
+        builder.append(".").append(selectedItems[2]);
         return builder.toString();
     }
 
@@ -208,10 +207,10 @@ public class FrameRendererImpl implements FrameRenderer
                                         cashGameBO.getID()),
                         cashGameBO.getCompetitors().size(),
                         getUri(info, CashGameCompetitorService.class, "addPlayer", cashGameBO.getID()),
-                        titleKey.equals("title.list.players"));
+                        titleKey.equals("title.cashgame.players"));
         model.addSideMenu("menu.cashgame.history",
                         getUri(info, CashGameCompetitorService.class, "history", cashGameBO.getID()),
-                        cashGameBO.getHistoryEntries().size(), null, titleKey.equals("title.list.history"));
+                        cashGameBO.getHistoryEntries().size(), null, titleKey.equals("title.cashgame.history"));
         return model;
     }
 

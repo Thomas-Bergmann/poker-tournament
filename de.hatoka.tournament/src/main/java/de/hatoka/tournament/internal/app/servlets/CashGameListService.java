@@ -8,17 +8,12 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
 
+import de.hatoka.common.capi.app.FrameRenderer;
 import de.hatoka.common.capi.app.servlet.AbstractService;
-import de.hatoka.tournament.capi.business.PlayerBORepository;
-import de.hatoka.tournament.capi.business.TournamentBORepository;
-import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
 import de.hatoka.tournament.internal.app.actions.TournamentListAction;
-import de.hatoka.tournament.internal.app.menu.MenuFactory;
 import de.hatoka.tournament.internal.app.models.TournamentListModel;
 
 @Path("/cashgames")
@@ -27,11 +22,6 @@ public class CashGameListService extends AbstractService
     private static final String RESOURCE_PREFIX = "de/hatoka/tournament/internal/templates/app/";
     public static final String METHOD_NAME_LIST = "list";
     public static final String METHOD_NAME_ADD = "add";
-
-    @Context
-    private UriInfo info;
-
-    private final MenuFactory menuFactory = new MenuFactory();
 
     public CashGameListService()
     {
@@ -94,7 +84,7 @@ public class CashGameListService extends AbstractService
         try
         {
             String content = renderStyleSheet(model, "tournament_list.xslt", getXsltProcessorParameter("tournament"));
-            return Response.status(200).entity(renderFrame(content, "title.list.cashgame")).build();
+            return Response.status(200).entity(renderFrame(content, "list")).build();
         }
         catch(IOException e)
         {
@@ -120,7 +110,7 @@ public class CashGameListService extends AbstractService
         try
         {
             String content = renderStyleSheet(model, "cashgame_add.xslt", getXsltProcessorParameter("tournament"));
-            return Response.status(200).entity(renderFrame(content, "title.create.cashgame")).build();
+            return Response.status(200).entity(renderFrame(content, "create")).build();
         }
         catch(IOException e)
         {
@@ -128,12 +118,9 @@ public class CashGameListService extends AbstractService
         }
     }
 
-    private String renderFrame(String content, String titleKey) throws IOException
+
+    private String renderFrame(String content, String subItem)
     {
-        TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
-        final String accountRef = getUserRef();
-        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountRef);
-        PlayerBORepository playerBORepository = factory.getPlayerBORepository(accountRef);
-        return renderStyleSheet(menuFactory.getMainFrameModel(content, titleKey, info, tournamentBORepository, playerBORepository, "cashgames"), "tournament_frame.xslt", getXsltProcessorParameter("tournament"));
+        return getInstance(FrameRenderer.class).renderFame(content, "cashgames", subItem);
     }
 }

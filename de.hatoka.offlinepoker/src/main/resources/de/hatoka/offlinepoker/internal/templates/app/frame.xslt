@@ -17,7 +17,7 @@
 					</xsl:when>
 					<xsl:when test="frameModel/@titleKey">
 					<xsl:value-of
-						select="hatoka:getText($localizer, frameModel/@titleKey, 'no title')" />
+						select="hatoka:getText($localizer, frameModel/@titleKey, frameModel/@titleKey)" />
 					</xsl:when>
 					<xsl:otherwise>
 						no title
@@ -66,7 +66,7 @@
 						<h1 class="page-header"><xsl:value-of select="frameModel/@title" /></h1>
 					  </xsl:when>
 					  <xsl:when test="frameModel/@titleKey">
-						<h1 class="page-header"><xsl:value-of select="hatoka:getText($localizer, frameModel/@titleKey, 'no title')" /></h1>
+						<h1 class="page-header"><xsl:value-of select="hatoka:getText($localizer, frameModel/@titleKey, frameModel/@titleKey)" /></h1>
 					  </xsl:when>
 					  <xsl:otherwise>
 						<h1 class="page-header">no title</h1>
@@ -99,7 +99,7 @@
 				   <xsl:value-of select="@title" />
 				  </xsl:when>
 				  <xsl:when test="@titleKey">
-				   <xsl:value-of select="hatoka:getText($localizer, @titleKey)" />
+				   <xsl:value-of select="hatoka:getText($localizer, @titleKey, @titleKey)" />
 				  </xsl:when>
 				  <xsl:otherwise>
 				    ... (no name) ...
