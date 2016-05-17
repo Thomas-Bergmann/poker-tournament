@@ -20,12 +20,12 @@ public class SignUpVerifyMailTemplateTest
     private static final XSLTRenderer RENDERER = new XSLTRenderer();
     private static final ResourceLoader RESOURCE_LOADER = new ResourceLoader();
 
-    private String getResource(String resource) throws IOException
+    private static String getResource(String resource) throws IOException
     {
         return RESOURCE_LOADER.getResourceAsString(RESOURCE_PREFIX + resource);
     }
 
-    private String renderContent(Object objects) throws IOException
+    private static String renderContent(Object objects) throws IOException
     {
         return RENDERER.render(objects, RESOURCE_PREFIX + "signUpVerifyEmail.html.xslt", RENDERER.getParameter(RESOURCE_PREFIX + "signup", Locale.US, CountryHelper.UTC));
     }

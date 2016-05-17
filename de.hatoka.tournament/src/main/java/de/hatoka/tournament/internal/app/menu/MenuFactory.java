@@ -21,7 +21,7 @@ import de.hatoka.tournament.internal.app.servlets.TournamentTableService;
 
 public class MenuFactory
 {
-    private URI getUri(UriInfo info, Class<?> resource, String methodName, Object... values)
+    private static URI getUri(UriInfo info, Class<?> resource, String methodName, Object... values)
     {
         return info.getBaseUriBuilder().path(resource).path(resource, methodName).build(values);
     }
@@ -47,24 +47,24 @@ public class MenuFactory
         return model;
     }
 
-    private void defineMainMenu(UriInfo info, String main, FrameModel model)
+    private static void defineMainMenu(UriInfo info, String main, FrameModel model)
     {
         model.addMainMenu("menu.list.tournaments", getUri(info, TournamentListService.class, TournamentListService.METHOD_NAME_LIST), "tournaments".equals(main));
         model.addMainMenu("menu.list.cashgames", getUri(info, CashGameListService.class, CashGameListService.METHOD_NAME_LIST), "cashgames".equals(main));
         model.addMainMenu("menu.list.players", getUri(info, PlayerListService.class, CashGameListService.METHOD_NAME_LIST), "players".equals(main));
     }
 
-    private Integer getTournamentsSize(TournamentBORepository tournamentBORepository)
+    private static Integer getTournamentsSize(TournamentBORepository tournamentBORepository)
     {
         return tournamentBORepository.getTournaments().size();
     }
 
-    private Integer getCashGamesSize(TournamentBORepository tournamentBORepository)
+    private static Integer getCashGamesSize(TournamentBORepository tournamentBORepository)
     {
         return tournamentBORepository.getCashGames().size();
     }
 
-    private Integer getPlayersSize(PlayerBORepository playerBORepository)
+    private static Integer getPlayersSize(PlayerBORepository playerBORepository)
     {
         return playerBORepository.getPlayers().size();
     }

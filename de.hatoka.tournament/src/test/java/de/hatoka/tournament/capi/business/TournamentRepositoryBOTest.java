@@ -116,12 +116,12 @@ public class TournamentRepositoryBOTest
         XMLUnit.setIgnoreWhitespace(true);
     }
 
-    private String getResource(String resource) throws IOException
+    private static String getResource(String resource) throws IOException
     {
         return RESOURCE_LOADER.getResourceAsString(RESOURCE_PREFIX + resource);
     }
 
-    private InputStream getResourceStream(String resource) throws IOException
+    private static InputStream getResourceStream(String resource) throws IOException
     {
         return RESOURCE_LOADER.getResourceAsStream(RESOURCE_PREFIX + resource);
     }

@@ -42,12 +42,12 @@ public class CashGameTemplateTest
         XMLUnit.setIgnoreWhitespace(true);
     }
 
-    private String getResource(String resource) throws IOException
+    private static String getResource(String resource) throws IOException
     {
         return RESOURCE_LOADER.getResourceAsString(RESOURCE_PREFIX + resource);
     }
 
-    private Map<String, Object> getParameter()
+    private static Map<String, Object> getParameter()
     {
         Map<String, Object> result = new HashMap<>();
         result.put(Lib.XSLT_LOCALIZER, new ResourceLocalizer(
@@ -55,20 +55,20 @@ public class CashGameTemplateTest
         return result;
     }
 
-    private TournamentVO getTournamentVO(String id, String name, Date date)
+    private static TournamentVO getTournamentVO(String id, String name, Date date)
     {
         return TournamentViewObjectHelper.getTournamentVO(id, name, date);
     }
-    private CompetitorVO getCompetitorVO(String id, String name, String playerID)
+    private static CompetitorVO getCompetitorVO(String id, String name, String playerID)
     {
         return TournamentViewObjectHelper.getCompetitorVO(id, name, playerID);
     }
-    private PlayerVO getPlayerVO(String id, String name)
+    private static PlayerVO getPlayerVO(String id, String name)
     {
         return TournamentViewObjectHelper.getPlayerVO(id, name);
     }
 
-    private HistoryEntryVO getHistoryEntry(String player, HistoryEntryType entry, Date date)
+    private static HistoryEntryVO getHistoryEntry(String player, HistoryEntryType entry, Date date)
     {
         HistoryEntryVO result = new HistoryEntryVO();
         result.setPlayerName(player);

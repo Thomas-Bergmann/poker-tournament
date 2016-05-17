@@ -24,11 +24,6 @@ public class ResourceService
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourceService.class);
 
-    private Injector getInjector(Application application)
-    {
-        return (Injector)application.getProperties().get(ServletConstants.PROPERTY_INJECTOR);
-    }
-
     @GET
     @Path("/{filename: [-a-zA-Z_0-9\\.\\/]*}")
     public Response getResource(@Context ServletContext context, @Context Application application,
@@ -60,7 +55,12 @@ public class ResourceService
         }
     }
 
-    private String getUUID(Application application)
+    private static Injector getInjector(Application application)
+    {
+        return (Injector)application.getProperties().get(ServletConstants.PROPERTY_INJECTOR);
+    }
+
+    private static String getUUID(Application application)
     {
         return getInjector(application).getInstance(UUIDGenerator.class).generate();
     }

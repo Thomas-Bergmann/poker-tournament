@@ -47,7 +47,7 @@ public class SmtpMailService implements MailService
      * @throws MessagingException
      * @throws AddressException
      */
-    private void addAddresses(MailPO mail, MimeMessage message) throws MessagingException, AddressException
+    private static void addAddresses(MailPO mail, MimeMessage message) throws MessagingException, AddressException
     {
         Map<MailAddressType, List<InternetAddress>> addresses = getGroupedAddresses(mail);
 
@@ -92,7 +92,7 @@ public class SmtpMailService implements MailService
      * @param attachments
      * @throws MessagingException
      */
-    private void addFileAttachments(MimeMultipart multipart, List<MailAttachmentPO> attachments)
+    private static void addFileAttachments(MimeMultipart multipart, List<MailAttachmentPO> attachments)
                     throws MessagingException
     {
         for (MailAttachmentPO attachment : attachments)
@@ -126,7 +126,7 @@ public class SmtpMailService implements MailService
      * @return
      * @throws MessagingException
      */
-    private MimeMultipart addInlineAttachments(String encoding, MimeBodyPart messageBodyPart, String content,
+    private static MimeMultipart addInlineAttachments(String encoding, MimeBodyPart messageBodyPart, String content,
                     boolean isHtml, List<MailAttachmentPO> attachments) throws MessagingException
     {
         List<MailAttachmentPO> inlineAttachmentList = new ArrayList<MailAttachmentPO>();
@@ -191,7 +191,7 @@ public class SmtpMailService implements MailService
         return multipart;
     }
 
-    private void addMessageID(MailPO mail, MimeMessage message) throws MessagingException
+    private static void addMessageID(MailPO mail, MimeMessage message) throws MessagingException
     {
         message.setHeader(MailConstants.KEY_MESSAGE_ID_HEADER, mail.getId());
     }
@@ -202,7 +202,7 @@ public class SmtpMailService implements MailService
      * @param mailPO
      * @return
      */
-    private Map<MailAddressType, List<InternetAddress>> getGroupedAddresses(MailPO mailPO)
+    private static Map<MailAddressType, List<InternetAddress>> getGroupedAddresses(MailPO mailPO)
     {
         Map<MailAddressType, List<InternetAddress>> result = new HashMap<>();
         for (MailReceiverPO receiverPO : mailPO.getReceivers())
@@ -308,7 +308,7 @@ public class SmtpMailService implements MailService
      * @param message
      * @throws MessagingException
      */
-    private void setSubject(MailPO mail, MimeMessage message) throws MessagingException
+    private static void setSubject(MailPO mail, MimeMessage message) throws MessagingException
     {
         String encoding = mail.getEncoding();
         String subject = mail.getSubject();
@@ -328,7 +328,7 @@ public class SmtpMailService implements MailService
      * @param list
      * @return
      */
-    private InternetAddress[] toArray(List<InternetAddress> list)
+    private static InternetAddress[] toArray(List<InternetAddress> list)
     {
         if (list == null)
         {

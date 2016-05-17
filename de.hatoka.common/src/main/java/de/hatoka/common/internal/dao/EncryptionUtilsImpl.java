@@ -11,7 +11,7 @@ import de.hatoka.common.capi.dao.EncryptionUtils;
 
 public class EncryptionUtilsImpl implements EncryptionUtils
 {
-    private String encrypt(String text, String algo) throws NoSuchAlgorithmException, UnsupportedEncodingException
+    private static String encrypt(String text, String algo) throws NoSuchAlgorithmException, UnsupportedEncodingException
     {
         MessageDigest md = MessageDigest.getInstance(algo);
         md.update(text.getBytes("UTF-8"));

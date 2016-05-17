@@ -31,12 +31,12 @@ public class ErrorTemplateTest
         }
     }
 
-    private String trim(String text)
+    private static String trim(String text)
     {
         return text.replace("\t", "    ").replace("\r\n","\n");
     }
 
-    private String trim(StringWriter writer)
+    private static String trim(StringWriter writer)
     {
         return trim(writer.toString());
     }

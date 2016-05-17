@@ -33,7 +33,7 @@ public class TournamentFrameTemplateTest
         XMLUnit.setIgnoreWhitespace(true);
     }
 
-    private Map<String, Object> getParameter()
+    private static Map<String, Object> getParameter()
     {
         Map<String, Object> result = new HashMap<>();
         result.put(Lib.XSLT_LOCALIZER, new ResourceLocalizer(

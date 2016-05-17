@@ -57,17 +57,17 @@ public class TournamentTemplateTest
         XMLUnit.setIgnoreWhitespace(true);
     }
 
-    private String getResource(String resource) throws IOException
+    private static String getResource(String resource) throws IOException
     {
         return RESOURCE_LOADER.getResourceAsString(RESOURCE_PREFIX + resource);
     }
 
-    private String wrapXMLRoot(String content) throws IOException
+    private static String wrapXMLRoot(String content) throws IOException
     {
         return "<body>\n" + content + "\n</body>";
     }
 
-    private Map<String, Object> getParameter()
+    private static Map<String, Object> getParameter()
     {
         Map<String, Object> result = new HashMap<>();
         result.put(Lib.XSLT_LOCALIZER, new ResourceLocalizer(
@@ -75,17 +75,17 @@ public class TournamentTemplateTest
         return result;
     }
 
-    private TournamentVO getTournamentVO(String id, String name, Date date)
+    private static TournamentVO getTournamentVO(String id, String name, Date date)
     {
         return TournamentViewObjectHelper.getTournamentVO(id, name, date);
     }
 
-    private CompetitorVO getCompetitorVO(String id, String name, String playerID)
+    private static CompetitorVO getCompetitorVO(String id, String name, String playerID)
     {
         return TournamentViewObjectHelper.getCompetitorVO(id, name, playerID);
     }
 
-    private PlayerVO getPlayerVO(String id, String name)
+    private static PlayerVO getPlayerVO(String id, String name)
     {
         return TournamentViewObjectHelper.getPlayerVO(id, name);
     }
@@ -184,7 +184,7 @@ public class TournamentTemplateTest
         XMLAssert.assertXMLEqual("content not correct rendered", getResource("tournament_ranks.result.xml"), content);
     }
 
-    private Date parseDate(String dateString) throws ParseException
+    private static Date parseDate(String dateString) throws ParseException
     {
         SimpleDateFormat result = new SimpleDateFormat(LocalizationConstants.XML_DATEFORMAT_MINUTES);
         result.setTimeZone(CountryHelper.TZ_BERLIN);
@@ -249,7 +249,7 @@ public class TournamentTemplateTest
         XMLAssert.assertXMLEqual("overview not correct", getResource("tournament_bigscreen.result.xml"), content);
     }
 
-    private Collection<TableVO> getTables()
+    private static Collection<TableVO> getTables()
     {
         List<TableVO> result = new ArrayList<>();
         TableVO table = new TableVO();
@@ -264,7 +264,7 @@ public class TournamentTemplateTest
         return result;
     }
 
-    private CompetitorVO getActiveCompetitor(String id, String name, String playerID)
+    private static CompetitorVO getActiveCompetitor(String id, String name, String playerID)
     {
         CompetitorVO result = getCompetitorVO(id, name, playerID);
         result.getActions().add(new ActionVO("rebuy", URI.create("http://local/rebuy?competitor=" + id), "repeat"));
@@ -273,7 +273,7 @@ public class TournamentTemplateTest
         return result;
     }
 
-    private CompetitorVO getInActiveCompetitor(String id, String name, String playerID, Integer position)
+    private static CompetitorVO getInActiveCompetitor(String id, String name, String playerID, Integer position)
     {
         CompetitorVO result = getCompetitorVO(id, name, playerID);
         result.setPosition(position);

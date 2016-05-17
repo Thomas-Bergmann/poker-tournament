@@ -97,7 +97,7 @@ public class MailDaoJpa extends GenericJPADao<MailPO> implements MailDao
         return result;
     }
 
-    private String getMimeType(File file)
+    private static String getMimeType(File file)
     {
         try
         {

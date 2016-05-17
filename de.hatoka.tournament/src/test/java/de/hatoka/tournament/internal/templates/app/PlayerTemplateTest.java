@@ -33,19 +33,19 @@ public class PlayerTemplateTest
         XMLUnit.setIgnoreWhitespace(true);
     }
 
-    private String getResource(String resource) throws IOException
+    private static String getResource(String resource) throws IOException
     {
         return RESOURCE_LOADER.getResourceAsString(RESOURCE_PREFIX + resource);
     }
 
-    private Map<String, Object> getParameter()
+    private static Map<String, Object> getParameter()
     {
         Map<String, Object> result = new HashMap<>();
         result.put(Lib.XSLT_LOCALIZER, new ResourceLocalizer(new LocalizationBundle(RESOURCE_PREFIX + "tournament", Locale.US, CountryHelper.TZ_BERLIN)));
         return result;
     }
 
-    private PlayerVO getPlayerVO(String id, String name, String eMail)
+    private static PlayerVO getPlayerVO(String id, String name, String eMail)
     {
         PlayerVO result = TournamentViewObjectHelper.getPlayerVO(id, name);
         result.seteMail(eMail);

@@ -24,9 +24,7 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import com.google.inject.Binder;
 import com.google.inject.Injector;
-import com.google.inject.Module;
 import com.google.inject.Provider;
 
 import de.hatoka.common.capi.business.CountryHelper;
@@ -59,21 +57,7 @@ public class TournamentBOTest
     @BeforeClass
     public static void createInjector()
     {
-        injector = TestBusinessInjectorProvider.get(rule.getModule(), new Module()
-        {
-            @Override
-            public void configure(Binder binder)
-            {
-                binder.bind(Date.class).toProvider(new Provider<Date>()
-                {
-                    @Override
-                    public Date get()
-                    {
-                        return START_DATE;
-                    }
-                }).asEagerSingleton();
-            }
-        });
+        injector = TestBusinessInjectorProvider.get(rule.getModule(), binder -> binder.bind(Date.class).toProvider((Provider<Date>)() -> START_DATE).asEagerSingleton());
     }
 
     @AfterClass
@@ -338,7 +322,7 @@ public class TournamentBOTest
         underTest.seatOpen(firstCompetitor);
     }
 
-    private int maxPlayersOnTable(Collection<TableBO> tables)
+    private static int maxPlayersOnTable(Collection<TableBO> tables)
     {
         int maxPlayer = 0;
         for (TableBO table : tables)
@@ -352,7 +336,7 @@ public class TournamentBOTest
         return maxPlayer;
     }
 
-    private int sumPlayersOnTable(Collection<TableBO> tables)
+    private static int sumPlayersOnTable(Collection<TableBO> tables)
     {
         int sumPlayers = 0;
         for (TableBO table : tables)
