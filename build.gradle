@@ -110,7 +110,7 @@ project('de.hatoka.test')
 {
     dependencies {
         compile project(":de.hatoka.common")
-        compile 'org.eclipse.persistence:eclipselink:2.6.2' // embeddable
+        compile 'org.eclipse.persistence:eclipselink:2.6.3' // embeddable
         compile 'junit:junit:4.12'
         compile 'org.apache.derby:derby:10.12.1.1'
         compile 'com.google.inject:guice:4.0'
@@ -126,7 +126,7 @@ project('de.hatoka.common')
         compile 'javax.validation:validation-api:1.1.0.Final'
         compile 'javax.ejb:ejb-api:3.0'
         compile 'org.slf4j:slf4j-api:1.7.21'
-        compile 'org.eclipse.persistence:eclipselink:2.6.2' // embeddable
+        compile 'org.eclipse.persistence:eclipselink:2.6.3' // embeddable
         compile 'javax.ws.rs:javax.ws.rs-api:2.0.1'
         compile 'javax.servlet:javax.servlet-api:3.1.0' // HttpServletRequest
 
