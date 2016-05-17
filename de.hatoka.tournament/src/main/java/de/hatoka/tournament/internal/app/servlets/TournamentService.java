@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -19,7 +18,6 @@ import de.hatoka.tournament.capi.business.TournamentBO;
 import de.hatoka.tournament.capi.business.TournamentBORepository;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
 import de.hatoka.tournament.internal.app.actions.TournamentAction;
-import de.hatoka.tournament.internal.app.filter.AccountRequestFilter;
 import de.hatoka.tournament.internal.app.menu.MenuFactory;
 import de.hatoka.tournament.internal.app.models.TournamentBigScreenModel;
 import de.hatoka.tournament.internal.app.models.TournamentConfigurationModel;
@@ -36,8 +34,6 @@ public class TournamentService extends AbstractService
 
     @Context
     private UriInfo info;
-    @Context
-    private HttpServletRequest servletRequest;
 
     private final MenuFactory menuFactory = new MenuFactory();
 
@@ -46,14 +42,9 @@ public class TournamentService extends AbstractService
         super(RESOURCE_PREFIX);
     }
 
-    private String getAccountRef()
-    {
-        return AccountRequestFilter.getAccountRef(servletRequest);
-    }
-
     private TournamentAction getTournamentAction()
     {
-        String accountRef = getAccountRef();
+        String accountRef = getUserRef();
         TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
         return new TournamentAction(accountRef, tournamentID, factory);
     }
@@ -71,7 +62,7 @@ public class TournamentService extends AbstractService
         }
         catch(IOException e)
         {
-            return render(500, e);
+            return render(e);
         }
     }
 
@@ -88,7 +79,7 @@ public class TournamentService extends AbstractService
         }
         catch(IOException e)
         {
-            return render(500, e);
+            return render(e);
         }
     }
 
@@ -110,7 +101,7 @@ public class TournamentService extends AbstractService
     {
         runInTransaction(() -> {
             TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
-            TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(getAccountRef());
+            TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(getUserRef());
             TournamentBO tournament = tournamentBORepository.getTournamentByID(tournamentID);
             tournament.setMaximumNumberOfPlayersPerTable(largestTable);
             tournament.setInitialStacksize(initialStack);
@@ -123,7 +114,7 @@ public class TournamentService extends AbstractService
     private String renderFrame(String content, String titleKey) throws IOException
     {
         TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
-        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(getAccountRef());
+        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(getUserRef());
         return renderStyleSheet(menuFactory.getTournamentFrameModel(content, titleKey, info, tournamentBORepository, tournamentID), "tournament_frame.xslt",
                         getXsltProcessorParameter("tournament"));
     }
@@ -131,7 +122,7 @@ public class TournamentService extends AbstractService
     private String renderBigScreenFrame(String content, String titleKey) throws IOException
     {
         TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
-        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(getAccountRef());
+        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(getUserRef());
         return renderStyleSheet(menuFactory.getTournamentFrameModel(content, titleKey, info, tournamentBORepository, tournamentID), "tournament_bigscreen_frame.xslt",
                         getXsltProcessorParameter("tournament"));
     }

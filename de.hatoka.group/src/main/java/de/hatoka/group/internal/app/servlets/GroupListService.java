@@ -82,7 +82,7 @@ public class GroupListService extends AbstractService
         }
         catch(IOException e)
         {
-            return render(500, e);
+            return render(e);
         }
     }
 
@@ -103,7 +103,7 @@ public class GroupListService extends AbstractService
         }
         catch(IOException e)
         {
-            return render(500, e);
+            return render(e);
         }
     }
 

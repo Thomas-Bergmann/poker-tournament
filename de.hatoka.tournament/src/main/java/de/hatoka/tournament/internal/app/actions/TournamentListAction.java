@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
+import de.hatoka.common.capi.app.servlet.RequestUserRefProvider;
 import de.hatoka.common.capi.business.Money;
 import de.hatoka.tournament.capi.business.CashGameBO;
 import de.hatoka.tournament.capi.business.TournamentBO;
@@ -24,16 +25,12 @@ public class TournamentListAction
     @Inject
     private TournamentBusinessFactory factory;
 
-    private final String accountRef;
-
-    public TournamentListAction(String accountRef)
-    {
-        this.accountRef = accountRef;
-    }
+    @Inject
+    private RequestUserRefProvider userRefProvider;
 
     public CashGameBO createCashGame(Date date, String buyIn)
     {
-        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountRef);
+        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(userRefProvider.getUserRef());
         CashGameBO result = tournamentBORepository.createCashGame(date);
         result.setBuyIn(Money.valueOf(buyIn));
         return result;
@@ -41,7 +38,7 @@ public class TournamentListAction
 
     public TournamentBO createTournament(String name, Date date, String buyIn)
     {
-        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountRef);
+        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(userRefProvider.getUserRef());
         TournamentBO result = tournamentBORepository.createTournament(name, date);
         result.setBuyIn(Money.valueOf(buyIn));
 
@@ -63,7 +60,7 @@ public class TournamentListAction
 
     private TournamentListModel getListModel(UriBuilder uriBuilder, boolean filterGashGames)
     {
-        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountRef);
+        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(userRefProvider.getUserRef());
         final TournamentListModel model = new TournamentListModel();
         if(filterGashGames)
         {
@@ -76,34 +73,20 @@ public class TournamentListAction
         return model;
     }
 
-    private void addCashGames(UriBuilder uriBuilder, TournamentBORepository tournamentBORepository,
+    private static void addCashGames(UriBuilder uriBuilder, TournamentBORepository tournamentBORepository,
                     final TournamentListModel model)
     {
         List<CashGameBO> cashGameBOs = tournamentBORepository.getCashGames();
-        Consumer<CashGameBO> mapper = new Consumer<CashGameBO>()
-        {
-            @Override
-            public void accept(CashGameBO bo)
-            {
-                model.getTournaments().add(new TournamentVO(bo, uriBuilder.build(bo.getID())));
-            }
-        };
+        Consumer<CashGameBO> mapper = bo -> model.getTournaments().add(new TournamentVO(bo, uriBuilder.build(bo.getID())));
         cashGameBOs.sort(GameBOComparators.DEFAULT_CASHGAME);
         cashGameBOs.forEach(mapper);
     }
 
-    private void addTournaments(UriBuilder uriBuilder, TournamentBORepository tournamentBORepository,
+    private static void addTournaments(UriBuilder uriBuilder, TournamentBORepository tournamentBORepository,
                     final TournamentListModel model)
     {
         List<TournamentBO> cashGameBOs = tournamentBORepository.getTournaments();
-        Consumer<TournamentBO> mapper = new Consumer<TournamentBO>()
-        {
-            @Override
-            public void accept(TournamentBO bo)
-            {
-                model.getTournaments().add(new TournamentVO(bo, uriBuilder.build(bo.getID())));
-            }
-        };
+        Consumer<TournamentBO> mapper = bo -> model.getTournaments().add(new TournamentVO(bo, uriBuilder.build(bo.getID())));
         cashGameBOs.sort(GameBOComparators.DEFAULT_TOURNAMENT);
         cashGameBOs.forEach(mapper);
     }
@@ -115,7 +98,7 @@ public class TournamentListAction
 
     public void deleteTournaments(List<String> identifiers)
     {
-        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountRef);
+        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(userRefProvider.getUserRef());
         for (String id : identifiers)
         {
             tournamentBORepository.getTournamentByID(id).remove();
@@ -124,7 +107,7 @@ public class TournamentListAction
 
     public void deleteCashGames(List<String> identifiers)
     {
-        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountRef);
+        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(userRefProvider.getUserRef());
         for (String id : identifiers)
         {
             tournamentBORepository.getCashGameByID(id).remove();

@@ -3,7 +3,6 @@ package de.hatoka.tournament.internal.app.servlets;
 import java.io.IOException;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -16,7 +15,6 @@ import javax.ws.rs.core.UriInfo;
 import de.hatoka.common.capi.app.servlet.AbstractService;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
 import de.hatoka.tournament.internal.app.actions.PlayerAction;
-import de.hatoka.tournament.internal.app.filter.AccountRequestFilter;
 import de.hatoka.tournament.internal.app.menu.MenuFactory;
 import de.hatoka.tournament.internal.app.models.PlayerListModel;
 
@@ -28,8 +26,6 @@ public class PlayerListService extends AbstractService
 
     @Context
     private UriInfo info;
-    @Context
-    private HttpServletRequest servletRequest;
 
     private final MenuFactory menuFactory = new MenuFactory();
 
@@ -38,14 +34,9 @@ public class PlayerListService extends AbstractService
         super(RESOURCE_PREFIX);
     }
 
-    private String getAccountRef()
-    {
-        return AccountRequestFilter.getAccountRef(servletRequest);
-    }
-
     private PlayerAction getAction()
     {
-        String accountRef = getAccountRef();
+        String accountRef = getUserRef();
         TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
         return new PlayerAction(accountRef, factory);
     }
@@ -63,7 +54,7 @@ public class PlayerListService extends AbstractService
         }
         catch(IOException e)
         {
-            return render(500, e);
+            return render(e);
         }
     }
 
@@ -82,14 +73,7 @@ public class PlayerListService extends AbstractService
     public Response delete(@FormParam("playerID") final List<String> identifiers)
     {
         PlayerAction action = getAction();
-        runInTransaction(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                action.deletePlayers(identifiers);
-            }
-        });
+        runInTransaction(() -> action.deletePlayers(identifiers));
         return redirect(METHOD_NAME_LIST);
     }
 

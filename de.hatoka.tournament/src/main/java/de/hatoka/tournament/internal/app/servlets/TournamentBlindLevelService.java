@@ -3,7 +3,6 @@ package de.hatoka.tournament.internal.app.servlets;
 import java.io.IOException;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -17,7 +16,6 @@ import de.hatoka.common.capi.app.servlet.AbstractService;
 import de.hatoka.tournament.capi.business.TournamentBORepository;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
 import de.hatoka.tournament.internal.app.actions.BlindLevelAction;
-import de.hatoka.tournament.internal.app.filter.AccountRequestFilter;
 import de.hatoka.tournament.internal.app.menu.MenuFactory;
 import de.hatoka.tournament.internal.app.models.TournamentBlindLevelModel;
 
@@ -33,9 +31,6 @@ public class TournamentBlindLevelService extends AbstractService
     @Context
     private UriInfo info;
 
-    @Context
-    private HttpServletRequest servletRequest;
-
     private final MenuFactory menuFactory = new MenuFactory();
 
     public TournamentBlindLevelService()
@@ -45,8 +40,7 @@ public class TournamentBlindLevelService extends AbstractService
 
     private BlindLevelAction getBlindLevelAction()
     {
-        String accountRef = AccountRequestFilter.getAccountRef(servletRequest);
-        return new BlindLevelAction(accountRef, tournamentID, getInstance(TournamentBusinessFactory.class));
+        return new BlindLevelAction(getUserRef(), tournamentID, getInstance(TournamentBusinessFactory.class));
     }
 
     @POST
@@ -91,14 +85,7 @@ public class TournamentBlindLevelService extends AbstractService
     public Response createPause(@FormParam("duration") Integer duration)
     {
         BlindLevelAction action = getBlindLevelAction();
-        runInTransaction(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                action.createPause(duration);
-            }
-        });
+        runInTransaction(() -> action.createPause(duration));
         return redirectLevels();
     }
 
@@ -108,14 +95,7 @@ public class TournamentBlindLevelService extends AbstractService
                     @FormParam("bigBlind") Integer bigBlind, @FormParam("ante") Integer ante)
     {
         BlindLevelAction action = getBlindLevelAction();
-        runInTransaction(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                action.createBlindLevel(duration, smallBlind, bigBlind, ante);
-            }
-        });
+        runInTransaction(() -> action.createBlindLevel(duration, smallBlind, bigBlind, ante));
         return redirectLevels();
     }
 
@@ -124,14 +104,7 @@ public class TournamentBlindLevelService extends AbstractService
     public Response deleteLevels(List<String> identifiers)
     {
         BlindLevelAction action = getBlindLevelAction();
-        runInTransaction(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                action.deleteLevels(identifiers);
-            }
-        });
+        runInTransaction(() -> action.deleteLevels(identifiers));
         return redirectLevels();
     }
 
@@ -140,14 +113,7 @@ public class TournamentBlindLevelService extends AbstractService
     public Response startLevel(List<String> identifiers)
     {
         BlindLevelAction action = getBlindLevelAction();
-        runInTransaction(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                action.startLevel(identifiers.get(0));
-            }
-        });
+        runInTransaction(() -> action.startLevel(identifiers.get(0)));
         return redirectLevels();
     }
 
@@ -156,14 +122,7 @@ public class TournamentBlindLevelService extends AbstractService
     public Response disableReBuy(List<String> identifiers)
     {
         BlindLevelAction action = getBlindLevelAction();
-        runInTransaction(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                action.disableReBuy(identifiers);
-            }
-        });
+        runInTransaction(() -> action.disableReBuy(identifiers));
         return redirectLevels();
     }
 
@@ -172,14 +131,7 @@ public class TournamentBlindLevelService extends AbstractService
     public Response enableReBuy(List<String> identifiers)
     {
         BlindLevelAction action = getBlindLevelAction();
-        runInTransaction(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                action.enableReBuy(identifiers);
-            }
-        });
+        runInTransaction(() -> action.enableReBuy(identifiers));
         return redirectLevels();
     }
 
@@ -197,7 +149,7 @@ public class TournamentBlindLevelService extends AbstractService
         }
         catch(IOException e)
         {
-            return render(500, e);
+            return render(e);
         }
     }
 
@@ -218,6 +170,6 @@ public class TournamentBlindLevelService extends AbstractService
     private TournamentBORepository getTournamentBORepository()
     {
         TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
-        return factory.getTournamentBORepository(AccountRequestFilter.getAccountRef(servletRequest));
+        return factory.getTournamentBORepository(getUserRef());
     }
 }

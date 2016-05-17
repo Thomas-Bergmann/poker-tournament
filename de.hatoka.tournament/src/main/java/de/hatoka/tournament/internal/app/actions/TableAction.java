@@ -3,7 +3,6 @@ package de.hatoka.tournament.internal.app.actions;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,14 +31,7 @@ public class TableAction extends GameAction<TournamentBO>
         TournamentVO tournamentVO = new TournamentVO(tournamentBO, tournamentUri);
         result.setTournament(tournamentVO);
         result.getTables().addAll(getTables(tournamentBO, uriBuilder));
-        result.setPlacedCompetitors(tournamentBO.getPlacedCompetitors().stream().map(bo -> new CompetitorVO(bo)).sorted(new Comparator<CompetitorVO>()
-        {
-            @Override
-            public int compare(CompetitorVO o1, CompetitorVO o2)
-            {
-                return o1.getPosition().compareTo(o2.getPosition());
-            }
-        }).collect(Collectors.toList()));
+        result.setPlacedCompetitors(tournamentBO.getPlacedCompetitors().stream().map(bo -> new CompetitorVO(bo)).sorted((o1, o2) -> o1.getPosition().compareTo(o2.getPosition())).collect(Collectors.toList()));
         return result;
     }
 
@@ -65,7 +57,7 @@ public class TableAction extends GameAction<TournamentBO>
         URI getSeatOpenURI(String competitorID);
     }
 
-    private Collection<? extends TableVO> getTables(TournamentBO tournamentBO, TournamentTableURIBuilder uriBuilder)
+    private static Collection<? extends TableVO> getTables(TournamentBO tournamentBO, TournamentTableURIBuilder uriBuilder)
     {
         List<TableVO> result = new ArrayList<>();
         int tableNo = 1;

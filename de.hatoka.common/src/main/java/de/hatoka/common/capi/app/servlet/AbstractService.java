@@ -139,7 +139,18 @@ public class AbstractService
         getInjector().injectMembers(action);
     }
 
-    protected Response render(int status, Throwable exception)
+    protected Response render(Throwable exception)
+    {
+        return render(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), exception);
+    }
+
+    /**
+     *
+     * @param status
+     * @param exception
+     * @return
+     */
+    private Response render(int status, Throwable exception)
     {
         String errorID = getUUID();
         LOGGER.error("Error: " + errorID, exception);

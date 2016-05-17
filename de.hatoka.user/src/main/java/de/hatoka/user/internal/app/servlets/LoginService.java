@@ -124,7 +124,7 @@ public class LoginService extends AbstractService
         }
         catch(Exception exception)
         {
-            return render(500, exception);
+            return render(exception);
         }
         if (applySignInToken)
         {

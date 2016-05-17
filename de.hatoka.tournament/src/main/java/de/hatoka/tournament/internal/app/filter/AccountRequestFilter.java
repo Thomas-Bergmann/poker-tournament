@@ -41,6 +41,8 @@ public class AccountRequestFilter implements ContainerRequestFilter
     @Context
     private UriInfo info;
 
+    private Injector injector = null;
+
     private static String getCookie(Map<String, javax.ws.rs.core.Cookie> cookies, String cookieName)
     {
         Cookie cookie = cookies.get(cookieName);
@@ -128,14 +130,18 @@ public class AccountRequestFilter implements ContainerRequestFilter
         return createCookies(accountID, accountSign);
     }
 
-    private Injector getInjector()
+    private synchronized Injector getInjector()
     {
-        return (Injector)application.getProperties().get(ServletConstants.PROPERTY_INJECTOR);
+        if (injector == null)
+        {
+            injector = ((Injector)application.getProperties().get(ServletConstants.PROPERTY_INJECTOR)).createChildInjector(new CommonRequestModule(application, servletRequest));
+        }
+        return injector;
     }
 
     private <T> T getInstance(Class<T> classOfT)
     {
-        return getInjector().createChildInjector(new CommonRequestModule(application, servletRequest)).getInstance(classOfT);
+        return getInjector().getInstance(classOfT);
     }
 
     private boolean validateAccount(String accountID, String accountSign)
@@ -144,17 +150,4 @@ public class AccountRequestFilter implements ContainerRequestFilter
         String expected = getInstance(EncryptionUtils.class).sign(secret, accountID);
         return expected.equals(accountSign);
     }
-
-    @Deprecated
-    public static String getAccountRef(HttpServletRequest servletRequest)
-    {
-        String result = (String) servletRequest.getAttribute(ServletConstants.SERVLET_ATTRIBUTE_ACCOUNT_REF);
-        if (result == null)
-        {
-            LoggerFactory.getLogger(AccountRequestFilter.class).error("AccountRequestFilter not installed to avoid illegal access to resources.");
-            throw new SecurityException("Redirect to login necessary");
-        }
-        return result;
-    }
-
 }

@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -23,7 +22,6 @@ import de.hatoka.tournament.capi.business.TournamentBORepository;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
 import de.hatoka.tournament.internal.app.actions.TableAction;
 import de.hatoka.tournament.internal.app.actions.TableAction.TournamentTableURIBuilder;
-import de.hatoka.tournament.internal.app.filter.AccountRequestFilter;
 import de.hatoka.tournament.internal.app.menu.MenuFactory;
 import de.hatoka.tournament.internal.app.models.FrameModel;
 import de.hatoka.tournament.internal.app.models.TournamentTableModel;
@@ -41,8 +39,6 @@ public class TournamentTableService extends AbstractService
 
     @Context
     private UriInfo info;
-    @Context
-    private HttpServletRequest servletRequest;
 
     private final MenuFactory menuFactory = new MenuFactory();
 
@@ -51,14 +47,9 @@ public class TournamentTableService extends AbstractService
         super(RESOURCE_PREFIX);
     }
 
-    private String getAccountRef()
-    {
-        return AccountRequestFilter.getAccountRef(servletRequest);
-    }
-
     private TableAction getTableAction()
     {
-        String accountRef = getAccountRef();
+        String accountRef = getUserRef();
         TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
         return new TableAction(accountRef, tournamentID, factory);
     }
@@ -99,7 +90,7 @@ public class TournamentTableService extends AbstractService
         }
         catch(IOException e)
         {
-            return render(500, e);
+            return render(e);
         }
     }
 
@@ -123,14 +114,7 @@ public class TournamentTableService extends AbstractService
     public Response rebuy(@PathParam("competitorID") String competitorID)
     {
         TableAction action = getTableAction();
-        runInTransaction(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                action.rebuyCompetitor(competitorID);
-            }
-        });
+        runInTransaction(() -> action.rebuyCompetitor(competitorID));
         return redirect();
     }
 
@@ -140,14 +124,14 @@ public class TournamentTableService extends AbstractService
     {
         final List<MessageVO> messages = new ArrayList<MessageVO>();
         TableAction action = getTableAction();
-        runInTransaction(new Runnable()
+        try
         {
-            @Override
-            public void run()
-            {
-                messages.addAll(action.seatOpenCompetitor(competitorID));
-            }
-        });
+            runInTransaction(() -> messages.addAll(action.seatOpenCompetitor(competitorID)));
+        }
+        catch(Exception e)
+        {
+            return render(e);
+        }
         return list(messages);
     }
 
@@ -155,16 +139,11 @@ public class TournamentTableService extends AbstractService
     @Path("/action")
     public Response assignTables()
     {
-        runInTransaction(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
-                TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(getAccountRef());
-                TournamentBO tournament = tournamentBORepository.getTournamentByID(tournamentID);
-                tournament.placePlayersAtTables();
-            }
+        runInTransaction(() -> {
+            TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
+            TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(getUserRef());
+            TournamentBO tournament = tournamentBORepository.getTournamentByID(tournamentID);
+            tournament.placePlayersAtTables();
         });
         return redirect();
     }
@@ -172,7 +151,7 @@ public class TournamentTableService extends AbstractService
     private String renderFrame(String content, String titleKey, List<MessageVO> messages) throws IOException
     {
         TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
-        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(getAccountRef());
+        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(getUserRef());
         FrameModel tournamentFrameModel = menuFactory.getTournamentFrameModel(content, titleKey, info, tournamentBORepository, tournamentID);
         tournamentFrameModel.addMessages(messages);
         return renderStyleSheet(tournamentFrameModel, "tournament_frame.xslt", getXsltProcessorParameter("tournament"));

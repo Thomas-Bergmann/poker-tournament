@@ -3,9 +3,7 @@ package de.hatoka.tournament.internal.app.servlets;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -22,7 +20,6 @@ import de.hatoka.tournament.capi.business.TournamentBORepository;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
 import de.hatoka.tournament.internal.app.actions.CashGameAction;
 import de.hatoka.tournament.internal.app.actions.PlayerAction;
-import de.hatoka.tournament.internal.app.filter.AccountRequestFilter;
 import de.hatoka.tournament.internal.app.menu.MenuFactory;
 import de.hatoka.tournament.internal.app.models.FrameModel;
 import de.hatoka.tournament.internal.app.models.HistoryModel;
@@ -40,9 +37,6 @@ public class CashGameCompetitorService extends AbstractService
     @Context
     private UriInfo info;
 
-    @Context
-    private HttpServletRequest servletRequest;
-
     private final MenuFactory menuFactory = new MenuFactory();
 
     public CashGameCompetitorService()
@@ -52,13 +46,12 @@ public class CashGameCompetitorService extends AbstractService
 
     private PlayerAction getPlayerAction()
     {
-        String accountRef = AccountRequestFilter.getAccountRef(servletRequest);
-        return new PlayerAction(accountRef, getInstance(TournamentBusinessFactory.class));
+        return new PlayerAction(getUserRef(), getInstance(TournamentBusinessFactory.class));
     }
 
     private CashGameAction getCashGameAction()
     {
-        String accountRef = AccountRequestFilter.getAccountRef(servletRequest);
+        String accountRef = getUserRef();
         TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
         TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(accountRef);
         return new CashGameAction(accountRef, tournamentBORepository.getCashGameByID(tournamentID), factory);
@@ -95,14 +88,7 @@ public class CashGameCompetitorService extends AbstractService
     public Response sortPlayers()
     {
         CashGameAction action = getCashGameAction();
-        runInTransaction(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                action.sortPlayers();
-            }
-        });
+        runInTransaction(() -> action.sortPlayers());
         return redirectPlayers();
     }
 
@@ -111,14 +97,9 @@ public class CashGameCompetitorService extends AbstractService
     public Response assignPlayer(@FormParam("playerID") String playerID, @FormParam("amount") String amount)
     {
         CashGameAction action = getCashGameAction();
-        runInTransaction(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                PlayerBO playerBO = getPlayerAction().getPlayer(playerID);
-                action.sitDown(playerBO, amount);
-            }
+        runInTransaction(() -> {
+            PlayerBO playerBO = getPlayerAction().getPlayer(playerID);
+            action.sitDown(playerBO, amount);
         });
         return redirectAddPlayer();
     }
@@ -128,14 +109,9 @@ public class CashGameCompetitorService extends AbstractService
     public Response createPlayer(@FormParam("name") String name, @FormParam("amount") String amount)
     {
         CashGameAction action = getCashGameAction();
-        runInTransaction(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                PlayerBO playerBO = getPlayerAction().createPlayer(name);
-                action.sitDown(playerBO, amount);
-            }
+        runInTransaction(() -> {
+            PlayerBO playerBO = getPlayerAction().createPlayer(name);
+            action.sitDown(playerBO, amount);
         });
         return redirectAddPlayer();
     }
@@ -163,7 +139,7 @@ public class CashGameCompetitorService extends AbstractService
         }
         catch(IOException e)
         {
-            return render(500, e);
+            return render(e);
         }
     }
 
@@ -180,7 +156,7 @@ public class CashGameCompetitorService extends AbstractService
         }
         catch(IOException e)
         {
-            return render(500, e);
+            return render(e);
         }
     }
 
@@ -200,7 +176,7 @@ public class CashGameCompetitorService extends AbstractService
         }
         catch(IOException e)
         {
-            return render(500, e);
+            return render(e);
         }
     }
 
@@ -212,18 +188,11 @@ public class CashGameCompetitorService extends AbstractService
         List<String> errors = Collections.emptyList();
         try
         {
-            errors = runInTransaction(new Callable<List<String>>()
-            {
-                @Override
-                public List<String> call()
-                {
-                    return action.rebuyPlayers(identifiers, rebuy);
-                }
-            });
+            errors = runInTransaction(() -> action.rebuyPlayers(identifiers, rebuy));
         }
         catch(Exception e)
         {
-            return render(500, e);
+            return render(e);
         }
         return redirectPlayers(errors);
     }
@@ -252,14 +221,7 @@ public class CashGameCompetitorService extends AbstractService
                     @FormParam("amount") String amount)
     {
         CashGameAction action = getCashGameAction();
-        runInTransaction(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                action.seatOpenPlayers(identifiers, amount);
-            }
-        });
+        runInTransaction(() -> action.seatOpenPlayers(identifiers, amount));
         return redirectPlayers();
     }
 
@@ -268,21 +230,14 @@ public class CashGameCompetitorService extends AbstractService
     public Response unassignPlayers(@FormParam("competitorID") List<String> identifiers)
     {
         CashGameAction action = getCashGameAction();
-        runInTransaction(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                action.unassignPlayers(identifiers);
-            }
-        });
+        runInTransaction(() -> action.unassignPlayers(identifiers));
         return redirectPlayers();
     }
 
     private String renderFrame(String content, String actionName) throws IOException
     {
         TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
-        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(AccountRequestFilter.getAccountRef(servletRequest));
+        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(getUserRef());
         FrameModel frameModel = menuFactory.getCashGameFrameModel(content, "title.list." + actionName, info,
                         tournamentBORepository, tournamentID);
         return renderStyleSheet(frameModel, "tournament_frame.xslt", getXsltProcessorParameter("tournament"));

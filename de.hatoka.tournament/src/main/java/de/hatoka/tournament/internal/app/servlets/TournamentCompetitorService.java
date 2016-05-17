@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -21,7 +20,6 @@ import de.hatoka.tournament.capi.business.TournamentBORepository;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
 import de.hatoka.tournament.internal.app.actions.PlayerAction;
 import de.hatoka.tournament.internal.app.actions.TournamentAction;
-import de.hatoka.tournament.internal.app.filter.AccountRequestFilter;
 import de.hatoka.tournament.internal.app.menu.MenuFactory;
 import de.hatoka.tournament.internal.app.models.TournamentPlayerListModel;
 
@@ -36,8 +34,6 @@ public class TournamentCompetitorService extends AbstractService
 
     @Context
     private UriInfo info;
-    @Context
-    private HttpServletRequest servletRequest;
 
     private final MenuFactory menuFactory = new MenuFactory();
 
@@ -48,20 +44,13 @@ public class TournamentCompetitorService extends AbstractService
 
     private PlayerAction getPlayerAction()
     {
-        String accountRef = getAccountRef();
-        return new PlayerAction(accountRef, getInstance(TournamentBusinessFactory.class));
-    }
-
-    private String getAccountRef()
-    {
-        return AccountRequestFilter.getAccountRef(servletRequest);
+        return new PlayerAction(getUserRef(), getInstance(TournamentBusinessFactory.class));
     }
 
     private TournamentAction getTournamentAction()
     {
-        String accountRef = getAccountRef();
         TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
-        return new TournamentAction(accountRef, tournamentID, factory);
+        return new TournamentAction(getUserRef(), tournamentID, factory);
     }
 
     @POST
@@ -85,14 +74,9 @@ public class TournamentCompetitorService extends AbstractService
     public Response assignPlayer(@FormParam("playerID") String playerID)
     {
         TournamentAction action = getTournamentAction();
-        runInTransaction(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                PlayerBO playerBO = getPlayerAction().getPlayer(playerID);
-                action.register(playerBO);
-            }
+        runInTransaction(() -> {
+            PlayerBO playerBO = getPlayerAction().getPlayer(playerID);
+            action.register(playerBO);
         });
         return redirectAddPlayer();
     }
@@ -102,17 +86,12 @@ public class TournamentCompetitorService extends AbstractService
     public Response createPlayer(@FormParam("name") String name, @FormParam("buyin") String buttonBuyIn)
     {
         TournamentAction action = getTournamentAction();
-        runInTransaction(new Runnable()
-        {
-            @Override
-            public void run()
+        runInTransaction(() -> {
+            PlayerBO playerBO = getPlayerAction().createPlayer(name);
+            CompetitorBO competitor = action.register(playerBO);
+            if (isButtonPressed(buttonBuyIn))
             {
-                PlayerBO playerBO = getPlayerAction().createPlayer(name);
-                CompetitorBO competitor = action.register(playerBO);
-                if (isButtonPressed(buttonBuyIn))
-                {
-                    action.buyInPlayers(Arrays.asList(competitor.getID()));
-                }
+                action.buyInPlayers(Arrays.asList(competitor.getID()));
             }
         });
         return redirectAddPlayer();
@@ -133,7 +112,7 @@ public class TournamentCompetitorService extends AbstractService
         }
         catch(IOException e)
         {
-            return render(500, e);
+            return render(e);
         }
     }
 
@@ -153,7 +132,7 @@ public class TournamentCompetitorService extends AbstractService
         }
         catch(IOException e)
         {
-            return render(500, e);
+            return render(e);
         }
     }
 
@@ -162,14 +141,7 @@ public class TournamentCompetitorService extends AbstractService
     public Response buyInPlayers(@FormParam("competitorID") List<String> identifiers)
     {
         TournamentAction action = getTournamentAction();
-        runInTransaction(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                action.buyInPlayers(identifiers);
-            }
-        });
+        runInTransaction(() -> action.buyInPlayers(identifiers));
         return redirect(METHOD_NAME_LIST, tournamentID);
     }
 
@@ -184,21 +156,14 @@ public class TournamentCompetitorService extends AbstractService
     public Response unassignPlayers(@FormParam("competitorID") List<String> identifiers)
     {
         TournamentAction action = getTournamentAction();
-        runInTransaction(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                action.unassignPlayers(identifiers);
-            }
-        });
+        runInTransaction(() -> action.unassignPlayers(identifiers));
         return redirect(METHOD_NAME_LIST, tournamentID);
     }
 
     private String renderFrame(String content, String titleKey) throws IOException
     {
         TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
-        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(getAccountRef());
+        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(getUserRef());
         return renderStyleSheet(menuFactory.getTournamentFrameModel(content, titleKey, info,
                         tournamentBORepository, tournamentID), "tournament_frame.xslt",
                         getXsltProcessorParameter("tournament"));

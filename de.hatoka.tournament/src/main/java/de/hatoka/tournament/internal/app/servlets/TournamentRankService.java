@@ -3,7 +3,6 @@ package de.hatoka.tournament.internal.app.servlets;
 import java.io.IOException;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -17,7 +16,6 @@ import de.hatoka.common.capi.app.servlet.AbstractService;
 import de.hatoka.tournament.capi.business.TournamentBORepository;
 import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
 import de.hatoka.tournament.internal.app.actions.RankAction;
-import de.hatoka.tournament.internal.app.filter.AccountRequestFilter;
 import de.hatoka.tournament.internal.app.menu.MenuFactory;
 import de.hatoka.tournament.internal.app.models.RankVO;
 import de.hatoka.tournament.internal.app.models.TournamentRankModel;
@@ -33,8 +31,6 @@ public class TournamentRankService extends AbstractService
 
     @Context
     private UriInfo info;
-    @Context
-    private HttpServletRequest servletRequest;
 
     private final MenuFactory menuFactory = new MenuFactory();
 
@@ -43,16 +39,10 @@ public class TournamentRankService extends AbstractService
         super(RESOURCE_PREFIX);
     }
 
-    private String getAccountRef()
-    {
-        return AccountRequestFilter.getAccountRef(servletRequest);
-    }
-
     private RankAction getRankAction()
     {
-        String accountRef = getAccountRef();
         TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
-        return new RankAction(accountRef, tournamentID, factory);
+        return new RankAction(getUserRef(), tournamentID, factory);
     }
 
     private Response redirect(String methodName)
@@ -83,14 +73,14 @@ public class TournamentRankService extends AbstractService
                     @FormParam("percentage_new") String percentage)
     {
         RankAction action = getRankAction();
-        runInTransaction(new Runnable()
+        try
         {
-            @Override
-            public void run()
-            {
-                action.createRank(firstPosition, lastPosition, amount, percentage);
-            }
-        });
+            runInTransaction(() -> action.createRank(firstPosition, lastPosition, amount, percentage));
+        }
+        catch(Exception e)
+        {
+            render(e);
+        }
         return redirect(METHOD_NAME_LIST);
     }
 
@@ -108,7 +98,7 @@ public class TournamentRankService extends AbstractService
         }
         catch(IOException e)
         {
-            return render(500, e);
+            return render(e);
         }
     }
 
@@ -117,21 +107,14 @@ public class TournamentRankService extends AbstractService
     public Response deleteRanks(@FormParam("rankID") List<String> identifiers)
     {
         RankAction action = getRankAction();
-        runInTransaction(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                action.deleteRanks(identifiers);
-            }
-        });
+        runInTransaction(() -> action.deleteRanks(identifiers));
         return redirect(METHOD_NAME_LIST);
     }
 
     private String renderFrame(String content, String titleKey) throws IOException
     {
         TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
-        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(getAccountRef());
+        TournamentBORepository tournamentBORepository = factory.getTournamentBORepository(getUserRef());
         return renderStyleSheet(menuFactory.getTournamentFrameModel(content, titleKey, info, tournamentBORepository, tournamentID), "tournament_frame.xslt",
                         getXsltProcessorParameter("tournament"));
     }
