@@ -38,4 +38,10 @@ public class GroupBORepositoryImpl implements GroupBORepository
     {
         return groupDao.getByOwner(ownerRef).stream().map(po -> factory.getGroupBO(po)).collect(Collectors.toList());
     }
+
+    @Override
+    public void clear()
+    {
+        groupDao.getByOwner(ownerRef).forEach(groupDao::remove);
+    }
 }

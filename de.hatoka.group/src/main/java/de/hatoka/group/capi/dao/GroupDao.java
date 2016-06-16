@@ -18,7 +18,7 @@ public interface GroupDao extends Dao<GroupPO>
     /**
      * @param owner
      *            userRef of owner
-     * @return (optional)
+     * @return list of groups
      */
     Collection<GroupPO> getByOwner(String ownerRef);
 }

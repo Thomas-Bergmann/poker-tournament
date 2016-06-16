@@ -1,5 +1,7 @@
 package de.hatoka.group.internal.dao;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import de.hatoka.common.capi.dao.GenericJPADao;
@@ -31,6 +33,12 @@ public class MemberDaoJpa extends GenericJPADao<MemberPO> implements MemberDao
         // insert
         insert(memberPO);
         return memberPO;
+    }
+
+    @Override
+    public List<MemberPO> getByUser(String userRef)
+    {
+        return createNamedQuery("MemberPO.findByUserRef").setParameter("userRef", userRef).getResultList();
     }
 
 

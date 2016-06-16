@@ -1,5 +1,8 @@
 package de.hatoka.group.internal.business;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.inject.Inject;
 
 import de.hatoka.group.capi.business.GroupBO;
@@ -35,6 +38,12 @@ public class GroupBusinessFactoryImpl implements GroupBusinessFactory
     public MemberBO getMemberBO(MemberPO memberPO)
     {
         return new MemberBOImpl(memberPO, memberDao);
+    }
+
+    @Override
+    public List<GroupBO> getGroupBOsByUser(String userRef)
+    {
+        return memberDao.getByUser(userRef).stream().map(m -> this.getGroupBO(m.getGroup())).collect(Collectors.toList());
     }
 
 }
