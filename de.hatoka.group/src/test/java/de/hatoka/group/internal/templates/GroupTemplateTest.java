@@ -47,7 +47,7 @@ public class GroupTemplateTest
 
     private static GroupListItemVO getGroupListItemVO(String id, String name, int countMembers)
     {
-        return new GroupListItemVO(id, name, countMembers);
+        return new GroupListItemVO(id, name, countMembers, true);
     }
 
     @Test

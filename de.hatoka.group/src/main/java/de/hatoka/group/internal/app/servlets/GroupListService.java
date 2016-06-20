@@ -43,10 +43,10 @@ public class GroupListService extends AbstractService
 
     @POST
     @Path("/create")
-    public Response create(@FormParam("name") String name)
+    public Response create(@FormParam("name") String name, @FormParam("owner") String ownerName)
     {
         GroupListAction action = getAction();
-        runInTransaction(() -> action.create(name));
+        runInTransaction(() -> action.create(name, ownerName));
         return redirect(METHOD_NAME_LIST);
     }
 

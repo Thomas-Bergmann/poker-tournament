@@ -1,6 +1,7 @@
 package de.hatoka.group.internal.business;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import de.hatoka.group.capi.business.GroupBO;
@@ -54,12 +55,19 @@ public class GroupBOImpl implements GroupBO
     @Override
     public Collection<MemberBO> getMembers()
     {
-        return groupPO.getMembers().stream().map(po -> factory.getMemberBO(po)).collect(Collectors.toList());
+        return groupPO.getMembers().stream().map(factory::getMemberBO).collect(Collectors.toList());
     }
 
     @Override
     public String getID()
     {
         return groupPO.getId();
+    }
+
+    @Override
+    public MemberBO getMember(String userRef)
+    {
+        Optional<MemberBO> optional = groupPO.getMembers().stream().filter(m -> m.getUserRef().equals(userRef)).findAny().map(factory::getMemberBO);
+        return optional.isPresent() ? optional.get() : null;
     }
 }

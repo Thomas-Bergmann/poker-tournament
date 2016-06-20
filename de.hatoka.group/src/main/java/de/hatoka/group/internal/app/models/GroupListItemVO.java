@@ -5,17 +5,19 @@ public class GroupListItemVO
     private String id;
     private String name;
     private int countMembers;
+    private boolean isOwner = false;
 
     public GroupListItemVO()
     {
         // empty constructor
     }
 
-    public GroupListItemVO(String id, String name, int countMembers)
+    public GroupListItemVO(String id, String name, int countMembers, boolean isOwner)
     {
         this.id = id;
         this.name = name;
         this.countMembers = countMembers;
+        this.setOwner(isOwner);
     }
 
     public String getId()
@@ -46,6 +48,16 @@ public class GroupListItemVO
     public void setCountMembers(int countMembers)
     {
         this.countMembers = countMembers;
+    }
+
+    public boolean isOwner()
+    {
+        return isOwner;
+    }
+
+    public void setOwner(boolean isOwner)
+    {
+        this.isOwner = isOwner;
     }
 
 }

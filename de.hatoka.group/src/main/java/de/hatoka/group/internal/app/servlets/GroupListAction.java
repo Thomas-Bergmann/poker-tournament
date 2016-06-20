@@ -21,20 +21,42 @@ public class GroupListAction
     public GroupListModel getGroupListModel()
     {
         GroupListModel result = new GroupListModel();
-        GroupBORepository groupBORepository = factory.getGroupBORepository(userRefProvider.getUserRef());
-        for(GroupBO group : groupBORepository.getGroups())
+        String userRef = userRefProvider.getUserRef();
+        for(GroupBO group : factory.getGroupBOsByUser(userRef))
         {
-            result.getGroups().add(new GroupListItemVO(group.getID(), group.getName(), group.getMembers().size()));
+            result.getGroups().add(new GroupListItemVO(group.getID(), group.getName(), group.getMembers().size(), group.getOwner().equals(userRef)));
         }
         return result;
     }
 
     public void delete(List<String> identifiers)
     {
+        String userRef = userRefProvider.getUserRef();
+        for(GroupBO group : factory.getGroupBOsByUser(userRef))
+        {
+            if (identifiers.contains(group.getID()))
+            {
+                if (group.getOwner().equals(userRef))
+                {
+                    group.remove();
+                }
+                else
+                {
+                    group.getMember(userRef).remove();
+                }
+            }
+        }
     }
 
-    public void create(String name)
+    /**
+     * Creates a new group
+     * @param name name of group
+     * @param ownerName member name of owner
+     */
+    public void create(String name, String ownerName)
     {
+        GroupBORepository repository = factory.getGroupBORepository(userRefProvider.getUserRef());
+        repository.createGroup(name, ownerName);
     }
 
 }

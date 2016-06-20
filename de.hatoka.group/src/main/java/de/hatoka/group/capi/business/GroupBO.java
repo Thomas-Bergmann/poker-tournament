@@ -36,4 +36,10 @@ public interface GroupBO
      * @return identifier of group
      */
     String getID();
+
+    /**
+     * @param userRef
+     * @return the member instance of the given user.
+     */
+    MemberBO getMember(String userRef);
 }

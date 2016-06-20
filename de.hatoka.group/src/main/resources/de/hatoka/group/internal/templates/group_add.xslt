@@ -11,6 +11,10 @@
         <xsl:with-param name="name">name</xsl:with-param>
         <xsl:with-param name="placeholderKey">placeholder.group.name</xsl:with-param>
       </xsl:call-template>
+      <xsl:call-template name="input">
+        <xsl:with-param name="name">owner</xsl:with-param>
+        <xsl:with-param name="placeholderKey">placeholder.owner.name</xsl:with-param>
+      </xsl:call-template>
       <xsl:call-template name="button">
         <xsl:with-param name="name">create</xsl:with-param>
       </xsl:call-template>
