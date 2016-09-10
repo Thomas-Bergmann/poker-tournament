@@ -2,5 +2,4 @@ language: java
 jdk:
   - oraclejdk8
 script:
-  - chmod 555 ./gradlew
   - ./gradlew test
