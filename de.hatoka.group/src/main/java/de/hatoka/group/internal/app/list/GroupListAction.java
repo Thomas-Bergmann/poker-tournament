@@ -1,15 +1,14 @@
-package de.hatoka.group.internal.app.servlets;
+package de.hatoka.group.internal.app.list;
 
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.ws.rs.core.UriBuilder;
 
 import de.hatoka.common.capi.app.servlet.RequestUserRefProvider;
 import de.hatoka.group.capi.business.GroupBO;
 import de.hatoka.group.capi.business.GroupBORepository;
 import de.hatoka.group.capi.business.GroupBusinessFactory;
-import de.hatoka.group.internal.app.models.GroupListItemVO;
-import de.hatoka.group.internal.app.models.GroupListModel;
 
 public class GroupListAction
 {
@@ -18,13 +17,15 @@ public class GroupListAction
     @Inject
     private GroupBusinessFactory factory;
 
-    public GroupListModel getGroupListModel()
+    public GroupListModel getGroupListModel(UriBuilder uriBuilder)
     {
         GroupListModel result = new GroupListModel();
         String userRef = userRefProvider.getUserRef();
         for(GroupBO group : factory.getGroupBOsByUser(userRef))
         {
-            result.getGroups().add(new GroupListItemVO(group.getID(), group.getName(), group.getMembers().size(), group.getOwner().equals(userRef)));
+            GroupListItemVO item = new GroupListItemVO(group.getID(), group.getName(), group.getMembers().size(), group.getOwner().equals(userRef));
+            item.setUri(uriBuilder.build(item.getId()));
+            result.getGroups().add(item);
         }
         return result;
     }
@@ -76,6 +77,11 @@ public class GroupListAction
         {
             groupBO.createMember(userRefProvider.getUserRef(), memberName);
         }
+    }
+
+    public GroupListModel getGroupAddModel()
+    {
+        return new GroupListModel();
     }
 
 }

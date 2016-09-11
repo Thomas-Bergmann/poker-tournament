@@ -18,8 +18,8 @@ import de.hatoka.common.capi.business.CountryHelper;
 import de.hatoka.common.capi.resource.LocalizationBundle;
 import de.hatoka.common.capi.resource.ResourceLoader;
 import de.hatoka.common.capi.resource.ResourceLocalizer;
-import de.hatoka.group.internal.app.models.GroupListItemVO;
-import de.hatoka.group.internal.app.models.GroupListModel;
+import de.hatoka.group.internal.app.list.GroupListItemVO;
+import de.hatoka.group.internal.app.list.GroupListModel;
 
 public class GroupTemplateTest
 {

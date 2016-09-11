@@ -16,4 +16,6 @@ public interface GroupBusinessFactory
     MemberBO getMemberBO(MemberPO memberPO);
 
     List<GroupBO> getGroupBOsByUser(String userRef);
+
+    GroupBO getGroupBOByID(String groupID);
 }

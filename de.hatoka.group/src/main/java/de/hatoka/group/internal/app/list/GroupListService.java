@@ -1,4 +1,4 @@
-package de.hatoka.group.internal.app.servlets;
+package de.hatoka.group.internal.app.list;
 
 import java.io.IOException;
 import java.util.List;
@@ -13,7 +13,7 @@ import javax.ws.rs.core.UriInfo;
 
 import de.hatoka.common.capi.app.FrameRenderer;
 import de.hatoka.common.capi.app.servlet.AbstractService;
-import de.hatoka.group.internal.app.models.GroupListModel;
+import de.hatoka.group.internal.app.member.GroupMemberService;
 
 @Path("/groups")
 public class GroupListService extends AbstractService
@@ -81,7 +81,7 @@ public class GroupListService extends AbstractService
     @Path("/list.html")
     public Response list()
     {
-        final GroupListModel model = getAction().getGroupListModel();
+        final GroupListModel model = getAction().getGroupListModel(getUriBuilder(GroupMemberService.class, GroupMemberService.METHOD_NAME_LIST));
         try
         {
             String content = renderStyleSheet(model, "group_list.xslt", getXsltProcessorParameter("group"));
@@ -102,7 +102,7 @@ public class GroupListService extends AbstractService
     @Path("/add.html")
     public Response add()
     {
-        final GroupListModel model = getAction().getGroupListModel();
+        final GroupListModel model = getAction().getGroupAddModel();
         try
         {
             String content = renderStyleSheet(model, "group_add.xslt", getXsltProcessorParameter("group"));

@@ -21,7 +21,7 @@ import de.hatoka.common.capi.resource.LocalizationBundle;
 import de.hatoka.common.capi.resource.ResourceLocalizer;
 import de.hatoka.group.capi.business.GroupBORepository;
 import de.hatoka.group.capi.business.GroupBusinessFactory;
-import de.hatoka.group.internal.app.servlets.GroupListService;
+import de.hatoka.group.internal.app.list.GroupListService;
 import de.hatoka.tournament.capi.business.CashGameBO;
 import de.hatoka.tournament.capi.business.PlayerBORepository;
 import de.hatoka.tournament.capi.business.TournamentBO;

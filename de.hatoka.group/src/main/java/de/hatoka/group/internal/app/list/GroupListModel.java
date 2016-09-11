@@ -1,4 +1,4 @@
-package de.hatoka.group.internal.app.models;
+package de.hatoka.group.internal.app.list;
 
 import java.util.ArrayList;
 import java.util.List;

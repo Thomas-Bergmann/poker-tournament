@@ -31,7 +31,10 @@ xmlns:hatoka="xalan://de.hatoka.common.capi.app.xslt.Lib"
         </xsl:call-template>
       </td>
       <td>
-        <xsl:value-of select="name" />
+	      <a>
+	        <xsl:attribute name="href"><xsl:value-of select="uri" /></xsl:attribute>
+	        <xsl:value-of select="name" />
+	      </a>
       </td>
       <td>
         <xsl:value-of select="countMembers" />

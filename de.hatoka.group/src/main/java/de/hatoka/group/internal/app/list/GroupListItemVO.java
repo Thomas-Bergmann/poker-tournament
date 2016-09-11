@@ -1,4 +1,6 @@
-package de.hatoka.group.internal.app.models;
+package de.hatoka.group.internal.app.list;
+
+import java.net.URI;
 
 public class GroupListItemVO
 {
@@ -6,6 +8,7 @@ public class GroupListItemVO
     private String name;
     private int countMembers;
     private boolean isOwner = false;
+    private URI uri;
 
     public GroupListItemVO()
     {
@@ -58,6 +61,16 @@ public class GroupListItemVO
     public void setOwner(boolean isOwner)
     {
         this.isOwner = isOwner;
+    }
+
+    public URI getUri()
+    {
+        return uri;
+    }
+
+    public void setUri(URI uri)
+    {
+        this.uri = uri;
     }
 
 }

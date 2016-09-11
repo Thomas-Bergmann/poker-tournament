@@ -62,4 +62,16 @@ public class MemberBOImpl implements MemberBO
         memberDao.remove(memberPO);
         memberPO = null;
     }
+
+    @Override
+    public String getID()
+    {
+        return memberPO.getId();
+    }
+
+    @Override
+    public boolean isOwner()
+    {
+        return memberPO.getUserRef().equals(memberPO.getGroup().getOwnerRef());
+    }
 }

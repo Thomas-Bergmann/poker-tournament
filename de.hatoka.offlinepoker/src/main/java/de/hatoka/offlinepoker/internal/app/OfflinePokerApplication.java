@@ -17,7 +17,8 @@ import de.hatoka.common.capi.modules.CommonConfigurationModule;
 import de.hatoka.common.capi.modules.CommonDaoModule;
 import de.hatoka.common.capi.modules.CommonDateModule;
 import de.hatoka.common.capi.modules.JpaDBModule;
-import de.hatoka.group.internal.app.servlets.GroupListService;
+import de.hatoka.group.internal.app.list.GroupListService;
+import de.hatoka.group.internal.app.member.GroupMemberService;
 import de.hatoka.group.modules.GroupBusinessModule;
 import de.hatoka.group.modules.GroupConfigurationModule;
 import de.hatoka.group.modules.GroupDaoJpaModule;
@@ -85,6 +86,7 @@ public class OfflinePokerApplication extends Application
         result.add(PlayerListService.class);
         result.add(LoginService.class);
         result.add(GroupListService.class);
+        result.add(GroupMemberService.class);
         return result;
     }
 
