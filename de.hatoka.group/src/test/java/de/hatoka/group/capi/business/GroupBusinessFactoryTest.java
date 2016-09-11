@@ -1,6 +1,7 @@
 package de.hatoka.group.capi.business;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import javax.inject.Inject;
 import javax.persistence.EntityTransaction;
@@ -95,5 +96,15 @@ public class GroupBusinessFactoryTest
         assertEquals("group of user0 is assigned to two groups", 2, factory.getGroupBOsByUser(OWNER_REF_0).size());
         assertEquals("group of user1 is still in one groups", 1, factory.getGroupBOsByUser(OWNER_REF_1).size());
         transactionProvider.get().rollback();
+    }
+    @Test
+    public void testFindGroup()
+    {
+        transactionProvider.get().begin();
+        GroupBO group0 = repository0.createGroup("group0", "user0");
+        repository1.createGroup("group1", "user1");
+        transactionProvider.get().commit();
+        assertEquals("found group", group0, factory.findGroupBOByName("group0"));
+        assertNull("cant found group", factory.findGroupBOByName("group2"));
     }
 }

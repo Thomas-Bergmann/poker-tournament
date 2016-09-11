@@ -8,7 +8,8 @@ import de.hatoka.group.capi.entities.GroupPO;
 public interface GroupDao extends Dao<GroupPO>
 {
     /**
-     * @param owner userRef of owner
+     * @param owner
+     *            userRef of owner
      * @param name
      *            name of group
      * @return
@@ -21,4 +22,12 @@ public interface GroupDao extends Dao<GroupPO>
      * @return list of groups
      */
     Collection<GroupPO> getByOwner(String ownerRef);
+
+    /**
+     * Find a group of any repository with the given name.
+     *
+     * @param name
+     * @return the group or null
+     */
+    GroupPO findByName(String name);
 }

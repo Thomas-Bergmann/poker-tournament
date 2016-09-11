@@ -47,4 +47,10 @@ public class GroupDaoJpa extends GenericJPADao<GroupPO> implements GroupDao
         super.remove(groupPO);
     }
 
+    @Override
+    public GroupPO findByName(String name)
+    {
+        return getOptionalResult(createNamedQuery("GroupPO.findByName").setParameter("name", name));
+    }
+
 }

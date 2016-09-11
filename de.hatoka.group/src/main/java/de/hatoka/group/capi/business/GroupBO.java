@@ -42,4 +42,10 @@ public interface GroupBO
      * @return the member instance of the given user.
      */
     MemberBO getMember(String userRef);
+
+    /**
+     * @param userRef
+     * @return true in case user is member of this group
+     */
+    boolean isMember(String userRef);
 }

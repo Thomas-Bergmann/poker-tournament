@@ -43,16 +43,22 @@ public class GroupListService extends AbstractService
 
     @POST
     @Path("/create")
-    public Response create(@FormParam("name") String name, @FormParam("owner") String ownerName)
+    public Response create(@FormParam("name") String name, @FormParam("owner") String ownerName, @FormParam("add") String addButton, @FormParam("join") String joinButton)
     {
         GroupListAction action = getAction();
-        runInTransaction(() -> action.create(name, ownerName));
+        if (isButtonPressed(addButton))
+        {
+            runInTransaction(() -> action.create(name, ownerName));
+        } else if (isButtonPressed(joinButton))
+        {
+            runInTransaction(() -> action.join(name, ownerName));
+        }
         return redirect(METHOD_NAME_LIST);
     }
 
     @POST
     @Path("/delete")
-    public Response delete(@FormParam("tournamentID") final List<String> identifiers)
+    public Response delete(@FormParam("groupID") final List<String> identifiers)
     {
         GroupListAction action = getAction();
         runInTransaction(() -> action.delete(identifiers));

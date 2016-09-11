@@ -46,4 +46,11 @@ public class GroupBusinessFactoryImpl implements GroupBusinessFactory
         return memberDao.getByUser(userRef).stream().map(m -> this.getGroupBO(m.getGroup())).collect(Collectors.toList());
     }
 
+    @Override
+    public GroupBO findGroupBOByName(String name)
+    {
+        GroupPO groupPO = groupDao.findByName(name);
+        return groupPO == null ? null : getGroupBO(groupPO);
+    }
+
 }

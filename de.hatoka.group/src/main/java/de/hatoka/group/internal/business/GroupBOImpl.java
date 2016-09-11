@@ -70,4 +70,38 @@ public class GroupBOImpl implements GroupBO
         Optional<MemberBO> optional = groupPO.getMembers().stream().filter(m -> m.getUserRef().equals(userRef)).findAny().map(factory::getMemberBO);
         return optional.isPresent() ? optional.get() : null;
     }
+
+    @Override
+    public int hashCode()
+    {
+        return groupPO.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        GroupBOImpl other = (GroupBOImpl)obj;
+        if (groupPO == null)
+        {
+            if (other.groupPO != null)
+                return false;
+        }
+        else if (!groupPO.equals(other.groupPO))
+            return false;
+        return true;
+    }
+
+    @Override
+    public boolean isMember(String userRef)
+    {
+        return getMember(userRef) != null;
+    }
+
+
 }

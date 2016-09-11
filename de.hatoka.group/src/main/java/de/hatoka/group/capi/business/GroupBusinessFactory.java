@@ -7,6 +7,8 @@ import de.hatoka.group.capi.entities.MemberPO;
 
 public interface GroupBusinessFactory
 {
+    GroupBO findGroupBOByName(String name);
+
     GroupBO getGroupBO(GroupPO groupPO);
 
     GroupBORepository getGroupBORepository(String ownerRef);

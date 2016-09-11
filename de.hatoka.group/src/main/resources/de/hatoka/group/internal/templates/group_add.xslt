@@ -18,6 +18,10 @@
       <xsl:call-template name="button">
         <xsl:with-param name="name">create</xsl:with-param>
       </xsl:call-template>
+      <xsl:call-template name="button">
+        <xsl:with-param name="name">join</xsl:with-param>
+        <xsl:with-param name="cssClass">btn</xsl:with-param>
+      </xsl:call-template>
     </form>
   </xsl:template>
 </xsl:stylesheet>

@@ -59,4 +59,23 @@ public class GroupListAction
         repository.createGroup(name, ownerName);
     }
 
+    /**
+     *
+     * @param name
+     * @param memberName
+     */
+    public void join(String name, String memberName)
+    {
+        GroupBO groupBO = factory.findGroupBOByName(name);
+        if (groupBO == null)
+        {
+            // TODO group not found error message
+            return;
+        }
+        if(!groupBO.isMember(userRefProvider.getUserRef()))
+        {
+            groupBO.createMember(userRefProvider.getUserRef(), memberName);
+        }
+    }
+
 }
