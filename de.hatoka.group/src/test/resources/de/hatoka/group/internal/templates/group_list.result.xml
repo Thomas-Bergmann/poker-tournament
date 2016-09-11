@@ -11,7 +11,9 @@
 <input type="checkbox" value="12345678" name="groupID" class="checkbox"/>
 </label>
 </td>
-<td>Test Group 1</td>
+<td>
+<a href="http://localhost/groups/12345678/members/list.html">Test Group 1</a>
+</td>
 <td>1</td>
 </tr>
 <tr>
@@ -20,7 +22,9 @@
 <input type="checkbox" value="12345679" name="groupID" class="checkbox"/>
 </label>
 </td>
-<td>Test Group 2</td>
+<td>
+<a href="http://localhost/groups/12345679/members/list.html">Test Group 2</a>
+</td>
 <td>2</td>
 </tr>
 </table>

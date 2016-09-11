@@ -3,6 +3,7 @@ package de.hatoka.group.internal.templates;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -47,7 +48,9 @@ public class GroupTemplateTest
 
     private static GroupListItemVO getGroupListItemVO(String id, String name, int countMembers)
     {
-        return new GroupListItemVO(id, name, countMembers, true);
+        GroupListItemVO result = new GroupListItemVO(id, name, countMembers, true);
+        result.setUri(URI.create("http://localhost/groups/" + result.getId() + "/members/list.html"));
+        return result;
     }
 
     @Test
