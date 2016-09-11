@@ -13,6 +13,7 @@ public class TournamentConfigurationModel
     private TournamentVO tournament;
     private SelectVO reBuyOption = new SelectVO();
     private List<String> errors = new ArrayList<>();
+    private String groupRef;
 
     public List<String> getErrors()
     {
@@ -42,5 +43,15 @@ public class TournamentConfigurationModel
     public void setReBuyOption(SelectVO reBuyOption)
     {
         this.reBuyOption = reBuyOption;
+    }
+
+    public String getGroupRef()
+    {
+        return groupRef;
+    }
+
+    public void setGroupRef(String groupRef)
+    {
+        this.groupRef = groupRef;
     }
 }

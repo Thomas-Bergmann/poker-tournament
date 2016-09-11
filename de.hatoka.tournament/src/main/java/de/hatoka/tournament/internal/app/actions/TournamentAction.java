@@ -47,6 +47,8 @@ public class TournamentAction extends GameAction<TournamentBO>
         result.getReBuyOption().getOptions().add(new SelectOptionVO("multi", false));
         result.getReBuyOption().getOptions().add(new SelectOptionVO("single", true));
         result.getReBuyOption().getOptions().add(new SelectOptionVO("no", false));
+
+        result.setGroupRef(tournamentBO.getGroupRef());
         return result;
     }
 

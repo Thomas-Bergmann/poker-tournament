@@ -50,6 +50,11 @@
         <xsl:with-param name="value"><xsl:value-of select="tournamentConfigurationModel/tournament/largestTable" /></xsl:with-param>
         <xsl:with-param name="placeholderKey">placeholder.tournament.largestTable</xsl:with-param>
       </xsl:call-template>
+      <xsl:call-template name="input">
+        <xsl:with-param name="name">groupRef</xsl:with-param>
+        <xsl:with-param name="value"><xsl:value-of select="tournamentConfigurationModel/groupRef" /></xsl:with-param>
+        <xsl:with-param name="placeholderKey">placeholder.tournament.group</xsl:with-param>
+      </xsl:call-template>
       <xsl:call-template name="button">
         <xsl:with-param name="name">save</xsl:with-param>
       </xsl:call-template>

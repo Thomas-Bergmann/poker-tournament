@@ -90,7 +90,7 @@ public class TournamentService extends AbstractService
     @POST
     @Path("/saveConfiguration")
     public Response saveConfiguration(@FormParam("name") String name, @FormParam("initialStack") Integer initialStack, @FormParam("smallestTable") Integer smallestTable,
-                    @FormParam("largestTable") Integer largestTable, @FormParam("reBuy") BigDecimal reBuy)
+                    @FormParam("largestTable") Integer largestTable, @FormParam("reBuy") BigDecimal reBuy, @FormParam("groupRef") String groupRef)
     {
         runInTransaction(() -> {
             TournamentBusinessFactory factory = getInstance(TournamentBusinessFactory.class);
@@ -100,6 +100,8 @@ public class TournamentService extends AbstractService
             tournament.setInitialStacksize(initialStack);
             tournament.setName(name);
             tournament.setReBuy(reBuy);
+            tournament.setGroupRef(groupRef);
+
         });
         return redirect(METHOD_NAME_OVERVIEW, tournamentID);
     }

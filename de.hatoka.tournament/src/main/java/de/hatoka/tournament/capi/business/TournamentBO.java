@@ -221,4 +221,8 @@ public interface TournamentBO extends GameBO
      * @return next pause or null in case there is no pause
      */
     PauseBO getNextPause();
+
+    String getGroupRef();
+
+    void setGroupRef(String groupRef);
 }

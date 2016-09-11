@@ -99,6 +99,9 @@ public class TournamentPO implements Serializable, IdentifiableEntity
     @XmlAttribute
     private int currentRound = -1;
 
+    @NotNull
+    private String groupRef;
+
     public TournamentPO()
     {
     }
@@ -295,5 +298,15 @@ public class TournamentPO implements Serializable, IdentifiableEntity
     public void setReBuy(MoneyPO reBuy)
     {
         this.reBuy = reBuy;
+    }
+
+    public String getGroupRef()
+    {
+        return groupRef;
+    }
+
+    public void setGroupRef(String groupRef)
+    {
+        this.groupRef = groupRef;
     }
 }

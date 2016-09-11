@@ -774,4 +774,16 @@ public class TournamentBOImpl implements TournamentBO, ITournamentBO
         blindLevels.sort((o1, o2) -> o1.getPosition().compareTo(o2.getPosition()));
         return blindLevels;
     }
+
+    @Override
+    public String getGroupRef()
+    {
+        return tournamentPO.getGroupRef();
+    }
+
+    @Override
+    public void setGroupRef(String groupRef)
+    {
+        tournamentPO.setGroupRef(groupRef);
+    }
 }
