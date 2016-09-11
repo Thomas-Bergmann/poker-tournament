@@ -78,6 +78,16 @@ body {
   display : inline;
 }
 
+.bigscreen tr td {
+    margin: 5px;
+    padding: 5px;
+    text-align: center;
+    font-size: 24px;
+}
+.bigscreen tr td.nextLevel {
+    font-size: 10px;
+}
+
 /* Hide for mobile, show later */
 @media (max-width: 768px) {
   .nav-sidebar {
