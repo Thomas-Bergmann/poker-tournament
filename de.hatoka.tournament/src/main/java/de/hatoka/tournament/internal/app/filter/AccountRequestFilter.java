@@ -108,7 +108,7 @@ public class AccountRequestFilter implements ContainerRequestFilter
         }
         Map<String, javax.ws.rs.core.Cookie> cookies = requestContext.getCookies();
         String accountID = getCookie(cookies, ServletConstants.USER_ID_COOKIE_NAME);
-        if (accountID == null)
+        if (accountID == null || accountID.isEmpty())
         {
             return false;
         }

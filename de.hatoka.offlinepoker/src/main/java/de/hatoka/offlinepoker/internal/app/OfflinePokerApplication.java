@@ -73,6 +73,7 @@ public class OfflinePokerApplication extends Application
     {
         final Set<Class<?>> result = new HashSet<>();
         result.add(ResourceService.class);
+        result.add(AccountRequestFilter.class);
         result.add(TournamentListService.class);
         result.add(TournamentService.class);
         result.add(TournamentCompetitorService.class);
@@ -82,7 +83,6 @@ public class OfflinePokerApplication extends Application
         result.add(CashGameListService.class);
         result.add(CashGameCompetitorService.class);
         result.add(PlayerListService.class);
-        result.add(AccountRequestFilter.class);
         result.add(LoginService.class);
         result.add(GroupListService.class);
         return result;

@@ -34,7 +34,16 @@ public class FrameModel
     private String content = null;
 
     @XmlAttribute
+    private boolean isLoggedIn = false;
+
+    @XmlAttribute
     private URI uriHome = null;
+
+    @XmlAttribute
+    private URI uriLogin = null;
+
+    @XmlAttribute
+    private URI uriLogout = null;
 
     @XmlElementWrapper(name = "messages")
     @XmlElement(name = "message")
@@ -143,5 +152,37 @@ public class FrameModel
     public void addMessage(MessageVO message)
     {
         this.messages.add(message);
+    }
+
+    @XmlTransient
+    public URI getUriLogin()
+    {
+        return uriLogin;
+    }
+
+    public void setUriLogin(URI uriLogin)
+    {
+        this.uriLogin = uriLogin;
+    }
+
+    @XmlTransient
+    public URI getUriLogout()
+    {
+        return uriLogout;
+    }
+
+    public void setUriLogout(URI uriLogout)
+    {
+        this.uriLogout = uriLogout;
+    }
+
+    public boolean isLoggedIn()
+    {
+        return isLoggedIn;
+    }
+
+    public void setLoggedIn(boolean isLoggedIn)
+    {
+        this.isLoggedIn = isLoggedIn;
     }
 }

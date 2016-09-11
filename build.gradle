@@ -177,7 +177,7 @@ project('de.hatoka.offlinepoker')
         runtime 'xalan:xalan:2.7.2'
         runtime 'org.eclipse.persistence:eclipselink:2.6.3'
 
-        testCompile 'junit:junit:4.12'
+        testCompile project(":de.hatoka.test")
     }
 }
 

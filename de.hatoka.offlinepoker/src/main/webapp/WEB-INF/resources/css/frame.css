@@ -24,6 +24,10 @@ body {
 .navbar-fixed-top {
   border: 0;
 }
+.navbar-form {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
 
 /*
  * Main content

@@ -37,6 +37,7 @@ import de.hatoka.tournament.internal.app.servlets.TournamentListService;
 import de.hatoka.tournament.internal.app.servlets.TournamentRankService;
 import de.hatoka.tournament.internal.app.servlets.TournamentService;
 import de.hatoka.tournament.internal.app.servlets.TournamentTableService;
+import de.hatoka.user.internal.app.servlets.LoginService;
 
 public class FrameRendererImpl implements FrameRenderer
 {
@@ -76,27 +77,33 @@ public class FrameRendererImpl implements FrameRenderer
 
     private String renderFame(String content, String style, List<MessageVO> messages, String... selectedItems)
     {
-        TournamentBORepository tournamentBORepository = tournamentFactory .getTournamentBORepository(userRefProvider.getUserRef());
+        TournamentBORepository tournamentBORepository = tournamentFactory
+                        .getTournamentBORepository(userRefProvider.getUserRef());
         FrameModel frameModel = null;
         String mainItem = selectedItems[0];
         String level1Item = selectedItems[1];
         if ("cashgame".equals(mainItem))
         {
-            frameModel = getCashGameFrameModel(content, getSingleTitle(selectedItems), uriInfoProvider.get(), tournamentBORepository,
+            frameModel = getCashGameFrameModel(content, getSingleTitle(selectedItems), uriInfoProvider.get(),
+                            tournamentBORepository,
                             level1Item);
         }
         else if ("tournament".equals(mainItem))
         {
-            frameModel = getTournamentFrameModel(content, getSingleTitle(selectedItems), uriInfoProvider.get(), tournamentBORepository,
+            frameModel = getTournamentFrameModel(content, getSingleTitle(selectedItems), uriInfoProvider.get(),
+                            tournamentBORepository,
                             level1Item);
         }
         else
         {
-            PlayerBORepository playerBORepository = tournamentFactory.getPlayerBORepository(userRefProvider.getUserRef());
+            PlayerBORepository playerBORepository = tournamentFactory
+                            .getPlayerBORepository(userRefProvider.getUserRef());
             GroupBORepository groupBORepository = groupFactory.getGroupBORepository(userRefProvider.getUserRef());
-            frameModel = getMainFrameModel(content, getTitle(selectedItems), uriInfoProvider.get(), tournamentBORepository,
+            frameModel = getMainFrameModel(content, getTitle(selectedItems), uriInfoProvider.get(),
+                            tournamentBORepository,
                             playerBORepository, groupBORepository, mainItem);
         }
+        addNavarLogin(frameModel);
         try
         {
             frameModel.setMessages(messages);
@@ -108,10 +115,20 @@ public class FrameRendererImpl implements FrameRenderer
         }
     }
 
+    private void addNavarLogin(FrameModel frameModel)
+    {
+        boolean isLoggedIn = userRefProvider.getUserRef() != null;
+        frameModel.setLoggedIn(isLoggedIn);
+        frameModel.setUriLogin(uriInfoProvider.get().getBaseUriBuilder().path(LoginService.PATH)
+                        .path(LoginService.class, LoginService.ACTION_LOGIN).build());
+        frameModel.setUriLogout(uriInfoProvider.get().getBaseUriBuilder().path(LoginService.PATH)
+                        .path(LoginService.class, LoginService.ACTION_LOGOUT).build());
+    }
+
     private static String getTitle(String[] selectedItems)
     {
         StringBuilder builder = new StringBuilder("title");
-        for(String item : selectedItems)
+        for (String item : selectedItems)
         {
             builder.append(".").append(item);
         }

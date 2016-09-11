@@ -7,9 +7,11 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
 
 import de.hatoka.common.capi.app.servlet.AbstractService;
 import de.hatoka.common.capi.app.servlet.ServletConstants;
@@ -26,6 +28,9 @@ import de.hatoka.user.internal.app.models.LoginPageModel;
 public class LoginService extends AbstractService
 {
     private static final String RESOURCE_PREFIX = "de/hatoka/user/internal/templates/app/";
+    public static final String PATH = "login";
+    public static final String ACTION_LOGOUT = "logout";
+    public static final String ACTION_LOGIN = "login";
 
     public LoginService()
     {
@@ -45,7 +50,8 @@ public class LoginService extends AbstractService
             getAction().accept(form);
             if (!form.isLoginFailed())
             {
-                NewCookie userCookie = createCookie(ServletConstants.USER_ID_COOKIE_NAME, form.getUserID(), "hatoka user cookie");
+                NewCookie userCookie = createCookie(ServletConstants.USER_ID_COOKIE_NAME, form.getUserID(),
+                                "hatoka user cookie");
                 String sign = getInstance(EncryptionUtils.class).sign(getSecret(), form.getUserID());
                 NewCookie signCookie = createCookie(ServletConstants.USER_SIGN_COOKIE_NAME, sign, "hatoka sign cookie");
                 if (origin != null)
@@ -136,6 +142,26 @@ public class LoginService extends AbstractService
         SignUpForm signUpForm = new SignUpForm();
         signUpForm.setTokenValidationFailed(true);
         return render(null, signUpForm);
+    }
+
+    @Context
+    private UriInfo info;
+
+    @POST
+    @Path("/logout")
+    public Response logout()
+    {
+        NewCookie userCookie = createCookie(ServletConstants.USER_ID_COOKIE_NAME, "", "hatoka user cookie");
+        NewCookie signCookie = createCookie(ServletConstants.USER_SIGN_COOKIE_NAME, "", "hatoka sign cookie");
+        URI uri = info.getBaseUri();
+        return Response.seeOther(uri).cookie(userCookie, signCookie).build();
+    }
+
+    @GET
+    @Path("/logout")
+    public Response logoutGet()
+    {
+        return logout();
     }
 
 }
