@@ -111,7 +111,7 @@ This project is a java project (JDK8), it uses some important frameworks:
 * XSLT for template processing
 
 <pre>
-git clone https://github.com/OfflinePoker/Tournament.git Tournament
+git clone https://github.com/Thomas-Bergmann/Tournament.git Tournament
 cd Tournament
 gradle eclipse
 gradle test
