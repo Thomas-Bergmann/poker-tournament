@@ -9,27 +9,21 @@ buildscript {
 }
 
 plugins {
-    id 'org.sonarqube' version '2.0.1'
-    id 'org.standardout.versioneye' version '1.4.0'
 }
 
 allprojects {
-    apply plugin: 'base'
     apply plugin: 'jacoco'
-
     repositories {
         mavenCentral()
     }
     jacoco {
         toolVersion = '0.7.7.201606060606'
+        reportsDir = file("$buildDir/jacoco/report")
     }
 }
 
 subprojects {
     apply plugin: 'java'
-    apply plugin: 'eclipse'
-    apply plugin: 'jacoco'
-    apply plugin: 'org.standardout.versioneye'
     apply plugin: 'com.intershop.gradle.dependencyanalysis'
 
     group = 'de.hatoka.offlinepoker'
@@ -50,16 +44,11 @@ subprojects {
             html.destination "${buildDir}/jacoco/html"
         }
     }
-
     test {
         jacoco {
             destinationFile = file("$buildDir/jacoco/jacocoTest.exec")
         }
      }
-
-    jacoco {
-        reportsDir = file("$buildDir/jacoco/report")
-    }
 }
 
 project('de.hatoka.user')
