@@ -1,0 +1,33 @@
+name: Build App
+
+on:
+  push:
+    branches:
+    - 'feature/build/*'
+    - 'feature/app/*'
+    - 'master'
+  pull_request:
+    branches:
+    - 'master'
+
+env:
+  NODE_VERSION: 18.15.0
+  NODE_OPTIONS: --max_old_space_size=4096
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js 18
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: npm
+        cache-dependency-path: app/package-lock.json
+
+    - name: Install root dependencies
+      run: cd app && npm ci
+
+    - name: Build
+      run: cd app && npm run build:production

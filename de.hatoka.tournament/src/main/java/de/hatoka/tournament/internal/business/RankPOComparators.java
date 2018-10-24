@@ -2,8 +2,8 @@ package de.hatoka.tournament.internal.business;
 
 import java.util.Comparator;
 
-import de.hatoka.common.capi.business.Comparators;
-import de.hatoka.tournament.capi.entities.RankPO;
+import de.hatoka.common.capi.math.Comparators;
+import de.hatoka.tournament.internal.persistence.RankPO;
 
 public final class RankPOComparators
 {

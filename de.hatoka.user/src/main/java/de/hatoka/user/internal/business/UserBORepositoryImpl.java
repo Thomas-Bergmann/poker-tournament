@@ -1,54 +1,50 @@
 package de.hatoka.user.internal.business;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import de.hatoka.common.capi.exceptions.DuplicateObjectException;
 import de.hatoka.user.capi.business.UserBO;
 import de.hatoka.user.capi.business.UserBORepository;
-import de.hatoka.user.capi.business.UserBusinessFactory;
-import de.hatoka.user.capi.dao.UserDao;
-import de.hatoka.user.capi.entities.UserPO;
+import de.hatoka.user.capi.business.UserRef;
+import de.hatoka.user.internal.persistence.UserDao;
+import de.hatoka.user.internal.persistence.UserPO;
 
+@Component
 public class UserBORepositoryImpl implements UserBORepository
 {
-    private final UserDao userDao;
-    private final UserBusinessFactory businessFactory;
+    @Autowired
+    private UserDao userDao;
+    @Autowired
+    private UserBOFactory factory;
 
-    public UserBORepositoryImpl(UserDao userDao, UserBusinessFactory businessFactory)
+    @Override
+    public UserBO createUser(UserRef globalRef)
     {
-        this.userDao = userDao;
-        this.businessFactory = businessFactory;
+        Optional<UserPO> userOpt = userDao.findByGlobalRef(globalRef.getGlobalRef());
+        if (userOpt.isPresent())
+        {
+            throw new DuplicateObjectException("User", "externalRef", globalRef.getGlobalRef());
+        }
+        UserPO userPO = new UserPO();
+        userPO.setGlobalRef(globalRef.getGlobalRef());
+        userDao.save(userPO);
+        return factory.get(userPO);
     }
 
     @Override
-    public UserBO createUserBO(String login)
+    public Optional<UserBO> findUser(UserRef externalRef)
     {
-        UserPO userPO = userDao.getByLogin(login);
-        if (userPO != null)
-        {
-            throw new DuplicateObjectException("User with login exists: " + login);
-        }
-        userPO = userDao.createAndInsert(login);
-        return businessFactory.getUserBO(userPO);
+        return userDao.findByGlobalRef(externalRef.getGlobalRef()).map(factory::get);
     }
 
     @Override
-    public UserBO getUserBOByID(String userID)
+    public List<UserBO> getAllUsers()
     {
-        UserPO userPO = userDao.getById(userID);
-        if (userPO == null)
-        {
-            return null;
-        }
-        return businessFactory.getUserBO(userPO);
-    }
-
-    @Override
-    public UserBO getUserBOByLogin(String login)
-    {
-        UserPO userPO = userDao.getByLogin(login);
-        if (userPO == null)
-        {
-            return null;
-        }
-        return businessFactory.getUserBO(userPO);
+        return userDao.findAll().stream().map(factory::get).collect(Collectors.toList());
     }
 }

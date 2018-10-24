@@ -1,0 +1,201 @@
+package de.hatoka.tournament.internal.persistence;
+
+import java.io.Serializable;
+
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.AttributeOverrides;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import javax.validation.constraints.NotNull;
+
+import de.hatoka.common.capi.persistence.MoneyPO;
+import de.hatoka.tournament.capi.types.CompetitorState;
+
+@Entity
+@Table(
+    name = "tournament_competitor",
+    uniqueConstraints={ @UniqueConstraint(columnNames= { "tournament_id", "player_ref" }) }
+)
+public class CompetitorPO implements Serializable
+{
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * Internal identifier for persistence only
+     */
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @Column(name = "competitor_id")
+    private Long id;
+
+    @Column(name="player_ref")
+    private String playerRef;
+
+    @NotNull
+    @Column(name="tournament_id")
+    private Long tournamentID;
+
+    /**
+     * The player is out and was placed at position
+     */
+    private Integer position;
+
+    @Embedded
+    @AttributeOverrides({ @AttributeOverride(name = "currencyCode", column = @Column(name = "invest_cur")),
+                    @AttributeOverride(name = "amount", column = @Column(name = "invest_amount")) })
+    private MoneyPO moneyInvest;
+
+    @Embedded
+    @AttributeOverrides({ @AttributeOverride(name = "currencyCode", column = @Column(name = "payout_cur")),
+                    @AttributeOverride(name = "amount", column = @Column(name = "payout_amount")) })
+    private MoneyPO moneyPayout;
+
+    /**
+     * state of player see {@link CompetitorState}
+     */
+    @NotNull
+    @Column(name="state", nullable = false)
+    private CompetitorState state = CompetitorState.REGISTERED;
+
+    /**
+     * The player seats on table
+     */
+    @Column(name="table_no", nullable = false)
+    private int tableNo = -1;
+
+    /**
+     * The player seats at seat on table
+     */
+    @Column(name="table_seat", nullable = false)
+    private int seatNo = -1;
+
+    public CompetitorPO()
+    {
+
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        CompetitorPO other = (CompetitorPO)obj;
+        if (id == null)
+        {
+            if (other.id != null)
+                return false;
+        }
+        else if (!id.equals(other.id))
+            return false;
+        return true;
+    }
+
+    public Long getId()
+    {
+        return id;
+    }
+
+    public Integer getPosition()
+    {
+        return position;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
+    }
+
+    public void setId(Long id)
+    {
+        this.id = id;
+    }
+
+    public void setPosition(Integer position)
+    {
+        this.position = position;
+    }
+
+    public CompetitorState getState()
+    {
+        return state;
+    }
+
+    public void setState(CompetitorState state)
+    {
+        this.state = state;
+    }
+
+    public int getTableNo()
+    {
+        return tableNo;
+    }
+
+    public void setTableNo(int tableNo)
+    {
+        this.tableNo = tableNo;
+    }
+
+    public int getSeatNo()
+    {
+        return seatNo;
+    }
+
+    public void setSeatNo(int seatNo)
+    {
+        this.seatNo = seatNo;
+    }
+
+    public Long getTournamentID()
+    {
+        return tournamentID;
+    }
+
+    public void setTournamentID(Long tournamentID)
+    {
+        this.tournamentID = tournamentID;
+    }
+
+    public String getPlayerRef()
+    {
+        return playerRef;
+    }
+
+    public void setPlayerRef(String playerRef)
+    {
+        this.playerRef = playerRef;
+    }
+
+    public MoneyPO getMoneyInvest()
+    {
+        return moneyInvest;
+    }
+
+    public void setMoneyInvest(MoneyPO moneyInvest)
+    {
+        this.moneyInvest = moneyInvest;
+    }
+
+    public MoneyPO getMoneyPayout()
+    {
+        return moneyPayout;
+    }
+
+    public void setMoneyPayout(MoneyPO moneyPayout)
+    {
+        this.moneyPayout = moneyPayout;
+    }
+}

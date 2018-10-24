@@ -1,0 +1,19 @@
+dependencies {
+    implementation project(':de.hatoka.common')
+    implementation project(':de.hatoka.user')
+    implementation project(':de.hatoka.player')
+
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    implementation 'javax.validation:validation-api'
+
+    //Test
+    testImplementation 'com.jayway.jsonpath:json-path'
+    testImplementation group: 'org.skyscreamer', name: 'jsonassert'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    //Database
+    testRuntimeOnly 'com.h2database:h2'
+}

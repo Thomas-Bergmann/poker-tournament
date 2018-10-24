@@ -2,28 +2,30 @@ package de.hatoka.tournament.internal.business;
 
 import java.util.Date;
 
-import javax.inject.Provider;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import de.hatoka.tournament.capi.business.BlindLevelBO;
 import de.hatoka.tournament.capi.business.PauseBO;
-import de.hatoka.tournament.capi.entities.BlindLevelPO;
+import de.hatoka.tournament.internal.persistence.BlindLevelPO;
 
-public class PauseBOImpl implements PauseBO
+@Component
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+public class PauseBOImpl implements PauseBO, IPauseBO
 {
     private final BlindLevelPO blindLevelPO;
     private final ITournamentBO tournament;
-    private final Provider<Date> dateProvider;
 
     /**
      * Creates a blind level BO
      * @param blindLevelPO persistent object of blind level
      * @param dateProvider provides current date for activation of blind level
      */
-    public PauseBOImpl(BlindLevelPO blindLevelPO, ITournamentBO tournament, Provider<Date> dateProvider)
+    public PauseBOImpl(BlindLevelPO blindLevelPO, ITournamentBO tournament)
     {
         this.blindLevelPO = blindLevelPO;
         this.tournament = tournament;
-        this.dateProvider = dateProvider;
     }
 
     @Override
@@ -62,12 +64,6 @@ public class PauseBOImpl implements PauseBO
     }
 
     @Override
-    public String getID()
-    {
-        return blindLevelPO.getId();
-    }
-
-    @Override
     public boolean isRebuyAllowed()
     {
         return blindLevelPO.isReBuy();
@@ -82,9 +78,7 @@ public class PauseBOImpl implements PauseBO
     @Override
     public void start()
     {
-        blindLevelPO.getTournamentPO().setCurrentRound(blindLevelPO.getPosition());
-        blindLevelPO.setStartDate(dateProvider.get());
-        tournament.defineBlindLevelStartTimes();
+        tournament.start(this);
     }
 
     @Override
@@ -96,7 +90,7 @@ public class PauseBOImpl implements PauseBO
     @Override
     public boolean isActive()
     {
-        return blindLevelPO.getPosition() == blindLevelPO.getTournamentPO().getCurrentRound();
+        return blindLevelPO.getPosition() == tournament.getCurrentRound();
     }
 
     @Override
@@ -111,4 +105,15 @@ public class PauseBOImpl implements PauseBO
         return new Date(getStartTime().getTime() + getDuration() * 60_000);
     }
 
+    @Override
+    public Integer getPosition()
+    {
+        return blindLevelPO.getPosition();
+    }
+
+    @Override
+    public void setStartDate(Date date)
+    {
+        blindLevelPO.setStartDate(date);
+    }
 }

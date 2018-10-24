@@ -1,188 +1,97 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.intershop.gradle.dependencyanalysis:dependencyanalysis-gradle-plugin:1.0.1'
-    }
-}
-
 plugins {
+    id 'java-library'
+    id "io.spring.dependency-management" version "1.1.0"
 }
 
 allprojects {
+    group = 'de.hatoka.offlinepoker'
+    version = '1.0.0-LOCAL'
+
     apply plugin: 'jacoco'
-    repositories {
-        mavenCentral()
-    }
-    jacoco {
-        toolVersion = '0.7.7.201606060606'
-        reportsDir = file("$buildDir/jacoco/report")
-    }
+
+    sourceCompatibility = 17
+    targetCompatibility = 17
+
+    repositories { mavenCentral() }
+
+    jacoco { toolVersion = '0.8.8' }
 }
+
+def versionMicrosoftSqlserverMssqlJdbc="11.2.3.jre17"
+def versionGlassfishJersey="3.1.1"
+def versionSpringDoc="1.7.0"
+def versionJJWT="0.11.5"
+def versionFlyway="9.17.0"
 
 subprojects {
     apply plugin: 'java'
-    apply plugin: 'com.intershop.gradle.dependencyanalysis'
 
-    group = 'de.hatoka.offlinepoker'
-    version = '0.1.15'
-    status = 'development'
-
-    dependencyAnalysis {
-        failOnErrors = false
+    // need to exclude to avoid Class path containing multiple SLF4J bindings
+    configurations {
+        all.collect { configuration ->
+            configuration.exclude group: 'org.slf4j', module: 'slf4j-simple'
+        }
     }
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
 
+    apply plugin: 'io.spring.dependency-management'
+    dependencies {
+        dependencyManagement {
+            imports { mavenBom("org.springframework.boot:spring-boot-dependencies:3.0.6") }
+            importedProperties['javax-jaxb.version']
+
+            dependencies {
+                dependency "org.springdoc:springdoc-openapi-ui:${versionSpringDoc}"
+                dependency "org.springdoc:springdoc-openapi-webmvc-core:${versionSpringDoc}"
+
+                // https://mvnrepository.com/artifact/com.nimbusds/nimbus-jose-jwt
+                dependency 'com.nimbusds:nimbus-jose-jwt:9.31'
+
+                dependency "net.logstash.logback:logstash-logback-encoder:7.3"
+
+                dependency "org.glassfish.jersey.core:jersey-client:${versionGlassfishJersey}"
+                dependency "org.glassfish.jersey.core:jersey-common:${versionGlassfishJersey}"
+                dependency "org.glassfish.jersey.inject:jersey-hk2:${versionGlassfishJersey}"
+                dependency "org.glassfish.jersey.media:jersey-media-json-jackson:${versionGlassfishJersey}"
+                dependency 'org.json:json:20230227'
+                dependency 'javax.validation:validation-api:2.0.1.Final'
+                dependency 'jakarta.ws.rs:jakarta.ws.rs-api:3.1.0'
+                dependency "io.jsonwebtoken:jjwt-api:${versionJJWT}"
+                dependency "io.jsonwebtoken:jjwt-impl:${versionJJWT}"
+                dependency "io.jsonwebtoken:jjwt-jackson:${versionJJWT}"
+
+                dependency "org.flywaydb:flyway-core:${versionFlyway}"
+                dependency "org.flywaydb:flyway-sqlserver:${versionFlyway}"
+                dependency "com.microsoft.sqlserver:mssql-jdbc:${versionMicrosoftSqlserverMssqlJdbc}"
+            }
+        }
+    }
+
+    test {
+        useJUnitPlatform {
+            excludeEngines 'junit-vintage'
+        }
+    }
     jacocoTestReport {
         reports {
-            csv.enabled false
-            xml.enabled true
-            html.enabled true
-            html.destination "${buildDir}/jacoco/html"
+            csv.required = false
+            xml.required = true
+            html.required = true
+            html.outputLocation = new File("${buildDir}/reports/jacoco/html")
         }
     }
-    test {
-        jacoco {
-            destinationFile = file("$buildDir/jacoco/jacocoTest.exec")
-        }
-     }
 }
 
-project('de.hatoka.user')
-{
-    sourceSets {
-        main {
-          output.resourcesDir = "build/classes/main"
-        }
-    }
-
-    dependencies {
-        compile project(":de.hatoka.common")
-        compile project(":de.hatoka.mail")
-        runtime 'javax.mail:mail:1.4.7'
-
-        testCompile project(":de.hatoka.test")
-    }
-}
-
-project('de.hatoka.test')
-{
-    dependencies {
-        compile project(":de.hatoka.common")
-        compile 'org.eclipse.persistence:javax.persistence:2.1.1'
-        compile 'junit:junit:4.12'
-        compile 'org.apache.derby:derby:10.12.1.1'
-        compile 'com.google.inject:guice:4.1.0'
-        compile 'xmlunit:xmlunit:1.6'
-        compile 'org.mockito:mockito-core:1.10.19'
-        runtime 'xalan:xalan:2.7.2'
-        runtime 'org.eclipse.persistence:eclipselink:2.6.3'
-   }
-}
-
-project('de.hatoka.common')
-{
-    dependencies {
-        compile 'com.google.inject:guice:4.1.0'
-        compile 'commons-io:commons-io:2.5' // IOUtils
-        compile 'commons-lang:commons-lang:2.6' // RandomUtils
-        compile 'javax.servlet:javax.servlet-api:3.1.0' // HttpServletRequest
-        compile 'javax.validation:validation-api:1.1.0.Final'
-        compile 'javax.ws.rs:javax.ws.rs-api:2.0.1'
-        compile 'org.eclipse.persistence:javax.persistence:2.1.1'
-        compile 'org.slf4j:slf4j-api:1.7.21'
-
-        testCompile 'junit:junit:4.12'
-        testRuntime 'xalan:xalan:2.7.2'
-    }
-}
-
-project('de.hatoka.mail')
-{
-    dependencies {
-        compile project(":de.hatoka.common")
-        compile 'javax.mail:mail:1.4.7'
-        testCompile project(":de.hatoka.test")
-    }
-    test {
-        // https://javamail.java.net/nonav/docs/api/com/sun/mail/smtp/package-summary.html
-        // systemProperty 'SMTP_HOST', mailSmtpHost
-        // systemProperty 'SMTP_USER', mailSmtpUser
-        // systemProperty 'SMTP_PASSWORD', mailSmtpPassword
-        // explicitly include or exclude tests
-        exclude 'de/hatoka/mail/internal/service/**'
-    }
-}
-project('de.hatoka.tournament')
-{
-    sourceSets {
-        main {
-          output.resourcesDir = "build/classes/main"
-        }
-    }
-
-    dependencies {
-        compile project(":de.hatoka.common")
-        testCompile project(":de.hatoka.test")
-    }
-}
-
-project('de.hatoka.group')
-{
-    dependencies {
-        compile project(":de.hatoka.common")
-        testCompile project(":de.hatoka.test")
-    }
-}
-
-project('de.hatoka.offlinepoker')
-{
-    apply plugin: 'war'
-
-    // mainClassName = 'de.hatoka.offlinepoker.internal.app.OfflinePokerMain'
-    dependencies {
-        compile project(":de.hatoka.tournament")
-        compile project(":de.hatoka.user")
-        compile project(":de.hatoka.group")
-
-        compile 'org.eclipse.jetty:jetty-server:9.3.11.v20160721'
-        compile 'org.eclipse.jetty:jetty-servlet:9.3.11.v20160721'
-        compile 'org.eclipse.jetty:jetty-webapp:9.3.11.v20160721'
-
-        compile 'com.fasterxml.jackson.core:jackson-annotations:2.8.2'
-        compile 'com.fasterxml.jackson.core:jackson-core:2.8.2'
-        compile 'com.fasterxml.jackson.core:jackson-databind:2.8.2'
-        compile 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.8.2'
-        compile ('org.glassfish.jersey.containers:jersey-container-servlet:2.23.2')
-        {
-            exclude group: 'org.glassfish.hk2.external'
-        }
-
-        runtime 'org.apache.commons:commons-dbcp2:2.1.1'
-        runtime 'org.postgresql:postgresql:9.4.1209'
-        runtime 'xalan:xalan:2.7.2'
-        runtime 'org.eclipse.persistence:eclipselink:2.6.3'
-
-        testCompile project(":de.hatoka.test")
-    }
+repositories {
+    mavenCentral()
 }
 
 // based on http://www.jroller.com/aalmiray/entry/gradle_glam_jacoco_coveralls
 task jacocoReport(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
-    dependsOn = subprojects.test
-    sourceDirectories = files(subprojects.sourceSets.main.allSource.srcDirs)
-    classDirectories =  files(subprojects.sourceSets.main.output)
-    executionData = files(fileTree('.').include('**/*.exec').getFiles())
+    dependsOn = subprojects.jacocoTestReport
     reports {
-        csv.enabled = false
-        html.enabled = true
-        html.destination "${buildDir}/reports/jacoco/html"
-        xml.enabled = true
-        xml.destination "${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
+        csv.required = false
+        xml.required = false
+        html.required = true
+        html.destination (new File("${buildDir}/reports/jacoco/html"))
     }
 }
-
-defaultTasks 'test', 'war', 'jacocoReport'

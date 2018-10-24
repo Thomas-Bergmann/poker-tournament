@@ -1,0 +1,38 @@
+<form xmlns="http://www.w3.org/1999/xhtml" action="actionList" method="POST">
+<table class="table table-striped">
+<tr>
+<th>Select</th>
+<th>Name</th>
+<th>Active</th>
+<th>Status</th>
+<th>Table (Seat)</th>
+<th>In Play</th>
+<th>Result</th>
+</tr>
+<tr>
+<td>
+</td>
+<td>Player 1</td>
+<td>active</td>
+<td />
+<td>1,111 (7)</td>
+<td>1 $</td>
+<td>-</td>
+</tr>
+<tr>
+<td>
+<label>
+<input type="checkbox" value="1234579" name="competitorID" class="checkbox"/>
+</label>
+</td>
+<td>Player 2</td>
+<td>inactive</td>
+<td />
+<td />
+<td>1 $</td>
+<td>-1 $</td>
+</tr>
+</table>
+<button name="buyin" type="submit" class="btn btn-primary">Buy-In</button>
+<button name="delete" type="submit" class="btn">Delete</button>
+</form>

@@ -1,17 +1,16 @@
 package de.hatoka.tournament.internal.business;
 
-public final class TournamentTools
-{
-    private TournamentTools()
-    {
-    }
+import org.springframework.stereotype.Component;
 
-    public static int getBigBlind(int smallBlind)
+@Component
+public class TournamentTools
+{
+    public int getBigBlind(int smallBlind)
     {
         return smallBlind * 2;
     }
 
-    public static int getNextSmallBlind(int maxSmallBlind)
+    public int getNextSmallBlind(int maxSmallBlind)
     {
         if (maxSmallBlind == 0)
         {

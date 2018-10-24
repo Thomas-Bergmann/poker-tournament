@@ -1,0 +1,94 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet"/>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css" rel="stylesheet"/>
+<link href="../../main/webapp/WEB-INF/resources/css/frame.css" rel="stylesheet" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js">//</script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js">//</script>
+<title>List of tournaments</title>
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+	<div class="container-fluid">
+		<!-- Brand and toggle get grouped for better mobile display -->
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed"
+				data-toggle="collapse" data-target="#bs-example-navbar-collapse-9">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="../home.html">Poker Planer</a>
+		</div>
+
+		<!-- Collect the nav links, forms, and other content for toggling -->
+		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-9">
+			<ul class="nav navbar-nav">
+				<li class="active">
+					<a href="../tournaments.html">Tournaments</a>
+				</li>
+				<li>
+					<a href="../cash_games.html">Cash Games</a>
+				</li>
+				<li>
+					<a href="../players.html">Players</a>
+				</li>
+			</ul>
+		</div><!-- /.navbar-collapse -->
+	</div>
+</nav>
+<div class="row">
+	<div class="col-sm-3 col-md-2 sidebar">
+		<ul class="nav-sidebar">
+			<li class="active">
+				<a href="general.html">General</a>
+			</li>
+			<li>
+				<a href="players.html">Players <span class="badge">13</span></a>
+				<a class="glyphicon glyphicon-plus" href="player_add.html"></a>
+			</li>
+			<li>
+				<a href="tables.html">Tables <span class="badge">2</span></a>
+			</li>
+			<li>
+				<a href="blind_levels.html">Blind Levels <span class="badge">5</span></a>
+			</li>
+			<li>
+				<a href="ranks.html">Ranks <span class="badge">3</span></a>
+			</li>
+			<li>
+				<a href="bigScreen.html">Big Screen</a>
+			</li>
+		</ul>
+	</div>
+	<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+		<h1 class="page-header">Main Event - General</h1>
+		<form action="general.html" method="POST">
+		<label for="inputName">Name</label>
+		<input value="Main Event" name="name" type="text" id="inputname" class="form-control" placeholder="Name"/>
+		<label for="inputDate">Start Date</label>
+		<input value="25.11.2011 18:00" name="date" type="text" id="inputdate" class="form-control" placeholder="Start Date"/>
+		<label for="inputStack">Initial Stack</label>
+		<input value="1000" name="stack" type="text" id="inputstack" class="form-control" placeholder="Initial Stack"/>
+		<label for="inputbuyIn">Buy In</label>
+		<input value="5USD" name="buyIn" type="text" id="inputbuyIn" class="form-control" placeholder="Buy In"/>
+		<label for="inputMultiRebuy">Rebuy Options</label>
+		<div>
+			<input name="rebuy" value="single" type="radio" checked="checked" />Single
+			<input name="rebuy" value="multi" type="radio"/>Multi
+			<input name="rebuy" value="no" type="radio"/>No
+		</div>
+		<label for="inputName">Smallest Table</label>
+		<input value="6" name="name" type="text" id="inputname" class="form-control" placeholder="Smallest Table"/>
+		<label for="inputName">Largest Table</label>
+		<input value="10" name="name" type="text" id="inputname" class="form-control" placeholder="Largest Table"/>
+		<button name="save" type="submit" class="btn btn-primary">Save</button>
+		</form>
+	</div>
+</div>
+</body>
+</html>

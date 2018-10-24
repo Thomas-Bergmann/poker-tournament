@@ -1,6 +1,7 @@
 package de.hatoka.tournament.capi.business;
 
-import de.hatoka.common.capi.business.Money;
+import de.hatoka.common.capi.math.Money;
+import de.hatoka.player.capi.business.PlayerBO;
 import de.hatoka.tournament.capi.types.CompetitorState;
 
 /**
@@ -8,12 +9,6 @@ import de.hatoka.tournament.capi.types.CompetitorState;
  */
 public interface CompetitorBO
 {
-    /**
-     *
-     * @return the identifier (signature) of the business object
-     */
-    String getID();
-
     /**
      * @return the amount of money spend by player (buy-in and re-buy)
      */
@@ -30,7 +25,7 @@ public interface CompetitorBO
     Integer getPosition();
 
     /**
-     * @return the amount of money won or lost by player after going out.
+     * @return the amount of money won by player after going out. (without investment)
      */
     Money getResult();
 
@@ -50,22 +45,6 @@ public interface CompetitorBO
     }
 
     /**
-     * Defines the position of the player. The position is independent from
-     * "inPlayStatus"
-     *
-     * @param position
-     */
-    void setPosition(Integer position);
-
-    /**
-     * player is placed at table number.
-     *
-     * @param tableNumber
-     * @param position at table (0 is dealer)
-     */
-    void takeSeat(int tableNo, int seatNo);
-
-    /**
      * @return table number the player is sitting
      */
     Integer getTableNo();
@@ -74,4 +53,22 @@ public interface CompetitorBO
      * @return seat number the player is sitting
      */
     Integer getSeatNo();
+
+    /**
+     * Removes competitor from game
+     */
+    void remove();
+
+    /**
+     * Competitor pays the buy-in and is allowed to play (is active afterwards)
+     *
+     * @param competitorBO
+     */
+    void buyin();
+
+    /**
+     * Competitor pays additional re-buy and is allowed to play (is still active)
+     * Rebuy amount is defined by tournament and/or round.
+     */
+    void rebuy();
 }

@@ -1,42 +1,15 @@
 package de.hatoka.tournament.capi.business;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Writer;
 import java.util.Date;
 import java.util.List;
 
-import javax.xml.bind.JAXBException;
+import de.hatoka.user.capi.business.UserRef;
 
-import de.hatoka.common.capi.business.Warning;
-import de.hatoka.tournament.capi.entities.TournamentPersistenceModel;
-
+/**
+ * Access to tournaments of an user
+ */
 public interface TournamentBORepository
 {
-    TournamentBO createTournament(String name, Date date);
-
-    TournamentBO createTournament(String externalRef, String name, Date date);
-
-    TournamentBO getTournamentByID(String id);
-
-    List<TournamentBO> getTournaments();
-
-    CashGameBO createCashGame(Date date);
-
-    CashGameBO createCashGame(String externalRef, Date date);
-
-    CashGameBO getCashGameByID(String id);
-
-    List<CashGameBO> getCashGames();
-
-    void exportXML(Writer writer) throws JAXBException;
-
-    /**
-     * Imports the XML stream of tournaments, see structure {@link TournamentPersistenceModel}.
-     * The transactions are handled, and encapsulate each tournament.
-     *
-     * @param resourceStream
-     * @return list of warnings
-     */
-    List<Warning> importXML(InputStream resourceStream) throws IOException;
+    TournamentBO createTournament(UserRef userRef, String localTournamentRef, Date startDate, String name);
+    List<TournamentBO> getTournaments(UserRef userRef);
 }

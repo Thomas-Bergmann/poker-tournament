@@ -1,42 +1,50 @@
 package de.hatoka.group.internal.business;
 
 import java.util.Collection;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-import de.hatoka.group.capi.business.GroupBO;
-import de.hatoka.group.capi.business.GroupBusinessFactory;
-import de.hatoka.group.capi.business.MemberBO;
-import de.hatoka.group.capi.dao.GroupDao;
-import de.hatoka.group.capi.dao.MemberDao;
-import de.hatoka.group.capi.entities.GroupPO;
-import de.hatoka.group.capi.entities.MemberPO;
+import jakarta.transaction.Transactional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
+import de.hatoka.group.capi.business.GroupAdminBO;
+import de.hatoka.group.capi.business.GroupBO;
+import de.hatoka.group.capi.business.GroupMemberBO;
+import de.hatoka.group.capi.business.GroupRef;
+import de.hatoka.group.internal.persistence.GroupAdminDao;
+import de.hatoka.group.internal.persistence.GroupAdminPO;
+import de.hatoka.group.internal.persistence.GroupDao;
+import de.hatoka.group.internal.persistence.GroupMemberDao;
+import de.hatoka.group.internal.persistence.GroupMemberPO;
+import de.hatoka.group.internal.persistence.GroupPO;
+import de.hatoka.player.capi.business.PlayerBO;
+import de.hatoka.user.capi.business.UserBO;
+
+@Component
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class GroupBOImpl implements GroupBO
 {
-    private GroupPO groupPO;
-    private final GroupDao groupDao;
-    private final MemberDao memberDao;
-    private final GroupBusinessFactory factory;
+    @Autowired
+    private GroupDao groupDao;
+    @Autowired
+    private GroupMemberDao memberDao;
+    @Autowired
+    private GroupMemberBOFactory memberFactory;
+    @Autowired
+    private GroupAdminDao adminDao;
+    @Autowired
+    private GroupAdminBOFactory adminFactory;
 
-    public GroupBOImpl(GroupPO groupPO, GroupDao groupDao,MemberDao memberDao, GroupBusinessFactory factory)
+    private final GroupRef groupRef;
+    private final GroupPO groupPO;
+
+    public GroupBOImpl(GroupPO groupPO)
     {
         this.groupPO = groupPO;
-        this.groupDao = groupDao;
-        this.memberDao = memberDao;
-        this.factory = factory;
-    }
-
-    @Override
-    public String getOwner()
-    {
-        return groupPO.getOwnerRef();
-    }
-
-    @Override
-    public void remove()
-    {
-        groupDao.remove(groupPO);
+        this.groupRef = GroupRef.valueOfGlobal(groupPO.getGlobalGroupRef());
     }
 
     @Override
@@ -45,30 +53,52 @@ public class GroupBOImpl implements GroupBO
         return groupPO.getName();
     }
 
-    @Override
-    public MemberBO createMember(String userRef, String name)
+    private GroupMemberBO getMember(GroupMemberPO memberPO)
     {
-        MemberPO memberPO = memberDao.createAndInsert(groupPO, userRef, name);
-        return factory.getMemberBO(memberPO);
+        return memberFactory.get(this, memberPO);
     }
 
     @Override
-    public Collection<MemberBO> getMembers()
+    @Transactional
+    public GroupMemberBO createMember(PlayerBO player)
     {
-        return groupPO.getMembers().stream().map(factory::getMemberBO).collect(Collectors.toList());
+        GroupMemberPO memberPO = new GroupMemberPO();
+        memberPO.setGroupRef(groupRef.getGlobalRef());
+        memberPO.setPlayerRef(player.getRef().getGlobalRef());
+        return getMember(memberDao.save(memberPO));
+    }
+
+    private GroupAdminBO getAdmin(GroupAdminPO adminPO)
+    {
+        return adminFactory.get(this, adminPO);
     }
 
     @Override
-    public String getID()
+    @Transactional
+    public GroupAdminBO createAdmin(UserBO user)
     {
-        return groupPO.getId();
+        GroupAdminPO adminPO = new GroupAdminPO();
+        adminPO.setGroupRef(groupRef.getGlobalRef());
+        adminPO.setUserRef(user.getRef().getGlobalRef());
+        return getAdmin(adminDao.save(adminPO));
     }
 
     @Override
-    public MemberBO getMember(String userRef)
+    public Collection<GroupMemberBO> getMembers()
     {
-        Optional<MemberBO> optional = groupPO.getMembers().stream().filter(m -> m.getUserRef().equals(userRef)).findAny().map(factory::getMemberBO);
-        return optional.isPresent() ? optional.get() : null;
+        return memberDao.findByGroupRef(groupRef.getGlobalRef()).stream().map(this::getMember).collect(Collectors.toList());
+    }
+
+    @Override
+    public Collection<GroupAdminBO> getAdmins()
+    {
+        return adminDao.findByGroupRef(groupRef.getGlobalRef()).stream().map(this::getAdmin).collect(Collectors.toList());
+    }
+
+    @Override
+    public GroupRef getRef()
+    {
+        return groupRef;
     }
 
     @Override
@@ -98,10 +128,11 @@ public class GroupBOImpl implements GroupBO
     }
 
     @Override
-    public boolean isMember(String userRef)
+    @Transactional
+    public void remove()
     {
-        return getMember(userRef) != null;
+        memberDao.deleteAllInBatch(memberDao.findByGroupRef(groupPO.getGlobalGroupRef()));
+        adminDao.deleteAllInBatch(adminDao.findByGroupRef(groupPO.getGlobalGroupRef()));
+        groupDao.delete(groupPO);
     }
-
-
 }

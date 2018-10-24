@@ -1,6 +1,25 @@
 package de.hatoka.tournament.internal.business;
 
-public interface ITournamentBO
+import de.hatoka.tournament.capi.business.TournamentBO;
+
+public interface ITournamentBO extends TournamentBO
 {
-    public void defineBlindLevelStartTimes();
+    void defineBlindLevelStartTimes();
+
+    /**
+     * starts the pause
+     */
+    void start(IPauseBO pause);
+
+    Integer getCurrentRound();
+
+    /**
+     * starts the blind level
+     */
+    void start(IBlindLevelBO blindLevel);
+
+    /**
+     * inform tournament about deletion of rank
+     */
+    void removeRank(IRankBO rank);
 }

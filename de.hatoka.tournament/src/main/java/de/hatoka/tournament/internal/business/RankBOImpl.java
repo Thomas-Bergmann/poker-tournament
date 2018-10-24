@@ -4,17 +4,26 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Currency;
 
-import de.hatoka.common.capi.business.Money;
-import de.hatoka.tournament.capi.business.RankBO;
-import de.hatoka.tournament.capi.business.TournamentBO;
-import de.hatoka.tournament.capi.entities.RankPO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
-public class RankBOImpl implements RankBO
+import de.hatoka.common.capi.math.Money;
+import de.hatoka.tournament.internal.persistence.RankDao;
+import de.hatoka.tournament.internal.persistence.RankPO;
+
+@Component
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+public class RankBOImpl implements IRankBO
 {
-    private final RankPO rankPO;
-    private final TournamentBO tournamentBO;
+    @Autowired
+    private RankDao rankDao;
 
-    public RankBOImpl(RankPO rankPO, TournamentBO tournamentBO)
+    private RankPO rankPO;
+    private final ITournamentBO tournamentBO;
+
+    public RankBOImpl(RankPO rankPO, ITournamentBO tournamentBO)
     {
         this.rankPO = rankPO;
         this.tournamentBO = tournamentBO;
@@ -47,12 +56,6 @@ public class RankBOImpl implements RankBO
         else if (!rankPO.equals(other.rankPO))
             return false;
         return true;
-    }
-
-    @Override
-    public String getID()
-    {
-        return rankPO.getId();
     }
 
     @Override
@@ -95,40 +98,7 @@ public class RankBOImpl implements RankBO
         {
             return Money.valueOf(amount.stripTrailingZeros(), getCurrency());
         }
-        BigDecimal percentage = rankPO.getPercentage();
-        if (percentage == null)
-        {
-            percentage = getCalculatedPercentage();
-        }
-        Money sum = tournamentBO.getSumInplay();
-        Money fix = getFixRankAmount();
-        return sum.subtract(fix).multiply(percentage).round();
-    }
-
-    private BigDecimal getCalculatedPercentage()
-    {
-        BigDecimal result = BigDecimal.ONE;
-        long number = 0;
-        for(RankPO rank : rankPO.getTournament().getRanks())
-        {
-            BigDecimal perc = rank.getPercentage();
-            if (perc != null)
-            {
-                result = result.subtract(perc);
-            }
-            else
-            {
-                if (rank.getAmount() == null)
-                {
-                    number++;
-                }
-            }
-        }
-        if (number == 0 || result.signum() != 1)
-        {
-            return BigDecimal.ZERO;
-        }
-        return result.divide(BigDecimal.valueOf(number)).stripTrailingZeros();
+        return null;
     }
 
     private Currency getCurrency()
@@ -136,18 +106,23 @@ public class RankBOImpl implements RankBO
         return tournamentBO.getBuyIn().getCurrency();
     }
 
-    private Money getFixRankAmount()
+    @Override
+    public void remove()
     {
-        BigDecimal result = BigDecimal.ZERO;
-        for(RankPO rank : rankPO.getTournament().getRanks())
-        {
-            BigDecimal amount = rank.getAmount();
-            if (amount != null)
-            {
-                result = result.add(amount);
-            }
-        }
-        return Money.valueOf(result, getCurrency());
+        rankDao.delete(rankPO);
+        rankPO = null;
+        tournamentBO.removeRank(this);
     }
 
+    @Override
+    public void setAmount(Money amount)
+    {
+        rankPO.setAmount(amount.getAmount());
+        savePO();
+    }
+
+    private void savePO()
+    {
+        rankPO = rankDao.save(rankPO);
+    }
 }

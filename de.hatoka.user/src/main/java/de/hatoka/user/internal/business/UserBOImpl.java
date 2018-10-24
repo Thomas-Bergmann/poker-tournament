@@ -1,105 +1,33 @@
 package de.hatoka.user.internal.business;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.net.URI;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 import java.util.TimeZone;
 
-import javax.inject.Inject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
-import org.slf4j.LoggerFactory;
-
-import de.hatoka.common.capi.app.xslt.XSLTRenderer;
-import de.hatoka.common.capi.business.CountryHelper;
-import de.hatoka.common.capi.dao.EncryptionUtils;
-import de.hatoka.common.capi.dao.UUIDGenerator;
-import de.hatoka.common.capi.resource.LocalizationBundle;
-import de.hatoka.common.capi.resource.ResourceLocalizer;
-import de.hatoka.mail.capi.dao.MailDao;
-import de.hatoka.mail.capi.entities.MailPO;
-import de.hatoka.mail.capi.service.MailAddressType;
-import de.hatoka.mail.capi.service.MailService;
+import de.hatoka.common.capi.locale.CountryHelper;
 import de.hatoka.user.capi.business.UserBO;
-import de.hatoka.user.capi.config.UserConfiguration;
-import de.hatoka.user.capi.dao.UserDao;
-import de.hatoka.user.capi.entities.UserPO;
-import de.hatoka.user.internal.app.models.SignUpVerifyMailModel;
+import de.hatoka.user.capi.business.UserRef;
+import de.hatoka.user.internal.persistence.UserDao;
+import de.hatoka.user.internal.persistence.UserPO;
 
+@Component
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class UserBOImpl implements UserBO
 {
-    private static final XSLTRenderer RENDERER = new XSLTRenderer();
-    private static final String RESOURCE_PREFIX = "de/hatoka/user/internal/templates/mail/";
     private static final CountryHelper COUNTRY_HELPER = new CountryHelper();
 
-    @Inject
+    @Autowired
     private UserDao userDao;
-    @Inject
-    private MailDao mailDao;
-    @Inject
-    private MailService mailService;
-    @Inject
-    private UUIDGenerator uuidGenerator;
-    @Inject
-    private UserConfiguration userConfiguration;
-    @Inject
-    private EncryptionUtils encryptionUtils;
 
     private UserPO userPO;
 
     public UserBOImpl(UserPO userPO)
     {
         this.userPO = userPO;
-    }
-
-    @Override
-    public boolean applySignInToken(String token)
-    {
-        if (userPO.getSignInToken() != null)
-        {
-            if (userPO.getSignInToken().equals(token))
-            {
-                userPO.setActive(true);
-                userPO.setSignInToken(null);
-                userPO.setEmailIsVerified(true);
-                return true;
-            }
-            return false;
-        }
-        return userPO.isActive();
-    }
-
-    private MailPO createSignUpVerifyMail(URI uri, String accountID)
-    {
-        // create content
-        StringWriter writer = new StringWriter();
-        SignUpVerifyMailModel signUpVerifyEmailModel = new SignUpVerifyMailModel();
-        String link = uri.toString() + "?token=" + userPO.getSignInToken() + "&email=" + userPO.getEmail();
-        signUpVerifyEmailModel.setLink(link);
-        try
-        {
-            RENDERER.render(writer, signUpVerifyEmailModel, RESOURCE_PREFIX + "signUpVerifyEmail.html.xslt", getXsltProcessorParameter());
-        }
-        catch(IOException e)
-        {
-            throw new RuntimeException("Can't create verification email content.", e);
-        }
-        // create mail
-        MailPO result = mailDao.createAndInsert(accountID);
-        result.setSubject(getLocalizer().getText("signup.mail.subject", "Email Verification"));
-        result.setContentHTML(writer.toString());
-        mailDao.createReceiver(result, MailAddressType.FROM, userConfiguration.getFromAddressForAccountRegistration());
-        mailDao.createReceiver(result, MailAddressType.TO, userPO.getEmail());
-        return result;
-    }
-
-    private Map<String, Object> getXsltProcessorParameter()
-    {
-        Map<String, Object> result = new HashMap<String, Object>();
-        result.put("localizer", getLocalizer());
-        return result;
     }
 
     @Override
@@ -122,19 +50,7 @@ public class UserBOImpl implements UserBO
         return true;
     }
 
-    @Override
-    public String getEmail()
-    {
-        return userPO.getEmail();
-    }
-
-    @Override
-    public String getID()
-    {
-        return userPO.getId();
-    }
-
-    private Locale getLocale()
+    public Locale getLocale()
     {
         String locale = userPO.getLocale();
         if (locale == null)
@@ -144,7 +60,7 @@ public class UserBOImpl implements UserBO
         return COUNTRY_HELPER.getLocale(locale);
     }
 
-    private TimeZone getTimeZone()
+    public TimeZone getTimeZone()
     {
         String timeZone = userPO.getTimeZone();
         if (timeZone == null)
@@ -154,12 +70,6 @@ public class UserBOImpl implements UserBO
         return COUNTRY_HELPER.getTimeZone(timeZone);
     }
 
-    private ResourceLocalizer getLocalizer()
-    {
-        return new ResourceLocalizer(new LocalizationBundle(RESOURCE_PREFIX + "signup", getLocale(), getTimeZone()));
-    }
-
-    @Override
     public String getNickName()
     {
         return userPO.getNickName();
@@ -181,63 +91,41 @@ public class UserBOImpl implements UserBO
     }
 
     @Override
-    public void register(String email, String password)
-    {
-        if (userPO.getEmail() != null)
-        {
-            throw new IllegalStateException("User has email, registration not possible");
-        }
-        userPO.setEmail(email);
-        userPO.setPassword(encryptionUtils.sign(password));
-        userPO.setActive(false);
-        userPO.setEmailIsVerified(false);
-    }
-
-    @Override
-    public void remove()
-    {
-        userDao.remove(userPO);
-        userPO = null;
-    }
-
-    @Override
-    public void sendEmailVerificationMail(URI uri)
-    {
-        if (userPO.getEmail() == null)
-        {
-            throw new RuntimeException("User has no email address.");
-        }
-        userPO.setSignInToken(uuidGenerator.generate());
-        MailPO mail = createSignUpVerifyMail(uri, userPO.getId());
-        mailService.sendMail(mail);
-    }
-
-    @Override
     public void setLocale(Locale locale)
     {
         userPO.setLocale(locale.toString());
+        savePO();
+    }
+
+    private void savePO()
+    {
+        userPO = userDao.save(userPO);
     }
 
     @Override
     public void setNickName(String nickName)
     {
         userPO.setNickName(nickName);
+        savePO();
     }
 
     @Override
-    public boolean verifyPassword(String password)
+    public void setTimeZone(TimeZone timezone)
     {
-        if(!userPO.isActive())
-        {
-            return false;
-        }
-        String stored = userPO.getPassword();
-        if (stored == null)
-        {
-            LoggerFactory.getLogger(getClass()).warn("User with id '{}' had no password.", userPO.getId());
-            userPO.setPassword("no-password");
-            return false;
-        }
-        return stored.equals(encryptionUtils.sign(password));
+        userPO.setTimeZone(timezone.getID());
+        savePO();
+    }
+
+    @Override
+    public UserRef getRef()
+    {
+        return UserRef.valueOfGlobal(userPO.getGlobalRef());
+    }
+
+    @Override
+    public void remove()
+    {
+        userDao.delete(userPO);
+        userPO = null;
     }
 }

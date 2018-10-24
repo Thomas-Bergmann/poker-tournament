@@ -1,35 +1,44 @@
 package de.hatoka.tournament.internal.business;
 
-import java.util.Date;
+import jakarta.transaction.Transactional;
 
-import com.google.inject.Provider;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
-import de.hatoka.common.capi.business.Money;
-import de.hatoka.tournament.capi.business.GameBO;
-import de.hatoka.tournament.capi.business.PlayerBO;
-import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
-import de.hatoka.tournament.capi.dao.HistoryDao;
-import de.hatoka.tournament.capi.entities.CompetitorPO;
-import de.hatoka.tournament.capi.entities.HistoryPO;
+import de.hatoka.common.capi.configuration.DateProvider;
+import de.hatoka.common.capi.math.Money;
+import de.hatoka.common.capi.persistence.MoneyPOConverter;
+import de.hatoka.player.capi.business.HistoryBORepository;
+import de.hatoka.player.capi.business.PlayerBO;
+import de.hatoka.player.capi.types.HistoryEntryType;
+import de.hatoka.player.internal.business.PlayerBOFactory;
+import de.hatoka.tournament.capi.business.TournamentBO;
 import de.hatoka.tournament.capi.types.CompetitorState;
-import de.hatoka.tournament.capi.types.HistoryEntryType;
+import de.hatoka.tournament.internal.persistence.CompetitorDao;
+import de.hatoka.tournament.internal.persistence.CompetitorPO;
 
-public class CompetitorBOImpl implements ICompetitor
+@Component("TournamentCompetitorBOImpl")
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+public class CompetitorBOImpl implements ICompetitorBO
 {
-    private CompetitorPO competitorPO;
-    private final TournamentBusinessFactory factory;
-    private final GameBO gameBO;
-    private final HistoryDao historyDao;
-    private final Provider<Date> dateProvider;
+    @Autowired
+    private PlayerBOFactory playerFactory;
+    @Autowired
+    private CompetitorDao competitorDao;
+    @Autowired
+    private DateProvider dateProvider;
+    @Autowired
+    private HistoryBORepository historyRepository;
 
-    public CompetitorBOImpl(CompetitorPO competitorPO, GameBO gameBO, HistoryDao historyDao,Provider<Date> dateProvider,
-                    TournamentBusinessFactory factory)
+    private CompetitorPO competitorPO;
+    private final TournamentBO gameBO;
+
+    public CompetitorBOImpl(CompetitorPO competitorPO, TournamentBO gameBO)
     {
         this.competitorPO = competitorPO;
         this.gameBO = gameBO;
-        this.historyDao = historyDao;
-        this.dateProvider = dateProvider;
-        this.factory = factory;
     }
 
     @Override
@@ -62,14 +71,16 @@ public class CompetitorBOImpl implements ICompetitor
     }
 
     @Override
-    public void buyin(Money amount)
+    public void buyin()
     {
+        Money amount = gameBO.getBuyIn();
         if (isActive())
         {
             throw new IllegalStateException("Buyin not allowed at active competitors");
         }
-        competitorPO.setMoneyInPlay(getInPlay().add(amount).toMoneyPO());
-        competitorPO.setState(CompetitorState.ACTIVE.name());
+        competitorPO.setMoneyInvest(MoneyPOConverter.persistence(getInPlay().add(amount)));
+        competitorPO.setState(CompetitorState.ACTIVE);
+        savePO();
         sortCompetitors();
         createEntry(HistoryEntryType.BuyIn, amount);
     }
@@ -80,21 +91,15 @@ public class CompetitorBOImpl implements ICompetitor
     }
 
     @Override
-    public String getID()
-    {
-        return competitorPO.getId();
-    }
-
-    @Override
     public Money getInPlay()
     {
-        return Money.valueOf(competitorPO.getMoneyInPlay());
+        return MoneyPOConverter.valueOf(competitorPO.getMoneyInvest());
     }
 
     @Override
     public PlayerBO getPlayer()
     {
-        return factory.getPlayerBO(competitorPO.getPlayerPO());
+        return playerFactory.get(competitorPO.getPlayerRef()).get();
     }
 
     @Override
@@ -106,12 +111,24 @@ public class CompetitorBOImpl implements ICompetitor
     @Override
     public Money getResult()
     {
-        return Money.valueOf(competitorPO.getMoneyResult());
+        return MoneyPOConverter.valueOf(competitorPO.getMoneyPayout());
+    }
+
+    @Transactional
+    public void seatOpen(Money result, Integer position)
+    {
+        competitorPO.setState(CompetitorState.OUT);
+        competitorPO.setMoneyPayout(MoneyPOConverter
+                        .persistence(MoneyPOConverter.valueOf(competitorPO.getMoneyPayout())));
+        competitorPO.setPosition(position);
+        savePO();
+        createEntry(HistoryEntryType.CashOut, result);
     }
 
     @Override
-    public void rebuy(Money amount)
+    public void rebuy()
     {
+        Money amount = gameBO.getCurrentRebuy();
         if (!isActive())
         {
             throw new IllegalStateException("Rebuy not allowed at inactive competitors");
@@ -120,49 +137,38 @@ public class CompetitorBOImpl implements ICompetitor
         {
             throw new IllegalStateException("Competitor can't rebuy at this blind level");
         }
-        competitorPO.setMoneyInPlay(Money.valueOf(competitorPO.getMoneyInPlay()).add(amount).toMoneyPO());
+        competitorPO.setMoneyInvest(MoneyPOConverter
+                        .persistence(MoneyPOConverter.valueOf(competitorPO.getMoneyInvest()).add(amount)));
+        savePO();
         sortCompetitors();
         createEntry(HistoryEntryType.ReBuy, amount);
+    }
+
+    private void createEntry(HistoryEntryType type, Money amount)
+    {
+        historyRepository.createEntry(dateProvider.get(), getPlayer().getRef(), gameBO.getRef().getGlobalRef(), type, amount);
     }
 
     @Override
     public void setPosition(Integer position)
     {
         competitorPO.setPosition(position);
-    }
-
-    @Override
-    public void createEntry(HistoryEntryType type, Money amount)
-    {
-        HistoryPO entry = historyDao.createAndInsert(competitorPO.getTournamentPO(), competitorPO.getPlayerPO().getName(), dateProvider.get());
-        entry.setActionKey(type.name());
-        entry.setAmount(amount.toMoneyPO());
-    }
-
-    @Override
-    public void setInPlay(Money amount)
-    {
-        competitorPO.setMoneyInPlay(amount.toMoneyPO());
-    }
-
-    @Override
-    public void setResult(Money amount)
-    {
-        competitorPO.setMoneyResult(amount.toMoneyPO());
+        savePO();
     }
 
     @Override
     public CompetitorState getState()
     {
-        return CompetitorState.valueOf(competitorPO.getState());
+        return competitorPO.getState();
     }
 
     @Override
     public void setInactive()
     {
-        competitorPO.setState(CompetitorState.OUT.name());
+        competitorPO.setState(CompetitorState.OUT);
         competitorPO.setTableNo(-1);
         competitorPO.setSeatNo(-1);
+        savePO();
     }
 
     @Override
@@ -170,6 +176,7 @@ public class CompetitorBOImpl implements ICompetitor
     {
         competitorPO.setTableNo(tableNo);
         competitorPO.setSeatNo(seatNo);
+        savePO();
     }
 
     @Override
@@ -182,5 +189,17 @@ public class CompetitorBOImpl implements ICompetitor
     public Integer getSeatNo()
     {
         return competitorPO.getSeatNo() < 0 ? null : competitorPO.getSeatNo();
+    }
+
+    @Override
+    public void remove()
+    {
+        competitorDao.delete(competitorPO);
+        competitorPO = null;
+    }
+
+    private void savePO()
+    {
+        competitorPO = competitorDao.save(competitorPO);
     }
 }

@@ -1,42 +1,18 @@
 package de.hatoka.common.capi.encoding;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 
-import org.junit.Test;
-
-import de.hatoka.common.capi.entities.MoneyPO;
+import org.junit.jupiter.api.Test;
 
 public class StringSerializerTest
 {
     private static final String TEST_STRING_1 = "simple";
 
     StringSerializer<String> UNDER_TEST = new StringSerializer<String>(String.class);
-    StringSerializer<MoneyPO> UNDER_TEST_PO = new StringSerializer<MoneyPO>(MoneyPO.class);
-
-    @Test
-    public void testMoneyPO() throws IOException
-    {
-        MoneyPO po = new MoneyPO(BigDecimal.TEN, "USD");
-        String serial = UNDER_TEST_PO.serialize(po);
-        MoneyPO result = UNDER_TEST_PO.deserialize(serial);
-        assertEquals("first requirement restored object must be equal", po, result);
-        assertFalse("second requirement object is not the same", po == result);
-    }
-
-    @Test
-    public void testPerformance() throws IOException
-    {
-        for(int price = 0; price < 10000; price++)
-        {
-            MoneyPO value = new MoneyPO(BigDecimal.valueOf(price), "USD");
-            String serial = UNDER_TEST_PO.serialize(value);
-            UNDER_TEST_PO.deserialize(serial);
-        }
-    }
 
     @Test
     public void testSimpleText() throws IOException

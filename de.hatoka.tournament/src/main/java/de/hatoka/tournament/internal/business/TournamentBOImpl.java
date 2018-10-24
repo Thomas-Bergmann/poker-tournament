@@ -7,128 +7,123 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.inject.Provider;
+import jakarta.transaction.Transactional;
 
-import de.hatoka.common.capi.business.Money;
-import de.hatoka.common.capi.entities.MoneyPO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
+import de.hatoka.common.capi.configuration.DateProvider;
+import de.hatoka.common.capi.math.Money;
+import de.hatoka.common.capi.persistence.MoneyPO;
+import de.hatoka.common.capi.persistence.MoneyPOConverter;
+import de.hatoka.group.capi.business.GroupRef;
+import de.hatoka.player.capi.business.HistoryBORepository;
+import de.hatoka.player.capi.business.HistoryEntryBO;
+import de.hatoka.player.capi.business.PlayerBO;
 import de.hatoka.tournament.capi.business.BlindLevelBO;
 import de.hatoka.tournament.capi.business.CompetitorBO;
-import de.hatoka.tournament.capi.business.HistoryEntryBO;
 import de.hatoka.tournament.capi.business.PauseBO;
-import de.hatoka.tournament.capi.business.PlayerBO;
 import de.hatoka.tournament.capi.business.RankBO;
 import de.hatoka.tournament.capi.business.TableBO;
-import de.hatoka.tournament.capi.business.TournamentBO;
-import de.hatoka.tournament.capi.business.TournamentBusinessFactory;
+import de.hatoka.tournament.capi.business.TournamentComparators;
+import de.hatoka.tournament.capi.business.TournamentRef;
 import de.hatoka.tournament.capi.business.TournamentRoundBO;
-import de.hatoka.tournament.capi.dao.BlindLevelDao;
-import de.hatoka.tournament.capi.dao.CompetitorDao;
-import de.hatoka.tournament.capi.dao.PlayerDao;
-import de.hatoka.tournament.capi.dao.RankDao;
-import de.hatoka.tournament.capi.dao.TournamentDao;
-import de.hatoka.tournament.capi.entities.BlindLevelPO;
-import de.hatoka.tournament.capi.entities.CompetitorPO;
-import de.hatoka.tournament.capi.entities.HistoryPO;
-import de.hatoka.tournament.capi.entities.PlayerPO;
-import de.hatoka.tournament.capi.entities.RankPO;
-import de.hatoka.tournament.capi.entities.TournamentPO;
 import de.hatoka.tournament.capi.types.CompetitorState;
-import de.hatoka.tournament.capi.types.HistoryEntryType;
+import de.hatoka.tournament.internal.persistence.BlindLevelDao;
+import de.hatoka.tournament.internal.persistence.BlindLevelPO;
+import de.hatoka.tournament.internal.persistence.CompetitorDao;
+import de.hatoka.tournament.internal.persistence.CompetitorPO;
+import de.hatoka.tournament.internal.persistence.RankDao;
+import de.hatoka.tournament.internal.persistence.RankPO;
+import de.hatoka.tournament.internal.persistence.TournamentDao;
+import de.hatoka.tournament.internal.persistence.TournamentPO;
+import de.hatoka.user.capi.business.UserRef;
 
-public class TournamentBOImpl implements TournamentBO, ITournamentBO
+@Component
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+public class TournamentBOImpl implements ITournamentBO
 {
-    private TournamentPO tournamentPO;
-    private final TournamentDao tournamentDao;
-    private final CompetitorDao competitorDao;
-    private final PlayerDao playerDao;
-    private final BlindLevelDao blindLevelDao;
-    private final RankDao rankDao;
-    private final Provider<Date> currentDateProvider;
-    private final TournamentBusinessFactory factory;
+    @Autowired
+    private TournamentDao tournamentDao;
+    @Autowired
+    private CompetitorDao competitorDao;
+    @Autowired
+    private BlindLevelDao blindLevelDao;
+    @Autowired
+    private RankDao rankDao;
+    @Autowired
+    private CompetitorBOFactory competitorFactory;
+    @Autowired
+    private BlindLevelBOFactory blindLevelFactory;
+    @Autowired
+    private PauseBOFactory pauseFactory;
+    @Autowired
+    private RankBOFactory rankFactory;
+    @Autowired
+    private HistoryBORepository historyRepository;
+    @Autowired
+    private DateProvider dateProvider;
 
-    public TournamentBOImpl(TournamentPO tournamentPO, TournamentDao tournamentDao, CompetitorDao competitorDao,
-                    PlayerDao playerDao, BlindLevelDao blindLevelDao, RankDao rankDao,
-                    Provider<Date> currentDateProvider, TournamentBusinessFactory factory)
+    private TournamentPO tournamentPO;
+    private Long tournament_id;
+    // required to return same BOs on multiple getRanks() calls, otherwise the PO is not updated inside the old returned BO.
+    private List<IRankBO> rankBOs = null;
+
+    public TournamentBOImpl(TournamentPO tournamentPO)
     {
         this.tournamentPO = tournamentPO;
-        this.tournamentDao = tournamentDao;
-        this.competitorDao = competitorDao;
-        this.playerDao = playerDao;
-        this.blindLevelDao = blindLevelDao;
-        this.rankDao = rankDao;
-        this.currentDateProvider = currentDateProvider;
-        this.factory = factory;
+        this.tournament_id = tournamentPO.getInternalID();
     }
 
     @Override
     public CompetitorBO register(PlayerBO playerBO)
     {
-        PlayerPO playerPO = playerDao.getById(playerBO.getID());
-        if (playerPO == null)
-        {
-            throw new IllegalArgumentException("Can't resolve persistent object for playerBO:" + playerBO.getID());
-        }
-        return getBO(competitorDao.createAndInsert(tournamentPO, playerPO));
-    }
-
-    @Override
-    public void buyin(CompetitorBO competitorBO)
-    {
-        if (competitorBO.isActive() || !(competitorBO instanceof ICompetitor))
-        {
-            throw new IllegalStateException("buyin not allowed for active competitors");
-        }
-        ICompetitor iTournamentCompetitor = (ICompetitor)competitorBO;
-        iTournamentCompetitor.buyin(getBuyIn());
-    }
-
-    @Override
-    public void rebuy(CompetitorBO competitorBO)
-    {
-        if (!competitorBO.isActive() || !(competitorBO instanceof ICompetitor))
-        {
-            throw new IllegalStateException("rebuy not allowed at inactive competitors");
-        }
-        ICompetitor iTournamentCompetitor = (ICompetitor)competitorBO;
-        iTournamentCompetitor.rebuy(getCurrentRebuy());
+        CompetitorPO po = new CompetitorPO();
+        po.setPlayerRef(playerBO.getRef().getGlobalRef());
+        po.setTournamentID(tournament_id);
+        return getBO(competitorDao.saveAndFlush(po));
     }
 
     @Override
     public Money getCurrentRebuy()
     {
         final List<TournamentRoundBO> blindLevels = getTournamentRounds();
-        int currentRound = tournamentPO.getCurrentRound();
+        int currentRound = getPO().getCurrentRound();
         if (currentRound < 0 || blindLevels.size() <= currentRound)
         {
             return null;
         }
         if (blindLevels.get(currentRound).isRebuyAllowed())
         {
-            return Money.valueOf(tournamentPO.getReBuy());
+            return valueOf(getPO().getReBuy());
         }
         return null;
+    }
+
+    private Money valueOf(MoneyPO po)
+    {
+        return MoneyPOConverter.valueOf(po);
     }
 
     @Override
     public void seatOpen(CompetitorBO competitorBO)
     {
-        if (!competitorBO.isActive() || !(competitorBO instanceof ICompetitor))
+        if (!competitorBO.isActive() || !(competitorBO instanceof ICompetitorBO))
         {
             throw new IllegalStateException("seatOpen not allowed at inactive competitors");
         }
         int position = getActiveCompetitors().size();
-        Money moneyResult = getResultForPosition(position);
-        ICompetitor iTournamentCompetitor = (ICompetitor)competitorBO;
-        iTournamentCompetitor.setInactive();
-        iTournamentCompetitor.setResult(moneyResult);
-        iTournamentCompetitor.setPosition(position);
-        iTournamentCompetitor.createEntry(HistoryEntryType.CashOut, moneyResult);
+        Money result = getResultForPosition(position);
+        ICompetitorBO iTournamentCompetitor = (ICompetitorBO)competitorBO;
+        iTournamentCompetitor.seatOpen(result, position);
     }
 
     private Money getResultForPosition(int position)
@@ -149,49 +144,48 @@ public class TournamentBOImpl implements TournamentBO, ITournamentBO
         return getActiveCompetitorBOStream().collect(Collectors.toList());
     }
 
-    private Stream<CompetitorBO> getActiveCompetitorBOStream()
+    private Stream<ICompetitorBO> getActiveCompetitorBOStream()
     {
         return getCompetitorBOStream().filter(competitor -> competitor.isActive());
     }
 
-    private CompetitorBO getBO(CompetitorPO competitorPO)
+    private ICompetitorBO getBO(CompetitorPO competitorPO)
     {
-        return factory.getCompetitorBO(competitorPO, this);
+        return competitorFactory.get(competitorPO, this);
     }
 
     @Override
     public Money getBuyIn()
     {
-        return Money.valueOf(tournamentPO.getBuyIn());
+        return valueOf(getPO().getBuyIn());
     }
 
     @Override
     public List<CompetitorBO> getCompetitors()
     {
-        return getCompetitorBOStream().sorted(CompetitorBOComparators.TOURNAMENT).collect(Collectors.toList());
+        return getCompetitorBOStream().sorted(TournamentComparators.COMPETITOR).collect(Collectors.toList());
     }
 
-    private Stream<CompetitorBO> getCompetitorBOStream()
+    private Stream<ICompetitorBO> getCompetitorBOStream()
     {
-        return tournamentPO.getCompetitors().stream().map(competitorPO -> getBO(competitorPO));
+        return getCompetitorPOs().stream().map(this::getBO);
+    }
+
+    private List<CompetitorPO> getCompetitorPOs()
+    {
+        return competitorDao.getByTournamentID(tournament_id);
     }
 
     @Override
     public Date getStartTime()
     {
-        return tournamentPO.getDate();
-    }
-
-    @Override
-    public String getID()
-    {
-        return tournamentPO.getId();
+        return getPO().getStartDate();
     }
 
     @Override
     public String getName()
     {
-        return tournamentPO.getName();
+        return getPO().getName();
     }
 
     @Override
@@ -208,22 +202,29 @@ public class TournamentBOImpl implements TournamentBO, ITournamentBO
     @Override
     public boolean isCompetitor(PlayerBO player)
     {
-        String playerID = player.getID();
-        return tournamentPO.getCompetitors().stream()
-                        .anyMatch(competitorPO -> competitorPO.getPlayerPO().getId().equals(playerID));
+        String playerRef = player.getRef().getGlobalRef();
+        return getCompetitorPOs().stream()
+                        .anyMatch(competitorPO -> playerRef.equals(competitorPO.getPlayerRef()));
     }
 
     @Override
+    @Transactional
     public void remove()
     {
-        tournamentDao.remove(tournamentPO);
+        historyRepository.deleteEntries(getRef().getGlobalRef());
+        blindLevelDao.deleteAllInBatch(blindLevelDao.getByTournamentID(tournament_id));
+        rankDao.deleteAllInBatch(rankDao.getByTournamentID(tournament_id));
+        competitorDao.deleteAllInBatch(competitorDao.getByTournamentID(tournament_id));
+        tournamentDao.deleteById(tournament_id);
+        tournament_id = null;
         tournamentPO = null;
     }
 
     @Override
     public void setBuyIn(Money buyIn)
     {
-        tournamentPO.setBuyIn(buyIn.toMoneyPO());
+        getPO().setBuyIn(MoneyPOConverter.persistence(buyIn));
+        savePO();
     }
 
     @Override
@@ -233,7 +234,7 @@ public class TournamentBOImpl implements TournamentBO, ITournamentBO
         {
             throw new IllegalStateException("Can't remove competitor, is/was in play with result.");
         }
-        competitorDao.remove(competitorBO.getID());
+        competitorBO.remove();
     }
 
     @Override
@@ -241,7 +242,7 @@ public class TournamentBOImpl implements TournamentBO, ITournamentBO
     {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((tournamentPO == null) ? 0 : tournamentPO.hashCode());
+        result = prime * result + ((getPO() == null) ? 0 : getPO().hashCode());
         return result;
     }
 
@@ -255,12 +256,12 @@ public class TournamentBOImpl implements TournamentBO, ITournamentBO
         if (getClass() != obj.getClass())
             return false;
         TournamentBOImpl other = (TournamentBOImpl)obj;
-        if (tournamentPO == null)
+        if (getPO() == null)
         {
             if (other.tournamentPO != null)
                 return false;
         }
-        else if (!tournamentPO.equals(other.tournamentPO))
+        else if (!getPO().equals(other.tournamentPO))
             return false;
         return true;
     }
@@ -271,43 +272,42 @@ public class TournamentBOImpl implements TournamentBO, ITournamentBO
     @Override
     public void sortCompetitors()
     {
-        // nothing to do at tournament
+        // TODO sort by current stack or price or name
     }
 
     @Override
     public List<HistoryEntryBO> getHistoryEntries()
     {
-        List<HistoryEntryBO> result = new ArrayList<>();
-        for (HistoryPO historyPO : tournamentPO.getHistoryEntries())
-        {
-            result.add(factory.getHistoryBO(historyPO));
-        }
-        return result;
+        return historyRepository.getEntries(getRef().getGlobalRef());
     }
 
     @Override
     public void setStartTime(Date date)
     {
-        tournamentPO.setDate(date);
+        getPO().setStartDate(date);
+        savePO();
     }
 
     @Override
     public BlindLevelBO createBlindLevel(int duration, int smallBlind, int bigBlind, int ante)
     {
         int nextLevel = getNextBlindLevelPositon();
-        BlindLevelPO blindLevelPO = blindLevelDao.createAndInsert(tournamentPO, duration);
+        BlindLevelPO blindLevelPO = new BlindLevelPO();
+        blindLevelPO.setTournamentID(tournament_id);
+        blindLevelPO.setDuration(duration);
         blindLevelPO.setPause(false);
         blindLevelPO.setSmallBlind(smallBlind);
         blindLevelPO.setBigBlind(bigBlind);
         blindLevelPO.setAnte(ante);
         blindLevelPO.setPosition(nextLevel);
-        return factory.getBlindLevelBO(blindLevelPO, this);
+        blindLevelPO = blindLevelDao.saveAndFlush(blindLevelPO);
+        return blindLevelFactory.get(blindLevelPO, this);
     }
 
     private int getNextBlindLevelPositon()
     {
         int result = -1;
-        for (BlindLevelPO bl : tournamentPO.getBlindLevels())
+        for (BlindLevelPO bl : getBlindLevelPOs())
         {
             if (bl.getPosition() > result)
             {
@@ -321,16 +321,20 @@ public class TournamentBOImpl implements TournamentBO, ITournamentBO
     public PauseBO createPause(int duration)
     {
         int nextLevel = getNextBlindLevelPositon();
-        BlindLevelPO blindLevelPO = blindLevelDao.createAndInsert(tournamentPO, duration);
+        BlindLevelPO blindLevelPO = new BlindLevelPO();
+        blindLevelPO.setTournamentID(tournament_id);
+        blindLevelPO.setDuration(duration);
         blindLevelPO.setPause(true);
         blindLevelPO.setPosition(nextLevel);
-        return factory.getPauseBO(blindLevelPO, this);
+        blindLevelPO = blindLevelDao.saveAndFlush(blindLevelPO);
+        return pauseFactory.get(blindLevelPO, this);
     }
 
     @Override
     public void setName(String name)
     {
-        tournamentPO.setName(name);
+        getPO().setName(name);
+        savePO();
     }
 
     @Override
@@ -342,35 +346,20 @@ public class TournamentBOImpl implements TournamentBO, ITournamentBO
         {
             if (blindLevelPO.isPause())
             {
-                result.add(factory.getPauseBO(blindLevelPO, this));
+                result.add(pauseFactory.get(blindLevelPO, this));
             }
             else
             {
-                result.add(factory.getBlindLevelBO(blindLevelPO, this));
+                result.add(blindLevelFactory.get(blindLevelPO, this));
             }
         }
         return result;
     }
 
     @Override
-    public void remove(TournamentRoundBO round)
-    {
-        Iterator<BlindLevelPO> blindLevels = tournamentPO.getBlindLevels().iterator();
-        while(blindLevels.hasNext())
-        {
-            BlindLevelPO blindLevelPO = blindLevels.next();
-            if (blindLevelPO.getId().equals(round.getID()))
-            {
-                blindLevelDao.remove(blindLevelPO);
-                break;
-            }
-        }
-    }
-
-    @Override
     public int getMaximumNumberOfPlayersPerTable()
     {
-        return tournamentPO.getMaxPlayerPerTable();
+        return getPO().getMaxPlayerPerTable();
     }
 
     @Override
@@ -384,19 +373,20 @@ public class TournamentBOImpl implements TournamentBO, ITournamentBO
         {
             throw new IllegalArgumentException("Can't allow more than 10 players as max per table: " + number);
         }
-        tournamentPO.setMaxPlayerPerTable(number);
+        getPO().setMaxPlayerPerTable(number);
+        savePO();
         placePlayersAtTables();
     }
 
     @Override
     public void placePlayersAtTables()
     {
-        List<CompetitorBO> competitors = getActiveCompetitors();
+        List<ICompetitorBO> competitors = getActiveCompetitorBOStream().collect(Collectors.toList());
         int numberOfTables = determineNumberTables(competitors.size());
         Collections.shuffle(competitors, new Random(System.nanoTime()));
         int position = 0;
         int table = 0;
-        for (CompetitorBO competitorBO : competitors)
+        for (ICompetitorBO competitorBO : competitors)
         {
             competitorBO.takeSeat(table, position);
             table++;
@@ -435,7 +425,7 @@ public class TournamentBOImpl implements TournamentBO, ITournamentBO
             int tableNo = competitor.getTableNo();
             while(result.size() <= tableNo)
             {
-                ITableBO table = factory.getTableBO(result.size());
+                ITableBO table = getTable(result.size());
                 result.add(table);
             }
             result.get(tableNo).add(competitor);
@@ -443,50 +433,65 @@ public class TournamentBOImpl implements TournamentBO, ITournamentBO
         return result;
     }
 
+    private ITableBO getTable(int number)
+    {
+        return new TableBOImpl(number);
+    }
+
     @Override
     public List<RankBO> getRanks()
     {
-        List<RankPO> ranks = new ArrayList<RankPO>(tournamentPO.getRanks());
-        ranks.sort(RankPOComparators.DEFAULT);
-        List<RankBO> result = new ArrayList<>(ranks.size());
-        for (RankPO rank : ranks)
+        return getIRanks().stream().map(r -> (RankBO) r).collect(Collectors.toList());
+    }
+
+    private List<IRankBO> getIRanks()
+    {
+        if (rankBOs == null)
         {
-            result.add(factory.getRankBO(rank, this));
+            List<RankPO> ranks = new ArrayList<RankPO>(getRankPOs());
+            ranks.sort(RankPOComparators.DEFAULT);
+            List<IRankBO> result = new ArrayList<>(ranks.size());
+            for (RankPO rank : ranks)
+            {
+                result.add(rankFactory.get(rank, this));
+            }
+            rankBOs = result;
         }
-        return result;
+        return rankBOs;
+    }
+
+    private List<RankPO> getRankPOs()
+    {
+        return rankDao.getByTournamentID(tournament_id);
     }
 
     @Override
     public RankBO createRank(int firstPosition, int lastPosition, BigDecimal percentage, BigDecimal amount)
     {
-        RankPO rankPO = rankDao.createAndInsert(tournamentPO, firstPosition);
+        List<IRankBO> existingRanks = getIRanks();
+        RankPO rankPO = new RankPO();
+        rankPO.setTournamentID(tournament_id);
+        rankPO.setFirstPosition(firstPosition);
         rankPO.setPercentage(percentage);
         rankPO.setLastPosition(lastPosition);
         rankPO.setAmount(amount);
+        rankDao.saveAndFlush(rankPO);
         validateAndFixRanks();
-        return factory.getRankBO(rankPO, this);
+        IRankBO result = rankFactory.get(rankPO, this);
+        existingRanks.add(result);
+        return result;
     }
 
     @Override
-    public void remove(RankBO rank)
+    public void removeRank(IRankBO rank)
     {
-        Iterator<RankPO> ranks = tournamentPO.getRanks().iterator();
-        while(ranks.hasNext())
-        {
-            RankPO rankPO = ranks.next();
-            if (rankPO.getId().equals(rank.getID()))
-            {
-                rankDao.remove(rankPO);
-                break;
-            }
-        }
-        validateAndFixRanks();
+        rankBOs.remove(rank);
     }
 
     private void validateAndFixRanks()
     {
         // fix first and last position
-        List<RankPO> ranks = tournamentPO.getRanks();
+        List<RankPO> ranks = getRankPOs();
         ranks.sort(RankPOComparators.DEFAULT);
         int firstPosition = 0;
         int lastPosition = 0;
@@ -514,6 +519,7 @@ public class TournamentBOImpl implements TournamentBO, ITournamentBO
             if (setPercentageNull)
             {
                 rank.setPercentage(null);
+                rank = rankDao.save(rank);
             }
             else
             {
@@ -525,6 +531,7 @@ public class TournamentBOImpl implements TournamentBO, ITournamentBO
                     {
                         rank.setPercentage(null);
                         setPercentageNull = true;
+                        rank = rankDao.save(rank);
                     }
                 }
             }
@@ -535,39 +542,29 @@ public class TournamentBOImpl implements TournamentBO, ITournamentBO
     @Override
     public int getInitialStacksize()
     {
-        return tournamentPO.getInitialStacksize();
+        return getPO().getInitialStacksize();
     }
 
     @Override
     public void setInitialStacksize(int initialStacksize)
     {
-        tournamentPO.setInitialStacksize(initialStacksize);
+        getPO().setInitialStacksize(initialStacksize);
     }
 
     @Override
     public int getFinalStacksize()
     {
-        // TODO need to add re-buy here
-        return tournamentPO.getInitialStacksize() * tournamentPO.getCompetitors().size();
+        return getPO().getInitialStacksize() * getCompetitorPOs().size();
     }
 
     @Override
     public void start()
     {
-        tournamentPO.setDate(currentDateProvider.get());
+        getPO().setStartDate(dateProvider.get());
         defineBlindLevelStartTimes();
-        tournamentPO.setCurrentRound(0);
-    }
-
-    @Override
-    public CompetitorBO getCompetitorBO(String competitorID)
-    {
-        CompetitorPO competitorPO = competitorDao.getById(competitorID);
-        if (competitorPO == null || !competitorPO.getTournamentPO().equals(tournamentPO))
-        {
-            return null;
-        }
-        return factory.getCompetitorBO(competitorPO, this);
+        getPO().setCurrentRound(0);
+        savePO();
+        defineMoneyAtRanks();
     }
 
     @Override
@@ -627,8 +624,11 @@ public class TournamentBOImpl implements TournamentBO, ITournamentBO
         {
             seats.remove(seat.getSeatNo());
         }
-        competitorBO.takeSeat(table.getTableNo(), seats.iterator().next());
-        table.add(competitorBO);
+        if (competitorBO instanceof ICompetitorBO)
+        {
+            ((ICompetitorBO) competitorBO).takeSeat(table.getTableNo(), seats.iterator().next());
+            table.add(competitorBO);
+        }
     }
 
     private Collection<CompetitorBO> movePlayerFromLargeToSmallTable()
@@ -677,13 +677,14 @@ public class TournamentBOImpl implements TournamentBO, ITournamentBO
     @Override
     public void setReBuy(BigDecimal rebuy)
     {
-        tournamentPO.setReBuy(new MoneyPO(rebuy, getBuyIn().getCurrency().getCurrencyCode()));
+        getPO().setReBuy(new MoneyPO(rebuy, getBuyIn().getCurrency().getCurrencyCode()));
+        savePO();
     }
 
     @Override
     public Money getReBuy()
     {
-        return Money.valueOf(tournamentPO.getReBuy());
+        return MoneyPOConverter.valueOf(getPO().getReBuy());
     }
 
     @Override
@@ -691,7 +692,7 @@ public class TournamentBOImpl implements TournamentBO, ITournamentBO
     {
         final List<TournamentRoundBO> blindLevels = getTournamentRounds();
         TournamentRoundBO currentRound = blindLevels
-                        .get(tournamentPO.getCurrentRound() == -1 ? 0 : tournamentPO.getCurrentRound());
+                        .get(getPO().getCurrentRound() == -1 ? 0 : getPO().getCurrentRound());
         if (currentRound instanceof BlindLevelBO)
         {
             return (BlindLevelBO)currentRound;
@@ -707,7 +708,7 @@ public class TournamentBOImpl implements TournamentBO, ITournamentBO
         {
             return null;
         }
-        int currentRoundIdx = tournamentPO.getCurrentRound();
+        int currentRoundIdx = getPO().getCurrentRound();
         if (currentRoundIdx == -1)
         {
             currentRoundIdx = 0;
@@ -728,7 +729,7 @@ public class TournamentBOImpl implements TournamentBO, ITournamentBO
     @Override
     public PauseBO getNextPause()
     {
-        int currentRoundIdx = tournamentPO.getCurrentRound();
+        int currentRoundIdx = getPO().getCurrentRound();
         if (currentRoundIdx == -1)
         {
             currentRoundIdx = 0;
@@ -745,10 +746,10 @@ public class TournamentBOImpl implements TournamentBO, ITournamentBO
     @Override
     public void defineBlindLevelStartTimes()
     {
-        Date nextStart = tournamentPO.getDate();
+        Date nextStart = getPO().getStartDate();
         if (nextStart == null)
         {
-            nextStart = currentDateProvider.get();
+            nextStart = dateProvider.get();
         }
         int currentRound = 0;
         List<BlindLevelPO> blindLevels = getBlindLevelPOs();
@@ -756,7 +757,7 @@ public class TournamentBOImpl implements TournamentBO, ITournamentBO
         {
             BlindLevelPO blindLevel = blindLevels.get(currentRound);
             final Date levelStartDate = blindLevel.getStartDate();
-            if (currentRound <= tournamentPO.getCurrentRound() && levelStartDate != null)
+            if (currentRound <= getPO().getCurrentRound() && levelStartDate != null)
             {
                 nextStart = levelStartDate;
             }
@@ -770,20 +771,132 @@ public class TournamentBOImpl implements TournamentBO, ITournamentBO
 
     private List<BlindLevelPO> getBlindLevelPOs()
     {
-        List<BlindLevelPO> blindLevels = new ArrayList<>(tournamentPO.getBlindLevels());
+        List<BlindLevelPO> blindLevels = blindLevelDao.getByTournamentID(tournament_id);
         blindLevels.sort((o1, o2) -> o1.getPosition().compareTo(o2.getPosition()));
         return blindLevels;
     }
 
     @Override
-    public String getGroupRef()
+    public void start(IPauseBO pause)
     {
-        return tournamentPO.getGroupRef();
+        getPO().setCurrentRound(pause.getPosition());
+        savePO();
+        pause.setStartDate(dateProvider.get());
+        defineBlindLevelStartTimes();
     }
 
     @Override
-    public void setGroupRef(String groupRef)
+    public Integer getCurrentRound()
     {
-        tournamentPO.setGroupRef(groupRef);
+        return getPO().getCurrentRound();
+    }
+
+    @Override
+    public void start(IBlindLevelBO blindLevel)
+    {
+        getPO().setCurrentRound(blindLevel.getPosition());
+        blindLevel.setStartDate(dateProvider.get());
+        defineBlindLevelStartTimes();
+    }
+
+    @Override
+    public TournamentRef getRef()
+    {
+        return TournamentRef.valueOf(UserRef.valueOfLocal(getPO().getOwnerRef()), getPO().getLocalRef());
+    }
+
+    @Override
+    public GroupRef getGroupRef()
+    {
+        return GroupRef.valueOfGlobal(getPO().getGroupRef());
+    }
+
+    @Override
+    public void setGroupRef(GroupRef groupRef)
+    {
+        getPO().setGroupRef(groupRef.getGlobalRef());
+        savePO();
+    }
+
+    @Override
+    public void remove(TournamentRoundBO tournamentRoundBO)
+    {
+        Integer pos = tournamentRoundBO.getPosition();
+        Optional<BlindLevelPO> levelPO = getBlindLevelPOs().stream().filter(l -> pos.equals(l.getPosition())).findAny();
+        if (levelPO.isPresent())
+        {
+            blindLevelDao.delete(levelPO.get());
+        }
+    }
+
+    private TournamentPO getPO()
+    {
+        if (tournamentPO == null)
+        {
+            Optional<TournamentPO> opt = tournamentDao.findById(tournament_id);
+            if (!opt.isPresent())
+            {
+                throw new IllegalStateException("tournament with id '"+ tournament_id + "' not longer available.");
+            }
+            tournamentPO = opt.get();
+        }
+        return tournamentPO;
+    }
+
+    private void savePO()
+    {
+        tournamentPO = tournamentDao.save(getPO());
+    }
+
+    private void defineMoneyAtRanks()
+    {
+        BigDecimal sumPerc = BigDecimal.ZERO;
+        List<RankBO> ranksWithPercentage = getRanks().stream().filter(r -> !BigDecimal.ZERO.equals(r.getPercentage().stripTrailingZeros())).collect(Collectors.toList());
+        if (ranksWithPercentage.isEmpty())
+        {
+            return;
+        }
+        for(RankBO rank : ranksWithPercentage)
+        {
+            sumPerc = sumPerc.add(rank.getPercentage());
+        }
+        if (!BigDecimal.ONE.equals(sumPerc.stripTrailingZeros()))
+        {
+            throw new IllegalStateException("Sum of percentage for all ranks needs to be 1, but is " + sumPerc);
+        }
+        Money sum = getSumInplay();
+        Money amountForDistribution = sum.subtract(getRankFixAmounts());
+        for(IRankBO rank : getIRanks())
+        {
+            Money fixAmount = rank.getAmount();
+            if (null != fixAmount)
+            {
+                continue;
+            }
+            BigDecimal perc = rank.getPercentage();
+            if (null == perc || BigDecimal.ZERO.equals(perc))
+            {
+                rank.setAmount(Money.NOTHING);
+            }
+            else
+            {
+                // calc and set amount
+                rank.setAmount(amountForDistribution.multiply(perc));
+            }
+        }
+    }
+
+    private Money getRankFixAmounts()
+    {
+        Money result = Money.NOTHING;
+        for(RankBO rank : getRanks())
+        {
+            // collect percentage related amount
+            if (BigDecimal.ZERO.equals(rank.getPercentage().stripTrailingZeros()))
+            {
+                result = result.add(rank.getAmount());
+            }
+        }
+        return result;
     }
 }

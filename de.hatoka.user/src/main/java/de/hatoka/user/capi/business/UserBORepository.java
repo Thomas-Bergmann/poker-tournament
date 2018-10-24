@@ -1,28 +1,35 @@
 package de.hatoka.user.capi.business;
 
+import java.util.List;
+import java.util.Optional;
 
 public interface UserBORepository
 {
     /**
      * Creates an user
      *
-     * @param login
+     * @param externalRef
+     *            (identifier declared by authentication provider)
      * @return user
      */
-    UserBO createUserBO(String login);
+    UserBO createUser(UserRef externalRef);
 
     /**
      * Retrieves a user via identifier
      *
-     * @param userID
+     * @param externalRef
+     *            (identifier declared by authentication provider)
      * @return
      */
-    UserBO getUserBOByID(String userID);
+    Optional<UserBO> findUser(UserRef externalRef);
+
+    List<UserBO> getAllUsers();
 
     /**
-     * Retrieves a user via login
-     * @param login
-     * @return
+     * Removes all users of this repository
      */
-    UserBO getUserBOByLogin(String login);
+    default void clear()
+    {
+        getAllUsers().forEach(UserBO::remove);
+    }
 }

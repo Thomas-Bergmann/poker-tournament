@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:tournamentPersistenceModel xmlns:ns2="de.hatoka.xml.tournament">
+    <players>
+        <player id="100" name="player1"/>
+    </players>
+    <tournaments>
+        <tournament id="101" isCashGame="false" date="2011-11-25T07:45:00Z" maxPlayerPerTable="10" initialStacksize="1000" currentRound="1">
+            <blindLevel smallBlind="2" bigBlind="4" ante="1" isPause="false" duration="30" isReBuy="true" startDate="2011-11-25T07:45:00Z" />
+            <blindLevel isPause="true" duration="30" isReBuy="true" />
+            <blindLevel smallBlind="4" bigBlind="8" ante="2" isPause="false" duration="30" isReBuy="false" />
+            <rank firstPosition="1" lastPosition="1" percentage="0.5"/>
+            <rank firstPosition="2" lastPosition="2" percentage="0.3"/>
+            <competitor player="player1" playerRef="100" state="REGISTERED" tableNo="-1" seatNo="-1">
+                <inplay code="EUR" amount="5"/>
+                <result code="EUR" amount="-5"/>
+            </competitor>
+            <historyEntry player="player1" actionKey="BuyIn" date="2011-11-25T07:45:00Z"/>
+            <buyIn code="EUR" amount="5"/>
+             <reBuy code="EUR" amount="3"/>
+        </tournament>
+    </tournaments>
+</ns2:tournamentPersistenceModel>

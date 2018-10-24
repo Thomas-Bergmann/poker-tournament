@@ -5,9 +5,15 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
 import de.hatoka.tournament.capi.business.CompetitorBO;
 import de.hatoka.tournament.capi.business.TableBO;
 
+@Component
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class TableBOImpl implements TableBO, ITableBO
 {
     private final int number;

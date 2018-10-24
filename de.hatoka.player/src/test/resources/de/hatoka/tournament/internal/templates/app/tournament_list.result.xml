@@ -1,0 +1,35 @@
+<form xmlns="http://www.w3.org/1999/xhtml" action="action" method="POST">
+<table class="table table-striped">
+<tr>
+<th>Select</th>
+<th>Name</th>
+<th>Date</th>
+<th>Buy-In</th>
+</tr>
+<tr>
+<td>
+<label>
+<input type="checkbox" value="123457" name="tournamentID" class="checkbox"/>
+</label>
+</td>
+<td>
+<a href="tournament/123457/players.html">Test 2</a>
+</td>
+<td>11/25/12</td>
+<td>1 $</td>
+</tr>
+<tr>
+<td>
+<label>
+<input type="checkbox" value="123456" name="tournamentID" class="checkbox"/>
+</label>
+</td>
+<td>
+<a href="tournament/123456/players.html">Test 1</a>
+</td>
+<td>11/25/11</td>
+<td>1 $</td>
+</tr>
+</table>
+<button name="delete" type="submit" class="btn btn-primary">Delete</button>
+</form>
