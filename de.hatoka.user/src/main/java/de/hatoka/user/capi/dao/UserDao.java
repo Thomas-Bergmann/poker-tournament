@@ -7,16 +7,16 @@ public interface UserDao extends Dao<UserPO>
 {
     /**
      *
-     * @param login
+     * @param identifier
      * @return
      */
-    public UserPO createAndInsert(String login);
+    public UserPO createAndInsert(String externalRef);
 
     /**
      *
-     * @param login
+     * @param externalRef
      * @return user with the given login
      */
-    public UserPO getByLogin(String login);
+    public UserPO getByExternalRef(String externalRef);
 
 }

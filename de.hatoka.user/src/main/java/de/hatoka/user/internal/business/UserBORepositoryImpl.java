@@ -19,32 +19,21 @@ public class UserBORepositoryImpl implements UserBORepository
     }
 
     @Override
-    public UserBO createUserBO(String login)
+    public UserBO createUser(String externalRef)
     {
-        UserPO userPO = userDao.getByLogin(login);
+        UserPO userPO = userDao.getByExternalRef(externalRef);
         if (userPO != null)
         {
-            throw new DuplicateObjectException("User with login exists: " + login);
+            throw new DuplicateObjectException("User exists: " + externalRef);
         }
-        userPO = userDao.createAndInsert(login);
+        userPO = userDao.createAndInsert(externalRef);
         return businessFactory.getUserBO(userPO);
     }
 
     @Override
-    public UserBO getUserBOByID(String userID)
+    public UserBO getUser(String externalRef)
     {
-        UserPO userPO = userDao.getById(userID);
-        if (userPO == null)
-        {
-            return null;
-        }
-        return businessFactory.getUserBO(userPO);
-    }
-
-    @Override
-    public UserBO getUserBOByLogin(String login)
-    {
-        UserPO userPO = userDao.getByLogin(login);
+        UserPO userPO = userDao.getByExternalRef(externalRef);
         if (userPO == null)
         {
             return null;

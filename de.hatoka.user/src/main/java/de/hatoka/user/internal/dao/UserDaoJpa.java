@@ -20,26 +20,26 @@ public class UserDaoJpa extends GenericJPADao<UserPO> implements UserDao
     }
 
     @Override
-    public UserPO createAndInsert(String login)
+    public UserPO createAndInsert(String externalRef)
     {
         UserPO result = create();
         result.setId(uuidGenerator.generate());
-        result.setLogin(login);
+        result.setExternalRef(externalRef);
         insert(result);
         return result;
     }
 
     @Override
-    public UserPO getByLogin(String login)
+    public UserPO getByExternalRef(String externalRef)
     {
-        List<UserPO> result = createNamedQuery("UserPO.findByLogin").setParameter("login", login).getResultList();
+        List<UserPO> result = createNamedQuery("UserPO.findByExternalRef").setParameter("externalRef", externalRef).getResultList();
         if (result.isEmpty())
         {
             return null;
         }
         if (result.size() > 1)
         {
-            throw new IllegalStateException("Duplicate alternate key found. Login: '" + login + "'");
+            throw new IllegalStateException("Duplicate alternate key found. ExternalRef: '" + externalRef + "'");
         }
         return result.get(0);
     }
