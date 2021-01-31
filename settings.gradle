@@ -1,3 +1,4 @@
+rootProject.name = 'hatoka-offlinepoker'
 include 'de.hatoka.user'
 include 'de.hatoka.common'
 include 'de.hatoka.mail'
