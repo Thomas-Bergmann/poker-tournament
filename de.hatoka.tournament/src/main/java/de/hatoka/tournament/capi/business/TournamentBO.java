@@ -5,10 +5,18 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import de.hatoka.common.capi.business.Money;
+import de.hatoka.common.capi.math.Money;
+import de.hatoka.group.capi.business.GroupRef;
+import de.hatoka.player.capi.business.HistoryEntryBO;
+import de.hatoka.player.capi.business.PlayerBO;
 
-public interface TournamentBO extends GameBO
+public interface TournamentBO
 {
+    /**
+     * @return reference to tournament
+     */
+    TournamentRef getRef();
+
     /**
      * @return the start date and time of the tournament
      */
@@ -52,13 +60,6 @@ public interface TournamentBO extends GameBO
      * @return rounds of tournament
      */
     List<TournamentRoundBO> getTournamentRounds();
-
-    /**
-     * Removes a previously created pause or blind level
-     *
-     * @param round
-     */
-    void remove(TournamentRoundBO round);
 
     /**
      * @return current amount of rebuy (null if no rebuy possible)
@@ -121,20 +122,6 @@ public interface TournamentBO extends GameBO
     CompetitorBO register(PlayerBO playerBO);
 
     /**
-     * Competitor pays the buy-in and is allowed to play (is active afterwards)
-     *
-     * @param competitorBO
-     */
-    void buyin(CompetitorBO competitorBO);
-
-    /**
-     * Competitor pays additional re-buy and is allowed to play (is still active)
-     *
-     * @param competitorBO
-     */
-    void rebuy(CompetitorBO competitorBO);
-
-    /**
      * Player leaves the table and the tournament pays depends on rank (is inactive afterwards).
      *
      * @param competitorBO
@@ -157,7 +144,7 @@ public interface TournamentBO extends GameBO
 
     default RankBO createFixRank(int firstPosition, int lastPosition, BigDecimal amount)
     {
-        return createRank(firstPosition, lastPosition, null, amount);
+        return createRank(firstPosition, lastPosition, BigDecimal.ZERO, amount);
     }
 
     default RankBO createRank(int firstPosition, int lastPosition, BigDecimal percentage)
@@ -165,26 +152,18 @@ public interface TournamentBO extends GameBO
         return createRank(firstPosition, lastPosition, percentage, null);
     }
 
-    default RankBO createRank(int firstPosition, int lastPosition)
+    default RankBO createRankWithoutPrice(int firstPosition, int lastPosition)
     {
-        return createRank(firstPosition, lastPosition, null, null);
+        return createRank(firstPosition, lastPosition, BigDecimal.ZERO, BigDecimal.ZERO);
     }
 
     List<RankBO> getRanks();
-
-    void remove(RankBO rank);
 
     /**
      * Starts the tournament (current round is set to 0), registration, modifications of ranks, blind levels is not
      * longer possible.
      */
     void start();
-
-    /**
-     * @param competitorID
-     * @return competitor by given identifier
-     */
-    CompetitorBO getCompetitorBO(String competitorID);
 
     /**
      * Defines the amount of rebuy, the currency is defined by the buy in. The {@link TournamentRoundBO} defines that a
@@ -222,7 +201,56 @@ public interface TournamentBO extends GameBO
      */
     PauseBO getNextPause();
 
-    String getGroupRef();
+    GroupRef getGroupRef();
 
-    void setGroupRef(String groupRef);
+    void setGroupRef(GroupRef groupRef);
+
+    void remove(TournamentRoundBO tournamentRoundBO);
+    /**
+     * Removes that object
+     */
+    void remove();
+
+    /**
+     * @return active players
+     */
+    Collection<CompetitorBO> getActiveCompetitors();
+
+    /**
+     * @return all players (active, inactive and registered)
+     */
+    Collection<CompetitorBO> getCompetitors();
+
+    /**
+     * @param player
+     * @return true if player is registered or more
+     */
+    boolean isCompetitor(PlayerBO player);
+
+    /**
+     * Removes registration of player
+     *
+     * @param competitorBO
+     */
+    void unassign(CompetitorBO competitorBO);
+
+    /**
+     * Sort competitors recalculates the position of competitors.
+     */
+    void sortCompetitors();
+
+    Money getBuyIn();
+
+    void setBuyIn(Money instance);
+
+    /**
+     * @return amount of money for all active players.
+     */
+    Money getSumInplay();
+
+    /**
+     *
+     * @return ordered list of history entries
+     */
+    List<HistoryEntryBO> getHistoryEntries();
 }

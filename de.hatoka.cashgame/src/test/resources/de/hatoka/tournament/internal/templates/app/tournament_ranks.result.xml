@@ -1,0 +1,82 @@
+<form xmlns="http://www.w3.org/1999/xhtml" action="actionList" method="POST">
+<table class="table table-striped">
+<tr>
+<th>Select</th>
+<th>First Position</th>
+<th>Last Position</th>
+<th>Percentage</th>
+<th>Amount Per Player</th>
+<th>Amount Sum</th>
+</tr>
+<tr>
+<td>
+<label>
+<input type="checkbox" value="1" name="rankID" class="checkbox"/>
+</label>
+</td>
+<td>1</td>
+<td>1</td>
+<td>-</td>
+<td>100 $</td>
+<td>100 $</td>
+</tr>
+<tr>
+<td>
+<label>
+<input type="checkbox" value="2" name="rankID" class="checkbox"/>
+</label>
+</td>
+<td>2</td>
+<td>2</td>
+<td>50%</td>
+<td>50 $</td>
+<td>50 $</td>
+</tr>
+<tr>
+<td>
+<label>
+<input type="checkbox" value="3" name="rankID" class="checkbox"/>
+</label>
+</td>
+<td>3</td>
+<td>5</td>
+<td>25%</td>
+<td>8.33 $</td>
+<td>25 $</td>
+</tr>
+<tr>
+<td>
+<label>
+<input type="checkbox" value="4" name="rankID" class="checkbox"/>
+</label>
+</td>
+<td>6</td>
+<td>10</td>
+<td>25%</td>
+<td>5 $</td>
+<td>25 $</td>
+</tr>
+<tr>
+<td/>
+<td>
+<label class="sr-only" for="inputfirstPosition_new">First Position</label>
+<input placeholder="First Position" value="0" name="firstPosition_new" type="text" id="inputfirstPosition_new" class="form-control"/>
+</td>
+<td>
+<label class="sr-only" for="inputlastPosition_new">Last Position</label>
+<input placeholder="Last Position" value="" name="lastPosition_new" type="text" id="inputlastPosition_new" class="form-control"/>
+</td>
+<td>
+<label class="sr-only" for="inputpercentage_new">Percentage</label>
+<input placeholder="Percentage" value="" name="percentage_new" type="text" id="inputpercentage_new" class="form-control"/>
+</td>
+<td>-</td>
+<td>
+<label class="sr-only" for="inputamount_new">Amount For Rank</label>
+<input placeholder="Amount For Rank" value="" name="amount_new" type="text" id="inputamount_new" class="form-control"/>
+</td>
+</tr>
+</table>
+<button name="save" type="submit" class="btn btn-primary">Save</button>
+<button name="delete" type="submit" class="btn">Delete</button>
+</form>

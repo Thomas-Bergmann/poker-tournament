@@ -1,37 +1,26 @@
 package de.hatoka.user.capi.business;
 
-import java.net.URI;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public interface UserBO
 {
     /**
-     * @return the identifier (artificial key)
+     * @return the identifier of the user
      */
-    String getID();
+    UserRef getRef();
 
     /**
-     * Removes that object
-     */
-    void remove();
-
-    /**
-     * Activates the account, if the token matches.
-     *
-     * @param token
-     * @return true if user can login
-     */
-    boolean applySignInToken(String token);
-
-    /**
-     * @return email of user
-     */
-    String getEmail();
-
-    /**
-     * @return name for salutation
+     * @return default nickname for players
      */
     String getNickName();
+
+    /**
+     * set default nickname for user
+     *
+     * @param nickName
+     */
+    void setNickName(String nickName);
 
     /**
      * @return true if user can login
@@ -39,21 +28,9 @@ public interface UserBO
     boolean isActive();
 
     /**
-     * Initialize registration (precondition login of user is null)
-     *
-     * @param login
-     * @param email
-     * @param password
+     * @return user preferred locale
      */
-    void register(String email, String password);
-
-    /**
-     * Send email to the user, for email validation
-     *
-     * @param uri
-     *            clicking this link enables the account
-     */
-    void sendEmailVerificationMail(URI uri);
+    Locale getLocale();
 
     /**
      * Set user preferred locale.
@@ -63,17 +40,19 @@ public interface UserBO
     void setLocale(Locale locale);
 
     /**
-     * Sets name for salutation
-     *
-     * @param nickName
+     * @return user preferred time zone
      */
-    void setNickName(String nickName);
+    TimeZone getTimeZone();
 
     /**
-     * Verifies the given password
+     * Set user preferred time zone.
      *
-     * @param password
-     * @return false if user is inactive or password doesn't match
+     * @param timezone
      */
-    boolean verifyPassword(String password);
+    void setTimeZone(TimeZone timezone);
+
+    /**
+     * Removes this user
+     */
+    void remove();
 }

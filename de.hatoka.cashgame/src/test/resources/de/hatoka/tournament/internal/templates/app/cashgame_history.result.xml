@@ -1,0 +1,26 @@
+<table xmlns="http://www.w3.org/1999/xhtml" class="table table-striped">
+<tr>
+<th>Name</th>
+<th>Action</th>
+<th>Amount</th>
+<th>Date</th>
+</tr>
+<tr>
+<td>Player 1</td>
+<td>Buy-In</td>
+<td>1 $</td>
+<td>11/25/12 11:45 PM</td>
+</tr>
+<tr>
+<td>Player 2</td>
+<td>Re-Buy</td>
+<td>1 $</td>
+<td>11/26/12 1:45 AM</td>
+</tr>
+<tr>
+<td>Player 3</td>
+<td>Cash-Out</td>
+<td>1 $</td>
+<td>11/26/12 1:45 AM</td>
+</tr>
+</table>

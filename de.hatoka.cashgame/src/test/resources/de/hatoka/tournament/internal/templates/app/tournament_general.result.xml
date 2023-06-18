@@ -1,0 +1,27 @@
+<form xmlns="http://www.w3.org/1999/xhtml" action="saveConfiguration" method="POST">
+<label class="sr-only" for="inputname">Tournament Name</label>
+<input placeholder="Tournament Name" value="Test 1" name="name" type="text" id="inputname" class="form-control"/>
+<label class="sr-only" for="inputbuyIn">Buy-In</label>
+<input placeholder="Buy-In" value="5" name="buyIn" type="text" id="inputbuyIn" class="form-control"/>
+<label class="sr-only" for="inputreBuy">Re-Buy</label>
+<input placeholder="Re-Buy" value="3" name="reBuy" type="text" id="inputreBuy" class="form-control"/>
+<label class="sr-only" for="inputinitialStack">Initial Stack</label>
+<input placeholder="Initial Stack" value="1000" name="initialStack" type="text" id="inputinitialStack" class="form-control"/>
+<label class="sr-only" for="inputdate">Start Date</label>
+<input placeholder="Start Date" value="11/25/11 6:00 PM" name="date" type="text" id="inputdate" class="form-control" autocomplete="off"/>
+<label>Re-Buy Option</label>
+<div class="select-radio">
+<div class="select-option">
+<input type="radio" name="rebuyOption" value="single" checked="checked"/>Single</div>
+<div class="select-option">
+<input type="radio" name="rebuyOption" value="multi"/>Multiple</div>
+<div class="select-option">
+<input type="radio" name="rebuyOption" value="no"/>No</div>
+</div>
+<label class="sr-only" for="inputlargestTable">Largest Table</label>
+<input placeholder="Largest Table" value="10" name="largestTable" type="text" id="inputlargestTable" class="form-control"/>
+<label class="sr-only" for="inputgroupRef">Group</label>
+<input placeholder="Group" value="" name="groupRef" type="text" id="inputgroupRef" class="form-control"/>
+<button name="save" type="submit" class="btn btn-primary">Save</button>
+<button name="cancel" type="submit" class="btn">Cancel</button>
+</form>

@@ -1,0 +1,50 @@
+<div xmlns="http://www.w3.org/1999/xhtml">
+<table border="1" class="bigscreen">
+<tr>
+<td class="currentTime">
+						Current Time
+						<br/>6:35 PM</td>
+<td class="currentLevel" rowspan="2">
+						Current Level
+						<br/>07:00</td>
+<td class="playersLeft">
+						Players left
+						<br/>15
+						/
+						20</td>
+</tr>
+<tr>
+<td class="nextPause">
+						Next Pause
+						<br/>7:15 PM</td>
+<td class="averageStack">
+						Stack Average
+						<br/>2500</td>
+</tr>
+<tr>
+<td class="smallBlind">
+						Small Blind
+						<br/>200</td>
+<td class="bigBlind">
+						Big Blind
+						<br/>400</td>
+<td class="ante">
+						Ante
+						<br/>0</td>
+</tr>
+<tr>
+<td class="nextLevel" colspan="3">
+						(Next Level
+						250
+						/
+						500
+						/
+						0
+						)
+					</td>
+</tr>
+</table>
+<form action="action" method="POST">
+<button name="back.to.blinds" type="submit" class="btn btn-primary">Back to blind levels</button>
+</form>
+</div>

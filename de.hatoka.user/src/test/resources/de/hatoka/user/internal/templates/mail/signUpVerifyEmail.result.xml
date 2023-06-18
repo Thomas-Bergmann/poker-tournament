@@ -1,9 +1,0 @@
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<title>Email Verification</title>
-</head>
-<body>
-<h2>Please click the following link:</h2>
-<a href="http://test.test/acceptEMail/token">http://test.test/acceptEMail/token</a>
-</body>
-</html>

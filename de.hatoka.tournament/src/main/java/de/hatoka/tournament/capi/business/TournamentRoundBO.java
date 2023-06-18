@@ -4,13 +4,12 @@ import java.util.Date;
 
 public interface TournamentRoundBO
 {
-   /**
-    *
-    * @return the identifier (signature) of the business object
-    */
-   String getID();
+    /**
+     * @return position of round (blind level or pause)
+     */
+    Integer getPosition();
 
-   /**
+    /**
     * @return duration of round
     */
    Integer getDuration();
@@ -39,8 +38,8 @@ public interface TournamentRoundBO
     */
    Date getEndTime();
 
-   /**
+    /**
     * @return true in case this round is active
     */
-   boolean isActive();
+    boolean isActive();
 }

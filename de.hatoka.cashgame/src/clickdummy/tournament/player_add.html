@@ -1,0 +1,90 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet"/>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css" rel="stylesheet"/>
+<link href="../../main/webapp/WEB-INF/resources/css/frame.css" rel="stylesheet" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js">//</script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js">//</script>
+<title>List of tournaments</title>
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+	<div class="container-fluid">
+		<!-- Brand and toggle get grouped for better mobile display -->
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed"
+				data-toggle="collapse" data-target="#bs-example-navbar-collapse-9">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="../home.html">Poker Planer</a>
+		</div>
+
+		<!-- Collect the nav links, forms, and other content for toggling -->
+		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-9">
+			<ul class="nav navbar-nav">
+				<li class="active">
+					<a href="../tournaments.html">Tournaments</a>
+				</li>
+				<li>
+					<a href="../cash_games.html">Cash Games</a>
+				</li>
+				<li>
+					<a href="../players.html">Players</a>
+				</li>
+			</ul>
+		</div><!-- /.navbar-collapse -->
+	</div>
+</nav>
+<div class="row">
+	<div class="col-sm-3 col-md-2 sidebar">
+		<ul class="nav-sidebar">
+			<li>
+				<a href="general.html">General</a>
+			</li>
+			<li class="active">
+				<a href="players.html">Players <span class="badge">13</span></a>
+				<a class="glyphicon glyphicon-plus" href="player_add.html"></a>
+			</li>
+			<li>
+				<a href="tables.html">Tables <span class="badge">2</span></a>
+			</li>
+			<li>
+				<a href="blind_levels.html">Blind Levels <span class="badge">5</span></a>
+			</li>
+			<li>
+				<a href="ranks.html">Ranks <span class="badge">3</span></a>
+			</li>
+			<li>
+				<a href="bigScreen.html">Big Screen</a>
+			</li>
+		</ul>
+	</div>
+	<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+		<h1 class="page-header">Add new player to tournament</h1>
+		<h2>New player:</h2>
+		<form action="createPlayer" method="POST">
+		<label class="sr-only" for="inputname">Players Name</label>
+		<input value="" name="name" type="text" id="inputname" class="form-control" placeholder="Players Name"/>
+		<label class="sr-only" for="inputemail">E-Mail</label>
+		<input value="" name="email" type="text" id="inputemail" class="form-control" placeholder="E-Mail"/>
+		<button name="create" type="submit" class="btn btn-primary">Create and assign</button>
+		</form>
+		<h2>Existing player:</h2>
+		<form action="assignPlayer" method="POST">
+		<div class="input">
+		<select name="playerID">
+		<option value="1234581">Player 3</option>
+		</select>
+		</div>
+		<button name="buyin" type="submit" class="btn btn-primary">Assign</button>
+		</form>
+	</div>
+</div>
+</body>
+</html>

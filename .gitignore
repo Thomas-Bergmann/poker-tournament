@@ -3,6 +3,7 @@
 # ide backups
 *~
 *.bak
+**/.env
 
 # compiled output
 /dist
@@ -10,7 +11,7 @@
 /out-tsc
 /docs/build
 /.gradle
-/build
+**/build/*
 
 # dependencies
 /node_modules
@@ -48,3 +49,5 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+**/bin
+.envrc

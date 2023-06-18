@@ -1,0 +1,123 @@
+buildscript {
+    repositories.mavenCentral()
+    dependencies {
+        classpath 'com.bmuschko:gradle-docker-plugin:6.7.0'
+        classpath 'com.avast.gradle:gradle-docker-compose-plugin:0.14.5'
+    }
+}
+
+apply plugin: com.bmuschko.gradle.docker.DockerRemoteApiPlugin
+apply plugin: com.avast.gradle.dockercompose.DockerComposePlugin
+
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
+import com.bmuschko.gradle.docker.tasks.image.Dockerfile
+import com.bmuschko.gradle.docker.tasks.image.DockerRemoveImage
+import org.gradle.internal.os.OperatingSystem
+
+def getConfigurationProperty = {env, prop, defaultValue=null ->
+   def value = project.hasProperty(prop) ? properties[prop] : System.env[env]
+
+   if (value == null && defaultValue == null) logger.warn("neither $env nor $prop is defined")
+
+   value != null ? value : defaultValue
+}
+
+def containerRegistry = getConfigurationProperty('CONTAINER_REGISTRY', 'container.registry', 'local')
+def containerImageName = "$containerRegistry/hatoka/offline-poker-cashgame"
+def containerImageTag = getConfigurationProperty('CONTAINER_IMAGE_TAG', 'container.image.tag', 'latest')
+
+def dockerDir = new File(buildDir, 'docker')
+def dockerEnvFile = new File(dockerDir, 'service.env')
+
+docker {
+    url = OperatingSystem.current().isWindows()  ? 'http://localhost:2375' : (System.getenv('DOCKER_HOST_URL') ?: 'unix:///var/run/docker.sock').replace('tcp', 'https')
+}
+
+task prepareDockerFile(type: Dockerfile) {
+    group = 'Docker'
+    description "Preares the Dockerfile."
+
+    destFile = new File(dockerDir, 'Dockerfile')
+    from 'adoptopenjdk:11-jre-hotspot'
+
+    //@deprecated
+    environmentVariable "SPRING_PROFILES_ACTIVE", "production"
+
+    copyFile "libs/de.hatoka.offlinepoker.service-${version}.jar", '/app/app.jar'
+    exposePort 8090
+    exposePort 9090
+    entryPoint 'java'
+    defaultCommand '-jar', '/app/app.jar'
+    instruction 'HEALTHCHECK CMD curl -f http://localhost:9090/actuator/health || exit 1'
+}
+
+task copyJar(type: Copy) {
+    group = 'Docker'
+    description "Helper task for copying the jar into the docker build folder."
+
+    from 'build/libs'
+    into new File(dockerDir,"/libs")
+    include '*.jar'
+
+    dependsOn bootJar
+}
+
+tasks.prepareDockerFile.dependsOn copyJar
+
+task buildImageLatest(type: DockerBuildImage) {
+    group = 'Docker'
+    description "Generates the docker image."
+    dependsOn prepareDockerFile
+
+    inputDir = dockerDir
+    images.add("$containerImageName:latest")
+}
+
+task buildImageTag(type: DockerBuildImage) {
+    group = 'Docker'
+    description "Generates the docker image."
+    dependsOn prepareDockerFile
+    onlyIf {version.matches('\\d+\\.\\d+\\.\\d+(-\\w+)?')}
+    inputDir = dockerDir
+    images.add("$containerImageName:$version")
+}
+
+task buildImage() {
+    dependsOn buildImageLatest, buildImageTag
+}
+
+task prepareDockerEnv() {
+    group = 'Docker'
+    description "Prepares environment file 'service.env'. Used from task imageRun or composeUp for running"
+
+    doLast() {
+        dockerEnvFile.write "ENVIRONMENT_NAME=production\n"
+        dockerEnvFile.append "SQLAZURECONNSTR_DATABASE=${getConfigurationProperty 'SPRING_DATASOURCE_URL', 'spring.datasource.url'}\n"
+        dockerEnvFile.append "HIBERNATE_INIT=${getConfigurationProperty 'SPRING_JPA_HIBERNATE_DDLAUTO', 'spring.jpa.hibernate.ddlAuto'}\n"
+    }
+
+}
+
+task runImage(type: Exec) {
+    group = 'Docker'
+    description "Executes the docker file locally."
+
+    dependsOn buildImage, prepareDockerEnv
+
+    workingDir dockerDir
+
+    commandLine 'docker', 'run', '-p', '8090:8090', '--env-file', dockerEnvFile.name, "$containerImageName:$version"
+}
+
+/* docker-compose task */
+dockerCompose {
+    captureContainersOutputToFile = (new File(project.buildDir, 'logs/docker-compose.log')).absolutePath
+    environment.put 'IMAGE_NAME', "$containerImageName:c"
+    environment.put 'ENV_FILE_NAME', "$dockerEnvFile.path"
+
+}
+
+composeUp.dependsOn buildImage, prepareDockerEnv

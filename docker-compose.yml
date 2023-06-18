@@ -1,0 +1,10 @@
+version: "3"
+services:
+  poker-service:
+    hostname: poker-service
+    image: "local/hatoka/offline-poker-cashgame:1.0.0-LOCAL"
+    ports:
+      - "8090:8090"
+      - "9090:9090"
+    env_file:
+      - ".env"

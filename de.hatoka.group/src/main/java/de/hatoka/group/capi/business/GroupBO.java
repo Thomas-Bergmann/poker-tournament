@@ -2,50 +2,49 @@ package de.hatoka.group.capi.business;
 
 import java.util.Collection;
 
+import de.hatoka.player.capi.business.PlayerBO;
+import de.hatoka.user.capi.business.UserBO;
+
 public interface GroupBO
 {
-    /**
-     * @return userRef of owner
-     */
-    String getOwner();
-
-    /**
-     * Removes the group
-     */
-    void remove();
-
     /**
      * @return name of group
      */
     String getName();
 
     /**
-     * Create member for given user
+     * Create member for given player
+     * @param playerRef
+     * @param name
+     *            of member in side of the group
+     * @return created member
+     */
+    GroupMemberBO createMember(PlayerBO player);
+
+    /**
+     * Creates a group admin (must be a user)
      * @param userRef
-     * @param name of member in side of the group
-     * @return
+     * @return created admin user
      */
-    MemberBO createMember(String userRef, String name);
+    GroupAdminBO createAdmin(UserBO user);
 
     /**
-     * @return members of the group (owner is one member)
+     * @return members of the group (players)
      */
-    Collection<MemberBO> getMembers();
+    Collection<GroupMemberBO> getMembers();
 
     /**
-     * @return identifier of group
+     * @return admins of the group (users)
      */
-    String getID();
+    Collection<GroupAdminBO> getAdmins();
 
     /**
-     * @param userRef
-     * @return the member instance of the given user.
+     * @return reference to the group
      */
-    MemberBO getMember(String userRef);
+    GroupRef getRef();
 
     /**
-     * @param userRef
-     * @return true in case user is member of this group
+     * Removes that group
      */
-    boolean isMember(String userRef);
+    void remove();
 }

@@ -1,0 +1,57 @@
+<div xmlns="http://www.w3.org/1999/xhtml">
+<h2>Table 1</h2>
+<table class="tournamentTable table table-striped">
+<tr>
+<td class="player">Obi-Wan</td>
+<td class="actions">
+<form action="http://local/rebuy?competitor=100" method="POST">
+<button class="glyphicon glyphicon-repeat">rebuy</button>
+</form>
+<form action="http://local/seatOpen?competitor=100" method="POST">
+<button class="glyphicon glyphicon-remove-circle">seatopen</button>
+</form>
+</td>
+</tr>
+<tr>
+<td class="player">Trinity</td>
+<td class="actions">
+<form action="http://local/rebuy?competitor=101" method="POST">
+<button class="glyphicon glyphicon-repeat">rebuy</button>
+</form>
+<form action="http://local/seatOpen?competitor=101" method="POST">
+<button class="glyphicon glyphicon-remove-circle">seatopen</button>
+</form>
+</td>
+</tr>
+</table>
+<h2>Table 2</h2>
+<table class="tournamentTable table table-striped">
+<tr>
+<td class="player">Neo</td>
+<td class="actions">
+<form action="http://local/rebuy?competitor=102" method="POST">
+<button class="glyphicon glyphicon-repeat">rebuy</button>
+</form>
+<form action="http://local/seatOpen?competitor=102" method="POST">
+<button class="glyphicon glyphicon-remove-circle">seatopen</button>
+</form>
+</td>
+</tr>
+</table>
+<h2>Inactive players</h2>
+<table class="tournamentTable table table-striped">
+<tr>
+<th>Player</th>
+<th>Position</th>
+<th>Result</th>
+</tr>
+<tr>
+<td class="player">Darth Mouth</td>
+<td class="position">9</td>
+<td class="result">3 $</td>
+</tr>
+</table>
+<form action="action" method="POST">
+<button name="shufflePlayer" type="submit" class="btn btn-primary">Place Players</button>
+</form>
+</div>
