@@ -52,7 +52,7 @@ subprojects {
                 dependency "org.glassfish.jersey.core:jersey-common:${versionGlassfishJersey}"
                 dependency "org.glassfish.jersey.inject:jersey-hk2:${versionGlassfishJersey}"
                 dependency "org.glassfish.jersey.media:jersey-media-json-jackson:${versionGlassfishJersey}"
-                dependency 'org.json:json:20230227'
+                dependency 'org.json:json:20230618'
                 dependency 'javax.validation:validation-api:2.0.1.Final'
                 dependency 'jakarta.ws.rs:jakarta.ws.rs-api:3.1.0'
                 dependency "io.jsonwebtoken:jjwt-api:${versionJJWT}"
