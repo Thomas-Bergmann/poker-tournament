@@ -36,7 +36,7 @@ subprojects {
     apply plugin: 'io.spring.dependency-management'
     dependencies {
         dependencyManagement {
-            imports { mavenBom("org.springframework.boot:spring-boot-dependencies:3.0.6") }
+            imports { mavenBom("org.springframework.boot:spring-boot-dependencies:3.1.2") }
             importedProperties['javax-jaxb.version']
 
             dependencies {
